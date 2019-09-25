@@ -1,4 +1,4 @@
-Include "MapBasic.def"
+ï»¿Include "MapBasic.def"
 
 Declare Sub Main
 declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
@@ -9,12 +9,12 @@ Dim iProgress,iProgressRange,starttime as integer
 
 Sub Main()
 	print Chr$(12) 'empty message
-	Open Table "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\ÄrendenMedIngenEllerFelFastighet2.TAB" as ÄF
-	'Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as FS
-	Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as FS	
+	Open Table "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\Ã„rendenMedIngenEllerFelFastighet2.TAB" as Ã„F
+	'Open Table "G:\sbf\LivsmiljÃ¶\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as FS
+	Open Table "G:\sbf\LivsmiljÃ¶\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as FS	
 	Select Socken from Fs where socken <> "" group by socken into socken
 	
-	select * from ÄF where fnr = 0 into left			
+	select * from Ã„F where fnr = 0 into left			
 	fetch first from Left
 	startTime = timer()
 	iprogressRange = tableInfo(left,tab_info_nRows)
@@ -37,8 +37,8 @@ End Sub
 'see if any socken match 
 '
 'if socken match
-'	and sökbegräp <> socken
-'		see if Track is in sökbegräpp
+'	and sÃ¶kbegrÃ¤p <> socken
+'		see if Track is in sÃ¶kbegrÃ¤pp
 '			if true
 '				see if blockenhet
 '					if true
@@ -51,11 +51,11 @@ sub process()
 
 	fetch first from socken
 	do until eot(socken)
-	dim sökB,sockenB,FsTrakt,blockb as string
+	dim sÃ¶kB,sockenB,FsTrakt,blockb as string
 	sockenB = socken.col1
-	sökb = Left.sökbegrepp
-		if instr(1,sökB,left$(sockenB,3)) <> 0 then
-			if sökB <> socken then
+	sÃ¶kb = Left.sÃ¶kbegrepp
+		if instr(1,sÃ¶kB,left$(sockenB,3)) <> 0 then
+			if sÃ¶kB <> socken then
 				select trakt from FS where socken = SockenB AND trakt <> ""  group by trakt into trakt
 				fetch first from trakt
 				do until eot(Trakt)
@@ -68,14 +68,14 @@ sub process()
 						tempString = fsTrakt
 					end if
 					
-					if instr(1,sökB,tempString) <> 0 then	
-						if sökb <> Socken & " " & fstrakt then
+					if instr(1,sÃ¶kB,tempString) <> 0 then	
+						if sÃ¶kb <> Socken & " " & fstrakt then
 							select blockenhet from Fs where socken = SockenB AND trakt = fstrakt AND blockenhet <> ""  group by blockenhet into blockenhet
 							fetch first from blockenhet
 							
 							do until eot(blockenhet)
 							blockB = Blockenhet.col1
-								if instr(1,sökB,blockB) <> 0 then
+								if instr(1,sÃ¶kB,blockB) <> 0 then
 									dim FnrF,idx as integer
 									
 									select fnr from fs where socken = SockenB AND trakt = fstrakt AND blockenhet = blockB group by fnr into ressult
@@ -92,7 +92,7 @@ sub process()
 						else
 							goto LoopEnd
 						end if
-						'nödvändigt för att kunna kolla både lilla och stora bjärs, tex
+						'nÃ¶dvÃ¤ndigt fÃ¶r att kunna kolla bÃ¥de lilla och stora bjÃ¤rs, tex
 					end if
 					fetch next from trakt
 				loop

@@ -1,0 +1,15 @@
+(commonlib1.def:4) Subroutine or function already defined: görTillBasTabell.  Too many errors.  Error information has been lost.
+(commonlib1.def:6) Subroutine or function already defined: RowColumnAsString.  Too many errors.  Error information has been lost.
+(commonlib1.def:10) Subroutine or function already defined: GetOpentables.  Too many errors.  Error information has been lost.
+(commonlib1.def:12) Subroutine or function already defined: closeAllBut.  Too many errors.  Error information has been lost.
+(commonlib1.def:14) Subroutine or function already defined: tableopener.  Too many errors.  Error information has been lost.
+(commonlib1.def:16) Subroutine or function already defined: openSingleTable.  Too many errors.  Error information has been lost.
+(commonlib1.def:19) Subroutine or function already defined: cleanUpFormerSession.  Too many errors.  Error information has been lost.
+(commonlib1.def:19) Subroutine or function already defined: printEveryString.  Too many errors.  Error information has been lost.
+(commonlib1.def:21) Subroutine or function already defined: SearchReplace.  Too many errors.  Error information has been lost.
+(commonlib1.def:23) Subroutine or function already defined: CreateDirectory.  Too many errors.  Error information has been lost.
+(commonlib1.def:24) Subroutine or function already defined: APICreateDirectory.  Too many errors.  Error information has been lost.
+(commonlib1.def:28) Subroutine or function already defined: CountRows.  Too many errors.  Error information has been lost.
+(commonlib1.def:30) Subroutine or function already defined: CheckTable.  Too many errors.  Error information has been lost.
+(commonlib1.def:32) Subroutine or function already defined: CommitEveryTable.  Too many errors.  Error information has been lost.
+(commonlib1.def:70) Subroutine or function already defined: arrayAsStringIgnoreEmpty.  Too many errors.  Error information has been lost.

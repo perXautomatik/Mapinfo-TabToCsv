@@ -1,6 +1,6 @@
 Include "MapBasic.def"
-Include "tabellInsammlare(1).def"
-include "commonLib1.def"
+Include "tabellInsammlare.def"
+include "commonLib\commonLib1.def"
 
 global senastObjectID as integer
 

@@ -1,8 +1,8 @@
 
 Include "MapBasic.def"
 include "Menu.def"
-Include "P:\EDP\EDP VISION\TempFilMapp\CRBK01\tabellInsammlare(1).def"
-include "P:\EDP\EDP VISION\TempFilMapp\CRBK01\commonLib1.def"
+Include "tabellInsammlare.def"
+include "commonLib\commonLib1.def"
 
 declare sub insertAnteckningar
 declare sub förberedAvslut()

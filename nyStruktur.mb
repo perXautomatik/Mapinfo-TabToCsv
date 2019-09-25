@@ -1,8 +1,8 @@
-
+ï»¿
 Include "MapBasic.def"
 include "Menu.def"
 Include "P:\EDP\EDP VISION\TempFilMapp\CRBK01\tabellInsammlare.def"
-include "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\CommonLib\commonLib1.def"
+include "G:\sbf\LivsmiljÃ¶\Gemensamt\mapbasic program projekt\CommonLib\commonLib1.def"
 
 Declare Sub Main
 declare sub populatePathTable 'own defenition for class, no possibility to generalize
@@ -63,19 +63,19 @@ sub populatePathTable
 		end if
 	case 2
 		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Enskilt_avlopp_Södra")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "sÃ¶dra.tab", "Enskilt_avlopp_SÃ¶dra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Enskilt_avlopp_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Enskilt_avlopp_Mellersta")
 	case 3	
 		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Rening_Södra")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "sÃ¶dra.tab", "Rening_SÃ¶dra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Rening_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Rening_Mellersta")
 	case 4	
 		Tempstring = "K:\KARTOR\SOLEN_PUNKTER\Adresspunkter.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "Adresspunkter")
 	case 5	
-		Tempstring = "K:\KARTOR\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB"
+		Tempstring = "K:\KARTOR\LANTMÃ„TERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_ytaORg")		
 	case 6
 		Tempstring = ApplicationDirectory$() & "ErrorTable.TAB"
@@ -104,11 +104,11 @@ sub populatePathTable
 		if(true) then 'should always be rebuilt
 			Create Table "reningIhopslagen" (
 				Fastighet_rening Char(50),
-				Antal_hushåll_rening Char(17),
+				Antal_hushÃ¥ll_rening Char(17),
 				Reningstyp Char(15),
 				Storlek_m2 Float,
 				Beslut_datum Char(10),
-				Utförd_datum Char(10),
+				UtfÃ¶rd_datum Char(10),
 				Kommentarer Char(254),
 				Anslutna_fastigheter_1 Char(34),
 				Anslutna_fastigheter_2 Char(50),
@@ -127,7 +127,7 @@ sub populatePathTable
 			file Tempstring TYPE NATIVE Charset "WindowsLatin1"
 			commit table reningIhopslagen 'clears table
 			call RunUnSpatialOnTableOfchoiseKir("Rening_Mellersta")
-			call RunUnSpatialOnTableOfchoiseKir("Rening_Södra")
+			call RunUnSpatialOnTableOfchoiseKir("Rening_SÃ¶dra")
 			call RunUnSpatialOnTableOfchoiseKir("Rening_Norra")
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")		
@@ -136,11 +136,11 @@ sub populatePathTable
 		if(true) then 'should always be rebuilt
 			Create Table "todo" (
 				Fastighet_rening Char(50),
-				Antal_hushåll_rening Char(17),
+				Antal_hushÃ¥ll_rening Char(17),
 				Reningstyp Char(15),
 				Storlek_m2 Float,
 				Beslut_datum Char(10),
-				Utförd_datum Char(10),
+				UtfÃ¶rd_datum Char(10),
 				Kommentarer Char(254),
 				Anslutna_fastigheter_1 Char(34),
 				Anslutna_fastigheter_2 Char(50),
@@ -165,9 +165,9 @@ sub populatePathTable
 			Create Table "EnskiljtIhopslagen" 
 			(
 				Diarienummer Char(30),
-				Fastighet_tillstånd Char(40),
+				Fastighet_tillstÃ¥nd Char(40),
 				Typ_byggnad Char(15),
-				Antal_hushåll_tillstånd Char(17),
+				Antal_hushÃ¥ll_tillstÃ¥nd Char(17),
 				Fastighet_rening Char(33),
 				Typ_Slamavskiljare Char(15),
 				Storlek_m3 Float,
@@ -176,9 +176,9 @@ sub populatePathTable
 				Typ_sluten_tank Char(8),
 				Storlek__m3 Float,
 				Beslut_datum Date,
-				Utförd_datum Date,
+				UtfÃ¶rd_datum Date,
 				Avgift Char(10),
-				Tillstånd_giltigt_tom Date,
+				TillstÃ¥nd_giltigt_tom Date,
 				Anteckningar Char(254),
 				
 				Cor Char (30),
@@ -191,7 +191,7 @@ sub populatePathTable
 			)
 			file Tempstring TYPE NATIVE Charset "WindowsLatin1"
 			call RunUnSpatialOnTableOfchoiseKir("Enskilt_avlopp_Mellersta")
-			call RunUnSpatialOnTableOfchoiseKir("Enskilt_avlopp_Södra")
+			call RunUnSpatialOnTableOfchoiseKir("Enskilt_avlopp_SÃ¶dra")
 			call RunUnSpatialOnTableOfchoiseKir("Enskilt_avlopp_Norra")
 			commit table EnskiljtIhopslagen
 		end if	
@@ -218,18 +218,18 @@ sub FastighetsAvlopp
 
 	FastighetsBetInput = columnAtIndexAsString(temp,workspaceFilename,indexNr)
 	
-	'gissar vilket distrikt som fastighet hör till som skall öppnas
+	'gissar vilket distrikt som fastighet hÃ¶r till som skall Ã¶ppnas
 	if(socken <> left$(FastighetsBetInput,InStr(1,FastighetsBetInput," ",))) then
 		print "change " & socken & " to " & left$(FastighetsBetInput,InStr(1,FastighetsBetInput," ",))
 		
-		call görTillBasTabell("utvaldFastighet")
+		call gÃ¶rTillBasTabell("utvaldFastighet")
 		
-		Update utvaldFastighet Set TRAKT = left$(KIR,InStr(1,KIR," ",)) DropIndex Auto 'socken från fastighetsbeteckning
-		Select * from distriktsindelning, utvaldFastighet where trakt = distriktsindelning.Socken into distriktvärde 'norr,söder, mellersta
-		distrikt = RowColumnAsString(distriktvärde,"distrikt")	
+		Update utvaldFastighet Set TRAKT = left$(KIR,InStr(1,KIR," ",)) DropIndex Auto 'socken frÃ¥n fastighetsbeteckning
+		Select * from distriktsindelning, utvaldFastighet where trakt = distriktsindelning.Socken into distriktvÃ¤rde 'norr,sÃ¶der, mellersta
+		distrikt = RowColumnAsString(distriktvÃ¤rde,"distrikt")	
 		'close table distriktsindelning
-		if distrikt = "söder" then
-			distrikt = "södra"
+		if distrikt = "sÃ¶der" then
+			distrikt = "sÃ¶dra"
 		end if
 	end if
 	
@@ -251,9 +251,9 @@ sub reningsOppnare( ReningAlias as alias,FastighetsBetInput as String)
 	
 	select * from ReningAlias where obj within any (select obj from utvaldFastighet) into ValtRening2
 	
-'öppnar rätt avloppsymbolskikt
+'Ã¶ppnar rÃ¤tt avloppsymbolskikt
 
-'assosierar avlopp till fastighet * kolla hur man kan välja avlop på båda sätten samtidigt.
+'assosierar avlopp till fastighet * kolla hur man kan vÃ¤lja avlop pÃ¥ bÃ¥da sÃ¤tten samtidigt.
 	
 	select * from ReningAlias where 
 	fastighet_rening = FastighetsBetInput 
@@ -285,7 +285,7 @@ sub reningsOppnare( ReningAlias as alias,FastighetsBetInput as String)
 
 'assosierar avlopp till fastighet	
 	
-'fyller ejfunna tabeller med dummyvärden från utvaldfastighet
+'fyller ejfunna tabeller med dummyvÃ¤rden frÃ¥n utvaldfastighet
 
 exit sub
 	ErrorOpeningRening:
@@ -305,15 +305,15 @@ end function
 
 sub doLogics(FastighetsBetInput as String,distrikt as string)
 
-	Dim ärendenNrInput, tablenames(2), columnOrder as string
+	Dim Ã¤rendenNrInput, tablenames(2), columnOrder as string
 	
 	if (countFasGenerateUtvald(FastighetsBetInput) <> 0) then 'no fastighet exsist
-		columnOrder = "Beslut_datum,utförddatum,Status,Ärendenr,FASTIGHET,Fastighet_tillstånd,Utskick1_datum,Anteckning,slamhämtning,Antal_byggnader"									
+		columnOrder = "Beslut_datum,utfÃ¶rddatum,Status,Ã„rendenr,FASTIGHET,Fastighet_tillstÃ¥nd,Utskick1_datum,Anteckning,slamhÃ¤mtning,Antal_byggnader"									
 		run command "Select " & columnOrder & " from Fastigheter_sweref where obj within ANY (select obj from utvaldFastighet) into SwerefFlagga"
 	end if
 	
-	'gissar vilket avlopp som skall öppnas	
-	'öppnar rätt avloppsymbolskikt	
+	'gissar vilket avlopp som skall Ã¶ppnas	
+	'Ã¶ppnar rÃ¤tt avloppsymbolskikt	
 			
 	tablenames(1) = "rening" + distrikt
 	tablenames(2) = "enskiljt" + distrikt

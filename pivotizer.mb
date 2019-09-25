@@ -1,4 +1,4 @@
-Include "MapBasic.def"
+ï»¿Include "MapBasic.def"
 include "Menu.def"
 
 
@@ -34,71 +34,71 @@ Create Table "StructureTable" (ColumnName Char(50),columnPosition integer) file 
 Create Table "BucketTable" (ColumnName Char(50),columnPosition integer) file ApplicationDirectory$() & "\BucketTable.TAB" TYPE NATIVE Charset "WindowsLatin1"	
 
 	Create Table "ressult" (
-	Besöksadress_Huvudfastighet Char(50),			'insertValues(1)
-	Besöksadress_Adress Char(50),					'insertValues(2)
-	Besöksadress_Postnr Char(10),					'insertValues(3)
-	Besöksadress_Ort Char(30),						'insertValues(4)
-	Verksamhetsutövare_Namn Char(40),				'insertValues(5)
-	Verksamhetsutöv_Person_orgnr Char(20),			'insertValues(6)
+	BesÃ¶ksadress_Huvudfastighet Char(50),			'insertValues(1)
+	BesÃ¶ksadress_Adress Char(50),					'insertValues(2)
+	BesÃ¶ksadress_Postnr Char(10),					'insertValues(3)
+	BesÃ¶ksadress_Ort Char(30),						'insertValues(4)
+	VerksamhetsutÃ¶vare_Namn Char(40),				'insertValues(5)
+	VerksamhetsutÃ¶v_Person_orgnr Char(20),			'insertValues(6)
 	Fakturamottagare_NAMN Char(40),					'insertValues(7)
 	Fakturamottagare_Faktura_ADRESS Char(50),		'insertValues(8)
 	Fakturamottagare_Faktura_POSTNR Char(10),		'insertValues(9)
 	Fakturamottagare_Faktura_POSTOR Char(30),		'insertValues(10)
-	flik_Avloppsänlaggni_Boendetyp Char(10),		'insertValues(11)
-	flik_Avloppsa_Avrinningsområde Char(5),			'insertValues(12)
-	Anläggning_för_S_Anläggningstyp Char(10),		'insertValues(13)
-	Anläggning_för_Slam_Toaletttyp Char(10),		'insertValues(14)
-	AnlförEfterR_Anläggningstyp Char(10),			'insertValues(15)
-	Anläggning_för_EfTR_Toaletttyp Char(10),		'insertValues(16)
-	Anläggning_fö_SCertifieringstyp Char(10),		'insertValues(17)
-	Anläggning_för_Slamav_Volym_m3 Char(10),		'insertValues(18)
-	flik_Avloppsanläg_Beslutsdatum Char(10),		'insertValues(19)
+	flik_AvloppsÃ¤nlaggni_Boendetyp Char(10),		'insertValues(11)
+	flik_Avloppsa_AvrinningsomrÃ¥de Char(5),			'insertValues(12)
+	AnlÃ¤ggning_fÃ¶r_S_AnlÃ¤ggningstyp Char(10),		'insertValues(13)
+	AnlÃ¤ggning_fÃ¶r_Slam_Toaletttyp Char(10),		'insertValues(14)
+	AnlfÃ¶rEfterR_AnlÃ¤ggningstyp Char(10),			'insertValues(15)
+	AnlÃ¤ggning_fÃ¶r_EfTR_Toaletttyp Char(10),		'insertValues(16)
+	AnlÃ¤ggning_fÃ¶_SCertifieringstyp Char(10),		'insertValues(17)
+	AnlÃ¤ggning_fÃ¶r_Slamav_Volym_m3 Char(10),		'insertValues(18)
+	flik_AvloppsanlÃ¤g_Beslutsdatum Char(10),		'insertValues(19)
 	flik_Avloppsa_Besiktningsdatum Char(10),		'insertValues(20)
-	flik_Avloppsanläggn_Byggnadsår Char(10),		'insertValues(21)
+	flik_AvloppsanlÃ¤ggn_ByggnadsÃ¥r Char(10),		'insertValues(21)
 	Fliken_Koordinater Char(30),					'insertValues(22)
 	Inventeringsinformation_Status Char(10),		'insertValues(23)
 	Inventeringsinformation_Datum Char(10),			'insertValues(24)
-	Anl_för_EftR_TöInterv_mån Char(10),				'insertValues(25)
+	Anl_fÃ¶r_EftR_TÃ¶Interv_mÃ¥n Char(10),				'insertValues(25)
 	fliken_Fastigheter Char(254),					'insertValues(26)
 	AnlF_efR_Koordinater_X_o_Y Char(30),			'insertValues(27)
-	Anläggning_för_EfterföljRText Char(254),		'insertValues(28)
+	AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText Char(254),		'insertValues(28)
 	PunkttypAB Char(30),							'insertValues(29)
 	PunkttypER Char(30),							'insertValues(30)
 	Anteckning Char(254),							'insertValues(31)
 	FNR integer										'insertValues(32)
 	)
-	file "H:\mina grejer\att göra\häljpa sara swart\slå samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\ressult.TAB" TYPE NATIVE Charset "WindowsLatin1"
+	file "H:\mina grejer\att gÃ¶ra\hÃ¤ljpa sara swart\slÃ¥ samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\ressult.TAB" TYPE NATIVE Charset "WindowsLatin1"
 
 	
 
-	insert into bucketTable (col1,col2) values ("Besöksadress_Huvudfastighet",50)'	Besöksadress_Huvudfastighet Char(50),			'insertValues(1)
-	insert into bucketTable (col1,col2) values ("Besöksadress_Adress",50)'	Besöksadress_Adress Char(50),					'insertValues(2)
-	insert into bucketTable (col1,col2) values ("Besöksadress_Postnr",10)'	Besöksadress_Postnr Char(10),					'insertValues(3)
-	insert into bucketTable (col1,col2) values ("Besöksadress_Ort",30)'	Besöksadress_Ort Char(30),						'insertValues(4)
-	insert into bucketTable (col1,col2) values ("Verksamhetsutövare_Namn",40)'	Verksamhetsutövare_Namn Char(40),				'insertValues(5)
-	insert into bucketTable (col1,col2) values ("Verksamhetsutöv_Person_orgnr",20)'	Verksamhetsutöv_Person_orgnr Char(20),			'insertValues(6)
+	insert into bucketTable (col1,col2) values ("BesÃ¶ksadress_Huvudfastighet",50)'	BesÃ¶ksadress_Huvudfastighet Char(50),			'insertValues(1)
+	insert into bucketTable (col1,col2) values ("BesÃ¶ksadress_Adress",50)'	BesÃ¶ksadress_Adress Char(50),					'insertValues(2)
+	insert into bucketTable (col1,col2) values ("BesÃ¶ksadress_Postnr",10)'	BesÃ¶ksadress_Postnr Char(10),					'insertValues(3)
+	insert into bucketTable (col1,col2) values ("BesÃ¶ksadress_Ort",30)'	BesÃ¶ksadress_Ort Char(30),						'insertValues(4)
+	insert into bucketTable (col1,col2) values ("VerksamhetsutÃ¶vare_Namn",40)'	VerksamhetsutÃ¶vare_Namn Char(40),				'insertValues(5)
+	insert into bucketTable (col1,col2) values ("VerksamhetsutÃ¶v_Person_orgnr",20)'	VerksamhetsutÃ¶v_Person_orgnr Char(20),			'insertValues(6)
 	insert into bucketTable (col1,col2) values ("Fakturamottagare_NAMN",40)'	Fakturamottagare_NAMN Char(40),					'insertValues(7)
 	insert into bucketTable (col1,col2) values ("Fakturamottagare_Faktura_ADRESS",50)'	Fakturamottagare_Faktura_ADRESS Char(50),		'insertValues(8)
 	insert into bucketTable (col1,col2) values ("Fakturamottagare_Faktura_POSTNR",10)'	Fakturamottagare_Faktura_POSTNR Char(10),		'insertValues(9)
 	insert into bucketTable (col1,col2) values ("Fakturamottagare_Faktura_POSTOR",30)'	Fakturamottagare_Faktura_POSTOR Char(30),		'insertValues(10)
-	insert into bucketTable (col1,col2) values ("flik_Avloppsänlaggni_Boendetyp",10)'	flik_Avloppsänlaggni_Boendetyp Char(10),		'insertValues(11)
-	insert into bucketTable (col1,col2) values ("flik_Avloppsa_Avrinningsområde",5)'	flik_Avloppsa_Avrinningsområde Char(5),			'insertValues(12)
-	insert into bucketTable (col1,col2) values ("Anläggning_för_S_Anläggningstyp",10)'	Anläggning_för_S_Anläggningstyp Char(10),		'insertValues(13)
-	insert into bucketTable (col1,col2) values ("Anläggning_för_Slam_Toaletttyp",10)'	Anläggning_för_Slam_Toaletttyp Char(10),		'insertValues(14)
-	insert into bucketTable (col1,col2) values ("AnlförEfterR_Anläggningstyp",10)'	AnlförEfterR_Anläggningstyp Char(10),			'insertValues(15)
-	insert into bucketTable (col1,col2) values ("Anläggning_för_EfTR_Toaletttyp",10)'	Anläggning_för_EfTR_Toaletttyp Char(10),		'insertValues(16)
-	insert into bucketTable (col1,col2) values ("Anläggning_fö_SCertifieringstyp",10)'	Anläggning_fö_SCertifieringstyp Char(10),		'insertValues(17)
-	insert into bucketTable (col1,col2) values ("Anläggning_för_Slamav_Volym_m3",10)'	Anläggning_för_Slamav_Volym_m3 Char(10),		'insertValues(18)
-	insert into bucketTable (col1,col2) values ("flik_Avloppsanläg_Beslutsdatum",10)'	flik_Avloppsanläg_Beslutsdatum Char(10),		'insertValues(19)
+	insert into bucketTable (col1,col2) values ("flik_AvloppsÃ¤nlaggni_Boendetyp",10)'	flik_AvloppsÃ¤nlaggni_Boendetyp Char(10),		'insertValues(11)
+	insert into bucketTable (col1,col2) values ("flik_Avloppsa_AvrinningsomrÃ¥de",5)'	flik_Avloppsa_AvrinningsomrÃ¥de Char(5),			'insertValues(12)
+	insert into bucketTable (col1,col2) values ("AnlÃ¤ggning_fÃ¶r_S_AnlÃ¤ggningstyp",10)'	AnlÃ¤ggning_fÃ¶r_S_AnlÃ¤ggningstyp Char(10),		'insertValues(13)
+	insert into bucketTable (col1,col2) values ("AnlÃ¤ggning_fÃ¶r_Slam_Toaletttyp",10)'	AnlÃ¤ggning_fÃ¶r_Slam_Toaletttyp Char(10),		'insertValues(14)
+	insert into bucketTable (col1,col2) values ("AnlfÃ¶rEfterR_AnlÃ¤ggningstyp",10)'	AnlfÃ¶rEfterR_AnlÃ¤ggningstyp Char(10),			'insertValues(15)
+	insert into bucketTable (col1,col2) values ("AnlÃ¤ggning_fÃ¶r_EfTR_Toaletttyp",10)'	AnlÃ¤ggning_fÃ¶r_EfTR_Toaletttyp Char(10),		'insertValues(16)
+	insert into bucketTable (col1,col2) values ("AnlÃ¤ggning_fÃ¶_SCertifieringstyp",10)'	AnlÃ¤ggning_fÃ¶_SCertifieringstyp Char(10),		'insertValues(17)
+	insert into bucketTable (col1,col2) values ("AnlÃ¤ggning_fÃ¶r_Slamav_Volym_m3",10)'	AnlÃ¤ggning_fÃ¶r_Slamav_Volym_m3 Char(10),		'insertValues(18)
+	insert into bucketTable (col1,col2) values ("flik_AvloppsanlÃ¤g_Beslutsdatum",10)'	flik_AvloppsanlÃ¤g_Beslutsdatum Char(10),		'insertValues(19)
 	insert into bucketTable (col1,col2) values ("flik_Avloppsa_Besiktningsdatum",10)'	flik_Avloppsa_Besiktningsdatum Char(10),		'insertValues(20)
-	insert into bucketTable (col1,col2) values ("flik_Avloppsanläggn_Byggnadsår",10)'	flik_Avloppsanläggn_Byggnadsår Char(10),		'insertValues(21)
+	insert into bucketTable (col1,col2) values ("flik_AvloppsanlÃ¤ggn_ByggnadsÃ¥r",10)'	flik_AvloppsanlÃ¤ggn_ByggnadsÃ¥r Char(10),		'insertValues(21)
 	insert into bucketTable (col1,col2) values ("Fliken_Koordinater",30)'	Fliken_Koordinater Char(30),					'insertValues(22)
 	insert into bucketTable (col1,col2) values ("Inventeringsinformation_Status",10)'	Inventeringsinformation_Status Char(10),		'insertValues(23)
 	insert into bucketTable (col1,col2) values ("Inventeringsinformation_Datum",10)'	Inventeringsinformation_Datum Char(10),			'insertValues(24)
-	insert into bucketTable (col1,col2) values ("Anl_för_EftR_TöInterv_mån",10)'	Anl_för_EftR_TöInterv_mån Char(10),				'insertValues(25)
+	insert into bucketTable (col1,col2) values ("Anl_fÃ¶r_EftR_TÃ¶Interv_mÃ¥n",10)'	Anl_fÃ¶r_EftR_TÃ¶Interv_mÃ¥n Char(10),				'insertValues(25)
 	insert into bucketTable (col1,col2) values ("fliken_Fastigheter",254)'	fliken_Fastigheter Char(254),					'insertValues(26)
 	insert into bucketTable (col1,col2) values ("AnlF_efR_Koordinater_X_o_Y",30)'	AnlF_efR_Koordinater_X_o_Y Char(30),			'insertValues(27)
-	insert into bucketTable (col1,col2) values ("Anläggning_för_EfterföljRText",254)'	Anläggning_för_EfterföljRText Char(254),		'insertValues(28)
+	insert into bucketTable (col1,col2) values ("AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText",254)'	AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText Char(254),		'insertValues(28)
 	insert into bucketTable (col1,col2) values ("PunkttypAB",30)'	PunkttypAB Char(30),							'insertValues(29)
 	insert into bucketTable (col1,col2) values ("PunkttypER",30)'	PunkttypER Char(30),							'insertValues(30)
 	insert into bucketTable (col1,col2) values ("Anteckning",254)'	Anteckning Char(254),							'insertValues(31)
@@ -121,7 +121,7 @@ end sub
 
 Sub Main()
 
-	dim i,tempinteger,x,hasDupes,begränsningsvariabel as integer
+	dim i,tempinteger,x,hasDupes,begrÃ¤nsningsvariabel as integer
 	dim FastighetsBet as string
 	dim maxbeslutER,maxbeslutAB as date
 	dim tempAlias as alias
@@ -132,24 +132,24 @@ Sub Main()
 	print Chr$(12)
 
 	call tableGenerator()
-	select Besöksadress_Huvudfastighet
-	from sammanfogadtabell group by Besöksadress_Huvudfastighet into fastigheter
+	select BesÃ¶ksadress_Huvudfastighet
+	from sammanfogadtabell group by BesÃ¶ksadress_Huvudfastighet into fastigheter
 	
 	dim Y as integer
 	Y = Timer() 
 	Print Y
 	statTime = y
-	begränsningsvariabel = 20
+	begrÃ¤nsningsvariabel = 20
 
 	Fetch First From fastigheter
-	Do Until EOT(fastigheter) OR i > begränsningsVariabel
+	Do Until EOT(fastigheter) OR i > begrÃ¤nsningsVariabel
 		
 		onError goto beforeExecutionError
 				dim readyToExecute as logical
 				readyToExecute = false
-				hasDupes = countDupes(fastigheter.Besöksadress_Huvudfastighet)
+				hasDupes = countDupes(fastigheter.BesÃ¶ksadress_Huvudfastighet)
 						
-			if hasDupes = 0 OR (countOccurences("Anteckning") > 1 and (hasDupes = 1 OR (hasDupes = 2 and countOccurences("Anläggning_för_EfterföljRText") > 1))) then			
+			if hasDupes = 0 OR (countOccurences("Anteckning") > 1 and (hasDupes = 1 OR (hasDupes = 2 and countOccurences("AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText") > 1))) then			
 				dim valArray(1) as string
 				valArray(1) = "Anteckning"
 				
@@ -170,87 +170,87 @@ Sub Main()
 			readyToExecute = true
 		end if
 	
-		if(not(readyToExecute) AND (countOccurences("flik_Avloppsanläg_Beslutsdatum") > 1 OR (countOccurences("flik_Avloppsa_Besiktningsdatum") > 1))) then	
+		if(not(readyToExecute) AND (countOccurences("flik_AvloppsanlÃ¤g_Beslutsdatum") > 1 OR (countOccurences("flik_Avloppsa_Besiktningsdatum") > 1))) then	
 			dim rowId as integer
 			dim ToBecomeAnteckningar as string
 			
-			if (countOccurences("flik_Avloppsanläg_Beslutsdatum") > 1)then						
-				call asignmentMethod("getlatest","flik_Avloppsanläg_Beslutsdatum",0)		
-				rowId = getrowIDByColumn("flik_Avloppsanläg_Beslutsdatum", insertValues(19))		
+			if (countOccurences("flik_AvloppsanlÃ¤g_Beslutsdatum") > 1)then						
+				call asignmentMethod("getlatest","flik_AvloppsanlÃ¤g_Beslutsdatum",0)		
+				rowId = getrowIDByColumn("flik_AvloppsanlÃ¤g_Beslutsdatum", insertValues(19))		
 				call asignmentMethod("getByRowID","flik_Avloppsa_Besiktningsdatum",rowId)
 			end if
 		
-			if (countOccurences("flik_Avloppsa_Besiktningsdatum") > 1 AND not(countOccurences("flik_Avloppsanläg_Beslutsdatum") > 1)) then				
+			if (countOccurences("flik_Avloppsa_Besiktningsdatum") > 1 AND not(countOccurences("flik_AvloppsanlÃ¤g_Beslutsdatum") > 1)) then				
 				call asignmentMethod("getlatest","flik_Avloppsa_Besiktningsdatum",0)		
 				rowId = getrowIDByColumn("flik_Avloppsa_Besiktningsdatum", insertValues(20))		
-				call asignmentMethod("getByRowID","flik_Avloppsanläg_Beslutsdatum",rowId)
+				call asignmentMethod("getByRowID","flik_AvloppsanlÃ¤g_Beslutsdatum",rowId)
 			end if
 			
 			call assignFirstkontaktUpgifter()
 			
-			call asignmentMethod("getByRowID","flik_Avloppsänlaggni_Boendetyp",rowId)
-			call asignmentMethod("getByRowID","flik_Avloppsa_Avrinningsområde",rowId)
-			call asignmentMethod("getByRowID","Anläggning_för_S_Anläggningstyp",rowId)
-			call asignmentMethod("getByRowID","Anläggning_för_Slam_Toaletttyp",rowId)
-			call asignmentMethod("getByRowID","AnlförEfterR_Anläggningstyp",rowId)
-			call asignmentMethod("getByRowID","Anläggning_för_EfTR_Toaletttyp",rowId)
-			call asignmentMethod("getByRowID","Anläggning_fö_SCertifieringstyp",rowId)
-			call asignmentMethod("getByRowID","Anläggning_för_Slamav_Volym_m3",rowId)
-			call asignmentMethod("getByRowID","flik_Avloppsanläggn_Byggnadsår",rowId)
+			call asignmentMethod("getByRowID","flik_AvloppsÃ¤nlaggni_Boendetyp",rowId)
+			call asignmentMethod("getByRowID","flik_Avloppsa_AvrinningsomrÃ¥de",rowId)
+			call asignmentMethod("getByRowID","AnlÃ¤ggning_fÃ¶r_S_AnlÃ¤ggningstyp",rowId)
+			call asignmentMethod("getByRowID","AnlÃ¤ggning_fÃ¶r_Slam_Toaletttyp",rowId)
+			call asignmentMethod("getByRowID","AnlfÃ¶rEfterR_AnlÃ¤ggningstyp",rowId)
+			call asignmentMethod("getByRowID","AnlÃ¤ggning_fÃ¶r_EfTR_Toaletttyp",rowId)
+			call asignmentMethod("getByRowID","AnlÃ¤ggning_fÃ¶_SCertifieringstyp",rowId)
+			call asignmentMethod("getByRowID","AnlÃ¤ggning_fÃ¶r_Slamav_Volym_m3",rowId)
+			call asignmentMethod("getByRowID","flik_AvloppsanlÃ¤ggn_ByggnadsÃ¥r",rowId)
 			call asignmentMethod("getByRowID","Fliken_Koordinater",rowId)
 			call asignmentMethod("getByRowID","Inventeringsinformation_Status",rowId)
 			call asignmentMethod("getByRowID","Inventeringsinformation_Datum",rowId)
-			call asignmentMethod("getByRowID","Anl_för_EftR_TöInterv_mån",rowId)
+			call asignmentMethod("getByRowID","Anl_fÃ¶r_EftR_TÃ¶Interv_mÃ¥n",rowId)
 			call asignmentMethod("getByRowID","fliken_Fastigheter",rowId)
 			call asignmentMethod("getByRowID","AnlF_efR_Koordinater_X_o_Y",rowId)
-			call asignmentMethod("getByRowID","Anläggning_för_EfterföljRText",rowId)
+			call asignmentMethod("getByRowID","AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText",rowId)
 			call asignmentMethod("getByRowID","PunkttypAB",rowId)
 			call asignmentMethod("getByRowID","PunkttypER",rowId)
 			call asignmentMethod("getByRowID","Anteckning",rowId)
 			call asignmentMethod("getFirst","FNR",0)
-			call appendToColumn("Anteckning"," (äldre:) " & dumpAllBut(rowId))
+			call appendToColumn("Anteckning"," (Ã¤ldre:) " & dumpAllBut(rowId))
 			
 			readyToExecute = true
 		end if
 		
-		if(hasDupes = 2 AND countOccurences("Anteckning") > 1 AND countOccurences("Anläggning_för_EfterföljRText") > 1 AND not(readyToExecute) ) then	
+		if(hasDupes = 2 AND countOccurences("Anteckning") > 1 AND countOccurences("AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText") > 1 AND not(readyToExecute) ) then	
 			call asignmentMethod("getAll","Anteckning",0)
-			call asignmentMethod("getAll","Anläggning_för_EfterföljRText",0)
+			call asignmentMethod("getAll","AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText",0)
 			
 			readyToExecute = true
 		end if
 				
 		if (not(readyToExecute))then 'merge as far as it goes and dump rest in anteckningar
 			
-			call asignmentMethod("getFirst","Besöksadress_Huvudfastighet",0)
+			call asignmentMethod("getFirst","BesÃ¶ksadress_Huvudfastighet",0)
 	
-			rowId = getrowIDByColumn("Besöksadress_Huvudfastighet", insertValues(1))
+			rowId = getrowIDByColumn("BesÃ¶ksadress_Huvudfastighet", insertValues(1))
 
 			call assignFirstkontaktUpgifter()
 	
-			call ifEmptyByRowIdAssignFirst("flik_Avloppsänlaggni_Boendetyp",rowID)
-			call ifEmptyByRowIdAssignFirst("flik_Avloppsa_Avrinningsområde",rowID)
-			call ifEmptyByRowIdAssignFirst("Anläggning_för_S_Anläggningstyp",rowID)
-			call ifEmptyByRowIdAssignFirst("Anläggning_för_Slam_Toaletttyp",rowID)
-			call ifEmptyByRowIdAssignFirst("AnlförEfterR_Anläggningstyp",rowID)
-			call ifEmptyByRowIdAssignFirst("Anläggning_för_EfTR_Toaletttyp",rowID)
-			call ifEmptyByRowIdAssignFirst("Anläggning_fö_SCertifieringstyp",rowID)
-			call ifEmptyByRowIdAssignFirst("Anläggning_för_Slamav_Volym_m3",rowID)
-			call ifEmptyByRowIdAssignFirst("flik_Avloppsanläg_Beslutsdatum",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_AvloppsÃ¤nlaggni_Boendetyp",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_Avloppsa_AvrinningsomrÃ¥de",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlÃ¤ggning_fÃ¶r_S_AnlÃ¤ggningstyp",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlÃ¤ggning_fÃ¶r_Slam_Toaletttyp",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlfÃ¶rEfterR_AnlÃ¤ggningstyp",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlÃ¤ggning_fÃ¶r_EfTR_Toaletttyp",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlÃ¤ggning_fÃ¶_SCertifieringstyp",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlÃ¤ggning_fÃ¶r_Slamav_Volym_m3",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_AvloppsanlÃ¤g_Beslutsdatum",rowID)
 			call ifEmptyByRowIdAssignFirst("flik_Avloppsa_Besiktningsdatum",rowID)
-			call ifEmptyByRowIdAssignFirst("flik_Avloppsanläggn_Byggnadsår",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_AvloppsanlÃ¤ggn_ByggnadsÃ¥r",rowID)
 			call ifEmptyByRowIdAssignFirst("Fliken_Koordinater",rowID)
 			call ifEmptyByRowIdAssignFirst("Inventeringsinformation_Status",rowID)
 			call ifEmptyByRowIdAssignFirst("Inventeringsinformation_Datum",rowID)
-			call ifEmptyByRowIdAssignFirst("Anl_för_EftR_TöInterv_mån",rowID)
+			call ifEmptyByRowIdAssignFirst("Anl_fÃ¶r_EftR_TÃ¶Interv_mÃ¥n",rowID)
 			call ifEmptyByRowIdAssignFirst("fliken_Fastigheter",rowID)
 			call ifEmptyByRowIdAssignFirst("AnlF_efR_Koordinater_X_o_Y",rowID)
-			call ifEmptyByRowIdAssignFirst("Anläggning_för_EfterföljRText",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText",rowID)
 			call ifEmptyByRowIdAssignFirst("PunkttypAB",rowID)
 			call ifEmptyByRowIdAssignFirst("PunkttypER",rowID)
 			call asignmentMethod("getByRowID","Anteckning",rowID)
 			call asignmentMethod("getFirst","FNR",0)
-			call appendToColumn("Anteckning"," (äldre:) " & dumpAllBut(rowId))
+			call appendToColumn("Anteckning"," (Ã¤ldre:) " & dumpAllBut(rowId))
 			
 								
 			readyToExecute = true
@@ -282,7 +282,7 @@ Sub Main()
 	close table bucketTable
 	
 	Y = Timer()-statTime 
-	Print Y & "(" & Y/begränsningsVariabel & ")"
+	Print Y & "(" & Y/begrÃ¤nsningsVariabel & ")"
 	
 exit sub
 	hasDupes3ANDnotreadyToExecute:
@@ -333,7 +333,7 @@ function countDupes(byVal fastighetsBet as string) as integer
 
 dim hasDupes,x as integer
 
-		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
+		select * from sammanfogadtabell where BesÃ¶ksadress_Huvudfastighet = FastighetsBet into urval
 		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
      		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
      			hasDupes = hasDupes + 1
@@ -443,11 +443,11 @@ end function
 
 sub assignFirstkontaktUpgifter()
 
-			call asignmentMethod("getFirst","Besöksadress_Adress",0)
-			call asignmentMethod("getFirst","Besöksadress_Postnr",0)
-			call asignmentMethod("getFirst","Besöksadress_Ort",0)
-			call asignmentMethod("getFirst","Verksamhetsutövare_Namn",0)
-			call asignmentMethod("getFirst","Verksamhetsutöv_Person_orgnr",0)
+			call asignmentMethod("getFirst","BesÃ¶ksadress_Adress",0)
+			call asignmentMethod("getFirst","BesÃ¶ksadress_Postnr",0)
+			call asignmentMethod("getFirst","BesÃ¶ksadress_Ort",0)
+			call asignmentMethod("getFirst","VerksamhetsutÃ¶vare_Namn",0)
+			call asignmentMethod("getFirst","VerksamhetsutÃ¶v_Person_orgnr",0)
 			call asignmentMethod("getFirst","Fakturamottagare_NAMN",0)
 			call asignmentMethod("getFirst","Fakturamottagare_Faktura_ADRESS",0)
 			call asignmentMethod("getFirst","Fakturamottagare_Faktura_POSTNR",0)
@@ -522,24 +522,24 @@ function columnsAsString(byVal rowIdX as integer) as string
 		select * from older where rowId = rowIdX into olderX
 		fetch first from olderX
 		
-		ColumnOFinterest(1) = "flik_Avloppsänlaggni_Boendetyp"
-		ColumnOFinterest(2) = "flik_Avloppsa_Avrinningsområde"
-		ColumnOFinterest(3) = "Anläggning_för_S_Anläggningstyp"
-		ColumnOFinterest(4) = "Anläggning_för_Slam_Toaletttyp"
-		ColumnOFinterest(5) = "AnlförEfterR_Anläggningstyp"
-		ColumnOFinterest(6) = "Anläggning_för_EfTR_Toaletttyp"
-		ColumnOFinterest(7) = "Anläggning_fö_SCertifieringstyp"
-		ColumnOFinterest(8) = "Anläggning_för_Slamav_Volym_m3"
-		ColumnOFinterest(9) = "flik_Avloppsanläg_Beslutsdatum"
+		ColumnOFinterest(1) = "flik_AvloppsÃ¤nlaggni_Boendetyp"
+		ColumnOFinterest(2) = "flik_Avloppsa_AvrinningsomrÃ¥de"
+		ColumnOFinterest(3) = "AnlÃ¤ggning_fÃ¶r_S_AnlÃ¤ggningstyp"
+		ColumnOFinterest(4) = "AnlÃ¤ggning_fÃ¶r_Slam_Toaletttyp"
+		ColumnOFinterest(5) = "AnlfÃ¶rEfterR_AnlÃ¤ggningstyp"
+		ColumnOFinterest(6) = "AnlÃ¤ggning_fÃ¶r_EfTR_Toaletttyp"
+		ColumnOFinterest(7) = "AnlÃ¤ggning_fÃ¶_SCertifieringstyp"
+		ColumnOFinterest(8) = "AnlÃ¤ggning_fÃ¶r_Slamav_Volym_m3"
+		ColumnOFinterest(9) = "flik_AvloppsanlÃ¤g_Beslutsdatum"
 		ColumnOFinterest(10) = "flik_Avloppsa_Besiktningsdatum"
-		ColumnOFinterest(11) = "flik_Avloppsanläggn_Byggnadsår"
+		ColumnOFinterest(11) = "flik_AvloppsanlÃ¤ggn_ByggnadsÃ¥r"
 		ColumnOFinterest(12) = "Fliken_Koordinater"
 		ColumnOFinterest(13) = "Inventeringsinformation_Status"
 		ColumnOFinterest(14) = "Inventeringsinformation_Datum"
-		ColumnOFinterest(15) = "Anl_för_EftR_TöInterv_mån"
+		ColumnOFinterest(15) = "Anl_fÃ¶r_EftR_TÃ¶Interv_mÃ¥n"
 		ColumnOFinterest(16) = "fliken_Fastigheter"
 		ColumnOFinterest(17) = "AnlF_efR_Koordinater_X_o_Y"
-		ColumnOFinterest(18) = "Anläggning_för_EfterföljRText"
+		ColumnOFinterest(18) = "AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText"
 		ColumnOFinterest(19) = "PunkttypAB"
 		ColumnOFinterest(20) = "PunkttypER"
 		ColumnOFinterest(21) = "Anteckning"
@@ -615,7 +615,7 @@ sub executeQuery(insertValues() as string)
 	end if
 		
 	
-	OnERRor goto BreddenFörFältetLiggerUtanförIn
+	OnERRor goto BreddenFÃ¶rFÃ¤ltetLiggerUtanfÃ¶rIn
 			if(not(kollaBredd(insertValues())))then
 				Error 666
 			end if			
@@ -623,7 +623,7 @@ sub executeQuery(insertValues() as string)
 	
 	OnERRor goto runCommandError
 		query =
-		"Insert Into ressult (Besöksadress_Huvudfastighet,Besöksadress_Adress,Besöksadress_Postnr,Besöksadress_Ort,Verksamhetsutövare_Namn,Verksamhetsutöv_Person_orgnr,Fakturamottagare_NAMN,Fakturamottagare_Faktura_ADRESS,Fakturamottagare_Faktura_POSTNR,Fakturamottagare_Faktura_POSTOR,flik_Avloppsänlaggni_Boendetyp,flik_Avloppsa_Avrinningsområde,Anläggning_för_S_Anläggningstyp,Anläggning_för_Slam_Toaletttyp,AnlförEfterR_Anläggningstyp,Anläggning_för_EfTR_Toaletttyp,Anläggning_fö_SCertifieringstyp,Anläggning_för_Slamav_Volym_m3,flik_Avloppsanläg_Beslutsdatum,flik_Avloppsa_Besiktningsdatum,flik_Avloppsanläggn_Byggnadsår,Fliken_Koordinater,PunkttypAB,Inventeringsinformation_Status,Inventeringsinformation_Datum,Anl_för_EftR_TöInterv_mån,fliken_Fastigheter,Anläggning_för_EfterföljRText,AnlF_efR_Koordinater_X_o_Y,PunkttypER,Anteckning,FNR) 				values ("
+		"Insert Into ressult (BesÃ¶ksadress_Huvudfastighet,BesÃ¶ksadress_Adress,BesÃ¶ksadress_Postnr,BesÃ¶ksadress_Ort,VerksamhetsutÃ¶vare_Namn,VerksamhetsutÃ¶v_Person_orgnr,Fakturamottagare_NAMN,Fakturamottagare_Faktura_ADRESS,Fakturamottagare_Faktura_POSTNR,Fakturamottagare_Faktura_POSTOR,flik_AvloppsÃ¤nlaggni_Boendetyp,flik_Avloppsa_AvrinningsomrÃ¥de,AnlÃ¤ggning_fÃ¶r_S_AnlÃ¤ggningstyp,AnlÃ¤ggning_fÃ¶r_Slam_Toaletttyp,AnlfÃ¶rEfterR_AnlÃ¤ggningstyp,AnlÃ¤ggning_fÃ¶r_EfTR_Toaletttyp,AnlÃ¤ggning_fÃ¶_SCertifieringstyp,AnlÃ¤ggning_fÃ¶r_Slamav_Volym_m3,flik_AvloppsanlÃ¤g_Beslutsdatum,flik_Avloppsa_Besiktningsdatum,flik_AvloppsanlÃ¤ggn_ByggnadsÃ¥r,Fliken_Koordinater,PunkttypAB,Inventeringsinformation_Status,Inventeringsinformation_Datum,Anl_fÃ¶r_EftR_TÃ¶Interv_mÃ¥n,fliken_Fastigheter,AnlÃ¤ggning_fÃ¶r_EfterfÃ¶ljRText,AnlF_efR_Koordinater_X_o_Y,PunkttypER,Anteckning,FNR) 				values ("
 		&
 		surroundWithQm()
 		run command query
@@ -638,9 +638,9 @@ runcommandError:
 	resume endSub
 
 
-breddenförfältetLiggerutanförin:
+breddenfÃ¶rfÃ¤ltetLiggerutanfÃ¶rin:
 	onError goto ErrorINerror
-			insert into errorTable (col1,col2) values (insertValues(1),"breddenförfältetLiggerutanförin"& Error$())
+			insert into errorTable (col1,col2) values (insertValues(1),"breddenfÃ¶rfÃ¤ltetLiggerutanfÃ¶rin"& Error$())
 			commit table errorTable
 			resume endSub
 
@@ -812,7 +812,7 @@ exit sub
 		print query &"]OccurencesAsArray["& Error$()
 end sub
 
-function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
+function getCOrd(byVal ColumnName as string) as string 'fÃ¶rvÃ¤ntar sig endast ett object av samma typ
 	
 	dim tempAlias as alias
 	tempAlias = ColumnName

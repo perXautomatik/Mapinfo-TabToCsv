@@ -1,13 +1,13 @@
-Include "MapBasic.def"
+ÔªøInclude "MapBasic.def"
 Include "tabellInsammlare.def"
 
-declare sub attemptSlowInsert(pÂPlatts() as string,v‰rde() as string,er as string)
+declare sub attemptSlowInsert(p√•Platts() as string,v√§rde() as string,er as string)
 
 Sub StepProgressRening
 	
-	dim Y,begr‰nsningsvariabel,statTime,i,tidsbegr‰nsning,tempInteger,currentId,x as integer,
+	dim Y,begr√§nsningsvariabel,statTime,i,tidsbegr√§nsning,tempInteger,currentId,x as integer,
 	avslutsvariabel as logical,
-	qM,tempString,query,pÂPlatts(),v‰rde(),anslutna() as string
+	qM,tempString,query,p√•Platts(),v√§rde(),anslutna() as string
 	
 	Fetch rec iProgress From reningIhopslagen	
 	
@@ -15,19 +15,19 @@ Sub StepProgressRening
 	
 	select * from reningIhopslagen where rowId = currentId into TableOfChoiseKir
 	
-	redim v‰rde(0)
-	redim pÂPlatts(0)
-	call DoRening(v‰rde,pÂPlatts)
+	redim v√§rde(0)
+	redim p√•Platts(0)
+	call DoRening(v√§rde,p√•Platts)
 	
 	reDim anslutna(0)
 	call getAnslutna(anslutna)
 		
 	for x = 1 to ubound(anslutna)
 		
-		call knyt_sColumn_TillRessultatTabellsColumn_(qM & anslutna(x) & qM,"Besˆksadress_Huvudfastighet",v‰rde,pÂPlatts)'sk‰let till buggen dÂ query blev l‰ngre och l‰ngre fˆr varje iteration
-		'hˆll pÂ till och med 592 om denna flyttas ut tillsammans med DoRening, kanske man inte behˆver redimma v‰rde eller pÂPlatts
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & anslutna(x) & qM,"Bes√∂ksadress_Huvudfastighet",v√§rde,p√•Platts)'sk√§let till buggen d√• query blev l√§ngre och l√§ngre f√∂r varje iteration
+		'h√∂ll p√• till och med 592 om denna flyttas ut tillsammans med DoRening, kanske man inte beh√∂ver redimma v√§rde eller p√•Platts
 	
-		query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(pÂPlatts) & ") Select " & arrayAsStringIgnoreEmpty(v‰rde) & " From TableOfChoiseKir DropIndex Auto"
+		query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(p√•Platts) & ") Select " & arrayAsStringIgnoreEmpty(v√§rde) & " From TableOfChoiseKir DropIndex Auto"
 		
 		onError goto queryError
 			run command query
@@ -58,12 +58,12 @@ End Sub
 
 sub doReningFirst()
 	dim starttime,endtime,totalTid as integer
-	dim tidsˆversikt,canceledString as string
+	dim tids√∂versikt,canceledString as string
 	
 	call CreateTableReningIhopslagen
 
 	call RunUnSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Mellersta.TAB")
-	call RunUnSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Sˆdra.TAB")
+	call RunUnSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_S√∂dra.TAB")
 	call RunUnSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Norra.TAB")	
 		
 	iProgress = 1
@@ -76,15 +76,15 @@ sub doReningFirst()
 	endTime = Timer()
 	
 	totalTid = endTime-startTime
-	tids÷versikt = totalTid & " | " & ((totalTid)/iProgress) & " sec/step"
-	canceledString = iProgress & "total: " & tids÷versikt
+	tids√ñversikt = totalTid & " | " & ((totalTid)/iProgress) & " sec/step"
+	canceledString = iProgress & "total: " & tids√ñversikt
 	
 	
 	If CommandInfo(CMD_INFO_STATUS) then
 		If iProgress <= iProgressRange then
 			Note "ended early, got to step: " & canceledString
 		Else
-			Note "Complete! total time: " & tids÷versikt
+			Note "Complete! total time: " & tids√ñversikt
 		End If
 	Else
 	      Note "cancel, got to step: " & canceledString
@@ -137,11 +137,11 @@ sub CreateTableReningIhopslagen
 	Create Table "reningIhopslagen" (
 	
 		Fastighet_rening Char(50),
-		Antal_hushÂll_rening Char(17),
+		Antal_hush√•ll_rening Char(17),
 		Reningstyp Char(15),
 		Storlek_m2 Float,
 		Beslut_datum Char(10),
-		Utfˆrd_datum Char(10),
+		Utf√∂rd_datum Char(10),
 		Kommentarer Char(254),
 		Anslutna_fastigheter_1 Char(34),
 		Anslutna_fastigheter_2 Char(50),
@@ -160,15 +160,15 @@ sub CreateTableReningIhopslagen
 	file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
 end sub
 
-sub DoRening(v‰rde() as string,pÂPlatts() as string)
+sub DoRening(v√§rde() as string,p√•Platts() as string)
 	dim qM as string
 	qM = chr$(34)
 	
-	call knyt_sColumn_TillRessultatTabellsColumn_("Reningstyp","AnlfˆrEfterR_Anl‰ggningstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Storlek_m2","Anl‰ggning_fˆr_EfTR_Toaletttyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Antal_hushÂll_rening","Anl_fˆr_EftR_TˆInterv_mÂn",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Beslut_datum","flik_Avloppsanl‰g_Beslutsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Utfˆrd_datum","flik_Avloppsa_Besiktningsdatum",v‰rde,pÂPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Reningstyp","Anlf√∂rEfterR_Anl√§ggningstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Storlek_m2","Anl√§ggning_f√∂r_EfTR_Toaletttyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Antal_hush√•ll_rening","Anl_f√∂r_EftR_T√∂Interv_m√•n",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Beslut_datum","flik_Avloppsanl√§g_Beslutsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Utf√∂rd_datum","flik_Avloppsa_Besiktningsdatum",v√§rde,p√•Platts)
 	call knyt_sColumn_TillRessultatTabellsColumn_(
 	"Fastighet_rening & " & qM & "," & qM & " & Anslutna_fastigheter_1 & " & qM & "," & qM & " & Anslutna_fastigheter_2 & " & qM & ","
 	 & qM & 
@@ -177,11 +177,11 @@ sub DoRening(v‰rde() as string,pÂPlatts() as string)
 	 " & Anslutna_fastigheter_6 & " & qM & "," & qM & " & Anslutna_fastigheter_7 & " & qM & "," & qM & " & Anslutna_fastigheter_8 & " & qM & "," 
 	 & qM &
 	 " & Anslutna_fastigheter_9 & " & qM & "," & qM & " & Anslutna_fastigheter_10"
-	 ,"fliken_Fastigheter",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Kommentarer","Anl‰ggning_fˆr_EfterfˆljRText",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterfˆljande rening"& qM,"PunkttypER",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Cor","AnlF_efR_Koordinater_X_o_Y",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("kir","ObjectNamn",v‰rde,pÂPlatts)
+	 ,"fliken_Fastigheter",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Kommentarer","Anl√§ggning_f√∂r_Efterf√∂ljRText",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterf√∂ljande rening"& qM,"PunkttypER",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Cor","AnlF_efR_Koordinater_X_o_Y",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("kir","ObjectNamn",v√§rde,p√•Platts)
 
 end sub
 
@@ -191,7 +191,7 @@ sub UNspatialPailing(tablePaths as string)
 
 	dim tableColumns, Query as string
 	dim x as integer
-	dim qM,tempstring,radEtt,radTvÂ as string
+	dim qM,tempstring,radEtt,radTv√• as string
 	qM = chr$(34)
 	
 	onerror goto NoObjectError

@@ -1,24 +1,24 @@
-Include "MapBasic.def"
+ÔªøInclude "MapBasic.def"
 
 Declare Sub Main
 declare sub insertToTable(byVal tablePath as string)
 declare function arrayAsStringIgnoreEmpty(tableX() as string) as string
 declare sub spatialPailing(tablePaths as string)
 declare sub UNspatialPailing(tablePaths as string)
-declare sub PivotablecolumnAssosiation(tableName as alias,v‰rde() as string,pÂPlatts() as string)
+declare sub PivotablecolumnAssosiation(tableName as alias,v√§rde() as string,p√•Platts() as string)
 'declare function columnIf(boolean as logical, trueVal as string,falseVal as string) as string
 declare sub genereraFastighetsYtaMedFastighetsAdress()
 declare sub createsammanfogadTabell()
-declare sub knyt_sColumn_TillRessultatTabellsColumn_(byVal pÂPosition as string,byVal MedV‰rde as string,v‰rde() as string,pÂPlatts() as string)
-declare sub PivotableDoEnskiljt(v‰rde() as string,pÂPlatts() as string)
-declare sub PivotableDoRening(v‰rde() as string,pÂPlatts() as string)
-declare sub PivotableDoSweref(v‰rde() as string,pÂPlatts() as string)
-declare sub DoEnskiljt(v‰rde() as string,pÂPlatts() as string)
-declare sub DoRening(v‰rde() as string,pÂPlatts() as string)
-declare sub DoSweref(v‰rde() as string,pÂPlatts() as string)
+declare sub knyt_sColumn_TillRessultatTabellsColumn_(byVal p√•Position as string,byVal MedV√§rde as string,v√§rde() as string,p√•Platts() as string)
+declare sub PivotableDoEnskiljt(v√§rde() as string,p√•Platts() as string)
+declare sub PivotableDoRening(v√§rde() as string,p√•Platts() as string)
+declare sub PivotableDoSweref(v√§rde() as string,p√•Platts() as string)
+declare sub DoEnskiljt(v√§rde() as string,p√•Platts() as string)
+declare sub DoRening(v√§rde() as string,p√•Platts() as string)
+declare sub DoSweref(v√§rde() as string,p√•Platts() as string)
 declare sub doReningFirst()
 declare sub doEnskiljtSecond()
-declare sub columnAssosiation(tableName as alias,v‰rde() as string,pÂPlatts() as string)
+declare sub columnAssosiation(tableName as alias,v√§rde() as string,p√•Platts() as string)
 declare sub getAnslutna(anslutan() as string)
 declare function getColumnsOfTable_asString(ByVal tableName as string) as string
 declare function tidsdialog(i as integer, y as integer,total as integer) as integer
@@ -53,11 +53,11 @@ Sub Main()
 	call createsammanfogadTabell()
 	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_mellersta.TAB")
 	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_norra.TAB")
-	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_sˆdra.TAB")
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_s√∂dra.TAB")
 	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Mellersta.TAB")
-	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Sˆdra.TAB")
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_S√∂dra.TAB")
 	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Norra.TAB")
-	'call InsertToTable("G:\sbf\Livsmiljˆ\Miljˆ- och h‰lsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB")
+	'call InsertToTable("G:\sbf\Livsmilj√∂\Milj√∂- och h√§lsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB")
 
 	call doReningFirst()
 	close table ReningIhopslagen
@@ -83,25 +83,25 @@ end sub
 
 sub doEnskijtSecond()
 
-	dim Y,begr‰nsningsvariabel,statTime,i,tidsbegr‰nsning,total as integer
+	dim Y,begr√§nsningsvariabel,statTime,i,tidsbegr√§nsning,total as integer
 	dim avslutsvariabel as logical
 	dim qM,tempString,query as string
 	statTime = Timer()
 	qM = chr$(34)
 	avslutsvariabel = false
-	tidsbegr‰nsning = Timer() +1
+	tidsbegr√§nsning = Timer() +1
 	
-	Create Table "EnskiljtIhopslagen" (Diarienummer Char(30),Fastighet_tillstÂnd Char(40),Typ_byggnad Char(15),Antal_hushÂll_tillstÂnd Char(17),Fastighet_rening Char(33),Typ_Slamavskiljare Char(15),Storlek_m3 Float,Typ_rening Char(15),Storlek_m2 Float,Typ_sluten_tank Char(8),Storlek__m3 Float,Beslut_datum Date,Utfˆrd_datum Date,Avgift Char(10),TillstÂnd_giltigt_tom Date,Anteckningar Char(254),KIR Char(40),ADRESS Char(105),POSTNR Char(9),POSTORT Char(105),FNR integer) 
+	Create Table "EnskiljtIhopslagen" (Diarienummer Char(30),Fastighet_tillst√•nd Char(40),Typ_byggnad Char(15),Antal_hush√•ll_tillst√•nd Char(17),Fastighet_rening Char(33),Typ_Slamavskiljare Char(15),Storlek_m3 Float,Typ_rening Char(15),Storlek_m2 Float,Typ_sluten_tank Char(8),Storlek__m3 Float,Beslut_datum Date,Utf√∂rd_datum Date,Avgift Char(10),Tillst√•nd_giltigt_tom Date,Anteckningar Char(254),KIR Char(40),ADRESS Char(105),POSTNR Char(9),POSTORT Char(105),FNR integer) 
 	file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
 	
 	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Mellersta.TAB")
-	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Sˆdra.TAB")
+	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_S√∂dra.TAB")
 	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Norra.TAB")
 	
 	total = tableInfo(EnskiljtIhopSlagen,8)
 	
-	select * from EnskiljtIhopSlagen where not(kir = any (select Besˆksadress_Huvudfastighet from sammanfogadTabell)) into noReningTabel
-	select * from EnskiljtIhopSlagen where kir = any(select Besˆksadress_Huvudfastighet from sammanfogadTabell) into HarReningTabel 
+	select * from EnskiljtIhopSlagen where not(kir = any (select Bes√∂ksadress_Huvudfastighet from sammanfogadTabell)) into noReningTabel
+	select * from EnskiljtIhopSlagen where kir = any(select Bes√∂ksadress_Huvudfastighet from sammanfogadTabell) into HarReningTabel 
 	
 	Fetch First From HarReningTabel 
 	Do Until EOT(HarReningTabel) or avslutsvariabel
@@ -117,9 +117,9 @@ sub doEnskijtSecond()
 	fetch next from EnskiljtIhopSlagen
 		
 		y = Timer()-statTime
-		if(Timer() > tidsbegr‰nsning) then
-			tidsbegr‰nsning = tidsDialog(i,y,total)
-			if(tidsbegr‰nsning = 0) then
+		if(Timer() > tidsbegr√§nsning) then
+			tidsbegr√§nsning = tidsDialog(i,y,total)
+			if(tidsbegr√§nsning = 0) then
 				avslutsvariabel = true
 			end if
 		end if		
@@ -158,15 +158,15 @@ end sub
 
 sub doReningFirst()
 
-	dim Y,begr‰nsningsvariabel,statTime,i,tidsbegr‰nsning,total as integer
+	dim Y,begr√§nsningsvariabel,statTime,i,tidsbegr√§nsning,total as integer
 	dim avslutsvariabel as logical
 	dim qM,tempString,query as string
 	statTime = Timer()
 	qM = chr$(34)
 	avslutsvariabel = false
-	tidsbegr‰nsning = Timer() +1
+	tidsbegr√§nsning = Timer() +1
 	
-	Create Table "reningIhopslagen" (Fastighet_rening Char(34),Antal_hushÂll_rening Char(17),Reningstyp Char(15),Storlek_m2 Float,Beslut_datum Char(10),Utfˆrd_datum Char(10),Kommentarer Char(254),Anslutna_fastigheter_1 Char(34),Anslutna_fastigheter_2 Char(50),Anslutna_fastigheter_3 Char(50),Anslutna_fastigheter_4 Char(50),Anslutna_fastigheter_5 Char(50),Anslutna_fastigheter_6 Char(50),Anslutna_fastigheter_7 Char(50),Anslutna_fastigheter_8 Char(50),Anslutna_fastigheter_9 Char(50),Anslutna_fastigheter_10 Char(50),Cor Char (30)) 
+	Create Table "reningIhopslagen" (Fastighet_rening Char(34),Antal_hush√•ll_rening Char(17),Reningstyp Char(15),Storlek_m2 Float,Beslut_datum Char(10),Utf√∂rd_datum Char(10),Kommentarer Char(254),Anslutna_fastigheter_1 Char(34),Anslutna_fastigheter_2 Char(50),Anslutna_fastigheter_3 Char(50),Anslutna_fastigheter_4 Char(50),Anslutna_fastigheter_5 Char(50),Anslutna_fastigheter_6 Char(50),Anslutna_fastigheter_7 Char(50),Anslutna_fastigheter_8 Char(50),Anslutna_fastigheter_9 Char(50),Anslutna_fastigheter_10 Char(50),Cor Char (30)) 
 	file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
 			
 	tempString = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Mellersta.TAB"
@@ -178,7 +178,7 @@ sub doReningFirst()
 	onError goto 0
 	close table tableOfChoise
 	
-	tempString = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Sˆdra.TAB"
+	tempString = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_S√∂dra.TAB"
 	call UNspatialPailing(tempString)	
 	onError goto ContinueError
 		run command query
@@ -207,24 +207,24 @@ sub doReningFirst()
 		call getAnslutna(anslutna)
 				
 		for x = 1 to ubound(anslutna)
-			dim pÂPlatts(),v‰rde() as string
+			dim p√•Platts(),v√§rde() as string
 			onError goto printError2	
 				
-			call DoRening(v‰rde,pÂPlatts)
+			call DoRening(v√§rde,p√•Platts)
 			onError goto 0
 			
-			call knyt_sColumn_TillRessultatTabellsColumn_(qM & anslutna(x) & qM,"Besˆksadress_Huvudfastighet",v‰rde,pÂPlatts)
+			call knyt_sColumn_TillRessultatTabellsColumn_(qM & anslutna(x) & qM,"Bes√∂ksadress_Huvudfastighet",v√§rde,p√•Platts)
 			
 			onError goto printError3
-				query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(pÂPlatts) & ") Select " & arrayAsStringIgnoreEmpty(v‰rde) & " From TableOfChoiseKir DropIndex Auto"
+				query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(p√•Platts) & ") Select " & arrayAsStringIgnoreEmpty(v√§rde) & " From TableOfChoiseKir DropIndex Auto"
 			onError goto 0
 			
 			onError goto printError
 				run command query
 			onError goto 0
 			
-			reDim pÂPlatts(0)
-			reDim v‰rde(0)
+			reDim p√•Platts(0)
+			reDim v√§rde(0)
 		next
 		
 		i = i +1
@@ -233,9 +233,9 @@ sub doReningFirst()
 		fetch next from reningIhopslagen
 		
 		y = Timer()-statTime
-		if(Timer() > tidsbegr‰nsning) then
-			tidsbegr‰nsning = tidsDialog(i,y,total)
-			if(tidsbegr‰nsning = 0) then
+		if(Timer() > tidsbegr√§nsning) then
+			tidsbegr√§nsning = tidsDialog(i,y,total)
+			if(tidsbegr√§nsning = 0) then
 				avslutsvariabel = true
 			end if
 		end if		
@@ -278,7 +278,7 @@ end sub
 
 function tidsdialog(i as integer, y as integer,total as integer) as integer
 	dim textTemp as string
-	dim tidsbegr‰nsning,number as integer
+	dim tidsbegr√§nsning,number as integer
 	
 	number = Y/i
 	Set Format Number "local"
@@ -287,7 +287,7 @@ function tidsdialog(i as integer, y as integer,total as integer) as integer
 	Dialog
 		control statictext title textTemp
 		
-		Control EditText into tidsbegr‰nsning value 60
+		Control EditText into tidsbegr√§nsning value 60
 		
 		Control OKButton
 		Control Cancelbutton
@@ -296,30 +296,30 @@ function tidsdialog(i as integer, y as integer,total as integer) as integer
 			tidsdialog = 0
 			Exit Sub
 		else
-			tidsdialog = Timer() + tidsbegr‰nsning
+			tidsdialog = Timer() + tidsbegr√§nsning
 		end if
 
 end function
 
-sub columnAssosiation(tableName as alias,v‰rde() as string,pÂPlatts() as string)
-	do case TableInfo(tableName, 4)'beroende pÂ hur mÂnga kolumner
+sub columnAssosiation(tableName as alias,v√§rde() as string,p√•Platts() as string)
+	do case TableInfo(tableName, 4)'beroende p√• hur m√•nga kolumner
 		case 10 'sweref			
-			call DoSweref(v‰rde,pÂPlatts)
+			call DoSweref(v√§rde,p√•Platts)
 		case 17  'rening
-			call DoRening(v‰rde,pÂPlatts)
+			call DoRening(v√§rde,p√•Platts)
 		case 16  'enskiljt
-			call DoEnskiljt(v‰rde,pÂPlatts)
+			call DoEnskiljt(v√§rde,p√•Platts)
 		end case
 end sub
 
-sub PivotablecolumnAssosiation(tableName as alias,v‰rde() as string,pÂPlatts() as string)
-	do case TableInfo(tableName, 4)'beroende pÂ hur mÂnga kolumner
+sub PivotablecolumnAssosiation(tableName as alias,v√§rde() as string,p√•Platts() as string)
+	do case TableInfo(tableName, 4)'beroende p√• hur m√•nga kolumner
 		case 10 'sweref			
-			call PivotableDoSweref(v‰rde,pÂPlatts)
+			call PivotableDoSweref(v√§rde,p√•Platts)
 		case 17  'rening
-			call PivotableDoRening(v‰rde,pÂPlatts)
+			call PivotableDoRening(v√§rde,p√•Platts)
 		case 16  'enskiljt
-			call PivotableDoEnskiljt(v‰rde,pÂPlatts)
+			call PivotableDoEnskiljt(v√§rde,p√•Platts)
 		end case
 end sub
 
@@ -327,85 +327,85 @@ sub createsammanfogadTabell()
 
 Create Table "sammanfogadTabell" (
 Anteckning Char(254),
-Besˆksadress_Huvudfastighet Char(50),
-Besˆksadress_Adress Char(50),
-Besˆksadress_Postnr Char(10),
-Besˆksadress_Ort Char(30),
-Verksamhetsutˆvare_Namn Char(40),
-Verksamhetsutˆv_Person_orgnr Char(20),
+Bes√∂ksadress_Huvudfastighet Char(50),
+Bes√∂ksadress_Adress Char(50),
+Bes√∂ksadress_Postnr Char(10),
+Bes√∂ksadress_Ort Char(30),
+Verksamhetsut√∂vare_Namn Char(40),
+Verksamhetsut√∂v_Person_orgnr Char(20),
 Fakturamottagare_NAMN Char(40),
 Fakturamottagare_Faktura_ADRESS Char(50),
 Fakturamottagare_Faktura_POSTNR Char(10),
 Fakturamottagare_Faktura_POSTOR Char(30),
-flik_Avlopps‰nlaggni_Boendetyp Char(10),
-flik_Avloppsa_AvrinningsomrÂde Char(5),
-Anl‰ggning_fˆr_S_Anl‰ggningstyp Char(10),
-Anl‰ggning_fˆr_Slam_Toaletttyp Char(10),
-AnlfˆrEfterR_Anl‰ggningstyp Char(10),
-Anl‰ggning_fˆr_EfTR_Toaletttyp Char(10),
-Anl‰ggning_fˆ_SCertifieringstyp Char(10),
-Anl‰ggning_fˆr_Slamav_Volym_m3 Char(10),
-flik_Avloppsanl‰g_Beslutsdatum Date,
+flik_Avlopps√§nlaggni_Boendetyp Char(10),
+flik_Avloppsa_Avrinningsomr√•de Char(5),
+Anl√§ggning_f√∂r_S_Anl√§ggningstyp Char(10),
+Anl√§ggning_f√∂r_Slam_Toaletttyp Char(10),
+Anlf√∂rEfterR_Anl√§ggningstyp Char(10),
+Anl√§ggning_f√∂r_EfTR_Toaletttyp Char(10),
+Anl√§ggning_f√∂_SCertifieringstyp Char(10),
+Anl√§ggning_f√∂r_Slamav_Volym_m3 Char(10),
+flik_Avloppsanl√§g_Beslutsdatum Date,
 flik_Avloppsa_Besiktningsdatum Date,
-flik_Avloppsanl‰ggn_ByggnadsÂr Date,
+flik_Avloppsanl√§ggn_Byggnads√•r Date,
 Fliken_Koordinater Char(30),
 PunkttypAB Char(30),
 Inventeringsinformation_Status Char(10),
 Inventeringsinformation_Datum Date,
-Anl_fˆr_EftR_TˆInterv_mÂn Char(10),
+Anl_f√∂r_EftR_T√∂Interv_m√•n Char(10),
 fliken_Fastigheter Char(254),
-Anl‰ggning_fˆr_EfterfˆljRText Char(254),
+Anl√§ggning_f√∂r_Efterf√∂ljRText Char(254),
 AnlF_efR_Koordinater_X_o_Y Char(30),
 PunkttypER Char(30),
 FNR integer,
 ObjectNamn Char(50)
-) file "H:\mina grejer\att gˆra\h‰ljpa sara swart\slÂ samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\sammanfogadTabell.TAB" TYPE NATIVE Charset "WindowsLatin1"
+) file "H:\mina grejer\att g√∂ra\h√§ljpa sara swart\sl√• samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\sammanfogadTabell.TAB" TYPE NATIVE Charset "WindowsLatin1"
 Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
 end sub
 
-sub DoSweref(v‰rde() as string,pÂPlatts() as string)
+sub DoSweref(v√§rde() as string,p√•Platts() as string)
 	dim qM as string
 	qM = chr$(34)
 	
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col3 & " & qM & "] " & qM & " & Col7","Anteckning",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Besˆksadress_Huvudfastighet",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsanl‰g_Beslutsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","flik_Avloppsa_Besiktningsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Inventeringsinformation_Status",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Inventeringsinformation_Datum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","Besˆksadress_Adress",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","Besˆksadress_Postnr",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col14","Besˆksadress_Ort",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","FNR",v‰rde,pÂPlatts)	
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col3 & " & qM & "] " & qM & " & Col7","Anteckning",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Bes√∂ksadress_Huvudfastighet",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsanl√§g_Beslutsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","flik_Avloppsa_Besiktningsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Inventeringsinformation_Status",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Inventeringsinformation_Datum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","Bes√∂ksadress_Adress",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","Bes√∂ksadress_Postnr",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col14","Bes√∂ksadress_Ort",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","FNR",v√§rde,p√•Platts)	
 
 end sub
 
-sub PivotableDoSweref(v‰rde() as string,pÂPlatts() as string)
+sub PivotableDoSweref(v√§rde() as string,p√•Platts() as string)
 	dim qM as string
 	qM = chr$(34)
 	
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col3 & " & qM & "] " & qM & " & Col7","Anteckning",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Besˆksadress_Huvudfastighet",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsanl‰g_Beslutsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","flik_Avloppsa_Besiktningsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Inventeringsinformation_Status",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Inventeringsinformation_Datum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","Besˆksadress_Adress",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","Besˆksadress_Postnr",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col14","Besˆksadress_Ort",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","FNR",v‰rde,pÂPlatts)	
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col3 & " & qM & "] " & qM & " & Col7","Anteckning",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Bes√∂ksadress_Huvudfastighet",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsanl√§g_Beslutsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","flik_Avloppsa_Besiktningsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Inventeringsinformation_Status",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Inventeringsinformation_Datum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","Bes√∂ksadress_Adress",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","Bes√∂ksadress_Postnr",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col14","Bes√∂ksadress_Ort",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","FNR",v√§rde,p√•Platts)	
 
 end sub
 
-sub DoRening(v‰rde() as string,pÂPlatts() as string)
+sub DoRening(v√§rde() as string,p√•Platts() as string)
 	dim qM as string
 	qM = chr$(34)
 	
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","AnlfˆrEfterR_Anl‰ggningstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","Anl‰ggning_fˆr_EfTR_Toaletttyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col2","Anl_fˆr_EftR_TˆInterv_mÂn",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col5","flik_Avloppsanl‰g_Beslutsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col6","flik_Avloppsa_Besiktningsdatum",v‰rde,pÂPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","Anlf√∂rEfterR_Anl√§ggningstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","Anl√§ggning_f√∂r_EfTR_Toaletttyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col2","Anl_f√∂r_EftR_T√∂Interv_m√•n",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col5","flik_Avloppsanl√§g_Beslutsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col6","flik_Avloppsa_Besiktningsdatum",v√§rde,p√•Platts)
 	call knyt_sColumn_TillRessultatTabellsColumn_(
 	"Col1 & " & qM & "," & qM & " & Col8 & " & qM & "," & qM & " & Col9 & " & qM & ","
 	 & qM & 
@@ -414,85 +414,85 @@ sub DoRening(v‰rde() as string,pÂPlatts() as string)
 	 " & Col13 & " & qM & "," & qM & " & Col14 & " & qM & "," & qM & " & Col15 & " & qM & "," 
 	 & qM &
 	 " & Col16"
-	 ,"fliken_Fastigheter",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl‰ggning_fˆr_EfterfˆljRText",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterfˆljande rening"& qM,"PunkttypER",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col18","AnlF_efR_Koordinater_X_o_Y",v‰rde,pÂPlatts)
+	 ,"fliken_Fastigheter",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl√§ggning_f√∂r_Efterf√∂ljRText",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterf√∂ljande rening"& qM,"PunkttypER",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col18","AnlF_efR_Koordinater_X_o_Y",v√§rde,p√•Platts)
 
 end sub
 
-sub PivotableDoRening(v‰rde() as string,pÂPlatts() as string)
+sub PivotableDoRening(v√§rde() as string,p√•Platts() as string)
 	dim qM as string
 	qM = chr$(34)
 	
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col19","Besˆksadress_Huvudfastighet",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","AnlfˆrEfterR_Anl‰ggningstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","Anl‰ggning_fˆr_EfTR_Toaletttyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col2","Anl_fˆr_EftR_TˆInterv_mÂn",v‰rde,pÂPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col19","Bes√∂ksadress_Huvudfastighet",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","Anlf√∂rEfterR_Anl√§ggningstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","Anl√§ggning_f√∂r_EfTR_Toaletttyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col2","Anl_f√∂r_EftR_T√∂Interv_m√•n",v√§rde,p√•Platts)
 	call knyt_sColumn_TillRessultatTabellsColumn_("Col1 & " & qM & "," & qM & " & Col8 & " & qM & "," & qM & " & Col9 & " & qM & ","	
 	 & qM & " & Col10 & " & qM & "," & qM & " & Col11 & " & qM & "," & qM & " & Col12 & " & qM & ","	
-	 & qM & " & Col13 & " & qM & "," & qM & " & Col14 & " & qM & "," & qM & " & Col15 & " & qM & "," & qM & " & Col16","fliken_Fastigheter",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl‰ggning_fˆr_EfterfˆljRText",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterfˆljande rening"& qM,"PunkttypER",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col18","AnlF_efR_Koordinater_X_o_Y",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besˆksadress_Adress",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besˆksadress_Postnr",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col22","Besˆksadress_Ort",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col23","FNR",v‰rde,pÂPlatts)
+	 & qM & " & Col13 & " & qM & "," & qM & " & Col14 & " & qM & "," & qM & " & Col15 & " & qM & "," & qM & " & Col16","fliken_Fastigheter",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl√§ggning_f√∂r_Efterf√∂ljRText",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterf√∂ljande rening"& qM,"PunkttypER",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col18","AnlF_efR_Koordinater_X_o_Y",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Bes√∂ksadress_Adress",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Bes√∂ksadress_Postnr",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col22","Bes√∂ksadress_Ort",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col23","FNR",v√§rde,p√•Platts)
 
 end sub
 
-sub DoEnskiljt(v‰rde() as string,pÂPlatts() as string)
+sub DoEnskiljt(v√§rde() as string,p√•Platts() as string)
 	dim qM as string
 	qM = chr$(34)
 	
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besˆksadress_Huvudfastighet",v‰rde,pÂPlatts)'kir
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avlopps‰nlaggni_Boendetyp",v‰rde,pÂPlatts)'typ_byggnad
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_AvrinningsomrÂde",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anl‰ggning_fˆr_S_Anl‰ggningstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl‰ggning_fˆr_Slam_Toaletttyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlfˆrEfterR_Anl‰ggningstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anl‰ggning_fˆr_EfTR_Toaletttyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anl‰ggning_fˆ_SCertifieringstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anl‰ggning_fˆr_Slamav_Volym_m3",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanl‰g_Beslutsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanl‰ggn_ByggnadsÂr",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anl‰ggning_fˆr_EfterfˆljRText",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besˆksadress_Adress",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besˆksadress_Postnr",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besˆksadress_Ort",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",v‰rde,pÂPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col18","Bes√∂ksadress_Huvudfastighet",v√§rde,p√•Platts)'kir
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avlopps√§nlaggni_Boendetyp",v√§rde,p√•Platts)'typ_byggnad
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsomr√•de",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anl√§ggning_f√∂r_S_Anl√§ggningstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl√§ggning_f√∂r_Slam_Toaletttyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","Anlf√∂rEfterR_Anl√§ggningstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anl√§ggning_f√∂r_EfTR_Toaletttyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anl√§ggning_f√∂_SCertifieringstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anl√§ggning_f√∂r_Slamav_Volym_m3",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanl√§g_Beslutsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanl√§ggn_Byggnads√•r",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anl√§ggning_f√∂r_Efterf√∂ljRText",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col19","Bes√∂ksadress_Adress",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Bes√∂ksadress_Postnr",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Bes√∂ksadress_Ort",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",v√§rde,p√•Platts)
 
 end sub
 
-sub PivotableDoEnskiljt(v‰rde() as string,pÂPlatts() as string)
+sub PivotableDoEnskiljt(v√§rde() as string,p√•Platts() as string)
 	dim qM as string
 	qM = chr$(34)
 	
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besˆksadress_Huvudfastighet",v‰rde,pÂPlatts)'kir
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avlopps‰nlaggni_Boendetyp",v‰rde,pÂPlatts)'typ_byggnad
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_AvrinningsomrÂde",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anl‰ggning_fˆr_S_Anl‰ggningstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl‰ggning_fˆr_Slam_Toaletttyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlfˆrEfterR_Anl‰ggningstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anl‰ggning_fˆr_EfTR_Toaletttyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anl‰ggning_fˆ_SCertifieringstyp",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anl‰ggning_fˆr_Slamav_Volym_m3",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanl‰g_Beslutsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanl‰ggn_ByggnadsÂr",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anl‰ggning_fˆr_EfterfˆljRText",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besˆksadress_Adress",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besˆksadress_Postnr",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besˆksadress_Ort",v‰rde,pÂPlatts)
-	call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",v‰rde,pÂPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col18","Bes√∂ksadress_Huvudfastighet",v√§rde,p√•Platts)'kir
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avlopps√§nlaggni_Boendetyp",v√§rde,p√•Platts)'typ_byggnad
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsomr√•de",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anl√§ggning_f√∂r_S_Anl√§ggningstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl√§ggning_f√∂r_Slam_Toaletttyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","Anlf√∂rEfterR_Anl√§ggningstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anl√§ggning_f√∂r_EfTR_Toaletttyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anl√§ggning_f√∂_SCertifieringstyp",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anl√§ggning_f√∂r_Slamav_Volym_m3",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanl√§g_Beslutsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanl√§ggn_Byggnads√•r",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anl√§ggning_f√∂r_Efterf√∂ljRText",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col19","Bes√∂ksadress_Adress",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Bes√∂ksadress_Postnr",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Bes√∂ksadress_Ort",v√§rde,p√•Platts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",v√§rde,p√•Platts)
 
 end sub
 
@@ -501,7 +501,7 @@ sub genereraFastighetsYtaMedFastighetsAdress()
 dim tempPath as string
 tempPath = TempFileName$("")
 
-Open Table "K:\KARTOR\LANTMƒTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB" as fastighet_ytaORg Interactive
+Open Table "K:\KARTOR\LANTM√ÑTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB" as fastighet_ytaORg Interactive
 Open Table "K:\KARTOR\SOLEN_PUNKTER\Adresspunkter.TAB" Interactive
 
 Select Fastighet_ytaOrg.KIR ,Adresspunkter.ADRESS , Adresspunkter.POSTORT , Adresspunkter .POSTNR,Fastighet_ytaORg.FNR From Fastighet_ytaOrg,Adresspunkter where Adresspunkter . FNR = Fastighet_ytaORg . FNR into temp 
@@ -518,7 +518,7 @@ sub spatialPailing(tablePaths as string)
 	
 	dim tableColumns, Query as string
 	dim x as integer
-	dim qM,tempstring,radEtt,radTvÂ as string
+	dim qM,tempstring,radEtt,radTv√• as string
 	qM = chr$(34)
 	
 	onerror goto NoObjectError	
@@ -556,7 +556,7 @@ sub UNspatialPailing(tablePaths as string)
 
 	dim tableColumns, Query as string
 	dim x as integer
-	dim qM,tempstring,radEtt,radTvÂ as string
+	dim qM,tempstring,radEtt,radTv√• as string
 	qM = chr$(34)
 	
 	onerror goto NoObjectError
@@ -609,15 +609,15 @@ function getColumnsOfTable_asString(ByVal tableName as string) as string
 end function
 
 sub insertToTable(byVal tablePaths as string)
-	dim qM,pÂPlatts(1),v‰rde(1),Query as string
+	dim qM,p√•Platts(1),v√§rde(1),Query as string
 	qM = chr$(34)
 
 	call SpatialPailing(tablePaths)
 	dim tempAlias as alias
 	tempAlias = "TableOfChoise"
-	call PivotablecolumnAssosiation(tempAlias,V‰rde(),pÂPlatts())
+	call PivotablecolumnAssosiation(tempAlias,V√§rde(),p√•Platts())
 			
-	query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(pÂPlatts) & ") Select " & arrayAsStringIgnoreEmpty(v‰rde) & " From TableOfChoiseKir DropIndex Auto"
+	query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(p√•Platts) & ") Select " & arrayAsStringIgnoreEmpty(v√§rde) & " From TableOfChoiseKir DropIndex Auto"
 	
 	onError goto printError
 		run command query
@@ -633,16 +633,16 @@ printError:
 	
 End Sub
 
-sub knyt_sColumn_TillRessultatTabellsColumn_(byVal MedV‰rde as string,byVal pÂPosition as string,v‰rde() as string,pÂPlatts() as string)
+sub knyt_sColumn_TillRessultatTabellsColumn_(byVal MedV√§rde as string,byVal p√•Position as string,v√§rde() as string,p√•Platts() as string)
 	
 	dim posx as integer
-	posx = ubound(v‰rde)+1
+	posx = ubound(v√§rde)+1
 	
-	redim v‰rde(posx)
-	redim pÂPlatts(posx)
+	redim v√§rde(posx)
+	redim p√•Platts(posx)
 	
-	v‰rde(posx)= MedV‰rde
-	pÂPlatts(posx) = pÂPosition
+	v√§rde(posx)= MedV√§rde
+	p√•Platts(posx) = p√•Position
 
 end sub
 

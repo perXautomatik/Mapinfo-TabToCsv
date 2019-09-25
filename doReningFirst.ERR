@@ -1,0 +1,7 @@
+(doreningfirst.mb:20) Invalid Sub procedure name: DoRening. 
+(doreningfirst.mb:39) Variable iProgress not defined. 
+(doreningfirst.mb:65) Invalid Sub procedure name: CreateTableReningIhopslagen. 
+(doreningfirst.mb:69) Variable iProgress not defined. 
+(doreningfirst.mb:137) No prototype declared for Sub procedure or Function CreateTableReningIhopslagen. 
+(doreningfirst.mb:163) No prototype declared for Sub procedure or Function DoRening. 
+(doreningfirst.mb:164) Sub procedure or Function DoRening does not match Declare. 

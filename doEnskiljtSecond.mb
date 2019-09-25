@@ -1,4 +1,4 @@
-Include "MapBasic.def"
+﻿Include "MapBasic.def"
 Include "tabellInsammlare.def"
 
 
@@ -6,9 +6,9 @@ sub CreateTableEnskiljtIhopslagen
 	Create Table "EnskiljtIhopslagen" (
 	
 		Diarienummer Char(30),
-		Fastighet_tillst�nd Char(40),
+		Fastighet_tillstånd Char(40),
 		Typ_byggnad Char(15),
-		Antal_hush�ll_tillst�nd Char(17),
+		Antal_hushåll_tillstånd Char(17),
 		Fastighet_rening Char(33),
 		Typ_Slamavskiljare Char(15),
 		Storlek_m3 Float,
@@ -17,9 +17,9 @@ sub CreateTableEnskiljtIhopslagen
 		Typ_sluten_tank Char(8),
 		Storlek__m3 Float,
 		Beslut_datum Date,
-		Utf�rd_datum Date,
+		Utförd_datum Date,
 		Avgift Char(10),
-		Tillst�nd_giltigt_tom Date,
+		Tillstånd_giltigt_tom Date,
 		Anteckningar Char(254),
 		
 		Cor Char (30),
@@ -35,23 +35,23 @@ End Sub
 
 sub doEnskiljtSecond()
 
-	dim Y,begr�nsningsvariabel,statTime,i,tidsbegr�nsning,total as integer,
+	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,total as integer,
 	avslutsvariabel as logical,
-	qM,tempString,query,v�rde(), p�Platts(),kir as string
+	qM,tempString,query,värde(), påPlatts(),kir as string
 	
 	statTime = Timer()
 	qM = chr$(34)
 	avslutsvariabel = false
-	tidsbegr�nsning = Timer() +1
+	tidsbegränsning = Timer() +1
 	i = 0
 	
 	call CreateTableEnskiljtIhopslagen
 	
 	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Mellersta.TAB")
-	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_S�dra.TAB")
+	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Södra.TAB")
 	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Norra.TAB")
 		
-	query = "select * from EnskiljtIhopSlagen where kir = any(select Bes�ksadress_Huvudfastighet from sammanfogadTabell) into HarReningTabel"	
+	query = "select * from EnskiljtIhopSlagen where kir = any(select Besöksadress_Huvudfastighet from sammanfogadTabell) into HarReningTabel"	
 	run command query
 	
 	total = tableInfo(HarReningTabel,8)
@@ -67,9 +67,9 @@ sub doEnskiljtSecond()
 		rowIdX = HarReningTabel.rowId
 	
 		y = Timer()-statTime
-		if(Timer() > tidsbegr�nsning) then
-			tidsbegr�nsning = tidsDialog(i,y,total)
-			if(tidsbegr�nsning = 0) then
+		if(Timer() > tidsbegränsning) then
+			tidsbegränsning = tidsDialog(i,y,total)
+			if(tidsbegränsning = 0) then
 				avslutsvariabel = true
 			end if
 		end if		
@@ -79,19 +79,19 @@ sub doEnskiljtSecond()
 			select * from HarReningTabel where rowId = rowIdX into nuvarandeRad
 				
 			t1 = nuvarandeRad.beslut_datum 
-			t2 = nuvarandeRad.utf�rd_Datum	
+			t2 = nuvarandeRad.utförd_Datum	
 			kir = nuvarandeRad.kir
 			
-			call doEnskiljt(v�rde,p�PLatts)
+			call doEnskiljt(värde,påPLatts)
 			
-			select * from sammanfogadTabell where flik_Avloppsanl�g_Beslutsdatum=t1 AND flik_Avloppsa_Besiktningsdatum=t2 AND kir=Bes�ksadress_Huvudfastighet into sammanfogadTabellMatch
+			select * from sammanfogadTabell where flik_Avloppsanläg_Beslutsdatum=t1 AND flik_Avloppsa_Besiktningsdatum=t2 AND kir=Besöksadress_Huvudfastighet into sammanfogadTabellMatch
 		onError goto 0
 		
 		if(tableInfo(sammanfogadTabellMatch,8) > 0) then
 			
-			for x = 1 to ubound(p�Platts)
+			for x = 1 to ubound(påPlatts)
 				onError goto queryError
-					query = "Add Column " & qM & sammanfogadTabellMatch & qM & " (" & p�Platts(x) & ") "  & "From nuvarandeRad Set To " & v�rde(x) & " where flik_Avloppsanl�g_Beslutsdatum=beslut_datum"
+					query = "Add Column " & qM & sammanfogadTabellMatch & qM & " (" & påPlatts(x) & ") "  & "From nuvarandeRad Set To " & värde(x) & " where flik_Avloppsanläg_Beslutsdatum=beslut_datum"
 					run command query
 				onError goto 0
 			next
@@ -99,15 +99,15 @@ sub doEnskiljtSecond()
 
 		end if
 		
-		redim v�rde(0)
-		redim p�Platts(0)
+		redim värde(0)
+		redim påPlatts(0)
 		
 		i = i+1
 		
 	fetch next from HarReningTabel		
 	loop
 		
-	select * from EnskiljtIhopSlagen where not(kir = any (select Bes�ksadress_Huvudfastighet from sammanfogadTabell)) into noReningTabel
+	select * from EnskiljtIhopSlagen where not(kir = any (select Besöksadress_Huvudfastighet from sammanfogadTabell)) into noReningTabel
 		
 exit sub
 
@@ -176,32 +176,32 @@ exit sub
 end sub
 
 
-sub DoEnskiljt(v�rde() as string,p�Platts() as string)
+sub DoEnskiljt(värde() as string,påPlatts() as string)
 	dim qM as string
 	qM = chr$(34)
 
 
 	onError goto knytningsFel
-		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col18","Bes�ksadress_Huvudfastighet",v�rde,p�Platts)'kir
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avlopps�nlaggni_Boendetyp",v�rde,p�Platts)'typ_byggnad
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsomr�de",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anl�ggning_f�r_S_Anl�ggningstyp",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anl�ggning_f�r_Slam_Toaletttyp",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col8","Anlf�rEfterR_Anl�ggningstyp",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anl�ggning_f�r_EfTR_Toaletttyp",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anl�ggning_f�_SCertifieringstyp",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anl�ggning_f�r_Slamav_Volym_m3",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanl�g_Beslutsdatum",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanl�ggn_Byggnads�r",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anl�ggning_f�r_Efterf�ljRText",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col19","Bes�ksadress_Adress",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col20","Bes�ksadress_Postnr",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col21","Bes�ksadress_Ort",v�rde,p�Platts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",v�rde,p�Platts)
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besöksadress_Huvudfastighet",värde,påPlatts)'kir
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avloppsänlaggni_Boendetyp",värde,påPlatts)'typ_byggnad
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsområde",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anläggning_för_S_Anläggningstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_Slam_Toaletttyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anläggning_fö_SCertifieringstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anläggning_för_Slamav_Volym_m3",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanläggn_Byggnadsår",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anläggning_för_EfterföljRText",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besöksadress_Adress",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besöksadress_Postnr",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besöksadress_Ort",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",värde,påPlatts)
 	onError goto 0
 
 exit sub

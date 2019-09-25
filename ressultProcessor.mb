@@ -1,4 +1,4 @@
-Include "MapBasic.def"
+ÔªøInclude "MapBasic.def"
 Include "tabellInsammlare.def"
 include "Menu.def"
 
@@ -15,7 +15,7 @@ sub ressultProcessor()
 End Sub
 
 sub actOnRessultTables()
-	dim v‰rde(),pÂPlatts(),insertinto,fromTable,tempstring,query,condition,compositeString as string
+	dim v√§rde(),p√•Platts(),insertinto,fromTable,tempstring,query,condition,compositeString as string
 	,tempboolean as logical
 	
 	tablenames(1) = "ErrorTable"
@@ -49,43 +49,43 @@ sub actOnRessultTables()
 		tempstring= tempstring & "sammanfogadTabell.TAB"
 		call createSammanfogadTabell(tempstring)
 	case 12
-		redim v‰rde(0)
-		redim pÂPlatts(0)
-		call knytEnskiljt(v‰rde,pÂPlatts)
-		call sqlPopulateTableWithTable(v‰rde,pÂPlatts,"sammanfogadTabell","harInteRening")
+		redim v√§rde(0)
+		redim p√•Platts(0)
+		call knytEnskiljt(v√§rde,p√•Platts)
+		call sqlPopulateTableWithTable(v√§rde,p√•Platts,"sammanfogadTabell","harInteRening")
 	case 13
 		call assignObjectName()
 	case 14
-		redim v‰rde(0)
-		redim pÂPlatts(0)
-		call knytsamTillSam(v‰rde,pÂPlatts)
-		call sqlPopulateTableWithTable(v‰rde,pÂPlatts,"sammanfogadTabell","harInteBeslut")
+		redim v√§rde(0)
+		redim p√•Platts(0)
+		call knytsamTillSam(v√§rde,p√•Platts)
+		call sqlPopulateTableWithTable(v√§rde,p√•Platts,"sammanfogadTabell","harInteBeslut")
 	case 15
-		redim v‰rde(0)
-		redim pÂPlatts(0)
-		call knytsamTillSam(v‰rde,pÂPlatts)
-		call sqlPopulateTableWithTable(v‰rde,pÂPlatts,"sammanfogadTabell","harRening")
+		redim v√§rde(0)
+		redim p√•Platts(0)
+		call knytsamTillSam(v√§rde,p√•Platts)
+		call sqlPopulateTableWithTable(v√§rde,p√•Platts,"sammanfogadTabell","harRening")
 	case 16
 		call updateObjectNames
 	case 17
 		call openSingleTable("Fastighet_yta")
 	case 18	
-		tempstring = "G:\sbf\Livsmiljˆ\Miljˆ- och h‰lsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB"
+		tempstring = "G:\sbf\Livsmilj√∂\Milj√∂- och h√§lsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB"
 		call SpatialPailing(tempstring)
-		call gˆrTillBasTabell("tableOfChoiseKir")
+		call g√∂rTillBasTabell("tableOfChoiseKir")
 	case 19	
-		redim v‰rde(0)
-		redim pÂPlatts(0)
-		dim kortV‰rde(),kortPÂPlatts() as string
+		redim v√§rde(0)
+		redim p√•Platts(0)
+		dim kortV√§rde(),kortP√•Platts() as string
 		qM = chr$(34)	
 		
-		call knytSweref(V‰rde(),pÂPlatts())
-		condition = "tableOfChoiseKir.kir = sammanfogadTabell.besˆksadress_huvudfastighet"
+		call knytSweref(V√§rde(),p√•Platts())
+		condition = "tableOfChoiseKir.kir = sammanfogadTabell.bes√∂ksadress_huvudfastighet"
 		compositeString = qm & "["& qm & " & tableOfChoiseKir.Col3 & " & qm & "] " & qm & " & tableOfChoiseKir.Col7 "
 		tempBoolean = true
-		call removeAtIndex(v‰rde,1,kortV‰rde)
-		call removeAtIndex(pÂPlatts,1,kortpÂPlatts)
-		call mergeTables(kortv‰rde,kortpÂPlatts,"sammanfogadTabell","tableOfChoiseKir",condition,"mergedWithSweref",tempBoolean, compositeString)
+		call removeAtIndex(v√§rde,1,kortV√§rde)
+		call removeAtIndex(p√•Platts,1,kortp√•Platts)
+		call mergeTables(kortv√§rde,kortp√•Platts,"sammanfogadTabell","tableOfChoiseKir",condition,"mergedWithSweref",tempBoolean, compositeString)
 	case 20
 		Run Menu Command 311 'aka 311 in the Menu.def
 		Commit Table Selection As applicationDirectory$() & "utanSweref.TAB" TYPE NATIVE Charset "WindowsLatin1" Interactive
@@ -112,7 +112,7 @@ end sub
 
 sub assignObjectName
 
-Update sammanfogadTabell Set ObjectNamn = Besˆksadress_Huvudfastighet DropIndex Auto
+Update sammanfogadTabell Set ObjectNamn = Bes√∂ksadress_Huvudfastighet DropIndex Auto
 
 end sub
 
@@ -121,13 +121,13 @@ sub openAndRemoveDupes(tablePath as string,byVal tableName as string, byval grou
 	,i as integer
 	open table tablePath & tableName & ".tab" as tableToDedupe
 	print tableToDedupe & " rader innan dedupe: " & tableINfo(tableToDedupe,8)
-	query1 = "UPDATE tableToDedupe SET dataL‰ngd = "
+	query1 = "UPDATE tableToDedupe SET dataL√§ngd = "
 		for i = 1 to tableInfo(tableToDedupe,TAB_INFO_NCOLS)
 			query1 = query1 & "len(Col" & i & ") + "
 		next
 	query1 = query1 & "0"
-	Alter Table "tableToDedupe" ( add dataL‰ngd Integer ) Interactive
-	query2 = "SELECT " & getColumnsOfTable_asString("tableToDedupe") &", MAX (dataL‰ngd) FROM tableToDedupe Group BY "& groupbyColumnsSeparatedWithComma &" INTO tableToDedupeUtanDubbletter"
+	Alter Table "tableToDedupe" ( add dataL√§ngd Integer ) Interactive
+	query2 = "SELECT " & getColumnsOfTable_asString("tableToDedupe") &", MAX (dataL√§ngd) FROM tableToDedupe Group BY "& groupbyColumnsSeparatedWithComma &" INTO tableToDedupeUtanDubbletter"
 	
 	onerror goto queryError1
 		run command query1 
@@ -155,12 +155,12 @@ queryError2:
 	resume next
 end sub
 
-sub knytsamTillSam(v‰rde() as string,pÂPlatts() as string)
+sub knytsamTillSam(v√§rde() as string,p√•Platts() as string)
 dim i as integer
 
 	onError goto knytningsFel
 		for i = 1 to 33
-			call knyt_sColumn_TillRessultatTabellsColumn_("Col"&i,"Col"&i,v‰rde,pÂPlatts)
+			call knyt_sColumn_TillRessultatTabellsColumn_("Col"&i,"Col"&i,v√§rde,p√•Platts)
 		next
 	onError goto 0
 
@@ -173,7 +173,7 @@ end sub
 
 sub RunUnSpatial(ByVal tableName as string)
 
-	dim query,tableColumns, qM,radEtt,radTvÂ as string
+	dim query,tableColumns, qM,radEtt,radTv√• as string
 	,x as integer
 	,tempAlias as alias
 	
