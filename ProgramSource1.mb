@@ -1,0 +1,119 @@
+Include "MapBasic.def" 
+
+Declare Sub Main 
+
+
+'selects every relevant object from the 7 avloppskikt by supplied list
+'the ressult join is editable and reffere to the actuall skikts.
+'no coppies or static objekts.
+
+'inputlist: "C:\Users\crbk01\Desktop\Ny mapp\ärendenRFastighetFilnamn.TAB"
+'fastighetsyta: "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\Fastighet_yta.TAB"
+
+'warning! for the sake of making complex joins, and to surcomvent mapbasics limitations, a empty column is added (PERMANENTly) to every table involved.
+'this is for the sake of always having a empty = empty rellation to fall back on when everything else fails
+
+'for the sake of applying unions between simlessly similar tables, (PERMANENT) standardisation of ther datatypes is applied as a precaution. 
+'this values should be higher than expected but could in extreme cases cause data loss. or invalidate old code.
+
+'changes made by this script can of course be adressed after the execution, but no reverting actions is inmplented currently
+
+Sub Main()
+
+	Close All Interactive 
+	Open Table "G:\sbf\Livsmiljö\Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB" as SF 
+	Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\Fastighet_yta.TAB" Interactive
+	
+	Open Table "C:\Users\crbk01\Desktop\ärendenRFastighetFilnamn.TAB" Interactive
+	Select ärendenRFastighetFilnamn.Diarienummer, ärendenRFastighetFilnamn.Fastighet, ärendenRFastighetFilnamn.Filnamn from  ärendenRFastighetFilnamn,Fastighet_yta where ärendenRFastighetFilnamn.Fastighet = Fastighet_yta.KIR into medSkiften
+	
+	Create Table "FastigheterMedObject" (Diarienummer Char(14),Fastighet Char(31),Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Ny mapp\FastigheterMedObject.TAB" TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For FastigheterMedObject CoordSys Earth Projection 1, 104
+	Create Index On FastigheterMedObject (Filnamn)
+	Create Object As Union From medSkiften Into Table FastigheterMedObject Group by Fastighet Data Fastighet=Fastighet, Diarienummer = Diarienummer, Filnamn = Filnamn
+	commit table FastigheterMedObject
+	close table FastigheterMedObject
+	
+	Open Table "C:\Users\crbk01\Desktop\Ny mapp\FastigheterMedObject.TAB" as FO 
+		
+	Alter Table "FO" ( modify Fastighet Char(50) ) Interactive
+	Alter Table "FO" (add alltidsant Smallint ) Interactive
+
+dim l as integer
+
+l = 2 'Söd 1, norr 2, mellersta 3'
+
+Select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "bes_dat", utförddatum "utförddat", Status "stat", Utskick1_datum "utskick_dat", Anteckning "ant", FASTIGHET "fas", Fastighet_tillstånd "fas_till", Ärendenr "diaNr" from FO,SF 
+			where (FO.Fastighet = SF.FASTIGHET OR FO.Obj contains SF.Obj) AND (FO.alltidsant = SF.alltidsant) order by fil into sweref
+
+	do case l
+		case 1
+		Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Södra.TAB" as RenSöd Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_södra.TAB" as EnSöd 
+	
+			select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Be_dat", Utförd_datum "Ut_dat", Reningstyp "typ", Storlek_m2 "m2", Kommentarer "Kom", Fastighet_rening "Fas_ren", Anslutna_fastigheter_1 "Af_1", Anslutna_fastigheter_2 "Af_2", Anslutna_fastigheter_3 "Af_3", Anslutna_fastigheter_4 "Af_4", Anslutna_fastigheter_5 "Af_5", Anslutna_fastigheter_6 "Af_6", Anslutna_fastigheter_7 "Af_7", Anslutna_fastigheter_8 "Af_8", Anslutna_fastigheter_9 "Af_9", Anslutna_fastigheter_10 "Af_10", Antal_hushåll_rening "An_hus_ren" from FO,RenSöd
+			where (FO.Fastighet = any( RenSöd.Fastighet_rening, RenSöd.Anslutna_fastigheter_1, RenSöd.Anslutna_fastigheter_2, RenSöd.Anslutna_fastigheter_3, RenSöd.Anslutna_fastigheter_4, RenSöd.Anslutna_fastigheter_6, RenSöd.Anslutna_fastigheter_8, RenSöd.Anslutna_fastigheter_9, RenSöd.Anslutna_fastigheter_10, RenSöd.Anslutna_fastigheter_5, RenSöd.Anslutna_fastigheter_7) OR FO.obj contains RenSöd.obj) AND (RenSöd.alltidsant = FO.alltidsant) order by fil into SödraRening
+			
+			Select FO.Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Beslut", Utförd_datum "Utförd", Typ_byggnad "Byggnad", Typ_Slamavskiljare "Slam", Storlek_m3 "S_m3", Typ_rening "Rening", Storlek_m2 "R_m2", Typ_sluten_tank "Tank", Storlek__m3 "T_m3", EnSöd.Diarienummer "Diarenr", Fastighet_tillstånd "Fast_tillstånd", Antal_hushåll_tillstånd "Antal", Fastighet_rening "Fast_rening", Avgift "Avg_", Tillstånd_giltigt_tom "Giltigt_t_o_m", Anteckningar "Ant_" from FO,EnSöd
+			where (((FO.Fastighet = any(EnSöd.Fastighet_tillstånd, EnSöd.Fastighet_rening)) OR (FO.obj contains EnSöd.obj)) AND FO.alltidsant = EnSöd.alltidsant) order by fil into SödraEnsk
+			
+			
+				
+			browse * from SödraEnsk browse * from SödraRening
+	
+			Create Table "Filer" (Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Filer.TAB" TYPE NATIVE Charset "WindowsLatin1"
+			
+			Insert Into Filer ( COL1) Select COL3 From SödraRening DropIndex Auto
+		
+			Insert Into Filer ( COL1) Select COL3 From SödraEnsk DropIndex Auto
+			Select * from Filer group by Filnamn order by Filnamn into Temp
+			Export "Temp" Into "C:\Users\crbk01\Desktop\Södra.txt" Type "ASCII" CharSet "WindowsLatin1"
+			drop table Filer	
+				
+		case 2
+		Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Norra.TAB" as Rennor Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Norra.TAB" as Ennor
+					
+			select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Be_dat", Utförd_datum "Ut_dat", Reningstyp "typ", Storlek_m2 "m2", Kommentarer "Kom", Fastighet_rening "Fas_ren", Anslutna_fastigheter_1 "Af_1", Anslutna_fastigheter_2 "Af_2", Anslutna_fastigheter_3 "Af_3", Anslutna_fastigheter_4 "Af_4", Anslutna_fastigheter_5 "Af_5", Anslutna_fastigheter_6 "Af_6", Anslutna_fastigheter_7 "Af_7", Anslutna_fastigheter_8 "Af_8", Anslutna_fastigheter_9 "Af_9", Anslutna_fastigheter_10 "Af_10", Antal_hushåll_rening "An_hus_ren" from FO,Rennor
+			where (FO.Fastighet = any( Rennor.Fastighet_rening, Rennor.Anslutna_fastigheter_1, Rennor.Anslutna_fastigheter_2, Rennor.Anslutna_fastigheter_3, Rennor.Anslutna_fastigheter_4, Rennor.Anslutna_fastigheter_6, Rennor.Anslutna_fastigheter_8, Rennor.Anslutna_fastigheter_9, Rennor.Anslutna_fastigheter_10, Rennor.Anslutna_fastigheter_5, Rennor.Anslutna_fastigheter_7) OR FO.obj contains Rennor.obj) AND (Rennor.alltidsant = FO.alltidsant) order by fil into norraRening
+			
+			Select FO.Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Beslut", Utförd_datum "Utförd", Typ_byggnad "Byggnad", Typ_Slamavskiljare "Slam", Storlek_m3 "S_m3", Typ_rening "Rening", Storlek_m2 "R_m2", Typ_sluten_tank "Tank", Storlek__m3 "T_m3", Ennor.Diarienummer "Diarenr", Fastighet_tillstånd "Fast_tillstånd", Antal_hushåll_tillstånd "Antal", Fastighet_rening "Fast_rening", Avgift "Avg_", Tillstånd_giltigt_tom "Giltigt_t_o_m", Anteckningar "Ant_" from FO,Ennor
+			where (((FO.Fastighet = any(Ennor.Fastighet_tillstånd, Ennor.Fastighet_rening)) OR (FO.obj contains Ennor.obj)) AND FO.alltidsant = Ennor.alltidsant) order by fil into norraEnsk
+			
+			 browse * from norraEnsk browse * from norraRening
+	
+			Create Table "Filer" (Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Filer.TAB" TYPE NATIVE Charset "WindowsLatin1"
+			
+			Insert Into Filer ( COL1) Select COL3 From norraRening DropIndex Auto
+	
+			Insert Into Filer ( COL1) Select COL3 From norraEnsk DropIndex Auto
+			Select * from Filer group by Filnamn order by Filnamn into Temp
+			Export "Temp" Into "C:\Users\crbk01\Desktop\Norra.txt" Type "ASCII" CharSet "WindowsLatin1"
+			drop table Filer	
+		
+		case 3
+		Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_mellersta.TAB" as Renmellerst Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_mellersta.TAB" as Enmellerst
+				
+		
+			select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Be_dat", Utförd_datum "Ut_dat", Reningstyp "typ", Storlek_m2 "m2", Kommentarer "Kom", Fastighet_rening "Fas_ren", Anslutna_fastigheter_1 "Af_1", Anslutna_fastigheter_2 "Af_2", Anslutna_fastigheter_3 "Af_3", Anslutna_fastigheter_4 "Af_4", Anslutna_fastigheter_5 "Af_5", Anslutna_fastigheter_6 "Af_6", Anslutna_fastigheter_7 "Af_7", Anslutna_fastigheter_8 "Af_8", Anslutna_fastigheter_9 "Af_9", Anslutna_fastigheter_10 "Af_10", Antal_hushåll_rening "An_hus_ren" from FO,Renmellerst
+			where (FO.Fastighet = any( Renmellerst.Fastighet_rening, Renmellerst.Anslutna_fastigheter_1, Renmellerst.Anslutna_fastigheter_2, Renmellerst.Anslutna_fastigheter_3, Renmellerst.Anslutna_fastigheter_4, Renmellerst.Anslutna_fastigheter_6, Renmellerst.Anslutna_fastigheter_8, Renmellerst.Anslutna_fastigheter_9, Renmellerst.Anslutna_fastigheter_10, Renmellerst.Anslutna_fastigheter_5, Renmellerst.Anslutna_fastigheter_7) OR FO.obj contains Renmellerst.obj) AND (Renmellerst.alltidsant = FO.alltidsant) order by fil into mellerstaRening
+			
+			Select FO.Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Beslut", Utförd_datum "Utförd", Typ_byggnad "Byggnad", Typ_Slamavskiljare "Slam", Storlek_m3 "S_m3", Typ_rening "Rening", Storlek_m2 "R_m2", Typ_sluten_tank "Tank", Storlek__m3 "T_m3", Enmellerst.Diarienummer "Diarenr", Fastighet_tillstånd "Fast_tillstånd", Antal_hushåll_tillstånd "Antal", Fastighet_rening "Fast_rening", Avgift "Avg_", Tillstånd_giltigt_tom "Giltigt_t_o_m", Anteckningar "Ant_" from FO,Enmellerst
+			where (((FO.Fastighet = any(Enmellerst.Fastighet_tillstånd, Enmellerst.Fastighet_rening)) OR (FO.obj contains Enmellerst.obj)) AND FO.alltidsant = Enmellerst.alltidsant) order by fil into mellerstaEnsk
+							
+			browse * from mellerstaEnsk browse * from mellerstaRening
+		
+			Create Table "Filer" (Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Filer.TAB" TYPE NATIVE Charset "WindowsLatin1"
+			
+			Insert Into Filer ( COL1) Select COL3 From mellerstaRening DropIndex Auto
+			Insert Into Filer ( COL1) Select COL3 From mellerstaEnsk DropIndex Auto
+			
+			Select * from Filer group by Filnamn order by Filnamn into Temp
+			Export "Temp" Into "C:\Users\crbk01\Desktop\mellersta.txt" Type "ASCII" CharSet "WindowsLatin1"
+			drop table Filer	
+	 end case
+	 
+	 	browse * from sweref
+ End Sub
+ 
+' kkk
+
+

@@ -1,0 +1,4 @@
+[Link]
+Application = MyApplication.mbx
+Module = MyModule1.mbo
+Module = MyModule2.mbo
