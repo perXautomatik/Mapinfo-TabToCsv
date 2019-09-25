@@ -2,27 +2,34 @@ Include "MapBasic.def"
 Include "tabellInsammlare.def"
 Declare Sub Main
 
+Dim tablenames(2) as string
+Dim iProgress,iProgressRange,starttime as integer
+,qm as string
+
+declare sub firstProgressbar
 
 Sub Main()
 	print Chr$(12)
 	
-	Dim tablenames(2) as string
-		
 	tablenames(1) = "ErrorTable"
 	tablenames(2) = "fastighet_yta"
-
 	
-	call closeAllBut(tableNames)
-	call createPathTable
-	call tableOpener(tablenames)
-		
+	iprogressRange = 3
+	iprogress = 0	
+
+	ProgressBar "Processing...." & iProgressRange & " items"
+		     Calling firstProgressbar
+	Range iProgressRange
+
 	call doReningFirst()
-	Call assignObjectNames()
+	
 	close table ReningIhopslagen
+	
 	call doEnskiljtSecond()
+	
+	Call assignObjectNames()
 
 End Sub
-
 
 sub createPathTable
 	dim tempstring,tablenames(3) as string
@@ -193,13 +200,13 @@ sub createPathTable
 				Anläggning_för_EfTR_Toaletttyp Char(10),
 				Anläggning_fö_SCertifieringstyp Char(10),
 				Anläggning_för_Slamav_Volym_m3 Char(10),
-				flik_Avloppsanläg_Beslutsdatum Date,
-				flik_Avloppsa_Besiktningsdatum Date,
-				flik_Avloppsanläggn_Byggnadsår Date,
+				flik_Avloppsanläg_Beslutsdatum Char(11),
+				flik_Avloppsa_Besiktningsdatum Char(11),
+				flik_Avloppsanläggn_Byggnadsår Char(11),
 				Fliken_Koordinater Char(30),
 				PunkttypAB Char(30),
 				Inventeringsinformation_Status Char(10),
-				Inventeringsinformation_Datum Date,
+				Inventeringsinformation_Datum Char(11),
 				Anl_för_EftR_TöInterv_mån Char(10),
 				fliken_Fastigheter Char(254),
 				Anläggning_för_EfterföljRText Char(254),
@@ -216,7 +223,36 @@ sub createPathTable
 		
 end sub
 
+sub firstProgressbar
+	
+	do case iProgress
+	case 1
+		call closeAllBut(tableNames)
+	case 2
+		call createPathTable
+	case 3
+		call tableOpener(tablenames)
+	end case
+	
+	call increment(iProgress,iProgressRange,starttime)
+		
+End Sub
+
 sub assignObjectNames
+	
+Update harRening Set dataLängd = len(Anteckning) + len(flik_Avloppsänlaggni_Boendetyp) +
+len(flik_Avloppsa_Avrinningsområde) + len(Anläggning_för_S_Anläggningstyp) + len(Anläggning_för_Slam_Toaletttyp) + len(AnlförEfterR_Anläggningstyp) + len(Anläggning_för_EfTR_Toaletttyp) DropIndex Auto
+
+Select 
+Anteckning , Besöksadress_Huvudfastighet , Besöksadress_Adress , Besöksadress_Postnr , Besöksadress_Ort , Verksamhetsutövare_Namn , Verksamhetsutöv_Person_orgnr , Fakturamottagare_NAMN , Fakturamottagare_Faktura_ADRESS , Fakturamottagare_Faktura_POSTNR , Fakturamottagare_Faktura_POSTOR , flik_Avloppsänlaggni_Boendetyp , flik_Avloppsa_Avrinningsområde , Anläggning_för_S_Anläggningstyp , Anläggning_för_Slam_Toaletttyp , AnlförEfterR_Anläggningstyp , Anläggning_för_EfTR_Toaletttyp , Anläggning_fö_SCertifieringstyp , Anläggning_för_Slamav_Volym_m3 , flik_Avloppsanläg_Beslutsdatum , flik_Avloppsa_Besiktningsdatum , flik_Avloppsanläggn_Byggnadsår , Fliken_Koordinater , PunkttypAB , Inventeringsinformation_Status , Inventeringsinformation_Datum , Anl_för_EftR_TöInterv_mån , fliken_Fastigheter , Anläggning_för_EfterföljRText , AnlF_efR_Koordinater_X_o_Y , PunkttypER , FNR , ObjectNamn , rowIndex , gRowIndex , 
+max ( dataLängd ) 
+from harRening
+ group by ObjectNamn ,
+ AnlF_efR_Koordinater_X_o_Y,
+ Fliken_Koordinater 
+ 
+ into HarReningUtanDubbletter
+
 	
 End Sub
 
