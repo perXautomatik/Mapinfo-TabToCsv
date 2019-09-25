@@ -1,5 +1,5 @@
 [Link]
 Application = SolenVision.mbx
 Module = main
-Module = tabellInsammlare(1)
-Module = commonLib1
+Module = tabellInsammlare
+Module = commonLib\commonLib1
