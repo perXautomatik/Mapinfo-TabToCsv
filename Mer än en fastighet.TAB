@@ -1,0 +1,67 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 55
+    Besöksadress_Adress Char (253) ;
+    Besöksadress_Postnr Char (253) ;
+    Besöksadress_Ort Char (253) ;
+    Besöksadress_Huvudfastighet Char (34) ;
+    FNR Integer ;
+    Verksamhetsutövare_Namn Char (253) ;
+    Verksamhetsutöv_Person_orgnr Integer ;
+    Fakturamottagare_NAMN Char (253) ;
+    Fakturamottagare_Faktura_ADRESS Char (253) ;
+    Fakturamottagare_Faktura_POSTNR Char (253) ;
+    Fakturamottagare_Faktura_POSTOR Char (253) ;
+    Enhet Char (6) ;
+    Anteckning Char (253) ;
+    Aktuell_timavgift Integer ;
+    Timdebitering Logical ;
+    Objektnamn Char (36) ;
+    flik_Avloppsänlaggni_Boendetyp Char (15) ;
+    flik_Avloppsanläggn_Byggnadsår Date ;
+    flik_Avloppsa_Besiktningsdatum Date ;
+    flik_Avloppsanläg_Beslutsdatum Date ;
+    Vatten Char (17) ;
+    Recipient Char (49) ;
+    Inventering Char (12) ;
+    Inventeringsinformation_Datum Date ;
+    Inventeringsinformation_Status Char (6) ;
+    Bedömning Char (15) ;
+    fliken_Fastigheter Char (34) ;
+    fliken_FastigheterFNR Integer ;
+    PunkttypAB Char (16) ;
+    Fliken_Koordinater Char (19) ;
+    fliken_Ärenden Char (13) ;
+    Anläggningskategori Char (20) ;
+    besiktningdatum Date ;
+    beslutsdatum Date ;
+    Anläggningstyp Char (15) ;
+    Volym_m3 Float ;
+    Anl_för_EftR_TöInterv_mån Integer ;
+    AnlF_efR_Koordinater_X_o_Y Char (19) ;
+    PunkttypER Char (20) ;
+    Anläggning_för_EfterföljRText Char (253) ;
+    Anläggningskategori_2 Char (19) ;
+    Anläggning_för_S_Anläggningstyp Char (15) ;
+    Externt_Tjänsteid Integer ;
+    text Char (253) ;
+    Anläggning_för_Slamav_Volym_m3 Float ;
+    Anläggningskategori_3 Char (19) ;
+    AnlförEfterR_Anläggningstyp Char (15) ;
+    besiktningdatum_2 Date ;
+    beslutsdatum_2 Date ;
+    Externt_Tjänsteid2 Integer ;
+    Volym_m32 Float ;
+    ObjektID Integer ;
+    Path Char (253) ;
+    Diarienummer Char (13) ;
+    Löpnummer Integer ;
+begin_metadata
+"\IsReadOnly" = "FALSE"
+"\MapInfo" = ""
+"\MapInfo\TableID" = "435f73f2-d3df-4701-babc-225a259a3bd0"
+end_metadata

@@ -1,109 +1,576 @@
-Include "MapBasic.def"
-Include "tabellInsammlare.def"
-Declare Sub Main
 
-sub createsammanfogadTabell()
-	Create Table "sammanfogadTabell" (
-		Anteckning Char(254),
-		Besöksadress_Huvudfastighet Char(50),
-		Besöksadress_Adress Char(50),
-		Besöksadress_Postnr Char(10),
-		Besöksadress_Ort Char(30),
-		Verksamhetsutövare_Namn Char(40),
-		Verksamhetsutöv_Person_orgnr Char(20),
-		Fakturamottagare_NAMN Char(40),
-		Fakturamottagare_Faktura_ADRESS Char(50),
-		Fakturamottagare_Faktura_POSTNR Char(10),
-		Fakturamottagare_Faktura_POSTOR Char(30),
-		flik_Avloppsänlaggni_Boendetyp Char(10),
-		flik_Avloppsa_Avrinningsområde Char(5),
-		Anläggning_för_S_Anläggningstyp Char(10),
-		Anläggning_för_Slam_Toaletttyp Char(10),
-		AnlförEfterR_Anläggningstyp Char(10),
-		Anläggning_för_EfTR_Toaletttyp Char(10),
-		Anläggning_fö_SCertifieringstyp Char(10),
-		Anläggning_för_Slamav_Volym_m3 Char(10),
-		flik_Avloppsanläg_Beslutsdatum Date,
-		flik_Avloppsa_Besiktningsdatum Date,
-		flik_Avloppsanläggn_Byggnadsår Date,
-		Fliken_Koordinater Char(30),
-		PunkttypAB Char(30),
-		Inventeringsinformation_Status Char(10),
-		Inventeringsinformation_Datum Date,
-		Anl_för_EftR_TöInterv_mån Char(10),
-		fliken_Fastigheter Char(254),
-		Anläggning_för_EfterföljRText Char(254),
-		AnlF_efR_Koordinater_X_o_Y Char(30),
-		PunkttypER Char(30),
-		FNR integer,
-		ObjectNamn Char(50)
-	) file "H:\mina grejer\att göra\häljpa sara swart\slå samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\sammanfogadTabell.TAB" TYPE NATIVE Charset "WindowsLatin1"
-	Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
+Include "MapBasic.def"
+include "Menu.def"
+Include "P:\EDP\EDP VISION\TempFilMapp\CRBK01\tabellInsammlare(1).def"
+include "P:\EDP\EDP VISION\TempFilMapp\CRBK01\commonLib1.def"
+
+declare sub insertAnteckningar
+declare sub förberedAvslut()
+declare sub insertFulaFastigheter()
+declare sub insertMultiplaFastigheter
+declare sub insertMånsBilder
+declare sub insertMHK()
+
+sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
+
+	dim query,värden(),påPlatts(),insertinto,fromTable,tablename,filePath, värde(),temp as string
+	,x,y,z as integer
+	,tempFloat as float
+
+	tableName = Socken & "ressultat"
+	filePath = ApplicationDirectory$() + tableName & ".tab"
+
+	call createRessultTableX(tablename,filePath)
+
+	for x=1 to ubound(utskriftsObjekt)
+		call genereraSQLVärdeArray(värde, utskriftsObjekt(x))
+		if( StringArrayAsString(värde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then
+			query = generateInsertStringWithArray(tableName, värde)
+	
+			if("Insert Into ressultat () Values ()" <> query) then 'tomt 
+				onerror goto queryError
+					run command query
+				onerror goto 0
+			else
+				goto queryError
+			end if
+		else
+			goto queryError
+		end if	
+	next
+	
+	commit table tableName
+	
+	'sparar AnvändaReningar
+	Create Table "ArrayTable" (Fält1 Integer) file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
+	for x=1 to ubound(användaReningar)
+		Insert Into ArrayTable Values (användaReningar(x))
+	next
+	
+	call closeIfnotClosed("AnvändaReningarsHash")
+	
+	select Anslutna_fastigheter_1,CentroidY(Obj),CentroidX(obj) from reningIhopslagen where rowIndex = any (select Col1 from ArrayTable) into AnvändaReningarsHash
+	
+	'print Format$((tableInfo(AnvändaReningarsHash,tab_info_nRows)/tableInfo(ArrayTable,tab_info_nRows)), "%") & " success save använda reningar"
+			
+	commit table AnvändaReningarsHash as ApplicationDirectory$() & "AnvändaReningarsHash.tab"
+	drop table ArrayTable
+	redim utskriftsobjekt(1) 'tömmer utskriftobjekt arrayn
+	print "done!"
+	methodEnd:
+exit sub
+queryError:
+	print "queryError|" & query & "dropping table"
+	print error$()
+	drop table tableName
+	resume methodEnd
 end sub
 
 Sub Main()
-	print Chr$(12)
+	print Chr$(12) 'empty message
 	
-	Dim tablenames(2) as string
-		Create Table "ErrorTable" (t1 Char(20),f1 Char(100),p1 Char(254)) file ApplicationDirectory$() & "\printTable.TAB" TYPE NATIVE Charset "WindowsLatin1"
-	
-	tablenames(1) = "fastighet_ytaORg"
-	tablenames(2) = "Adresspunkter"
-	
-	call createPathTable
-	call tableOpener(tablenames)
+	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))
+	dim tablenames(1) as string
+	tablenames(1) = "fastighet_yta"
 	call closeAllBut(tableNames)
+
+	startTime = timer()
+	iprogressRange = 10
+	iprogress = 0	
+	ProgressBar "Processing...." & iProgressRange & " items"
+		     Calling populatePathTable
+	Range iProgressRange
+
+	if tableinfo(sockenTabell,tab_info_nrows) <> 0 then
 	
-	call genereraFastighetsYtaMedFastighetsAdress()
-	call createsammanfogadTabell()
-
-	call doReningFirst()
-	Call assignObjectNames()
-	close table ReningIhopslagen
-	call doEnskiljtSecond()
-
-End Sub
-
-sub genereraFastighetsYtaMedFastighetsAdress()
-
-	dim tempPath as string
-	tempPath = TempFileName$("")
+		iprogressRange = tableinfo(sockenTabell,tab_info_nRows)'+ tableinfo(antalKörningar,tab_info_nrows) *9
+		startTime = timer()
+		iprogress = 0		
+		
+		redim tablenames(2)
+		tablenames(1) = "enskiltIhopslaget"
+		tablenames(2) = "reningIhopslaget"
+		call tableOpener(tablenames)
+		
+		
+		ProgressBar "Processing...." & iProgressRange & " items"
+			Calling sockenProcessor
+		Range iProgressRange
+		
+	end if
 	
-	Select Fastighet_ytaOrg.KIR ,Adresspunkter.ADRESS , Adresspunkter.POSTORT , Adresspunkter .POSTNR,Fastighet_ytaORg.FNR From Fastighet_ytaOrg,Adresspunkter where Adresspunkter . FNR = Fastighet_ytaORg . FNR into temp 
-	commit table temp As tempPath 
-	close table fastighet_ytaORg
-	close table Adresspunkter
-	open table tempPath as fastighet_yta
+	call förberedAvslut()
+	call insertMultiplaFastigheter
+	call insertAnteckningar
+	call insertFulaFastigheter()
+
+	call insertMånsBilder()
+
+   	call insertMHK()
+'   gerdins anläggningar är inte färdiga, not added in endressult !
+'	call assosieraFnr()
+'	call slamdisp fält
+' 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
+'	call assosieraGammlaFastigheterTillNyaFnr()
+' 	correct fastigheter already before association
+	
+end sub
+
+sub asspsoeraFnr()
+Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
+
+	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
+	Add Column "NoFas" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 
+	
+	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
+	Add Column "NoFnr" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1 
+
+Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
+Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as ursp
+
+	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
+	Add Column "NoFas" (fliken_Fastigheter )From Ursp Set To Beteckning Where COL2 = COL3
+	
+	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
+	Add Column "NoFnr" (fliken_FastigheterFNR )From Ursp Set To FNR Where COL1 = Col4
+
 
 end sub
 
-sub createPathTable
-	dim tempstring as string
-	tempstring = "PathTABLE"
-	if tableDoesntExist(tempstring) then
-		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
-		
-		Tempstring = "K:\KARTOR\SOLEN_PUNKTER\Adresspunkter.TAB"
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "Adresspunkter")
-		
-		Tempstring = "K:\KARTOR\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB"
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_ytaORg")		
+sub insertMHK()
+	
+	open table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\MhkToVision.TAB" as MhkToVision
+	insert into HelaSolen (path,Diarienummer) select * from MhkToVision
+end sub
 
-'		insert into Pathtable (tablePath,TableName) values ("G:\sbf\LivsMiljö\Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB", "Fastigheter_sweref")
-'		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_"
-'		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "EnskiljtSödra")
-'		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "EnskiljtNorra")
-'		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "EnskiljtMellersta")
-'				
-'		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_"
-'		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "ReningSödra")
-'		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "ReningNorra")
-'		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "ReningMellersta")
-'				
-	end if
-End Sub
+sub insertMånsBilder
 
-sub assignObjectNames
+	Open Table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\bilder\bilder.TAB" Interactive
+	select fastighet,path from bilder where fastighet <> "blött jan2018" into utanJan
+	insert into HelaSolen (fliken_fastigheter,path) select * from utanJan
+	select path from bilder where fastighet = "blött jan2018" into Jan
+	insert into HelaSolen (path) select * from Jan
+	
+end sub
+
+sub förberedAvslut()
+	Create Table "HelaSolen" (Besöksadress_Adress Char(253),Besöksadress_Postnr Char(253),Besöksadress_Ort Char(253),Besöksadress_Huvudfastighet Char(34),FNR Integer,Verksamhetsutövare_Namn Char(253),Verksamhetsutöv_Person_orgnr Integer,Fakturamottagare_NAMN Char(253),Fakturamottagare_Faktura_ADRESS Char(253),Fakturamottagare_Faktura_POSTNR Char(253),Fakturamottagare_Faktura_POSTOR Char(253),Enhet Char(6),Anteckning Char(253),Aktuell_timavgift Integer,Timdebitering Logical,Objektnamn Char(36),flik_Avloppsänlaggni_Boendetyp Char(15),flik_Avloppsanläggn_Byggnadsår Date,flik_Avloppsa_Besiktningsdatum Date,flik_Avloppsanläg_Beslutsdatum Date,Vatten Char(17),Recipient Char(49),Inventering Char(12),Inventeringsinformation_Datum Date,Inventeringsinformation_Status Char(6),Bedömning Char(15),fliken_Fastigheter Char(34),fliken_FastigheterFNR Integer,PunkttypAB Char(16),Fliken_Koordinater Char(19),fliken_Ärenden Char(13),Anläggningskategori Char(20),besiktningdatum Date,beslutsdatum Date,Anläggningstyp Char(15),Volym_m3 Float,Anl_för_EftR_TöInterv_mån Integer,AnlF_efR_Koordinater_X_o_Y Char(19),PunkttypER Char(20),Anläggning_för_EfterföljRText Char(253),Anläggningskategori_2 Char(19),Anläggning_för_S_Anläggningstyp Char(15),Externt_Tjänsteid Integer,text Char(253),Anläggning_för_Slamav_Volym_m3 Float,Anläggningskategori_3 Char(19),AnlförEfterR_Anläggningstyp Char(15),besiktningdatum_2 Date,beslutsdatum_2 Date,Externt_Tjänsteid2 Integer,Volym_m32 Float,ObjektID Integer,Path Char(253),Diarienummer Char(13),Löpnummer Integer) file "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\HelaSolen.TAB" TYPE NATIVE Charset "WindowsLatin1"
+	
+	fetch first from socknarOfiltrerade
+	do until eot(socknarOfiltrerade)		
+		run command("Insert Into HelaSolen Select * From " & socknarOfiltrerade.sockenx & "ressultat")
+		fetch next from socknarOfiltrerade
+	loop
+	
+	commit table HelaSolen
 	
 End Sub
 
+sub insertFulaFastigheter()
+	Open Table "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\ÄrendenMedIngenEllerFelFastighet2.TAB" as fä
+	Select Diarienummer, Fnr from fä where Fnr <> 0 into fä2
+	
+	insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from fä2
+	
+end sub
+
+sub insertMultiplaFastigheter
+
+Open Table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\Mer än en fastighet.TAB" Interactive
+
+Insert Into HelaSolen Select * From Mer_än_en_fastighet
+
+commit table helaSolen
+
+end sub
+
+sub insertAnteckningar
+
+
+Open Table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\Anteckningar.TAB" Interactive
+
+insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnummer,path from anteckningar
+
+end sub
+
+Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
+				
+		dim sockenTable,sTbl,query,tempstring as string
+		,iLoop,x,size as integer
+		
+'		For iLoop = 1 to numtables() 
+'			do case tableinfo(iLoop,1)
+'				case "enskiltSocken" drop table enskiltSocken
+'				case "SockenSweref"	drop table SockenSweref
+'				case "ReningSocken"	drop table ReningSocken
+'				case else
+'			end case
+'		Next 
+							
+		print "change " & socken & " to " & nSocken socken = nSocken
+		redim tablenames(3) tablenames(1) = nSocken & "Fastigheter" tablenames(2) = "EnskiltIhopslagen" tablenames(3) = "reningIhopslagen" call tableOpener(tablenames) sockenTable = Socken & "Fastigheter"
+	
+		query = "select " & getColumnsOfTable_asString(tableNames(2)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+		
+		fetch first from Valtenskilt
+		print socken & " " & size & "valtEnskilt"
+			for x=1 to size Redim EnskiltObjekt(x)		
+				if (Valtenskilt.Diarienummer<>"MHN") then EnskiltObjekt(x).Diarienummer = DiarieMixedToUnit(Valtenskilt.Diarienummer) end if					
+				EnskiltObjekt(x).Fastighet_tillstånd = searchReplace(Valtenskilt.Fastighet_tillstånd,"""","'")
+				EnskiltObjekt(x).spatialShift = searchReplace(Valtenskilt.spatialshift,"""","'")
+				EnskiltObjekt(x).spatialFastighet = searchReplace(Valtenskilt.spatialFastighet,"""","'")
+				EnskiltObjekt(x).Typ_byggnad = searchReplace(Valtenskilt.Typ_byggnad,"""","'")
+				EnskiltObjekt(x).Antal_hushåll_tillstånd = searchReplace(Valtenskilt.Antal_hushåll_tillstånd,"""","'")
+				EnskiltObjekt(x).Fastighet_rening = searchReplace(Valtenskilt.Fastighet_rening,"""","'")
+				EnskiltObjekt(x).Typ_Slamavskiljare = searchReplace(Valtenskilt.Typ_Slamavskiljare,"""","'")
+				EnskiltObjekt(x).Storlek_m3 = Valtenskilt.Storlek_m3
+				EnskiltObjekt(x).Typ_rening = searchReplace(Valtenskilt.Typ_rening,"""","'")
+				EnskiltObjekt(x).Storlek_m2 = Valtenskilt.Storlek_m2
+				EnskiltObjekt(x).Typ_sluten_tank = searchReplace(Valtenskilt.Typ_sluten_tank,"""","'")
+				EnskiltObjekt(x).Storlek__m3 = Valtenskilt.Storlek__m3
+				EnskiltObjekt(x).Beslut_datum = Valtenskilt.Beslut_datum
+				EnskiltObjekt(x).Utförd_datum = Valtenskilt.Utförd_datum
+				EnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
+				EnskiltObjekt(x).Tillstånd_giltigt_tom = Valtenskilt.Tillstånd_giltigt_tom
+				EnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
+				EnskiltObjekt(x).kordinater = Valtenskilt.koor
+				
+				'EnskiltObjekt(x).slamDispDat = 
+			fetch next from ValtEnskilt
+		next
+			
+		query = "select " & getColumnsOfTable_asString(tableNames(3)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into ValtRening NoSelect" run command query size = tableInfo(valtRening,tab_info_nrows) fetch first from ValtRening
+		print socken & " " & size & "reningsObjekt"
+		for x=1 to size
+			
+			Redim reningsObjekt(x)
+			reningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
+			reningsObjekt(x).spatialShift = valtRening.spatialShift
+			reningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
+			reningsObjekt(x).Antal_hushåll_rening = iif(val(valtRening.Antal_hushåll_rening & "") <> 0,val(valtRening.Antal_hushåll_rening & ""),1)
+			reningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
+			reningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
+			reningsObjekt(x).kordinater = valtRening.koor tempstring = "" & 
+			valtRening.Beslut_datum if mixedDateToUnion(tempstring) <> "0" then reningsObjekt(x).Beslut_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if		tempstring = "" & 
+			valtRening.Utförd_datum	if mixedDateToUnion(tempstring) <> "0" then	reningsObjekt(x).utförd_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if
+			reningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & reningsObjekt(x).Kommentarer,"""","'")
+			call getAnslutna(reningsObjekt(x).Anslutna_fastigheter) 
+			reningsObjekt(x).rowIndex = valtRening.rowIndex
+			
+			fetch next from ValtRening
+		next
+		
+		query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+		
+		if size > 0 then fetch first from Valtsweref
+			print socken & " " & size & "Valtsweref"
+			for x=1 to size
+				Redim swerefObjekt(x) 
+				swerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
+				swerefObjekt(x).Fastighet_tillstånd = searchReplace(Valtsweref.Fastighet_tillstånd,"""","'")
+				if (Valtsweref.Ärendenr<>"MHN") then swerefObjekt(x).Ärendenr = DiarieMixedToUnit(Valtsweref.Ärendenr) end if
+				swerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
+				swerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
+				swerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
+				swerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
+				swerefObjekt(x).utförddatum = Valtsweref.utförddatum
+				swerefObjekt(x).slamhämtning = searchReplace(Valtsweref.slamhämtning,"""","'")
+				swerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
+				swerefObjekt(x).kordinater = Valtsweref.koor
+				swerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
+	
+				fetch next from Valtsweref
+			next
+		end if
+		
+	call increment(iProgress,iProgressRange,starttime)		
+end sub
+
+'läser in forna sockenfiler, laddar listan med använda reningar.
+'rening bör inte skapas igen föräns vid datumskifte, precis som SockenUtsökning
+
+'inläsning förväntar sig att isNewSocken har genrerat tabeller 
+sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
+	
+	dim FastighetsBetInput as string
+		,reningsObjekt() as reningsobjekt
+		,enskiltObjekt() as enskiltObjekt
+		,swerefObjekt() as swerefObjekt
+		,returnState as logical
+		,swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float
+		,antal as integer
+	
+	FastighetsBetInput = sorteradFastighet.kir
+	if(countFasGenerateUtvald(FastighetsBetInput) <> 0) then
+		antal = 0	'	swerefStart = timer()'läser in förgenererad tabell begränsad efter socknen
+		antal = SwerefFilterByBet(tempAlias1,FastighetsBetInput,swerefObjekt)'	swerefStop = timer()'	ReningStart = timer()'läser in förgenererad tabell begränsad efter socknen
+		antal = antal + ReningsFilterByBet(tempAlias2,FastighetsBetInput,reningsObjekt)'	ReningStop = timer()'	EnskiltStart = timer()'läser in förgenererad tabell begränsad efter socknen
+		antal = antal + EnskiltFilterByBet(tempAlias3,FastighetsBetInput,enskiltObjekt)'	EnskiltStop = timer()
+		
+		dim debugg as logical debugg = false'	debugg = (FastighetsBetInput = "ALA OLLAJVS 1:17")	if(debugg) then	print antal end if
+	
+		if(antal > 0) then'objektCreationStart = timer()
+			call FastighetsObjCreation(fastighetsBetInput,reningsobjekt,fastighetsObjekt,swerefObjekt,enskiltObjekt)'objektCreationStop = timer()
+		end if'close table utvaldFastighet
+	else
+		print "countFasGenerateUtvald("& FastighetsBetInput & ") = 0" 
+	end if
+	
+'	call presentTime(swerefStart,ReningStart, EnskiltStart, objektCreationStart,swerefStop,ReningStop, EnskiltStop, objektCreationStop)
+	'call increment(iProgress,iProgressRange,starttime)
+
+End sub
+
+sub sockenProcessor()
+	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu as string
+	,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,newSocken as logical
+	,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
+
+	starttime = timer() nSocken = sockenTabell.sockenX senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1
+'	end program
+	Call newSocken(nSocken,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) runns = timer() - starttime
+	
+	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken group by kir into SorteradFastighet fetch first from SorteradFastighet integerX = iif(tableInfo(SorteradFastighet,TAB_INFO_NROWS)=0,1,tableInfo(SorteradFastighet,TAB_INFO_NROWS))
+
+	call increment(iProgress,iProgressRange,starttime)
+	starttime = timer()
+	do UNtil EOT(SorteradFastighet)
+		fastighetJustNu = SorteradFastighet.kir'	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if
+
+		call inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt())'reads selected row from sorteradFastighet
+
+		fetch Next from SorteradFastighet
+	loop
+	
+	endtime = timer()-starttime	print "***************************************************************************************************************************" print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" print "***************************************************************************************************************************"
+	
+	for x = 1 to ubound(fastighetsObjekt) call tolkning(FastighetsObjekt(x),utskriftsObjekt,användaReningar) next 
+	
+	call saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program end if
+
+	redim utskriftsObjekt(1) redim fastighetsObjekt(1)
+
+	fetch next from sockenTabell
+end sub
+
+sub populatePathTable
+	dim tempstring,tablenames(3) as string
+		,tempAlias as alias
+		
+	do case iProgress
+	case 1
+		tempstring = "PathTABLE"
+		if IsTableOpen(tempstring) then
+			close table "pathTable"
+		end if
+		
+		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
+	case 2 'grundtabeller
+		call insertInitialTables()
+	case 3'Fastighetskikt med adress	
+		tempString = applicationDirectory$() & "fastighet_ytaAd.tab"
+		if(not(FileExists(tempString))) then
+			redim tableNames(2)
+			
+			tablenames(1) = "fastighet_ytaORg"
+			tablenames(2) = "Adresspunkter"
+						
+			call tableOpener(tablenames)
+
+			Create Table "FaMedAdrPunkt" (KIR Char(40),ADRESS Char(105),POSTNR Char(9),POSTORT Char(105),FASTIGHET Char(54),FNR Integer) file tempString TYPE NATIVE Charset "WindowsLatin1"
+			Create Map For FaMedAdrPunkt CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (-8099143.95363, -10001965.7294) (8399143.95363, 10001965.7294)
+			Insert Into FaMedAdrPunkt (KIR, FASTIGHET,FNR) Select COL2, COL12, Col1  From fastighet_ytaORg DropIndex Auto
+			Add Column "FaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where within
+			Add Column "FaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where within
+			Add Column "FaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where within
+
+			select * from FaMedAdrPunkt where adress = "" into TomtFaMedAdrPunkt
+
+			Add Column "TomtFaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where COL6 = COL3 
+			Add Column "TomtFaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where COL6 = COL3 
+			Add Column "TomtFaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where COL6 = COL3 
+
+			commit table FaMedAdrPunkt
+			Create Index On FaMedAdrPunkt(kir)
+			commit table FaMedAdrPunkt
+			
+			close table fastighet_ytaORg
+			close table Adresspunkter		
+			close table FaMedAdrPunkt
+		end if
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
+	
+	case 4
+		redim tableNames(4)
+		
+		tablenames(1) = "Rening_SödraNoIndex"
+		tablenames(2) = "Rening_NorraNoIndex"
+		tablenames(3) = "Rening_MellerstaNoIndex"
+		tablenames(4) = "fastighet_yta"
+						
+		call tableOpener(tablenames)
+		
+		select * from tablenames(1) into "Rening_Södra"
+		select * from tablenames(2) into "Rening_Norra"
+		select * from tablenames(3) into "Rening_Mellersta"
+				
+		tempstring = görTillBasTabellReturneraPath("Rening_Södra")
+			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Södra")
+		tempstring = görTillBasTabellReturneraPath("Rening_Norra")
+			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Norra")
+		tempstring = görTillBasTabellReturneraPath("Rening_Mellersta")
+			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Mellersta")
+			
+		Alter Table Rening_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
+		Add Column "Rening_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+		Add Column "Rening_Södra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
+		commit table Rening_Södra
+		Alter Table "Rening_Södra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+		
+		Alter Table Rening_Norra (add SpatialFastighet Char(40), SpatialShift Char(40)  )
+		Add Column "Rening_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+		Add Column "Rening_Norra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
+		commit table Rening_Norra
+		Alter Table "Rening_Norra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+		
+		Alter Table Rening_Mellersta ( add SpatialFastighet Char(40), SpatialShift Char(40) )
+		Add Column "Rening_Mellersta" (SpatialFastighet)From fastighet_yta Set To kir Where contains
+		Add Column "Rening_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
+		commit table Rening_Mellersta
+		Alter Table "Rening_Mellersta" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+		
+		call tableCloser(tablenames())
+	case 5''egna reningstabeller med spatial fastighet
+		tempstring = CreateTable_reningIhopslagen()
+		call insertXintoYtableWhereXcolLessThaYcol("rening_mellersta","reningIhopslagen")
+		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
+		call insertXintoYtableWhereXcolLessThaYcol("rening_Södra","reningIhopslagen")
+		Commit table reningIhopslagen
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")	
+	case 6
+		'injesera gemensamhetsanläggningar
+		call PrepareGemensamma()
+		call injectGemensamma()
+		redim tableNames(1)
+		tableNames(1) = "reningIhopslagen"
+		tempAlias = tableNames(1)
+		commit table reningIhopslagen
+		call UpdateIndex("reningIhopslagen")'already commits
+		call tableCloserAndCommiter(tableNames)	
+	case 7
+		redim tablenames(1)
+		tablenames(1) = "fastighet_yta"
+		call tableOpener(tablenames)
+	 	tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))") & createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+
+		insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1),"allmänt","","outrett","",right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","",left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+   
+		dim användaReningar() as integer
+		call readCurrentState(användaReningar) 
+		if tableinfo(sockenTabell,tab_info_nrows) = 0 then
+			iProgress = -2
+		end if
+	case 8'egen swereftabell med spatial fastighet och index
+		redim tableNames(2)
+		tablenames(1) = "Fastigheter_swerefNoIndex"
+		tablenames(2) = "fastighet_yta"
+		call tableOpener(tablenames)
+		select * from tablenames(1) into "Fastigheter_sweref"
+		tempstring = görTillBasTabellReturneraPath("Fastigheter_sweref")
+		
+		insert into Pathtable (tablePath,TableName) values (tempstring, "Fastigheter_sweref")
+
+		call UpdateIndex("Fastigheter_sweref")
+		Alter Table Fastigheter_sweref (add SpatialFastighet Char(40), SpatialShift Char(40))
+		Commit table Fastigheter_sweref
+		Add Column "Fastigheter_sweref" (SpatialFastighet)From fastighet_yta Set To kir Where contains
+		Add Column "Fastigheter_sweref" (SpatialShift)From fastighet_yta Set To fastighet Where contains
+		call tableCloserAndCommiter(tableNames)
+		
+	case 9'egna EnskiltTabeller med spatial fastighet
+	redim tableNames(4)	
+		tablenames(1) = "Enskilt_avlopp_SödraNoIndex"
+		tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
+		tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
+		tablenames(4) = "fastighet_yta"
+		
+		call tableOpener(tablenames)
+		
+		select * from tablenames(1) into "Enskilt_avlopp_Södra"
+		select * from tablenames(2) into "Enskilt_avlopp_Norra"
+		select * from tablenames(3) into "Enskilt_avlopp_Mellersta"
+'				
+		tempstring = görTillBasTabellReturneraPath("Enskilt_avlopp_Södra")
+		tempstring = görTillBasTabellReturneraPath("Enskilt_avlopp_Norra")
+		tempstring = görTillBasTabellReturneraPath("Enskilt_avlopp_Mellersta")
+		
+		Alter Table Enskilt_avlopp_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40) )
+		Add Column "Enskilt_avlopp_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+		Add Column "Enskilt_avlopp_Södra" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
+		
+		Alter Table Enskilt_avlopp_Norra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
+		Add Column "Enskilt_avlopp_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+		Add Column "Enskilt_avlopp_Norra" (SpatialShift) From fastighet_yta Set To Fastighet Where contains
+		
+		Alter Table Enskilt_avlopp_Mellersta (add SpatialFastighet Char(40), SpatialShift Char(40) )
+		Add Column "Enskilt_avlopp_Mellersta" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+		Add Column "Enskilt_avlopp_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
+				
+		call tableCloser(tablenames())
+	case 10
+		tempstring = CreateTable_enskiltIhopslagen()
+		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_mellersta","EnskiltIhopslagen")
+		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_Norra","EnskiltIhopslagen")
+		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_Södra","EnskiltIhopslagen")
+		Commit table EnskiltIhopslagen
+				
+		redim tableNames(2)
+		tableNames(1) = "Lokalt_omhändertagande_slam"
+		tablenames(2) = "fastighet_yta"
+		call tableOpener(tablenames)
+		
+		Select fastighet_yta.KIR, Lokalt_omhändertagande_slam.Diarienr, Lokalt_omhändertagande_slam.Beslutsdatum from Lokalt_omhändertagande_slam, fastighet_yta where Lokalt_omhändertagande_slam.Obj Within fastighet_yta.Obj into slam
+		Alter Table "EnskiltIhopslagen" ( add SlamDispDat Date )
+		Commit table EnskiltIhopslagen
+		Add Column "EnskiltIhopslagen" (SlamDispDat )From slam Set To Beslutsdatum Where COL17 = COL1 
+		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp på: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
+		Commit table EnskiltIhopslagen
+		call UpdateIndex("EnskiltIhopslagen")'already commits
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "EnskiltIhopslagen")
+		call tableCloserAndCommiter(tableNames)	
+	end case
+	
+	call increment(iProgress,iProgressRange,starttime)
+		
+End Sub
+
+sub readCurrentState(användaReningar() as integer)
+	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
+	
+	call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
+	fetch first from socknarOfiltrerade
+	do until eot(socknarOfiltrerade)		
+		tempstring = socknarOfiltrerade.SockenX & "ressultat"
+	
+		if SingletableOpenerConfirmation(tempstring) then 'returns true if sucessfully open table
+			onError goto exitProg 
+			query = "select max(objektid) " & " from " & tempstring & " " & SqlGenWhereColIsNotAny("objektid", gerdinsID) & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
+			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then
+				call closeIfnotClosed("LatestObjectID")	select * from LatestObjectX into LatestObjectID	call görTillBastabell("LatestObjectID")
+			else
+				call closeIfnotClosed("LatestObjectX")
+			end if
+			onError goto 0
+		else
+			tempstring = socknarOfiltrerade.SockenX
+			Insert Into sockenTabell (COL1) values (tempstring)
+		end if			
+		
+		fetch next from socknarOfiltrerade
+	loop
+	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if
+exit sub
+exitProg:
+	print query & "||" & error$()
+	end program
+end sub		

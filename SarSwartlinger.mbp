@@ -1,7 +1,5 @@
 [Link]
-Application = main.mbx
-Module = tabellInsammlare
+Application = SolenVision.mbx
 Module = main
-Module = doEnskiljtSecond
-Module = doReningFirst
-Module = ressultProcessor
+Module = tabellInsammlare(1)
+Module = commonLib1
