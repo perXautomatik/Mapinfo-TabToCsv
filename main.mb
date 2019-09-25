@@ -6,64 +6,213 @@ Dim tablenames(2) as string
 Dim iProgress,iProgressRange,starttime as integer
 ,qm as string
 
-declare sub firstProgressbar
+declare sub populatePathTable
+declare sub removeDupesFromHarRe()
+declare sub createSammanfogadTabell( byval filePath as string)
+declare sub joinRessultTables()
+declare sub sammanfogadTillSammanfogad(värde() as string,påPlatts() as string)
+declare sub openAndRemoveDupes(tablePath as string,byVal tableName as string, byval groupbyColumnsSeparatedWithComma as string)
+declare sub assignObjectName
+declare sub updateObjectNames
 
 Sub Main()
 	print Chr$(12)
+	dim runTime,tempInteger as integer
+	runTime = timer()
 	
 	tablenames(1) = "ErrorTable"
 	tablenames(2) = "fastighet_yta"
 	
-	iprogressRange = 3
-	iprogress = 0	
+	call closeAllBut(tableNames)
 
+	iprogressRange = 11
+	iprogress = 0	
 	ProgressBar "Processing...." & iProgressRange & " items"
-		     Calling firstProgressbar
+		     Calling populatePathTable
 	Range iProgressRange
+	
+	call tableOpener(tablenames)
 
 	call doReningFirst()
 	
 	close table ReningIhopslagen
 	
 	call doEnskiljtSecond()
+		
+	iprogressRange = 13
+	iprogress = 0	
+	ProgressBar "Processing...." & iProgressRange & " items"
+	     Calling joinRessultTables
+	Range iProgressRange
+	tempInteger = 6
+	call silenttidsSummering(tempInteger,tempInteger,runTime)
 	
-	Call assignObjectNames()
+	call doSweref
 
 End Sub
 
-sub createPathTable
+sub joinRessultTables()
+	dim värde(),påPlatts(),insertinto,fromTable,tempstring as string
+	
+	tablenames(1) = "ErrorTable"
+	tablenames(2) = "pathTable"
+	tempstring= applicationDirectory$()
+	
+	onerror goto printCase
+	do case iProgress
+	case 1
+		commit table harRening as applicationDirectory$() & "harReningUtanDubbletter.tab"
+	case 2
+		commit table harInteRening as applicationDirectory$() & "harInteRening.tab"
+	case 3
+		Drop Table sammanfogadTabell
+	case 4
+		call closeAllBut(tablenames)
+	case 5
+		call openAndRemoveDupes(tempstring,"harRening","ObjectNamn, AnlF_efR_Koordinater_X_o_Y, Fliken_Koordinater")
+	case 6
+		call openAndRemoveDupes(tempstring,"harInteRening","Cor, Anteckningar")
+	case 7
+		call openAndRemoveDupes(tempstring,"harInteBeslut","ObjectNamn, AnlF_efR_Koordinater_X_o_Y, Fliken_Koordinater")
+	case 8
+		tempstring= applicationDirectory$() & "sammanfogadTabell.TAB"
+		call createSammanfogadTabell(tempstring)
+	case 9
+		redim värde(0)
+		redim påPlatts(0)
+		call doEnskiljt(värde,påPlatts)
+		call sqlPopulateSammanfogadTabell(värde,påPlatts,"sammanfogadTabell","harInteRening")
+	case 10
+		call assignObjectName()
+	case 11
+		redim värde(0)
+		redim påPlatts(0)
+		call sammanfogadTillSammanfogad(värde,påPlatts)
+		call sqlPopulateSammanfogadTabell(värde,påPlatts,"sammanfogadTabell","harInteBeslut")
+	case 12
+		redim värde(0)
+		redim påPlatts(0)
+		call sammanfogadTillSammanfogad(värde,påPlatts)
+		call sqlPopulateSammanfogadTabell(värde,påPlatts,"sammanfogadTabell","harRening")
+	case 13
+		call updateObjectNames
+	end case
+	print iProgress
+	call increment(iProgress,iProgressRange,starttime)
+	onerror goto 0
+	
+exit sub
+	printCase:
+	print "(" & iprogress & ")" & Error$()
+	end program
+End Sub
+
+sub updateObjectNames
+
+Update sammanfogadTabell Set ObjectNamn = ObjectNamn & " > " & (Len(Fliken_Koordinater)>0) & "|" & (Len(AnlF_efR_Koordinater_X_o_Y)>0) & "^" & rowid DropIndex Auto
+
+end sub
+
+sub assignObjectName
+
+Update sammanfogadTabell Set ObjectNamn = Besöksadress_Huvudfastighet DropIndex Auto
+
+end sub
+
+sub openAndRemoveDupes(tablePath as string,byVal tableName as string, byval groupbyColumnsSeparatedWithComma as string)
+	dim query1,query2 as string
+	,i as integer
+	
+	open table tablePath & tableName & ".tab" as tableToDedupe
+	
+	query1 = "UPDATE tableToDedupe SET dataLängd = "
+		for i = 1 to tableInfo(tableToDedupe,TAB_INFO_NCOLS)
+			query1 = query1 & "len(Col" & i & ") + "
+		next
+	query1 = query1 & "0"
+	
+	Alter Table "tableToDedupe" ( add dataLängd Integer ) Interactive
+	
+	query2 = "SELECT " & getColumnsOfTable_asString("tableToDedupe") &", MAX (dataLängd)FROM tableToDedupe Group BY "& groupbyColumnsSeparatedWithComma &" INTO tableToDedupeUtanDubbletter"
+	
+	onerror goto queryError1
+		run command query1 
+	onerror goto 0
+	
+	onerror goto queryError2
+		run command query2 
+	onerror goto 0
+		
+	commit table tableToDedupeUtanDubbletter as tablePath & "temp.tab"
+	close table tableToDedupe
+	open table tablePath & "temp.tab" as tableName
+	commit table tableName as tablePath & tableName & ".tab"
+	close table tableName
+	open table tablePath & tableName & ".tab"
+	
+exit sub
+queryError1:
+	print "queryError:" & error$()
+	print query1
+	resume next
+queryError2:
+	print "queryError:" & error$()
+	print query2
+	resume next
+end sub
+
+sub sammanfogadTillSammanfogad(värde() as string,påPlatts() as string)
+dim i as integer
+
+	onError goto knytningsFel
+		for i = 1 to 33
+			call knyt_sColumn_TillRessultatTabellsColumn_("Col"&i,"Col"&i,värde,påPlatts)
+		next
+	onError goto 0
+
+exit sub
+
+	knytningsFel:
+	print "knytningsFel" & error$()
+	end program
+end sub
+
+sub populatePathTable
 	dim tempstring,tablenames(3) as string
 	
-	tempstring = "PathTABLE"
-	if not(tableDoesntExist(tempstring)) then
-		close table "pathTable"
-	End If
-	
-	if tableDoesntExist(tempstring) then
-		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
+	do case iProgress
+	case 1
+		tempstring = "PathTABLE"
+		if not(tableDoesntExist(tempstring)) then
+			close table "pathTable"
+		End If
 		
+		if tableDoesntExist(tempstring) then
+			CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
+		end if
+	case 2
 		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Enskilt_avlopp_Södra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Enskilt_avlopp_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Enskilt_avlopp_Mellersta")
-				
+	case 3	
 		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Rening_Södra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Rening_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Rening_Mellersta")
-		
+	case 4	
 		Tempstring = "K:\KARTOR\SOLEN_PUNKTER\Adresspunkter.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "Adresspunkter")
-		
+	case 5	
 		Tempstring = "K:\KARTOR\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_ytaORg")		
-
+	case 6
 		Tempstring = ApplicationDirectory$() & "ErrorTable.TAB"
 		if(not(FileExists(Tempstring))) then
 			Create Table "ErrorTable" (t1 Char(20),f1 Char(100),p1 Char(254)) file Tempstring TYPE NATIVE Charset "WindowsLatin1"
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "ErrorTable")		
-
+	case 7
 		Tempstring = applicationDirectory$() & "fastighet_ytaAd.tab"
 		if(not(FileExists(Tempstring))) then
 			redim tableNames(2)
@@ -80,7 +229,7 @@ sub createPathTable
 			
 		end if
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
-
+	case 8
 		Tempstring = applicationDirectory$() & "reningIhopslagen.tab"
 		if(true) then 'should always be rebuilt
 			Create Table "reningIhopslagen" (
@@ -112,7 +261,7 @@ sub createPathTable
 			call RunUnSpatial("Rening_Norra")
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")		
-
+	case 9
 		Tempstring = applicationDirectory$() & "todo.tab"
 		if(true) then 'should always be rebuilt
 			Create Table "todo" (
@@ -140,7 +289,7 @@ sub createPathTable
 			file Tempstring TYPE NATIVE Charset "WindowsLatin1"
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "todo")		
-
+	case 10
 		Tempstring = applicationDirectory$() & "EnskiljtIhopslagen.tab"
 		if(true) then
 			Create Table "EnskiljtIhopslagen" 
@@ -177,10 +326,20 @@ sub createPathTable
 			commit table EnskiljtIhopslagen
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "EnskiljtIhopslagen")		
-		
+	case 11	
 		Tempstring = applicationDirectory$() & "sammanfogadTabell.TAB"
 		if(not(FileExists(Tempstring))) then
-			Create Table "sammanfogadTabell" (
+			call createSammanfogadTabell(tempString)
+		end if
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "sammanfogadTabell")				
+	end case
+	
+	call increment(iProgress,iProgressRange,starttime)
+		
+End Sub
+
+sub createSammanfogadTabell( byval filePath as string)
+		Create Table "sammanfogadTabell" (
 				Anteckning Char(254),
 				Besöksadress_Huvudfastighet Char(50),
 				Besöksadress_Adress Char(50),
@@ -214,46 +373,35 @@ sub createPathTable
 				PunkttypER Char(30),
 				FNR integer,
 				ObjectNamn Char(50)
-			) file tempString TYPE NATIVE Charset "WindowsLatin1"
+			) file filePath TYPE NATIVE Charset "WindowsLatin1"
 			Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
-		end if
-	insert into Pathtable (tablePath,TableName) values (Tempstring, "sammanfogadTabell")			
-	
-	end if
-		
 end sub
 
-sub firstProgressbar
-	
-	do case iProgress
-	case 1
-		call closeAllBut(tableNames)
-	case 2
-		call createPathTable
-	case 3
-		call tableOpener(tablenames)
-	end case
-	
-	call increment(iProgress,iProgressRange,starttime)
-		
-End Sub
+sub removeDupesFromHarRe
+dim query1,query2 as string
 
-sub assignObjectNames
-	
-Update harRening Set dataLängd = len(Anteckning) + len(flik_Avloppsänlaggni_Boendetyp) +
-len(flik_Avloppsa_Avrinningsområde) + len(Anläggning_för_S_Anläggningstyp) + len(Anläggning_för_Slam_Toaletttyp) + len(AnlförEfterR_Anläggningstyp) + len(Anläggning_för_EfTR_Toaletttyp) DropIndex Auto
+Alter Table "harRening" ( add dataLängd Integer ) Interactive
 
-Select 
-Anteckning , Besöksadress_Huvudfastighet , Besöksadress_Adress , Besöksadress_Postnr , Besöksadress_Ort , Verksamhetsutövare_Namn , Verksamhetsutöv_Person_orgnr , Fakturamottagare_NAMN , Fakturamottagare_Faktura_ADRESS , Fakturamottagare_Faktura_POSTNR , Fakturamottagare_Faktura_POSTOR , flik_Avloppsänlaggni_Boendetyp , flik_Avloppsa_Avrinningsområde , Anläggning_för_S_Anläggningstyp , Anläggning_för_Slam_Toaletttyp , AnlförEfterR_Anläggningstyp , Anläggning_för_EfTR_Toaletttyp , Anläggning_fö_SCertifieringstyp , Anläggning_för_Slamav_Volym_m3 , flik_Avloppsanläg_Beslutsdatum , flik_Avloppsa_Besiktningsdatum , flik_Avloppsanläggn_Byggnadsår , Fliken_Koordinater , PunkttypAB , Inventeringsinformation_Status , Inventeringsinformation_Datum , Anl_för_EftR_TöInterv_mån , fliken_Fastigheter , Anläggning_för_EfterföljRText , AnlF_efR_Koordinater_X_o_Y , PunkttypER , FNR , ObjectNamn , rowIndex , gRowIndex , 
-max ( dataLängd ) 
-from harRening
- group by ObjectNamn ,
- AnlF_efR_Koordinater_X_o_Y,
- Fliken_Koordinater 
- 
- into HarReningUtanDubbletter
+query1 = "UPDATE harRening SET dataLängd = len(Anteckning) + len(flik_Avloppsänlaggni_Boendetyp) + len(flik_Avloppsa_Avrinningsområde) + len(Anläggning_för_S_Anläggningstyp) + len(Anläggning_för_Slam_Toaletttyp) + len(AnlförEfterR_Anläggningstyp) + len(Anläggning_för_EfTR_Toaletttyp) DropIndex Auto"
+query2 = "SELECT " & getColumnsOfTable_asString("harRening") &", MAX (dataLängd)FROM harRening Group BY ObjectNamn, AnlF_efR_Koordinater_X_o_Y, Fliken_Koordinater INTO HarReningUtanDubbletter"
 
-	
+onerror goto queryError1
+	run command query1 
+onerror goto 0
+
+onerror goto queryError2
+	run command query2 
+onerror goto 0
+
+exit sub
+queryError1:
+	print "queryError:" & error$()
+	print query1
+	resume next
+queryError2:
+	print "queryError:" & error$()
+	print query2
+	resume next
 End Sub
 
 sub RunUnSpatial(ByVal tableName as string)
