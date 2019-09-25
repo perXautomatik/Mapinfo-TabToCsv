@@ -1,154 +1,118 @@
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
+include "Menu.def"
 
-sub doEnskiljtSecond()
 
-	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,total as integer,
-	avslutsvariabel as logical,
-	qM,tempString,query,värde(), påPlatts(),kir as string
+declare sub ProgressEnskiljt
+declare sub commitAndAdindexColumn(tempAlias as alias)
+
+Dim iProgress,iProgressRange,starttime as integer
+,qm as string
+
+sub knytEnskiljtSecond()
+
+	dim Y,begränsningsvariabel,tidsbegränsning,endtime,totalTid as integer
+	,avslutsvariabel as logical
+	,qM,tempString,query,värde(), påPlatts(),kir,tidsöversikt,canceledString as string
 	
-	statTime = Timer()
-	qM = chr$(34)
-	avslutsvariabel = false
-	tidsbegränsning = Timer() +1
-	i = 0
+	iProgressRange = 5
+	iProgress = 1
+	startTime = Timer()
 	
 	call openSingleTable("enskiljtIhopslagen")
-			
-	query = "select * from EnskiljtIhopSlagen where kir = any(select Besöksadress_Huvudfastighet from sammanfogadTabell) into HarReningTabel"	
-	run command query
 	
-	total = tableInfo(HarReningTabel,8)
-		
-	Fetch First From HarReningTabel 
-	Do Until EOT(HarReningTabel) or avslutsvariabel
-		
-		dim t1,t2 as date,
-		rowIdX,x as integer
-		
-		rowIdX = HarReningTabel.rowId
-	
-		y = Timer()-statTime
-		if(Timer() > tidsbegränsning) then
-			tidsbegränsning = tidsDialog(i,y,total)
-			if(tidsbegränsning = 0) then
-				avslutsvariabel = true
-			end if
-		end if		
-	
-		onError goto printError
-		
-			select * from HarReningTabel where rowId = rowIdX into nuvarandeRad
-				
-			t1 = nuvarandeRad.beslut_datum 
-			t2 = nuvarandeRad.utförd_Datum	
-			kir = nuvarandeRad.kir
+	ProgressBar "Processing...." & iProgressRange & " items"
+		     Calling ProgressEnskiljt
+	Range iProgressRange
 			
-			call doEnskiljt(värde,påPLatts)
-			
-			select * from sammanfogadTabell where flik_Avloppsanläg_Beslutsdatum=t1 AND flik_Avloppsa_Besiktningsdatum=t2 AND kir=Besöksadress_Huvudfastighet into sammanfogadTabellMatch
-		onError goto 0
-		
-		if(tableInfo(sammanfogadTabellMatch,8) > 0) then
-			
-			for x = 1 to ubound(påPlatts)
-				onError goto queryError
-					query = "Add Column " & qM & sammanfogadTabellMatch & qM & " (" & påPlatts(x) & ") "  & "From nuvarandeRad Set To " & värde(x) & " where flik_Avloppsanläg_Beslutsdatum=beslut_datum"
-					run command query
-				onError goto 0
-			next
-			
-
-		end if
-		
-		redim värde(0)
-		redim påPlatts(0)
-		
-		i = i+1
-		continueError:
-		
-	fetch next from HarReningTabel		
-	loop
-		
-	select * from EnskiljtIhopSlagen where not(kir = any (select Besöksadress_Huvudfastighet from sammanfogadTabell)) into noReningTabel
-		
-exit sub
-
-erro1:
-	print "Error1:" & rowIdX & ":row " & error$()
-	print query
-resume exitSub
-
-
-printError:
-	print "printError:" & x & "/" & rowIdX & ":row " & error$()
-	print query
-	resume exitSub
-
-printError3:
-	print 3 & error$()
-	print query
-	resume exitSub
+	call silenttidsSummering(iProgress,iProgressRange,starttime)
 	
-printError2:
-	print 2 & error$() 
-	print query
-	resume exitSub
-	
-printError4:
-	print 4 & error$()
-	print query
-	resume exitSub
+end sub
 
-printError5:
-	print 3 & error$()
-	print query
-resume exitSub
+sub ProgressEnskiljt()
 
+	dim påPlatts(),värde() as string
+	,tempalias as alias
+		
+	do case iprogress
+		case 1
+			call knytEnskiljt(värde,påPLatts)
+		case 2
+			tempAlias = "enskiljtIhopslagen"
+			call commitAndAdindexColumn(tempAlias)		
+		case 3
+			tempAlias = "sammanfogadTabell"
+			call commitAndAdindexColumn(tempAlias)
+		case 4
+			select * from EnskiljtIhopslagen group by cor, anteckningar into groupedEnskiljt
+		case 5
+			call sqlJoinSammanfogadTablleAndGroupedEnskiljtintoHarRening
+	end case
 
-queryError:
-		tempstring = TableOfChoiseKir.kir
-		insert into errorTable (t1,f1,p1) values ("queryError", tempString, query)
-		print "error commited"
-		commit table errorTable
-Resume continueError
+	call increment(iProgress,iProgressRange,starttime)
 
-exitSub:
 end sub
 
 
-sub DoEnskiljt(värde() as string,påPlatts() as string)
-	dim qM as string
-	qM = chr$(34)
 
+sub commitAndAdindexColumn(tableName as alias)
 
-	onError goto knytningsFel
-		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besöksadress_Huvudfastighet",värde,påPlatts)'kir
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avloppsänlaggni_Boendetyp",värde,påPlatts)'typ_byggnad
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsområde",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anläggning_för_S_Anläggningstyp",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_Slam_Toaletttyp",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlförEfterR_Anläggningstyp",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anläggning_fö_SCertifieringstyp",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anläggning_för_Slamav_Volym_m3",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanläggn_Byggnadsår",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anläggning_för_EfterföljRText",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besöksadress_Adress",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besöksadress_Postnr",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besöksadress_Ort",värde,påPlatts)
-		call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",värde,påPlatts)
+commit table tableName
+	Alter Table tableName ( add rowIndex Integer ) Interactive
+	Update tableName Set rowIndex = rowid DropIndex Auto
+
+end sub
+
+sub stepProgressEnskiljt
+
+	dim rowIdX,x,Y,begränsningsvariabel,statTime,tidsbegränsning,tempInteger,currentId as integer
+	,avslutsvariabel as logical
+	,tempString,query,påPlatts(),värde(),anslutna(),kir, t1,t2 as string
+	
+	
+	fetch rec iProgress from HarReningTabel
+	rowIdx = iProgress
+	
+	onError goto printError
+	
+		select * from HarReningTabel where rowId = rowIdX into nuvarandeRad
+			
+		t1 = nuvarandeRad.beslut_datum 
+		t2 = nuvarandeRad.utförd_Datum	
+		kir = nuvarandeRad.kir
+		
+		call knytEnskiljt(värde,påPLatts)
+		
+		select * from sammanfogadTabell where 
+		
+		kir=Besöksadress_Huvudfastighet and 
+		(flik_Avloppsanläg_Beslutsdatum="" OR flik_Avloppsanläg_Beslutsdatum=t1) 
+		AND
+		(flik_Avloppsa_Besiktningsdatum=t2 OR flik_Avloppsa_Besiktningsdatum="")
+		
+		into sammanfogadTabellMatch
 	onError goto 0
+	
+	if(tableInfo(sammanfogadTabellMatch,8) > 0) then
+		for x = 1 to ubound(påPlatts)
+			onError goto queryError
+				query = "Add Column " & qM & sammanfogadTabellMatch & qM & " (" & påPlatts(x) & ") "  & "From nuvarandeRad Set To " & värde(x) & " where flik_Avloppsanläg_Beslutsdatum=beslut_datum"
+				run command query
+			onError goto 0
+		next
+	end if
+	
+	redim värde(0)
+	redim påPlatts(0)
+	
+call increment(iProgress,iProgressRange,starttime)
 
 exit sub
-
-	knytningsFel:
-	print "knytningsFel" & error$()
-	end program
 	
+queryError:
+		print "Qer: " & error$() & TableOfChoiseKir.kir
+		print query
+printError:
+		print "Per: " & error$() & TableOfChoiseKir.kir
+		print query
 end sub

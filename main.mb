@@ -55,8 +55,8 @@ Sub Main()
 	     Calling actOnRessultTables
 	Range iProgressRange
 	
-	tempInteger = 6
-	call silenttidsSummering(tempInteger,tempInteger,runTime)
+
+	call silenttidsSummering(iprogress,iprogressRange,runTime)
 	
 End Sub
 
