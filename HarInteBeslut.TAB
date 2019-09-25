@@ -1,0 +1,49 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 36
+    Anteckning Char (254) ;
+    Besöksadress_Huvudfastighet Char (50) ;
+    Besöksadress_Adress Char (50) ;
+    Besöksadress_Postnr Char (10) ;
+    Besöksadress_Ort Char (30) ;
+    Verksamhetsutövare_Namn Char (40) ;
+    Verksamhetsutöv_Person_orgnr Char (20) ;
+    Fakturamottagare_NAMN Char (40) ;
+    Fakturamottagare_Faktura_ADRESS Char (50) ;
+    Fakturamottagare_Faktura_POSTNR Char (10) ;
+    Fakturamottagare_Faktura_POSTOR Char (30) ;
+    flik_Avloppsänlaggni_Boendetyp Char (10) ;
+    flik_Avloppsa_Avrinningsområde Char (5) ;
+    Anläggning_för_S_Anläggningstyp Char (10) ;
+    Anläggning_för_Slam_Toaletttyp Char (10) ;
+    AnlförEfterR_Anläggningstyp Char (10) ;
+    Anläggning_för_EfTR_Toaletttyp Char (10) ;
+    Anläggning_fö_SCertifieringstyp Char (10) ;
+    Anläggning_för_Slamav_Volym_m3 Char (10) ;
+    flik_Avloppsanläg_Beslutsdatum Char (11) ;
+    flik_Avloppsa_Besiktningsdatum Char (11) ;
+    flik_Avloppsanläggn_Byggnadsår Char (11) ;
+    Fliken_Koordinater Char (30) ;
+    PunkttypAB Char (30) ;
+    Inventeringsinformation_Status Char (10) ;
+    Inventeringsinformation_Datum Char (11) ;
+    Anl_för_EftR_TöInterv_mån Char (10) ;
+    fliken_Fastigheter Char (254) ;
+    Anläggning_för_EfterföljRText Char (254) ;
+    AnlF_efR_Koordinater_X_o_Y Char (30) ;
+    PunkttypER Char (30) ;
+    FNR Integer ;
+    ObjectNamn Char (50) ;
+    rowIndex Integer ;
+    dataLängd Integer ;
+    _COL36 Float ;
+begin_metadata
+"\MapInfo" = ""
+"\MapInfo\TableID" = "1c5b0a35-0141-4cb4-bbe6-35b368822156"
+"\MapInfo\ParentTableID" = "588ec948-ebe0-49a5-80e4-bb766a0c6742"
+"\IsReadOnly" = "FALSE"
+end_metadata

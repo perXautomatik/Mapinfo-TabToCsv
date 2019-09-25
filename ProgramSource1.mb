@@ -1,119 +1,665 @@
-Include "MapBasic.def" 
+Include "MapBasic.def"
 
-Declare Sub Main 
+Declare Sub Main
+declare sub insertToTable(byVal tablePath as string)
+declare function arrayAsStringIgnoreEmpty(tableX() as string) as string
+declare sub spatialPailing(tablePaths as string)
+declare sub UNspatialPailing(tablePaths as string)
+declare sub PivotablecolumnAssosiation(tableName as alias,värde() as string,påPlatts() as string)
+'declare function columnIf(boolean as logical, trueVal as string,falseVal as string) as string
+declare sub genereraFastighetsYtaMedFastighetsAdress()
+declare sub createsammanfogadTabell()
+declare sub knyt_sColumn_TillRessultatTabellsColumn_(byVal påPosition as string,byVal MedVärde as string,värde() as string,påPlatts() as string)
+declare sub PivotableDoEnskiljt(värde() as string,påPlatts() as string)
+declare sub PivotableDoRening(värde() as string,påPlatts() as string)
+declare sub PivotableDoSweref(värde() as string,påPlatts() as string)
+declare sub DoEnskiljt(värde() as string,påPlatts() as string)
+declare sub DoRening(värde() as string,påPlatts() as string)
+declare sub DoSweref(värde() as string,påPlatts() as string)
+declare sub doReningFirst()
+declare sub doEnskiljtSecond()
+declare sub columnAssosiation(tableName as alias,värde() as string,påPlatts() as string)
+declare sub getAnslutna(anslutan() as string)
+declare function getColumnsOfTable_asString(ByVal tableName as string) as string
+declare function tidsdialog(i as integer, y as integer,total as integer) as integer
+declare sub RunSpatial(ByVal tempString as string)
+declare sub doEnskijtSecond()
 
+sub getAnslutna(anslutan() as string)
+	dim tempAlias as alias
+	dim x,y as integer
 
-'selects every relevant object from the 7 avloppskikt by supplied list
-'the ressult join is editable and reffere to the actuall skikts.
-'no coppies or static objekts.
-
-'inputlist: "C:\Users\crbk01\Desktop\Ny mapp\ärendenRFastighetFilnamn.TAB"
-'fastighetsyta: "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\Fastighet_yta.TAB"
-
-'warning! for the sake of making complex joins, and to surcomvent mapbasics limitations, a empty column is added (PERMANENTly) to every table involved.
-'this is for the sake of always having a empty = empty rellation to fall back on when everything else fails
-
-'for the sake of applying unions between simlessly similar tables, (PERMANENT) standardisation of ther datatypes is applied as a precaution. 
-'this values should be higher than expected but could in extreme cases cause data loss. or invalidate old code.
-
-'changes made by this script can of course be adressed after the execution, but no reverting actions is inmplented currently
+	For x=1 to TableInfo(TableOfChoiseKir, TAB_INFO_NCOLS)    		
+		tempAlias = "TableOfChoiseKir.col"+str$(x)
+ 		
+ 		if ColumnInfo(TableOfChoiseKir, "col"+str$(x), COL_INFO_NAME) like "anslutna_%" then
+ 			select tempAlias from TableOfChoiseKir into valdKolumn
+ 			fetch first from valdKolumn
+ 			
+ 			if(not(valdKolumn.col1 = "")) then
+ 				y = ubound(anslutan())+1
+ 				redim anslutan(y)
+ 				anslutan(y)= valdKolumn.col1
+ 			end if
+ 		end if     		
+	Next
+	
+end sub
 
 Sub Main()
 
-	Close All Interactive 
-	Open Table "G:\sbf\Livsmiljö\Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB" as SF 
-	Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\Fastighet_yta.TAB" Interactive
+	Close All Interactive
+	call genereraFastighetsYtaMedFastighetsAdress()
+	call createsammanfogadTabell()
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_mellersta.TAB")
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_norra.TAB")
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_södra.TAB")
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Mellersta.TAB")
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Södra.TAB")
+	'call InsertToTable("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Norra.TAB")
+	'call InsertToTable("G:\sbf\Livsmiljö\Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB")
+
+	call doReningFirst()
+	close table ReningIhopslagen
+	call doEnskiljtSecond()
+
+End Sub
+
+sub RunSpatial(ByVal tempString as string)
+dim query as string
+	query = "Insert Into EnskiljtIhopSlagen (" & getColumnsOfTable_asString("EnskiljtIhopSlagen") & ") Select " & getColumnsOfTable_asString("tableOfChoiseKir") & " From tableOfChoiseKir DropIndex Auto"
+	call spatialPailing(tempString)
+	onError goto ContinueError
+		run command query
+	onError goto 0
+	close table tableOfChoise
 	
-	Open Table "C:\Users\crbk01\Desktop\ärendenRFastighetFilnamn.TAB" Interactive
-	Select ärendenRFastighetFilnamn.Diarienummer, ärendenRFastighetFilnamn.Fastighet, ärendenRFastighetFilnamn.Filnamn from  ärendenRFastighetFilnamn,Fastighet_yta where ärendenRFastighetFilnamn.Fastighet = Fastighet_yta.KIR into medSkiften
+	ContinueError:
+	print "ContinueError" & error$()
+	print query
+	resume next
 	
-	Create Table "FastigheterMedObject" (Diarienummer Char(14),Fastighet Char(31),Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Ny mapp\FastigheterMedObject.TAB" TYPE NATIVE Charset "WindowsLatin1"
-	Create Map For FastigheterMedObject CoordSys Earth Projection 1, 104
-	Create Index On FastigheterMedObject (Filnamn)
-	Create Object As Union From medSkiften Into Table FastigheterMedObject Group by Fastighet Data Fastighet=Fastighet, Diarienummer = Diarienummer, Filnamn = Filnamn
-	commit table FastigheterMedObject
-	close table FastigheterMedObject
+end sub
+
+sub doEnskijtSecond()
+
+	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,total as integer
+	dim avslutsvariabel as logical
+	dim qM,tempString,query as string
+	statTime = Timer()
+	qM = chr$(34)
+	avslutsvariabel = false
+	tidsbegränsning = Timer() +1
 	
-	Open Table "C:\Users\crbk01\Desktop\Ny mapp\FastigheterMedObject.TAB" as FO 
+	Create Table "EnskiljtIhopslagen" (Diarienummer Char(30),Fastighet_tillstånd Char(40),Typ_byggnad Char(15),Antal_hushåll_tillstånd Char(17),Fastighet_rening Char(33),Typ_Slamavskiljare Char(15),Storlek_m3 Float,Typ_rening Char(15),Storlek_m2 Float,Typ_sluten_tank Char(8),Storlek__m3 Float,Beslut_datum Date,Utförd_datum Date,Avgift Char(10),Tillstånd_giltigt_tom Date,Anteckningar Char(254),KIR Char(40),ADRESS Char(105),POSTNR Char(9),POSTORT Char(105),FNR integer) 
+	file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
+	
+	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Mellersta.TAB")
+	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Södra.TAB")
+	call runSpatial("K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Norra.TAB")
+	
+	total = tableInfo(EnskiljtIhopSlagen,8)
+	
+	select * from EnskiljtIhopSlagen where not(kir = any (select Besöksadress_Huvudfastighet from sammanfogadTabell)) into noReningTabel
+	select * from EnskiljtIhopSlagen where kir = any(select Besöksadress_Huvudfastighet from sammanfogadTabell) into HarReningTabel 
+	
+	Fetch First From HarReningTabel 
+	Do Until EOT(HarReningTabel) or avslutsvariabel
 		
-	Alter Table "FO" ( modify Fastighet Char(50) ) Interactive
-	Alter Table "FO" (add alltidsant Smallint ) Interactive
+			
+		
+		
+		
+		
+		
+		
+		i = i+1
+	fetch next from EnskiljtIhopSlagen
+		
+		y = Timer()-statTime
+		if(Timer() > tidsbegränsning) then
+			tidsbegränsning = tidsDialog(i,y,total)
+			if(tidsbegränsning = 0) then
+				avslutsvariabel = true
+			end if
+		end if		
+	loop
+		
+exit sub
 
-dim l as integer
+printError:
+	print "printError" & error$()
+	print query
+	resume exitSub
 
-l = 2 'Söd 1, norr 2, mellersta 3'
-
-Select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "bes_dat", utförddatum "utförddat", Status "stat", Utskick1_datum "utskick_dat", Anteckning "ant", FASTIGHET "fas", Fastighet_tillstånd "fas_till", Ärendenr "diaNr" from FO,SF 
-			where (FO.Fastighet = SF.FASTIGHET OR FO.Obj contains SF.Obj) AND (FO.alltidsant = SF.alltidsant) order by fil into sweref
-
-	do case l
-		case 1
-		Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Södra.TAB" as RenSöd Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_södra.TAB" as EnSöd 
+printError3:
+	print 3 & error$()
+	print query
+	resume exitSub
 	
-			select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Be_dat", Utförd_datum "Ut_dat", Reningstyp "typ", Storlek_m2 "m2", Kommentarer "Kom", Fastighet_rening "Fas_ren", Anslutna_fastigheter_1 "Af_1", Anslutna_fastigheter_2 "Af_2", Anslutna_fastigheter_3 "Af_3", Anslutna_fastigheter_4 "Af_4", Anslutna_fastigheter_5 "Af_5", Anslutna_fastigheter_6 "Af_6", Anslutna_fastigheter_7 "Af_7", Anslutna_fastigheter_8 "Af_8", Anslutna_fastigheter_9 "Af_9", Anslutna_fastigheter_10 "Af_10", Antal_hushåll_rening "An_hus_ren" from FO,RenSöd
-			where (FO.Fastighet = any( RenSöd.Fastighet_rening, RenSöd.Anslutna_fastigheter_1, RenSöd.Anslutna_fastigheter_2, RenSöd.Anslutna_fastigheter_3, RenSöd.Anslutna_fastigheter_4, RenSöd.Anslutna_fastigheter_6, RenSöd.Anslutna_fastigheter_8, RenSöd.Anslutna_fastigheter_9, RenSöd.Anslutna_fastigheter_10, RenSöd.Anslutna_fastigheter_5, RenSöd.Anslutna_fastigheter_7) OR FO.obj contains RenSöd.obj) AND (RenSöd.alltidsant = FO.alltidsant) order by fil into SödraRening
+printError2:
+	print 2 & error$() 
+	print query
+	resume exitSub
+	
+printError4:
+	print 4 & error$()
+	print query
+	resume exitSub
+
+printError5:
+	print 3 & error$()
+	print query
+resume exitSub
+
+	exitSub:
+
+end sub
+
+sub doReningFirst()
+
+	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,total as integer
+	dim avslutsvariabel as logical
+	dim qM,tempString,query as string
+	statTime = Timer()
+	qM = chr$(34)
+	avslutsvariabel = false
+	tidsbegränsning = Timer() +1
+	
+	Create Table "reningIhopslagen" (Fastighet_rening Char(34),Antal_hushåll_rening Char(17),Reningstyp Char(15),Storlek_m2 Float,Beslut_datum Char(10),Utförd_datum Char(10),Kommentarer Char(254),Anslutna_fastigheter_1 Char(34),Anslutna_fastigheter_2 Char(50),Anslutna_fastigheter_3 Char(50),Anslutna_fastigheter_4 Char(50),Anslutna_fastigheter_5 Char(50),Anslutna_fastigheter_6 Char(50),Anslutna_fastigheter_7 Char(50),Anslutna_fastigheter_8 Char(50),Anslutna_fastigheter_9 Char(50),Anslutna_fastigheter_10 Char(50),Cor Char (30)) 
+	file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
 			
-			Select FO.Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Beslut", Utförd_datum "Utförd", Typ_byggnad "Byggnad", Typ_Slamavskiljare "Slam", Storlek_m3 "S_m3", Typ_rening "Rening", Storlek_m2 "R_m2", Typ_sluten_tank "Tank", Storlek__m3 "T_m3", EnSöd.Diarienummer "Diarenr", Fastighet_tillstånd "Fast_tillstånd", Antal_hushåll_tillstånd "Antal", Fastighet_rening "Fast_rening", Avgift "Avg_", Tillstånd_giltigt_tom "Giltigt_t_o_m", Anteckningar "Ant_" from FO,EnSöd
-			where (((FO.Fastighet = any(EnSöd.Fastighet_tillstånd, EnSöd.Fastighet_rening)) OR (FO.obj contains EnSöd.obj)) AND FO.alltidsant = EnSöd.alltidsant) order by fil into SödraEnsk
+	tempString = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Mellersta.TAB"
+	query = "Insert Into reningIhopslagen (" & getColumnsOfTable_asString("reningIhopslagen") & ") Select " & getColumnsOfTable_asString("tableOfChoiseKir") & " From tableOfChoiseKir DropIndex Auto"
+	
+	call UNspatialPailing(tempString)
+	onError goto ContinueError
+		run command query
+	onError goto 0
+	close table tableOfChoise
+	
+	tempString = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Södra.TAB"
+	call UNspatialPailing(tempString)	
+	onError goto ContinueError
+		run command query
+	onError goto 0
+	close table tableOfChoise
+	
+	tempString = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Norra.TAB"
+	call UNspatialPailing(tempString)	
+	onError goto ContinueError
+		run command query
+	onError goto 0
+	close table tableOfChoise
+	
+	total = tableInfo(reningIhopslagen,8)
+	
+	Fetch First From reningIhopslagen
+	
+	Do Until EOT(reningIhopslagen) or avslutsvariabel
+		dim anslutna() as string
+		dim currentId,x,tempInteger as integer
+		
+		currentID = reningIhopslagen.rowId 
 			
+		select * from reningIhopslagen where rowId = currentId into TableOfChoiseKir
 			
+		call getAnslutna(anslutna)
 				
-			browse * from SödraEnsk browse * from SödraRening
-	
-			Create Table "Filer" (Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Filer.TAB" TYPE NATIVE Charset "WindowsLatin1"
-			
-			Insert Into Filer ( COL1) Select COL3 From SödraRening DropIndex Auto
-		
-			Insert Into Filer ( COL1) Select COL3 From SödraEnsk DropIndex Auto
-			Select * from Filer group by Filnamn order by Filnamn into Temp
-			Export "Temp" Into "C:\Users\crbk01\Desktop\Södra.txt" Type "ASCII" CharSet "WindowsLatin1"
-			drop table Filer	
+		for x = 1 to ubound(anslutna)
+			dim påPlatts(),värde() as string
+			onError goto printError2	
 				
-		case 2
-		Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_Norra.TAB" as Rennor Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_Norra.TAB" as Ennor
-					
-			select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Be_dat", Utförd_datum "Ut_dat", Reningstyp "typ", Storlek_m2 "m2", Kommentarer "Kom", Fastighet_rening "Fas_ren", Anslutna_fastigheter_1 "Af_1", Anslutna_fastigheter_2 "Af_2", Anslutna_fastigheter_3 "Af_3", Anslutna_fastigheter_4 "Af_4", Anslutna_fastigheter_5 "Af_5", Anslutna_fastigheter_6 "Af_6", Anslutna_fastigheter_7 "Af_7", Anslutna_fastigheter_8 "Af_8", Anslutna_fastigheter_9 "Af_9", Anslutna_fastigheter_10 "Af_10", Antal_hushåll_rening "An_hus_ren" from FO,Rennor
-			where (FO.Fastighet = any( Rennor.Fastighet_rening, Rennor.Anslutna_fastigheter_1, Rennor.Anslutna_fastigheter_2, Rennor.Anslutna_fastigheter_3, Rennor.Anslutna_fastigheter_4, Rennor.Anslutna_fastigheter_6, Rennor.Anslutna_fastigheter_8, Rennor.Anslutna_fastigheter_9, Rennor.Anslutna_fastigheter_10, Rennor.Anslutna_fastigheter_5, Rennor.Anslutna_fastigheter_7) OR FO.obj contains Rennor.obj) AND (Rennor.alltidsant = FO.alltidsant) order by fil into norraRening
+			call DoRening(värde,påPlatts)
+			onError goto 0
 			
-			Select FO.Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Beslut", Utförd_datum "Utförd", Typ_byggnad "Byggnad", Typ_Slamavskiljare "Slam", Storlek_m3 "S_m3", Typ_rening "Rening", Storlek_m2 "R_m2", Typ_sluten_tank "Tank", Storlek__m3 "T_m3", Ennor.Diarienummer "Diarenr", Fastighet_tillstånd "Fast_tillstånd", Antal_hushåll_tillstånd "Antal", Fastighet_rening "Fast_rening", Avgift "Avg_", Tillstånd_giltigt_tom "Giltigt_t_o_m", Anteckningar "Ant_" from FO,Ennor
-			where (((FO.Fastighet = any(Ennor.Fastighet_tillstånd, Ennor.Fastighet_rening)) OR (FO.obj contains Ennor.obj)) AND FO.alltidsant = Ennor.alltidsant) order by fil into norraEnsk
+			call knyt_sColumn_TillRessultatTabellsColumn_(qM & anslutna(x) & qM,"Besöksadress_Huvudfastighet",värde,påPlatts)
 			
-			 browse * from norraEnsk browse * from norraRening
+			onError goto printError3
+				query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(påPlatts) & ") Select " & arrayAsStringIgnoreEmpty(värde) & " From TableOfChoiseKir DropIndex Auto"
+			onError goto 0
+			
+			onError goto printError
+				run command query
+			onError goto 0
+			
+			reDim påPlatts(0)
+			reDim värde(0)
+		next
+		
+		i = i +1
+
+		reDim anslutna(0)
+		fetch next from reningIhopslagen
+		
+		y = Timer()-statTime
+		if(Timer() > tidsbegränsning) then
+			tidsbegränsning = tidsDialog(i,y,total)
+			if(tidsbegränsning = 0) then
+				avslutsvariabel = true
+			end if
+		end if		
+	loop
+		
+exit sub
+ContinueError:
+	print "ContinueError" & error$()
+	print query
+	resume next
+
+printError:
+	print "printError" & error$()
+	print query
+	resume exitSub
+
+printError3:
+	print 3 & error$()
+	print query
+	resume exitSub
 	
-			Create Table "Filer" (Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Filer.TAB" TYPE NATIVE Charset "WindowsLatin1"
-			
-			Insert Into Filer ( COL1) Select COL3 From norraRening DropIndex Auto
+printError2:
+	print 2 & error$() 
+	print query
+	resume exitSub
 	
-			Insert Into Filer ( COL1) Select COL3 From norraEnsk DropIndex Auto
-			Select * from Filer group by Filnamn order by Filnamn into Temp
-			Export "Temp" Into "C:\Users\crbk01\Desktop\Norra.txt" Type "ASCII" CharSet "WindowsLatin1"
-			drop table Filer	
+printError4:
+	print 4 & error$()
+	print query
+	resume exitSub
+
+printError5:
+	print 3 & error$()
+	print query
+resume exitSub
+
+	exitSub:
+
+end sub
+
+function tidsdialog(i as integer, y as integer,total as integer) as integer
+	dim textTemp as string
+	dim tidsbegränsning,number as integer
+	
+	number = Y/i
+	Set Format Number "local"
 		
-		case 3
-		Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_mellersta.TAB" as Renmellerst Open Table "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_mellersta.TAB" as Enmellerst
-				
+	textTemp = "poster: " & i & " (" & number & "/per post) " & y/60 & " minuter," & i/total*100 & "%"
+	Dialog
+		control statictext title textTemp
 		
-			select Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Be_dat", Utförd_datum "Ut_dat", Reningstyp "typ", Storlek_m2 "m2", Kommentarer "Kom", Fastighet_rening "Fas_ren", Anslutna_fastigheter_1 "Af_1", Anslutna_fastigheter_2 "Af_2", Anslutna_fastigheter_3 "Af_3", Anslutna_fastigheter_4 "Af_4", Anslutna_fastigheter_5 "Af_5", Anslutna_fastigheter_6 "Af_6", Anslutna_fastigheter_7 "Af_7", Anslutna_fastigheter_8 "Af_8", Anslutna_fastigheter_9 "Af_9", Anslutna_fastigheter_10 "Af_10", Antal_hushåll_rening "An_hus_ren" from FO,Renmellerst
-			where (FO.Fastighet = any( Renmellerst.Fastighet_rening, Renmellerst.Anslutna_fastigheter_1, Renmellerst.Anslutna_fastigheter_2, Renmellerst.Anslutna_fastigheter_3, Renmellerst.Anslutna_fastigheter_4, Renmellerst.Anslutna_fastigheter_6, Renmellerst.Anslutna_fastigheter_8, Renmellerst.Anslutna_fastigheter_9, Renmellerst.Anslutna_fastigheter_10, Renmellerst.Anslutna_fastigheter_5, Renmellerst.Anslutna_fastigheter_7) OR FO.obj contains Renmellerst.obj) AND (Renmellerst.alltidsant = FO.alltidsant) order by fil into mellerstaRening
-			
-			Select FO.Diarienummer "dia", Fastighet "fast", Filnamn "fil", Beslut_datum "Beslut", Utförd_datum "Utförd", Typ_byggnad "Byggnad", Typ_Slamavskiljare "Slam", Storlek_m3 "S_m3", Typ_rening "Rening", Storlek_m2 "R_m2", Typ_sluten_tank "Tank", Storlek__m3 "T_m3", Enmellerst.Diarienummer "Diarenr", Fastighet_tillstånd "Fast_tillstånd", Antal_hushåll_tillstånd "Antal", Fastighet_rening "Fast_rening", Avgift "Avg_", Tillstånd_giltigt_tom "Giltigt_t_o_m", Anteckningar "Ant_" from FO,Enmellerst
-			where (((FO.Fastighet = any(Enmellerst.Fastighet_tillstånd, Enmellerst.Fastighet_rening)) OR (FO.obj contains Enmellerst.obj)) AND FO.alltidsant = Enmellerst.alltidsant) order by fil into mellerstaEnsk
-							
-			browse * from mellerstaEnsk browse * from mellerstaRening
+		Control EditText into tidsbegränsning value 60
 		
-			Create Table "Filer" (Filnamn Char(23)) file "C:\Users\crbk01\Desktop\Filer.TAB" TYPE NATIVE Charset "WindowsLatin1"
+		Control OKButton
+		Control Cancelbutton
+		 
+		If not(CommandInfo(CMD_INFO_DLG_OK)) Then
+			tidsdialog = 0
+			Exit Sub
+		else
+			tidsdialog = Timer() + tidsbegränsning
+		end if
+
+end function
+
+sub columnAssosiation(tableName as alias,värde() as string,påPlatts() as string)
+	do case TableInfo(tableName, 4)'beroende på hur många kolumner
+		case 10 'sweref			
+			call DoSweref(värde,påPlatts)
+		case 17  'rening
+			call DoRening(värde,påPlatts)
+		case 16  'enskiljt
+			call DoEnskiljt(värde,påPlatts)
+		end case
+end sub
+
+sub PivotablecolumnAssosiation(tableName as alias,värde() as string,påPlatts() as string)
+	do case TableInfo(tableName, 4)'beroende på hur många kolumner
+		case 10 'sweref			
+			call PivotableDoSweref(värde,påPlatts)
+		case 17  'rening
+			call PivotableDoRening(värde,påPlatts)
+		case 16  'enskiljt
+			call PivotableDoEnskiljt(värde,påPlatts)
+		end case
+end sub
+
+sub createsammanfogadTabell()
+
+Create Table "sammanfogadTabell" (
+Anteckning Char(254),
+Besöksadress_Huvudfastighet Char(50),
+Besöksadress_Adress Char(50),
+Besöksadress_Postnr Char(10),
+Besöksadress_Ort Char(30),
+Verksamhetsutövare_Namn Char(40),
+Verksamhetsutöv_Person_orgnr Char(20),
+Fakturamottagare_NAMN Char(40),
+Fakturamottagare_Faktura_ADRESS Char(50),
+Fakturamottagare_Faktura_POSTNR Char(10),
+Fakturamottagare_Faktura_POSTOR Char(30),
+flik_Avloppsänlaggni_Boendetyp Char(10),
+flik_Avloppsa_Avrinningsområde Char(5),
+Anläggning_för_S_Anläggningstyp Char(10),
+Anläggning_för_Slam_Toaletttyp Char(10),
+AnlförEfterR_Anläggningstyp Char(10),
+Anläggning_för_EfTR_Toaletttyp Char(10),
+Anläggning_fö_SCertifieringstyp Char(10),
+Anläggning_för_Slamav_Volym_m3 Char(10),
+flik_Avloppsanläg_Beslutsdatum Date,
+flik_Avloppsa_Besiktningsdatum Date,
+flik_Avloppsanläggn_Byggnadsår Date,
+Fliken_Koordinater Char(30),
+PunkttypAB Char(30),
+Inventeringsinformation_Status Char(10),
+Inventeringsinformation_Datum Date,
+Anl_för_EftR_TöInterv_mån Char(10),
+fliken_Fastigheter Char(254),
+Anläggning_för_EfterföljRText Char(254),
+AnlF_efR_Koordinater_X_o_Y Char(30),
+PunkttypER Char(30),
+FNR integer,
+ObjectNamn Char(50)
+) file "H:\mina grejer\att göra\häljpa sara swart\slå samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\sammanfogadTabell.TAB" TYPE NATIVE Charset "WindowsLatin1"
+Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
+end sub
+
+sub DoSweref(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col3 & " & qM & "] " & qM & " & Col7","Anteckning",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Besöksadress_Huvudfastighet",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Inventeringsinformation_Status",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Inventeringsinformation_Datum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","Besöksadress_Adress",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","Besöksadress_Postnr",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col14","Besöksadress_Ort",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","FNR",värde,påPlatts)	
+
+end sub
+
+sub PivotableDoSweref(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col3 & " & qM & "] " & qM & " & Col7","Anteckning",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Besöksadress_Huvudfastighet",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Inventeringsinformation_Status",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Inventeringsinformation_Datum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","Besöksadress_Adress",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","Besöksadress_Postnr",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col14","Besöksadress_Ort",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","FNR",värde,påPlatts)	
+
+end sub
+
+sub DoRening(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col2","Anl_för_EftR_TöInterv_mån",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col5","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col6","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(
+	"Col1 & " & qM & "," & qM & " & Col8 & " & qM & "," & qM & " & Col9 & " & qM & ","
+	 & qM & 
+	 " & Col10 & " & qM & "," & qM & " & Col11 & " & qM & "," & qM & " & Col12 & " & qM & ","
+	 & qM & 
+	 " & Col13 & " & qM & "," & qM & " & Col14 & " & qM & "," & qM & " & Col15 & " & qM & "," 
+	 & qM &
+	 " & Col16"
+	 ,"fliken_Fastigheter",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_EfterföljRText",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterföljande rening"& qM,"PunkttypER",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col18","AnlF_efR_Koordinater_X_o_Y",värde,påPlatts)
+
+end sub
+
+sub PivotableDoRening(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col19","Besöksadress_Huvudfastighet",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col2","Anl_för_EftR_TöInterv_mån",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col1 & " & qM & "," & qM & " & Col8 & " & qM & "," & qM & " & Col9 & " & qM & ","	
+	 & qM & " & Col10 & " & qM & "," & qM & " & Col11 & " & qM & "," & qM & " & Col12 & " & qM & ","	
+	 & qM & " & Col13 & " & qM & "," & qM & " & Col14 & " & qM & "," & qM & " & Col15 & " & qM & "," & qM & " & Col16","fliken_Fastigheter",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_EfterföljRText",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterföljande rening"& qM,"PunkttypER",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col18","AnlF_efR_Koordinater_X_o_Y",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besöksadress_Adress",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besöksadress_Postnr",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col22","Besöksadress_Ort",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col23","FNR",värde,påPlatts)
+
+end sub
+
+sub DoEnskiljt(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besöksadress_Huvudfastighet",värde,påPlatts)'kir
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avloppsänlaggni_Boendetyp",värde,påPlatts)'typ_byggnad
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsområde",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anläggning_för_S_Anläggningstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_Slam_Toaletttyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anläggning_fö_SCertifieringstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anläggning_för_Slamav_Volym_m3",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanläggn_Byggnadsår",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anläggning_för_EfterföljRText",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besöksadress_Adress",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besöksadress_Postnr",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besöksadress_Ort",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",värde,påPlatts)
+
+end sub
+
+sub PivotableDoEnskiljt(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besöksadress_Huvudfastighet",värde,påPlatts)'kir
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avloppsänlaggni_Boendetyp",värde,påPlatts)'typ_byggnad
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsområde",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anläggning_för_S_Anläggningstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_Slam_Toaletttyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anläggning_fö_SCertifieringstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anläggning_för_Slamav_Volym_m3",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanläggn_Byggnadsår",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anläggning_för_EfterföljRText",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besöksadress_Adress",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besöksadress_Postnr",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besöksadress_Ort",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",värde,påPlatts)
+
+end sub
+
+sub genereraFastighetsYtaMedFastighetsAdress()
+
+dim tempPath as string
+tempPath = TempFileName$("")
+
+Open Table "K:\KARTOR\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB" as fastighet_ytaORg Interactive
+Open Table "K:\KARTOR\SOLEN_PUNKTER\Adresspunkter.TAB" Interactive
+
+Select Fastighet_ytaOrg.KIR ,Adresspunkter.ADRESS , Adresspunkter.POSTORT , Adresspunkter .POSTNR,Fastighet_ytaORg.FNR From Fastighet_ytaOrg,Adresspunkter where Adresspunkter . FNR = Fastighet_ytaORg . FNR into temp 
+commit table temp As tempPath 
+close table fastighet_ytaORg
+close table Adresspunkter
+open table tempPath as fastighet_yta
+
+end sub
+
+sub spatialPailing(tablePaths as string)
+
+	Open Table tablePaths  as TableOfChoise
+	
+	dim tableColumns, Query as string
+	dim x as integer
+	dim qM,tempstring,radEtt,radTvå as string
+	qM = chr$(34)
+	
+	onerror goto NoObjectError	
+	do case TableInfo(TableOfChoise, 4)
+		case 10 'sweref
+		Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10 from TableOfChoise into tableOfChoiseXY
+	
+	case 17  'rening
+		
+		Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,col17,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord" from TableOfChoise into tableOfChoiseXY
+		
+	case 16  'enskiljt
+	
+		Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord" from TableOfChoise into tableOfChoiseXY
+	
+	end case
+	
+	tableColumns = getColumnsOfTable_asString("TableOfChoiseXY")
+	
+	Query = "Select " & tableColumns & ",Fastighet_yta.KIR,Fastighet_yta.ADRESS,Fastighet_yta.POSTNR,Fastighet_yta.POSTORT,Fastighet_yta.FNR from TableOfChoiseXY, Fastighet_yta where TableOfChoiseXY.obj within Fastighet_yta.obj into tableOfChoiseKir"
+	run command query
+	onError goto 0
+
+exit sub
+
+NoObjectError:
+	print "NoObjectError:" & error$()
+
+end sub
+
+sub UNspatialPailing(tablePaths as string)
+
+	Open Table tablePaths  as TableOfChoise
+
+
+	dim tableColumns, Query as string
+	dim x as integer
+	dim qM,tempstring,radEtt,radTvå as string
+	qM = chr$(34)
+	
+	onerror goto NoObjectError
+	do case TableInfo(TableOfChoise, 4)
+		case 10 'sweref
+			Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10 from TableOfChoise into tableOfChoiseXY
+		
+		case 17  'rening
 			
-			Insert Into Filer ( COL1) Select COL3 From mellerstaRening DropIndex Auto
-			Insert Into Filer ( COL1) Select COL3 From mellerstaEnsk DropIndex Auto
+			Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,col17,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord" from TableOfChoise into tableOfChoiseXY
 			
-			Select * from Filer group by Filnamn order by Filnamn into Temp
-			Export "Temp" Into "C:\Users\crbk01\Desktop\mellersta.txt" Type "ASCII" CharSet "WindowsLatin1"
-			drop table Filer	
-	 end case
-	 
-	 	browse * from sweref
- End Sub
+		case 16  'enskiljt
+		
+			Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord" from TableOfChoise into tableOfChoiseXY
+		
+	end case 
+	onError goto 0
+	
+select * from tableOfChoiseXY into tableOfChoiseKIR
+
+exit sub
+
+NoObjectError:
+	print "NoObjectError:" & error$()
+
+end sub
+
+function getColumnsOfTable_asString(ByVal tableName as string) as string
+	dim qM,tableColumns as string
+	dim x as integer
+	dim tempAlias as alias
+	
+	qM = chr$(34)
+	tempAlias = tableName
+	
+	For x=1 to TableInfo(tempAlias, TAB_INFO_NCOLS)
+	    
+	   if(ColumnInfo(tempAlias, "col"+str$(x), COL_INFO_NAME) like "ObjectGeography%") then
+	    	tableColumns = tableColumns & "col"+str$(x)
+	    else
+	    	tableColumns = tableColumns + ColumnInfo(tempAlias, "col"+str$(x), COL_INFO_NAME) 
+	    end if
+	    
+	    if (x < TableInfo(tempAlias, TAB_INFO_NCOLS)) then
+	    	tableColumns = tableColumns + ","
+	    end if
+	Next
+	
+	getColumnsOfTable_asString = tableColumns
+end function
+
+sub insertToTable(byVal tablePaths as string)
+	dim qM,påPlatts(1),värde(1),Query as string
+	qM = chr$(34)
+
+	call SpatialPailing(tablePaths)
+	dim tempAlias as alias
+	tempAlias = "TableOfChoise"
+	call PivotablecolumnAssosiation(tempAlias,Värde(),påPlatts())
+			
+	query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(påPlatts) & ") Select " & arrayAsStringIgnoreEmpty(värde) & " From TableOfChoiseKir DropIndex Auto"
+	
+	onError goto printError
+		run command query
+	onError goto 0
+	
+	close table TableOfChoiseKir
+	
+exit sub
+
+printError:
+	print error$()
+	print query
+	
+End Sub
+
+sub knyt_sColumn_TillRessultatTabellsColumn_(byVal MedVärde as string,byVal påPosition as string,värde() as string,påPlatts() as string)
+	
+	dim posx as integer
+	posx = ubound(värde)+1
+	
+	redim värde(posx)
+	redim påPlatts(posx)
+	
+	värde(posx)= MedVärde
+	påPlatts(posx) = påPosition
+
+end sub
+
+function arrayAsStringIgnoreEmpty(tableX() as string) as string
+	dim x as integer
+	dim returnString as string
+	
+	For x=1 to UBOUND(tableX)
  
-' kkk
-
-
+ 		if(not(tableX(x) = "")) then
+	 		returnString = returnString + tableX(x)
+	    	
+	    	if(x < UBOUND(tableX)) then
+	    		returnString = returnString & ","
+	    	end if
+	    end if
+	Next
+	
+	arrayAsStringIgnoreEmpty = returnString
+End Function

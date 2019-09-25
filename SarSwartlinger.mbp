@@ -1,0 +1,7 @@
+[Link]
+Application = main.mbx
+Module = tabellInsammlare
+Module = main
+Module = doEnskiljtSecond
+Module = doReningFirst
+Module = ressultProcessor

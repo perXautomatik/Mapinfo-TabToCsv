@@ -1,0 +1,1104 @@
+Include "MapBasic.def"
+Include "tabellInsammlare.def"
+
+declare sub _tidssummering(iProgress as integer,starttime as integer,ressultArray() as string)
+
+Dim iProgress,iProgressRange,starttime as integer
+,qm as string
+
+sub knytSweref(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col3 & " & qM & "]" & qM & "," & qM & "[" & qM & " & Col7 & Anteckning","Anteckning",värde,påPlatts) 'skriver över beslutsAnteckningar
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Besöksadress_Huvudfastighet",värde,påPlatts)'skriver över beslutsAnteckningar
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)'skriver över både rening och beslut
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col8","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)'skriver över både rening och beslut
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Inventeringsinformation_Status",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Inventeringsinformation_Datum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col12","Besöksadress_Adress",värde,påPlatts)'skriver över beslutsAnteckningar
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col13","Besöksadress_Postnr",värde,påPlatts)'skriver över beslutsAnteckningar
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col14","Besöksadress_Ort",värde,påPlatts)'skriver över beslutsAnteckningar
+	call knyt_sColumn_TillRessultatTabellsColumn_("Col15","FNR",värde,påPlatts)	'skriver över beslutsAnteckningar
+
+end sub
+
+sub knytRening(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Reningstyp","AnlförEfterR_Anläggningstyp",värde,påPlatts)'krockar med beslut
+	call knyt_sColumn_TillRessultatTabellsColumn_("Storlek_m2","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)'krockar med beslut
+	call knyt_sColumn_TillRessultatTabellsColumn_("Antal_hushåll_rening","Anl_för_EftR_TöInterv_mån",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Beslut_datum","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)'krockar med beslut & skrivs över av sweref
+	call knyt_sColumn_TillRessultatTabellsColumn_("Utförd_datum","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)'krockar med beslut & skrivs över av sweref
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_("Fastighet_rening & " & qM & "," & qM & " & Anslutna_fastigheter_1 & " & qM & "," & qM & " & Anslutna_fastigheter_2 & " & qM & ","
+	 & qM & 
+	 " & Anslutna_fastigheter_3 & " & qM & "," & qM & " & Anslutna_fastigheter_4 & " & qM & "," & qM & " & Anslutna_fastigheter_5 & " & qM & ","
+	 & qM & 
+	 " & Anslutna_fastigheter_6 & " & qM & "," & qM & " & Anslutna_fastigheter_7 & " & qM & "," & qM & " & Anslutna_fastigheter_8 & " & qM & "," 
+	 & qM &
+	 " & Anslutna_fastigheter_9 & " & qM & "," & qM & " & Anslutna_fastigheter_10"
+	 ,"fliken_Fastigheter",värde,påPlatts)
+	 
+	call knyt_sColumn_TillRessultatTabellsColumn_("Kommentarer","Anläggning_för_EfterföljRText",värde,påPlatts)'krockar med beslut
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterföljande rening"& qM,"PunkttypER",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Cor","AnlF_efR_Koordinater_X_o_Y",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("kir","ObjectNamn",värde,påPlatts)
+
+end sub
+
+sub knytEnskiljt(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
+	
+	onError goto knytningsFel
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besöksadress_Huvudfastighet",värde,påPlatts)'kir
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avloppsänlaggni_Boendetyp",värde,påPlatts)'typ_byggnad
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsområde",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anläggning_för_S_Anläggningstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_Slam_Toaletttyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anläggning_fö_SCertifieringstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anläggning_för_Slamav_Volym_m3",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanläggn_Byggnadsår",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anläggning_för_EfterföljRText",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besöksadress_Adress",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besöksadress_Postnr",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besöksadress_Ort",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",värde,påPlatts)
+	onError goto 0
+
+exit sub
+
+	knytningsFel:
+	print "knytningsFel" & error$()
+	end program
+	
+end sub
+
+function tidsdialog(i as integer, y as integer,total as integer) as integer
+	dim textTemp as string
+	dim tidsbegränsning,number as integer
+	
+	number = Y/(i+0.001)
+	Set Format Number "local"
+		
+	textTemp = "poster: " & i & " (" & number & "/per post) " & y/60 & " minuter," & (i+0.001)/total*100 & "%"
+	Dialog
+		control statictext title textTemp
+		
+		Control EditText into tidsbegränsning value 60
+		
+		Control OKButton
+		Control Cancelbutton
+		 
+		If not(CommandInfo(CMD_INFO_DLG_OK)) Then
+			tidsdialog = 0
+			Exit Sub
+		else
+			tidsdialog = Timer() + tidsbegränsning
+		end if
+
+end function
+
+sub columnAssosiation(tableName as alias,värde() as string,påPlatts() as string)
+	do case TableInfo(tableName, 4)'beroende på hur många kolumner
+		case 10 'sweref			
+			call knytSweref(värde,påPlatts)
+		case 17  'rening
+			call knytRening(värde,påPlatts)
+		case 16  'enskiljt
+			call knytEnskiljt(värde,påPlatts)
+		end case
+end sub
+
+sub knytTabell(tableName as alias,värde() as string,påPlatts() as string)
+	do case TableInfo(tableName, 4)'beroende på hur många kolumner
+		case 10 'sweref			
+			call knytSweref(värde,påPlatts)
+		case 17  'rening
+			call knytRening(värde,påPlatts)
+		case 16  'enskiljt
+			call knytEnskiljt(värde,påPlatts)
+		end case
+end sub
+
+sub knyt_sColumn_TillRessultatTabellsColumn_(byVal MedVärde as string,byVal påPosition as string,värde() as string,påPlatts() as string)
+	
+	dim posx as integer
+	posx = ubound(värde)+1
+	
+	redim värde(posx)
+	redim påPlatts(posx)
+	
+	värde(posx)= MedVärde
+	påPlatts(posx) = påPosition
+
+end sub
+
+function getColumnsOfTable_asString(ByVal tableName as string) as string
+	dim qM,tableColumns as string
+	dim x as integer
+	dim tempAlias as alias
+	
+	qM = chr$(34)
+	tempAlias = tableName
+	
+	For x=1 to TableInfo(tempAlias, TAB_INFO_NCOLS)
+	    
+	   if(ColumnInfo(tempAlias, "col"+str$(x), COL_INFO_NAME) like "ObjectGeography%") then
+	    	tableColumns = tableColumns & "col"+str$(x)
+	    else
+	    	tableColumns = tableColumns + ColumnInfo(tempAlias, "col"+str$(x), COL_INFO_NAME) 
+	    end if
+	    
+	    if (x < TableInfo(tempAlias, TAB_INFO_NCOLS)) then
+	    	tableColumns = tableColumns + ","
+	    end if
+	Next
+	
+	getColumnsOfTable_asString = tableColumns
+end function
+
+Sub getColumnsOfTable_intoArray(ByVal tableName as string,columnNames() as string)
+	dim x as integer
+	dim tempAlias as alias
+	
+	tempAlias = tableName
+		
+	For x=1 to TableInfo(tempAlias, TAB_INFO_NCOLS)
+		redim columnNames(x)
+	    columnNames(x) = ColumnInfo(tempAlias, "col"+str$(x), 1) 
+	Next
+		
+end sub
+
+sub SpatialNInsertToSammanfogadTabell(byVal tablePaths as string)
+	dim påPlatts(1),värde(1) as string
+	,tempAlias as alias
+	
+	tempAlias = "TableOfChoise"
+
+	call SpatialPailing(tablePaths)
+		
+	call knytTabell(tempAlias,Värde(),påPlatts())
+			
+	call sqlPopulateTableWithTable(värde,påPlatts,"sammanfogadTabell",tempAlias)
+
+	close table TableOfChoiseKir
+	
+exit sub
+
+printError:
+	print error$()
+	print query
+	
+End Sub
+
+sub sqlPopulateTableWithTable(värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string)
+	dim query as string
+		
+	query = "Insert Into "& insertinto &" (" & arrayAsStringIgnoreEmpty(påPlatts) & ") Select " & arrayAsStringIgnoreEmpty(värde) & " From " & fromTable & " DropIndex Auto"
+	onerror goto queryError
+		run command query
+	onerror goto 0
+	
+exit sub
+
+queryError:
+	print error$()
+	print query
+	end program
+
+end sub
+
+function arrayAsStringIgnoreEmpty(tableX() as string) as string
+	dim x as integer
+	dim returnString as string
+	
+	For x=1 to UBOUND(tableX)
+ 
+ 		if(tableX(x) <> "") then
+	 		returnString = returnString + tableX(x)
+	    	
+	    	if(x < UBOUND(tableX)) then
+	    		returnString = returnString & ","
+	    	end if
+	    end if
+	Next
+	
+	arrayAsStringIgnoreEmpty = returnString
+End Function
+
+sub closeAllBut(tableNames() as string)
+	dim CopyOfTableNotToClose(),openTables(),theOpenTable as string
+	dim i,j,k,NrOfTablesNotToClose as integer	
+
+	call GetOpentables(openTables())
+	
+	NrOfTablesNotToClose = ubound(tableNames)+1
+	ReDim CopyOfTableNotToClose(NrOfTablesNotToClose)	
+	CopyOfTableNotToClose(NrOfTablesNotToClose) = "PathTABLE"
+	
+	for K = 1 to NrOfTablesNotToClose-1
+		CopyOfTableNotToClose(K) = tableNames(K)
+	Next	
+	
+	restartLoop:
+	for i = 1 to NumTables()
+		theOpenTable = openTables(i)
+		
+		for j = 1 to NrOfTablesNotToClose
+			if(theOpenTable = CopyOfTableNotToClose(j)) then
+				theOpenTable = ""
+				j = NrOfTablesNotToClose
+			end if
+		next
+		
+		onError goto errorx
+			if not(theOpenTable = "") then
+				close table theOpenTable
+			end if
+		onError goto 0	
+	next
+
+if(false) then
+	errorx:
+		call GetOpentables(openTables())
+	resume restartLoop
+end if
+	
+End Sub
+
+sub opentable(TableArray() as String)
+	Dim i as integer
+	Dim j as integer
+	i = NumTables()
+	
+	ReDim TableArray(i)
+	For j = 1 to i
+	    TableArray(j) = Tableinfo(j, TAB_INFO_NAME)
+	Next
+
+End sub
+
+sub GetOpentables(TableArray() as String)
+	Dim j as integer
+	
+	ReDim TableArray(NumTables())
+	For j = 1 to NumTables()
+	    TableArray(j) = Tableinfo(j, TAB_INFO_NAME)
+	Next
+End sub
+
+sub openSingleTable(byVal tableName as string)
+	dim tempArray(1) as string
+	tempArray(1) = tableName
+	call tableOpener(tempArray)
+end sub
+
+sub tableOpener(tableNames() as string)
+	dim i as integer	
+	, filePath as string
+	
+	for i = 1 to ubound(tableNames)
+		if tableDoesntExist(tableNames(i)) then 'the table isn't open
+			
+			select * from PathTABLE where tableNames(i) = TableName into selection2 noSelect
+			
+			if TableInfo(selection2,TAB_INFO_NROWS) <> 0 then 'there is a row entry
+				
+				select alternative,tablePath from PathTABLE where tableNames(i) = TableName into selectionWithAlternativePath noSelect
+				Fetch First From selectionWithAlternativePath
+				
+				filePath = selectionWithAlternativePath.tablePath
+				
+				dim thePathHasNoFile as logical
+				thePathHasNoFile = (fileExists(selectionWithAlternativePath.tablePath) = false)
+				if thePathHasNoFile then
+					dim T_Op_erReqieresAnArray(1) as string
+					T_Op_erReqieresAnArray(1)= selectionWithAlternativePath.alternative 'call for alternative
+					call tableopener(T_Op_erReqieresAnArray)
+					
+					Commit Table T_Op_erReqieresAnArray(1) As selectionWithAlternativePath.tablePath TYPE NATIVE Charset "WindowsLatin1"
+					close table T_Op_erReqieresAnArray(1)		
+				end if
+			
+				Open Table filePath as tableNames(i)
+				close table selectionWithAlternativePath				
+			else 
+				call printEveryString(tableNames)
+				Onerror goto debug
+					Error 1
+				onerror goto 0
+			end if
+			
+			close table selection2	
+		end if	
+	Next
+	
+
+exit sub
+debug:
+	print error$() & "/there is no path for requested tablename: " & tableNames(i)
+	resume next	
+End Sub
+
+Function TableDoesntExist (table_name As String) As Logical
+'********************************************************************************************************************
+'* Function:TableDoesntExist
+'* Date: 1/06/2005
+'* Author: Chris DiGiuseppe
+'* Checks to make sure the table exists in the workspace.
+'********************************************************************************************************************k
+		Dim lcv,num_tables as SmallInt
+
+		num_tables = numTables()
+		TableDoesntExist = 1
+
+		For lcv = 1 to num_tables
+			If table_name = tableInfo(lcv,TAB_INFO_NAME) Then
+				TableDoesntExist = 0
+				Exit Sub
+			End If
+		Next
+
+	End Function
+
+Function CheckTable (table_name As String) As Logical
+		'********************************************************************************************************************
+'* Function:CheckTable
+'* Date: 1/06/2005
+'* Note: Chris DiGiuseppe
+'* Checks to make sure that a table is valid and may be used by the program
+'********************************************************************************************************************
+	
+		OnError GoTo ErrorOccured
+		CheckTable = 1
+
+		If tableInfo(table_name,TAB_INFO_NCOLS) = 0 Or tableInfo(table_name,TAB_INFO_NROWS) = 0 Then
+			CheckTable = 0
+		ElseIf tableInfo(table_name,TAB_INFO_SEAMLESS)	Then '**Checks if table is seamless
+			CheckTable = 0
+		ElseIf table_name = "Delete_Duplicates_GroupBy_Table" OR table_name like "InternalTable%" Then
+			CheckTable = 0
+		End If
+	ErrorOccured:
+	End Function
+	
+sub cleanUpFormerSession
+	dim tempboolean as logical
+	dim tempCountz as integer
+	tempboolean = CommitEveryTable()
+	'close every window recursivly, for each iteration checking number of windows and closing the relativly last open, without closing the underlying table.
+	for TempCountZ = 1 to NumWindows()
+		Close Window WindowID(NumWindows()) 
+	next
+	
+end sub
+
+sub printEveryString(StringArray() as String)
+	
+	Dim	i As Integer
+		
+		for i = 1 to ubound(StringArray)
+			print "*" & StringArray(i) & "*"
+		Next
+	
+	end sub
+	
+Function CommitEveryTable() as logical
+		Dim num_tables,lcv,num AS SmallInt
+		Dim tname As String
+		Dim tableName as Alias
+		Dim tempLogics as Logical
+
+		num = 1
+		num_tables = NumTables()
+		
+		OnError GoTo ErrorOccured
+		
+		If num_tables > 0 Then
+			For lcv = 1 to num_tables									'**gets the name of each table and adds it to the array
+				tname = TableInfo(lcv,TAB_INFO_NAME)
+				tableName = tname
+				tempLogics = CheckTable(tname) = 1
+				If tempLogics Then							'**Checks to see if table is valid
+					Commit table tableName
+					num = num + 1
+				End If
+				If CheckTable(tname) = 0 Then							'**If table is invalid,does not advance place in array
+					num = num
+				End If
+			Next
+		End If
+	ErrorOccured:
+	CommitEveryTable = true
+	End Function
+
+Function ReturnTrue() as Logical
+
+	Dim bResult as Logical
+	bResult = Ask("Progress is @ step " & iProgress & ". Do you want the progress bar to Contiue or End?", "Continue", "End")
+	Print "Return True = " & bResult
+	   
+	ReturnTrue = bResult
+
+End Function
+
+sub spatialPailing(tablePaths as string)
+	dim Query as string
+
+	Open Table tablePaths  as TableOfChoise
+		
+	onerror goto NoObjectError	
+		do case TableInfo(TableOfChoise, 4)
+			case 10 'sweref
+				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10 from TableOfChoise into tableOfChoiseXY
+			case 17  'rening
+				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,col17,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord" from TableOfChoise into tableOfChoiseXY
+			case 16  'enskiljt
+				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord" from TableOfChoise into tableOfChoiseXY
+		end case
+				
+		Query = "Select " & getColumnsOfTable_asString("TableOfChoiseXY") & ",Fastighet_yta.KIR,Fastighet_yta.ADRESS,Fastighet_yta.POSTNR,Fastighet_yta.POSTORT,Fastighet_yta.FNR from TableOfChoiseXY, Fastighet_yta where TableOfChoiseXY.obj within Fastighet_yta.obj into tableOfChoiseKir"
+		run command query
+	onError goto 0
+
+exit sub
+
+NoObjectError:
+	print "NoObjectError:" & error$()
+
+end sub
+
+sub oldOrNewProcess
+	
+'sub attemptSlowInsert(påPlatts() as string,värde() as string,er as string)
+
+	'
+'		if(false) then		
+'SlowInsert:
+'							
+'			dim sisstaPlatts,nästsisstaPlatts as alias
+'			,sisstaVärde as string
+'			,xy as integer
+'				
+'			sisstaPlatts = påPlatts(ubound(påPlatts))
+'			sisstaVärde = värde(ubound(värde))
+'			nästsisstaPlatts = påPlatts(ubound(påPlatts)-1)
+'			
+'			Insert Into sammanfogadTabell (SisstaPlatts) Select sisstaVärde From TableOfChoiseKir DropIndex Auto
+'			
+'			for xy = 1 to ubound(påPlatts)-1
+'				query = "Add Column " & qm & sammanfogadTabell & qm & " (" & påPlatts(xy) & ") From TableOfChoiseKir Set To " & värde(xy) & " where " & sisstaPlatts & "=" & sisstaVärde & " and " & nästsisstaPlatts & " = " & qm & qm
+'				onError goto printError
+'					run command query
+'				onError goto 0
+'			next	
+'		end if
+'
+'continueSub:
+'		i = i +1
+'
+'		reDim anslutna(0)
+'		redim värde(0)
+'		redim påPlatts(0)
+'		
+'		fetch next from reningIhopslagen
+'	loop
+'	print "avslut i förtid:" & avslutsvariabel
+'		
+'exit sub
+'
+'queryError:
+'	print currentID
+'	print "queryError:" & error$()
+'resume SlowInsert
+'
+'printError:
+'	print currentID
+'	print "SlowInsertError:" & error$()'
+'	print query
+'	end program
+'resume next
+
+'end sub
+
+	
+	dim todoStorlek,iProgressRange,startTime as integer
+	,ressultArray() as string
+	
+	if(tableInfo(sammanfogadTabell,8)> 0) then
+		Dialog
+		Control StaticText title "ok to analyze missing, cansle to coninue with what we have"
+		Control OKButton
+		Control Cancelbutton
+		 
+		If CommandInfo(CMD_INFO_DLG_OK) Then	
+			TodoStorlek = sqlGereraTodo()
+		end if	
+		
+	else
+		call sqlPopulateTableWithTable(ressultArray(),ressultArray(),"","")
+		iProgressRange = tableInfo(sammanfogadTabell,8)		
+		startTime = Timer()
+		
+		ProgressBar "Processing...." & iProgressRange & " items"
+		      Calling StepProgressAnslutningarNdatum
+		Range iProgressRange
+	end if
+
+end sub
+
+sub stepprogressRening
+	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,tempInteger,currentId,x,iProgress,iProgressRange,starttime as integer
+	,avslutsvariabel as logical
+	,tempString,query,påPlatts(),värde(),anslutna() as string
+	
+	Fetch rec iProgress From reningIhopslagen	
+	
+	currentID = reningIhopslagen.rowId 
+	
+	select * from reningIhopslagen where rowId = currentId into TableOfChoiseKir
+		
+	redim värde(0)
+	redim påPlatts(0)
+	call knytRening(värde,påPlatts)
+	
+	reDim anslutna(0)
+	call getAnslutna(anslutna)
+		
+	for x = 1 to ubound(anslutna)
+			
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & anslutna(x) & qM,"Besöksadress_Huvudfastighet",värde,påPlatts)'skälet till buggen då query blev längre och längre för varje iteration
+		'höll på till och med 592 om denna flyttas ut tillsammans med DoRening, kanske man inte behöver redimma värde eller påPlatts
+
+			query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(påPlatts) & ") Select " & arrayAsStringIgnoreEmpty(värde) & " From TableOfChoiseKir DropIndex Auto"
+	
+		onError goto queryError	
+			run command query
+		onError goto 0
+	next
+				
+call increment(iProgress,iProgressRange,starttime)
+	
+exit sub
+	
+queryError:
+		print "er: " & error$() & TableOfChoiseKir.kir
+'		tempstring = TableOfChoiseKir.kir
+'		insert into errorTable (t1,f1,p1) values (error$(), tempString, query)
+'		commit table errorTable
+Resume next
+
+End Sub
+
+sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
+
+	iProgress = iProgress + 1 
+	If iProgress <= iProgressRange Then
+		if iProgress mod 100 = 0 then
+			dim totaltid,
+			totaltidH,
+			totaltidM,
+			totaltids,
+			
+			upskattad,
+			upskattadH,
+			upskattadM,
+			upskattads
+			as integer
+			,tidperEnhet as float
+			
+			totaltid = timer() - starttime	
+			tidperEnhet = totaltid/iprogress		
+			'((iprogressRange-iprogress)*tidPerEnhet)\360 & "h " & (((iprogressRange-iprogress)*tidPerEnhet) mod 360)\60 & "m" & ((((iprogressRange-iprogress)*tidPerEnhet) mod 360) mod 60) &"s kvar. "
+			
+			totaltidH = totaltid\3600
+			totaltidM = (totaltid mod 3600) \ 60
+			totaltids = (totaltid mod 3600) mod 60
+			
+			upskattad = iProgressRange * tidPerEnhet
+			
+			upskattadH = upskattad\3600
+			upskattadM = (upskattad mod 3600) \ 60
+			upskattads = (upskattad mod 3600) mod 60
+			
+			
+			print iProgress & "upskattat: " & upskattadH & "h" & upskattadM & "m" & upskattads & "s totalt:" & totaltidH & "h" & totaltidM & "m" & totaltids & "s passerade"
+		End If
+		
+		ProgressBar = iProgress
+	Else
+		ProgressBar = -1
+	End If
+
+end sub
+
+sub tidsSummering(iProgress as integer,iProgressRange as integer,starttime as integer)
+	dim ressultArray(2) as string
+	
+	call _tidssummering(IProgress,startTime,ressultArray)
+
+	If CommandInfo(CMD_INFO_STATUS) then
+		If iProgress <= iProgressRange then
+			Note "ended early, got to step: " & ressultArray(1)
+		Else
+			Note "Complete! total time: " & ressultArray(2)
+		End If
+	Else
+	      Note "cancel, got to step: " & ressultArray(1)
+	End If	
+end sub
+
+sub SilenttidsSummering(iProgress as integer,iProgressRange as integer,starttime as integer)
+
+	dim ressultArray(2) as string
+	
+	call _tidssummering(IProgress,startTime,ressultArray)
+
+	If iProgress <= iProgressRange then
+		print "ended early, got to step: " & ressultArray(1)
+	Else
+		print "Complete! total time: " & ressultArray(2)
+	End If  
+	
+end sub
+
+sub _tidssummering(iProgress as integer,starttime as integer,ressultArray() as string)
+
+	dim endtime,totalTid as integer
+	dim tidsöversikt,canceledString as string
+	endTime = Timer()		
+	totalTid = endTime-startTime
+	tidsÖversikt = totalTid & " | " & ((totalTid)/iProgress) & " sec/step"
+	canceledString = iProgress & "total: " & tidsÖversikt
+	
+	ressultArray(1) = canceledString
+	ressultArray(2) = tidsÖversikt
+
+end sub
+
+sub getAnslutna(anslutan() as string)
+	dim tempAlias as alias
+	dim x,y as integer
+
+	For x=1 to TableInfo(TableOfChoiseKir, TAB_INFO_NCOLS)    		
+		tempAlias = "TableOfChoiseKir.col"+str$(x)
+ 		
+ 		if ColumnInfo(TableOfChoiseKir, "col"+str$(x), COL_INFO_NAME) like "anslutna_%" then
+ 			select tempAlias from TableOfChoiseKir into valdKolumn
+ 			fetch first from valdKolumn
+ 			
+ 			if(not(valdKolumn.col1 = "")) then
+ 				y = ubound(anslutan())+1
+ 				redim anslutan(y)
+ 				anslutan(y)= valdKolumn.col1
+ 			end if
+ 		end if     		
+	Next
+	
+end sub
+
+function sqlGereraTodo as integer
+
+	Select * from reningIhopslagen,sammanfogadTabell where kir=ObjectNamn AND 
+		(
+		  Reningstyp & ""<>AnlförEfterR_Anläggningstyp & ""
+		  OR Storlek_m2 & ""<>Anläggning_för_EfTR_Toaletttyp & "" 
+		  OR Antal_hushåll_rening & "" <>Anl_för_EftR_TöInterv_mån  & ""
+		  OR Beslut_datum  & ""<>flik_Avloppsanläg_Beslutsdatum  & ""
+		  OR Utförd_datum  & ""<>flik_Avloppsa_Besiktningsdatum  & ""
+		  OR (Fastighet_rening & "," & Anslutna_fastigheter_1 & "," & Anslutna_fastigheter_2 & "," & Anslutna_fastigheter_3 & "," & Anslutna_fastigheter_4 & "," & Anslutna_fastigheter_5 & "," & Anslutna_fastigheter_6 & "," & Anslutna_fastigheter_7 & "," & Anslutna_fastigheter_8 & "," & Anslutna_fastigheter_9 & "," & Anslutna_fastigheter_10)<>fliken_Fastigheter  & ""
+		  OR Kommentarer & ""<>Anläggning_för_EfterföljRText  & ""
+		  OR Cor & ""<>AnlF_efR_Koordinater_X_o_Y & ""
+		) into todo
+		
+	sqlGereraTodo = tableInfo(todo,8)
+end function
+
+function compareTwoTablesColumns(table1s as string, table2s as string,columnNamesX() as string, columnNamesY() as string) as integer
+
+	dim returnInteger, i,rowIdTable1,rowIdTable2 as integer
+	,TempAlias, table1,table2 as alias
+	,tempStringX,TempStringY,query as string
+		
+	table1 = table1s
+	table2 = table2s
+	
+	returnInteger = 0
+
+	for i = 1 to ubound(columnNamesX)
+	onerror goto columnFel
+		query = "select " & columnNamesX(i) & " from " & table1 & " where rowid = 1 into joinTable1" 
+		run command query
+		
+		query = "select " & columnNamesY(i) & " from " & table2 & " where rowid = 1 into joinTable2" 
+		run command query
+		
+		fetch first from joinTable1
+		fetch first from joinTable2
+		
+		if not(joinTable1.col1 & "" = joinTable2.col1 & "") then
+			returnInteger = returnInteger + 1
+		end if
+	onerror goto 0
+	next
+
+	compareTwoTablesColumns = returnInteger
+
+exit function
+
+columnFel:
+	print error$()
+	print query
+	for i = 1 to ubound(columnNamesX)
+		print columnNamesX(i) & "|" & columnNamesY(i)
+	next
+	
+resume next
+	
+end function
+
+Sub StepProgressReAnalyze
+	
+	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,tempInteger,currentId,x,different,iProgress,iProgressRange,starttime as integer
+	,avslutsvariabel as logical
+	,tempString,query,påPlatts(),värde(),anslutna()
+	,table1ColumnNames() 'reningIhopslagen
+	,table2ColumnNames() 'sammanfogadTabell
+	as string
+	, temporaryAlias1,temporaryAlias2 as string
+		
+		
+	Fetch rec iProgress From reningIhopslagen	
+	currentId = reningIhopslagen.rowID
+	
+	tempstring = reningIhopslagen.kir
+	select * from reningIhopslagen where rowid = currentId into currentRow
+	select * from sammanfogadTabell where objectNamn = tempString into match 'sammanfogadTabell
+	
+	temporaryAlias2 = "match" 'sammanfogadTabell
+	temporaryAlias1 = "currentRow" 'reningIhopslagen
+	
+	call knytRening(table1ColumnNames,table2ColumnNames)
+	
+	if(tableInfo(match, 8)> 0) then
+		if (tableInfo(match, 8)> 1) then
+		
+			fetch first from match
+			do until eot(match)
+				different = compareTwoTablesColumns(temporaryAlias1,temporaryAlias2,table1ColumnNames, table2ColumnNames)
+					
+				fetch next from match
+			loop		
+		else
+			different = compareTwoTablesColumns(temporaryAlias1,temporaryAlias2,table1ColumnNames, table2ColumnNames)
+		end if
+	end if
+		
+	redim table1ColumnNames(0)
+	redim table2ColumnNames(0)
+	
+	
+	call getColumnsOfTable_intoArray("todo",table1ColumnNames)
+	call getColumnsOfTable_intoArray("currentRow",table2ColumnNames)
+	
+	if different > 0 OR (tableInfo(match, 8) = 0)then
+	
+		onerror goto queryError
+			query = "Insert Into todo (" & arrayAsStringIgnoreEmpty(table1ColumnNames) & ") Select " & arrayAsStringIgnoreEmpty(table2ColumnNames) & " From currentRow DropIndex Auto"
+			run command query
+		onerror goto 0
+
+	end if
+	
+
+call increment(iProgress,iProgressRange,starttime)
+
+exit sub
+	
+queryError:
+		print "er: " & error$() & TableOfChoiseKir.kir
+		print query
+'		tempstring = TableOfChoiseKir.kir
+'		insert into errorTable (t1,f1,p1) values (error$(), tempString, query)
+'		commit table errorTable
+Resume next
+
+End Sub
+
+sub removeDupesFromHarRe
+dim query1,query2 as string
+
+Alter Table "harRening" ( add dataLängd Integer ) Interactive
+
+query1 = "UPDATE harRening SET dataLängd = len(Anteckning) + len(flik_Avloppsänlaggni_Boendetyp) + len(flik_Avloppsa_Avrinningsområde) + len(Anläggning_för_S_Anläggningstyp) + len(Anläggning_för_Slam_Toaletttyp) + len(AnlförEfterR_Anläggningstyp) + len(Anläggning_för_EfTR_Toaletttyp) DropIndex Auto"
+query2 = "SELECT " & getColumnsOfTable_asString("harRening") &", MAX (dataLängd)FROM harRening Group BY ObjectNamn, AnlF_efR_Koordinater_X_o_Y, Fliken_Koordinater INTO HarReningUtanDubbletter"
+
+onerror goto queryError1
+	run command query1 
+onerror goto 0
+
+onerror goto queryError2
+	run command query2 
+onerror goto 0
+
+exit sub
+queryError1:
+	print "queryError:" & error$()
+	print query1
+	resume next
+queryError2:
+	print "queryError:" & error$()
+	print query2
+	resume next
+End Sub
+
+sub createSammanfogadTabell( byval filePath as string)
+		Create Table "sammanfogadTabell" (
+				Anteckning Char(254),
+				Besöksadress_Huvudfastighet Char(50),
+				Besöksadress_Adress Char(50),
+				Besöksadress_Postnr Char(10),
+				Besöksadress_Ort Char(30),
+				Verksamhetsutövare_Namn Char(40),
+				Verksamhetsutöv_Person_orgnr Char(20),
+				Fakturamottagare_NAMN Char(40),
+				Fakturamottagare_Faktura_ADRESS Char(50),
+				Fakturamottagare_Faktura_POSTNR Char(10),
+				Fakturamottagare_Faktura_POSTOR Char(30),
+				flik_Avloppsänlaggni_Boendetyp Char(10),
+				flik_Avloppsa_Avrinningsområde Char(5),
+				Anläggning_för_S_Anläggningstyp Char(10),
+				Anläggning_för_Slam_Toaletttyp Char(10),
+				AnlförEfterR_Anläggningstyp Char(10),
+				Anläggning_för_EfTR_Toaletttyp Char(10),
+				Anläggning_fö_SCertifieringstyp Char(10),
+				Anläggning_för_Slamav_Volym_m3 Char(10),
+				flik_Avloppsanläg_Beslutsdatum Char(11),
+				flik_Avloppsa_Besiktningsdatum Char(11),
+				flik_Avloppsanläggn_Byggnadsår Char(11),
+				Fliken_Koordinater Char(30),
+				PunkttypAB Char(30),
+				Inventeringsinformation_Status Char(10),
+				Inventeringsinformation_Datum Char(11),
+				Anl_för_EftR_TöInterv_mån Char(10),
+				fliken_Fastigheter Char(254),
+				Anläggning_för_EfterföljRText Char(254),
+				AnlF_efR_Koordinater_X_o_Y Char(30),
+				PunkttypER Char(30),
+				FNR integer,
+				ObjectNamn Char(50)
+			) file filePath TYPE NATIVE Charset "WindowsLatin1"
+			Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
+end sub
+
+sub stepProgressEnskiljt
+
+	dim rowIdX,x,Y,begränsningsvariabel,statTime,tidsbegränsning,tempInteger,currentId as integer
+	,avslutsvariabel as logical
+	,tempString,query,påPlatts(),värde(),anslutna(),kir, t1,t2 as string
+	
+	
+	fetch rec iProgress from HarReningTabel
+	rowIdx = iProgress
+	
+	onError goto printError
+	
+		select * from HarReningTabel where rowId = rowIdX into nuvarandeRad
+			
+		t1 = nuvarandeRad.beslut_datum 
+		t2 = nuvarandeRad.utförd_Datum	
+		kir = nuvarandeRad.kir
+		
+		call knytEnskiljt(värde,påPLatts)
+		
+		select * from sammanfogadTabell where 
+		
+		kir=Besöksadress_Huvudfastighet and 
+		(flik_Avloppsanläg_Beslutsdatum="" OR flik_Avloppsanläg_Beslutsdatum=t1) 
+		AND
+		(flik_Avloppsa_Besiktningsdatum=t2 OR flik_Avloppsa_Besiktningsdatum="")
+		
+		into sammanfogadTabellMatch
+	onError goto 0
+	
+	if(tableInfo(sammanfogadTabellMatch,8) > 0) then
+		for x = 1 to ubound(påPlatts)-1
+			onError goto queryError
+				query = "Add Column " & qM & sammanfogadTabellMatch & qM & " (" & påPlatts(x) & ") "  & "From nuvarandeRad Set To " & värde(x) & " where flik_Avloppsanläg_Beslutsdatum=beslut_datum"
+				run command query
+			onError goto 0
+		next
+	end if
+	
+	redim värde(0)
+	redim påPlatts(0)
+	
+call increment(iProgress,iProgressRange,starttime)
+
+exit sub
+	
+queryError:
+		print "Qer: " & error$() & TableOfChoiseKir.kir
+		print query
+printError:
+		print "Per: " & error$() & TableOfChoiseKir.kir
+		print query
+end sub
+
+sub mergeTables(värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string,condition as string,byval ressultName as string,composite as logical,byVal compositeString as string)
+	dim query,värdeUtanFörsta(),påPlattsUtanFörsta(),qm as string
+	,i as integer
+	qM = chr$(34)
+	query = "select "
+	if composite then
+		query = query & compositeString
+	end if
+
+	query = query & generateMergestring (värde,påPlatts,insertinto,fromTable) & " FROM " & insertInto & "," & fromTable & " WHERE " & condition & " INTO " & ressultName	
+	'print query 'debug
+	
+	onError goto queryError
+		run command query
+	onError goto 0
+	
+exit sub
+
+	queryError:
+		print "queryError:" & error$()
+		print query	
+		resume next
+end sub
+
+sub outerJoinWithSlowSubQ(byVal table1 as string,byVal table2 as string)		
+	dim query as string
+	,tempInt as integer
+	'couldn't figure out the fast way to do it faster, some how mapbasic refuse to make outer join, and keep doing inner join, ressulting in an empty set when inverting.
+	
+	tempInt = timer()
+	
+	print "starting slow merge"
+	
+	query = "select * from  " & table1 & "  where rowindex not in(select growindex from  " & table2 & " ) into harInteRening noSelect"
+	
+	onError goto queryError
+		run command query
+	onError goto 0
+	
+	tempInt = tempInt-timer()
+	print "finished slow merege, took" & tempInt & " seconds"
+exit sub
+	
+queryError:
+		print "Qer: " & error$() & TableOfChoiseKir.kir
+		print query	
+end sub
+
+sub runInvertCommit(byval query as string, byVal commitPath as string)
+
+	onError goto queryError
+		run command query
+	onError goto 0
+	
+	Run Menu Command 311 'aka 311 in the Menu.def
+	Commit Table selection As commitPath
+	open table commitPath
+			
+exit sub
+	
+queryError:
+		print "Qer: " & error$() & TableOfChoiseKir.kir
+		print query	
+end sub
+
+sub görTillBasTabell(byval tableName as string)
+	dim tempPath as string
+	tempPath = TempFileName$("")
+	
+	Commit Table tableName As tempPath TYPE NATIVE Charset "WindowsLatin1" Interactive
+	close table tableName
+	open table tempPath as tableName
+end sub
+
+function generateMergestring (värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string) as string
+onerror goto strangeError
+	dim allaColumner(),qm,mergeString,jVärde,allaColumnerI as string
+	, i,j,uBoundaCol as integer
+	,found,tempBoolean as logical
+	
+	call getColumnsOfTable_intoArray(insertInto,allaColumner)
+	
+	qM = chr$(34)
+	mergeString = ""
+	uBoundaCol = ubound(allaColumner)
+
+	for i = 1 to uBoundaCol
+	
+		allaColumnerI = allaColumner(i)
+		found = false
+				
+		for j = 1 to ubound(påPlatts)
+		
+			jVärde = värde(j) & ""
+			tempBoolean = (allaColumnerI = påPlatts(j))
+		
+			if tempBoolean then
+				tempBoolean = (jVärde <> "")
+			
+				if tempBoolean then
+					mergeString = mergeString & fromTable & "." 'to compensate for composit columns
+				end if
+				
+				mergeString = mergeString & jVärde & " " & qm & allaColumnerI & qm
+				found = true		
+			end if
+		next
+		
+		tempBoolean = (found = false)
+		
+		if tempBoolean then
+			mergeString = mergeString & insertInto  & "." & allaColumnerI
+		end if
+		
+		if i < uBoundaCol then
+			mergeString = mergeString & ","
+		end if
+	next
+		
+	generateMergeString = mergeString
+onerror goto 0	
+exit function
+	strangeError:
+		print ubound(värde) & "|" & error$()
+		end program
+		resume next
+end function
+
+sub removeAtIndex(InputArray() as string,byval removeIndex as integer, outputArray() as string)
+	dim i,j as integer
+'	print ubound(inputArray)
+	
+	redim outputArray(ubound(inputArray)-1)
+	j = 1
+	for i = 1 to ubound(inputArray)
+'		print "beforeAssign:" & i & "|" & j
+		
+		if(removeIndex <> i) then
+			outputArray(j) = inputArray(i)
+'			print "inserterd" & inputArray(i) & ":" & i & "into" & j
+			j = j + 1
+		end if
+		
+	Next
+	
+End Sub

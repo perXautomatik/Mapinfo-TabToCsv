@@ -1,0 +1,70 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 58
+    Diarienummer Char (30) ;
+    Fastighet_tillstånd Char (40) ;
+    Typ_byggnad Char (15) ;
+    Antal_hushåll_tillstånd Char (17) ;
+    Fastighet_rening Char (33) ;
+    Typ_Slamavskiljare Char (15) ;
+    Storlek_m3 Float ;
+    Typ_rening Char (15) ;
+    Storlek_m2 Float ;
+    Typ_sluten_tank Char (8) ;
+    Storlek__m3 Float ;
+    Beslut_datum Date ;
+    Utförd_datum Date ;
+    Avgift Char (10) ;
+    Tillstånd_giltigt_tom Date ;
+    Anteckningar Char (254) ;
+    Cor Char (30) ;
+    KIR Char (40) ;
+    ADRESS Char (105) ;
+    POSTNR Char (9) ;
+    POSTORT Char (105) ;
+    FNR Integer ;
+    rowIndex Integer ;
+    Anteckning Char (31) ;
+    Besöksadress_Huvudfastighet Char (40) Index 1 ;
+    Besöksadress_Adress Char (105) ;
+    Besöksadress_Postnr Char (9) ;
+    Besöksadress_Ort Char (105) ;
+    Verksamhetsutövare_Namn Char (40) ;
+    Verksamhetsutöv_Person_orgnr Char (20) ;
+    Fakturamottagare_NAMN Char (40) ;
+    Fakturamottagare_Faktura_ADRESS Char (50) ;
+    Fakturamottagare_Faktura_POSTNR Char (10) ;
+    Fakturamottagare_Faktura_POSTOR Char (30) ;
+    flik_Avloppsänlaggni_Boendetyp Char (15) ;
+    flik_Avloppsa_Avrinningsområde Char (17) ;
+    Anläggning_för_S_Anläggningstyp Char (15) ;
+    Anläggning_för_Slam_Toaletttyp Float ;
+    AnlförEfterR_Anläggningstyp Char (15) ;
+    Anläggning_för_EfTR_Toaletttyp Float ;
+    Anläggning_fö_SCertifieringstyp Char (8) ;
+    Anläggning_för_Slamav_Volym_m3 Float ;
+    flik_Avloppsanläg_Beslutsdatum Date ;
+    flik_Avloppsa_Besiktningsdatum Date ;
+    flik_Avloppsanläggn_Byggnadsår Date ;
+    Fliken_Koordinater Char (30) ;
+    PunkttypAB Char (16) ;
+    Inventeringsinformation_Status Char (10) ;
+    Inventeringsinformation_Datum Char (11) ;
+    Anl_för_EftR_TöInterv_mån Char (10) ;
+    fliken_Fastigheter Char (254) ;
+    Anläggning_för_EfterföljRText Char (33) ;
+    AnlF_efR_Koordinater_X_o_Y Char (30) ;
+    PunkttypER Char (30) ;
+    FNR_2 Integer ;
+    ObjectNamn Char (50) ;
+    rowIndex_2 Integer Index 2 ;
+    gRowIndex Integer Index 3 ;
+begin_metadata
+"\IsReadOnly" = "FALSE"
+"\MapInfo" = ""
+"\MapInfo\TableID" = "4363f6aa-ab2a-4a85-9132-828185ab4641"
+end_metadata

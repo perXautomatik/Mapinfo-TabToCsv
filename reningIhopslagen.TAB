@@ -1,0 +1,31 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 19
+    Fastighet_rening Char (50) ;
+    Antal_hushåll_rening Char (17) ;
+    Reningstyp Char (15) ;
+    Storlek_m2 Float ;
+    Beslut_datum Char (10) ;
+    Utförd_datum Char (10) ;
+    Kommentarer Char (254) ;
+    Anslutna_fastigheter_1 Char (34) ;
+    Anslutna_fastigheter_2 Char (50) ;
+    Anslutna_fastigheter_3 Char (50) ;
+    Anslutna_fastigheter_4 Char (50) ;
+    Anslutna_fastigheter_5 Char (50) ;
+    Anslutna_fastigheter_6 Char (50) ;
+    Anslutna_fastigheter_7 Char (50) ;
+    Anslutna_fastigheter_8 Char (50) ;
+    Anslutna_fastigheter_9 Char (50) ;
+    Anslutna_fastigheter_10 Char (50) ;
+    Cor Char (30) ;
+    kir Char (50) ;
+begin_metadata
+"\IsReadOnly" = "FALSE"
+"\MapInfo" = ""
+"\MapInfo\TableID" = "68a6fdff-e892-46f3-b1f0-e569f5e9e24c"
+end_metadata

@@ -1,0 +1,35 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 23
+    Diarienummer Char (30) ;
+    Fastighet_tillstånd Char (40) ;
+    Typ_byggnad Char (15) ;
+    Antal_hushåll_tillstånd Char (17) ;
+    Fastighet_rening Char (33) ;
+    Typ_Slamavskiljare Char (15) ;
+    Storlek_m3 Float ;
+    Typ_rening Char (15) ;
+    Storlek_m2 Float ;
+    Typ_sluten_tank Char (8) ;
+    Storlek__m3 Float ;
+    Beslut_datum Date ;
+    Utförd_datum Date ;
+    Avgift Char (10) ;
+    Tillstånd_giltigt_tom Date ;
+    Anteckningar Char (254) ;
+    Cor Char (30) ;
+    KIR Char (40) Index 1 ;
+    ADRESS Char (105) ;
+    POSTNR Char (9) ;
+    POSTORT Char (105) ;
+    FNR Integer ;
+    rowIndex Integer Index 2 ;
+begin_metadata
+"\IsReadOnly" = "FALSE"
+"\MapInfo" = ""
+"\MapInfo\TableID" = "d16d006f-9203-4668-9291-562d50718e0d"
+end_metadata

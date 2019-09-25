@@ -1,0 +1,879 @@
+Include "MapBasic.def"
+include "Menu.def"
+
+
+Declare sub appendToColumn(byVal ColumnNamn as string,ByVal attAppendera as string)
+Declare Sub Main
+declare function countOccurences(byVal colummn as string) as integer
+declare function getCOrd(byVal ColumnName as string) as string
+declare sub printOccurences()
+declare sub executeQuery(insertValues() as string)
+declare function getlatest(byVal colummn as string) as string
+declare function getrowIDByColumn(byVal columnName as string, columnValue as string) as integer
+declare function getByRowID(rowIdx as integer,byVal kolumnName as string) as string
+declare function getColumnsAsString(columns() as string) as String
+declare sub getrowsExcludingRowID(rowId as integer)
+declare function columnsAsString(byVal rowIdX as integer) as string
+declare sub OccurencesAsArray(OccurenceArray() as string)
+declare Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
+declare Function StringContains(ByVal strInput as String, ByVal charToFind as String) as Logical
+declare function countDupes(byVal fastighetsbet as string) as integer
+declare sub tableGenerator()
+declare sub asignmentMethod(byVal methodX as string,byVal ColumnX as string,byVal optionalRowID as integer)
+declare sub ifEmptyByRowIdAssignFirst(byVal columnNamn as string,rowID as integer)
+declare function dumpAllBut(rowId as integer) as string
+global insertValues(32) as string
+declare function surroundWithQm() as string
+declare function kollaBredd(values() as string) as logical
+declare function assignAllWithFirstExcept(values() as string) as logical
+declare sub assignFirstkontaktUpgifter()
+
+sub  tableGenerator
+Create Table "ErrorTable" (FastighetsBet Char(50),E1 Char(254)) file ApplicationDirectory$() & "\ErrorTable.TAB" TYPE NATIVE Charset "WindowsLatin1"
+Create Table "StructureTable" (ColumnName Char(50),columnPosition integer) file ApplicationDirectory$() & "\StructureTable.TAB" TYPE NATIVE Charset "WindowsLatin1"	
+Create Table "BucketTable" (ColumnName Char(50),columnPosition integer) file ApplicationDirectory$() & "\BucketTable.TAB" TYPE NATIVE Charset "WindowsLatin1"	
+
+	Create Table "ressult" (
+	Besöksadress_Huvudfastighet Char(50),			'insertValues(1)
+	Besöksadress_Adress Char(50),					'insertValues(2)
+	Besöksadress_Postnr Char(10),					'insertValues(3)
+	Besöksadress_Ort Char(30),						'insertValues(4)
+	Verksamhetsutövare_Namn Char(40),				'insertValues(5)
+	Verksamhetsutöv_Person_orgnr Char(20),			'insertValues(6)
+	Fakturamottagare_NAMN Char(40),					'insertValues(7)
+	Fakturamottagare_Faktura_ADRESS Char(50),		'insertValues(8)
+	Fakturamottagare_Faktura_POSTNR Char(10),		'insertValues(9)
+	Fakturamottagare_Faktura_POSTOR Char(30),		'insertValues(10)
+	flik_Avloppsänlaggni_Boendetyp Char(10),		'insertValues(11)
+	flik_Avloppsa_Avrinningsområde Char(5),			'insertValues(12)
+	Anläggning_för_S_Anläggningstyp Char(10),		'insertValues(13)
+	Anläggning_för_Slam_Toaletttyp Char(10),		'insertValues(14)
+	AnlförEfterR_Anläggningstyp Char(10),			'insertValues(15)
+	Anläggning_för_EfTR_Toaletttyp Char(10),		'insertValues(16)
+	Anläggning_fö_SCertifieringstyp Char(10),		'insertValues(17)
+	Anläggning_för_Slamav_Volym_m3 Char(10),		'insertValues(18)
+	flik_Avloppsanläg_Beslutsdatum Char(10),		'insertValues(19)
+	flik_Avloppsa_Besiktningsdatum Char(10),		'insertValues(20)
+	flik_Avloppsanläggn_Byggnadsår Char(10),		'insertValues(21)
+	Fliken_Koordinater Char(30),					'insertValues(22)
+	Inventeringsinformation_Status Char(10),		'insertValues(23)
+	Inventeringsinformation_Datum Char(10),			'insertValues(24)
+	Anl_för_EftR_TöInterv_mån Char(10),				'insertValues(25)
+	fliken_Fastigheter Char(254),					'insertValues(26)
+	AnlF_efR_Koordinater_X_o_Y Char(30),			'insertValues(27)
+	Anläggning_för_EfterföljRText Char(254),		'insertValues(28)
+	PunkttypAB Char(30),							'insertValues(29)
+	PunkttypER Char(30),							'insertValues(30)
+	Anteckning Char(254),							'insertValues(31)
+	FNR integer										'insertValues(32)
+	)
+	file "H:\mina grejer\att göra\häljpa sara swart\slå samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\ressult.TAB" TYPE NATIVE Charset "WindowsLatin1"
+
+	
+
+	insert into bucketTable (col1,col2) values ("Besöksadress_Huvudfastighet",50)'	Besöksadress_Huvudfastighet Char(50),			'insertValues(1)
+	insert into bucketTable (col1,col2) values ("Besöksadress_Adress",50)'	Besöksadress_Adress Char(50),					'insertValues(2)
+	insert into bucketTable (col1,col2) values ("Besöksadress_Postnr",10)'	Besöksadress_Postnr Char(10),					'insertValues(3)
+	insert into bucketTable (col1,col2) values ("Besöksadress_Ort",30)'	Besöksadress_Ort Char(30),						'insertValues(4)
+	insert into bucketTable (col1,col2) values ("Verksamhetsutövare_Namn",40)'	Verksamhetsutövare_Namn Char(40),				'insertValues(5)
+	insert into bucketTable (col1,col2) values ("Verksamhetsutöv_Person_orgnr",20)'	Verksamhetsutöv_Person_orgnr Char(20),			'insertValues(6)
+	insert into bucketTable (col1,col2) values ("Fakturamottagare_NAMN",40)'	Fakturamottagare_NAMN Char(40),					'insertValues(7)
+	insert into bucketTable (col1,col2) values ("Fakturamottagare_Faktura_ADRESS",50)'	Fakturamottagare_Faktura_ADRESS Char(50),		'insertValues(8)
+	insert into bucketTable (col1,col2) values ("Fakturamottagare_Faktura_POSTNR",10)'	Fakturamottagare_Faktura_POSTNR Char(10),		'insertValues(9)
+	insert into bucketTable (col1,col2) values ("Fakturamottagare_Faktura_POSTOR",30)'	Fakturamottagare_Faktura_POSTOR Char(30),		'insertValues(10)
+	insert into bucketTable (col1,col2) values ("flik_Avloppsänlaggni_Boendetyp",10)'	flik_Avloppsänlaggni_Boendetyp Char(10),		'insertValues(11)
+	insert into bucketTable (col1,col2) values ("flik_Avloppsa_Avrinningsområde",5)'	flik_Avloppsa_Avrinningsområde Char(5),			'insertValues(12)
+	insert into bucketTable (col1,col2) values ("Anläggning_för_S_Anläggningstyp",10)'	Anläggning_för_S_Anläggningstyp Char(10),		'insertValues(13)
+	insert into bucketTable (col1,col2) values ("Anläggning_för_Slam_Toaletttyp",10)'	Anläggning_för_Slam_Toaletttyp Char(10),		'insertValues(14)
+	insert into bucketTable (col1,col2) values ("AnlförEfterR_Anläggningstyp",10)'	AnlförEfterR_Anläggningstyp Char(10),			'insertValues(15)
+	insert into bucketTable (col1,col2) values ("Anläggning_för_EfTR_Toaletttyp",10)'	Anläggning_för_EfTR_Toaletttyp Char(10),		'insertValues(16)
+	insert into bucketTable (col1,col2) values ("Anläggning_fö_SCertifieringstyp",10)'	Anläggning_fö_SCertifieringstyp Char(10),		'insertValues(17)
+	insert into bucketTable (col1,col2) values ("Anläggning_för_Slamav_Volym_m3",10)'	Anläggning_för_Slamav_Volym_m3 Char(10),		'insertValues(18)
+	insert into bucketTable (col1,col2) values ("flik_Avloppsanläg_Beslutsdatum",10)'	flik_Avloppsanläg_Beslutsdatum Char(10),		'insertValues(19)
+	insert into bucketTable (col1,col2) values ("flik_Avloppsa_Besiktningsdatum",10)'	flik_Avloppsa_Besiktningsdatum Char(10),		'insertValues(20)
+	insert into bucketTable (col1,col2) values ("flik_Avloppsanläggn_Byggnadsår",10)'	flik_Avloppsanläggn_Byggnadsår Char(10),		'insertValues(21)
+	insert into bucketTable (col1,col2) values ("Fliken_Koordinater",30)'	Fliken_Koordinater Char(30),					'insertValues(22)
+	insert into bucketTable (col1,col2) values ("Inventeringsinformation_Status",10)'	Inventeringsinformation_Status Char(10),		'insertValues(23)
+	insert into bucketTable (col1,col2) values ("Inventeringsinformation_Datum",10)'	Inventeringsinformation_Datum Char(10),			'insertValues(24)
+	insert into bucketTable (col1,col2) values ("Anl_för_EftR_TöInterv_mån",10)'	Anl_för_EftR_TöInterv_mån Char(10),				'insertValues(25)
+	insert into bucketTable (col1,col2) values ("fliken_Fastigheter",254)'	fliken_Fastigheter Char(254),					'insertValues(26)
+	insert into bucketTable (col1,col2) values ("AnlF_efR_Koordinater_X_o_Y",30)'	AnlF_efR_Koordinater_X_o_Y Char(30),			'insertValues(27)
+	insert into bucketTable (col1,col2) values ("Anläggning_för_EfterföljRText",254)'	Anläggning_för_EfterföljRText Char(254),		'insertValues(28)
+	insert into bucketTable (col1,col2) values ("PunkttypAB",30)'	PunkttypAB Char(30),							'insertValues(29)
+	insert into bucketTable (col1,col2) values ("PunkttypER",30)'	PunkttypER Char(30),							'insertValues(30)
+	insert into bucketTable (col1,col2) values ("Anteckning",254)'	Anteckning Char(254),							'insertValues(31)
+	insert into bucketTable (col1,col2) values ("FNR",254)'	FNR integer										'insertValues(32)
+	
+	dim x as integer
+	x = 1
+	dim temp as string
+	fetch First from bucketTable
+	do until eot(bucketTable)
+		temp = bucketTable.col1
+		insert into structureTable (col1,col2) values (temp,x)
+		x = x + 1
+		fetch next from bucketTable
+	loop
+		
+	select structureTable.col2 "rowNr" ,bucketTable.col2 "containerSize" from bucketTable,structureTable where bucketTable.col1 = structureTable.col1 into referenceTable
+
+end sub
+
+Sub Main()
+
+	dim i,tempinteger,x,hasDupes,begränsningsvariabel as integer
+	dim FastighetsBet as string
+	dim maxbeslutER,maxbeslutAB as date
+	dim tempAlias as alias
+	dim statTime as integer
+	statTime = 0
+	i = 0		
+	
+	print Chr$(12)
+
+	call tableGenerator()
+	select Besöksadress_Huvudfastighet
+	from sammanfogadtabell group by Besöksadress_Huvudfastighet into fastigheter
+	
+	dim Y as integer
+	Y = Timer() 
+	Print Y
+	statTime = y
+	begränsningsvariabel = 20
+
+	Fetch First From fastigheter
+	Do Until EOT(fastigheter) OR i > begränsningsVariabel
+		
+		onError goto beforeExecutionError
+				dim readyToExecute as logical
+				readyToExecute = false
+				hasDupes = countDupes(fastigheter.Besöksadress_Huvudfastighet)
+						
+			if hasDupes = 0 OR (countOccurences("Anteckning") > 1 and (hasDupes = 1 OR (hasDupes = 2 and countOccurences("Anläggning_för_EfterföljRText") > 1))) then			
+				dim valArray(1) as string
+				valArray(1) = "Anteckning"
+				
+				if(not(assignAllWithFirstExcept(valArray))) then
+					goto beforeExecutionError
+				end if
+					
+			end if
+		onError goto 0
+		
+		if hasDupes = 0 then
+			call asignmentMethod("getFirst","Anteckning",0)
+			readyToExecute = true
+		end if
+		
+		if (hasDupes = 1 AND countOccurences("Anteckning") > 1 AND not(readyToExecute)) then		
+			call asignmentMethod("getAll","Anteckning",0)
+			readyToExecute = true
+		end if
+	
+		if(not(readyToExecute) AND (countOccurences("flik_Avloppsanläg_Beslutsdatum") > 1 OR (countOccurences("flik_Avloppsa_Besiktningsdatum") > 1))) then	
+			dim rowId as integer
+			dim ToBecomeAnteckningar as string
+			
+			if (countOccurences("flik_Avloppsanläg_Beslutsdatum") > 1)then						
+				call asignmentMethod("getlatest","flik_Avloppsanläg_Beslutsdatum",0)		
+				rowId = getrowIDByColumn("flik_Avloppsanläg_Beslutsdatum", insertValues(19))		
+				call asignmentMethod("getByRowID","flik_Avloppsa_Besiktningsdatum",rowId)
+			end if
+		
+			if (countOccurences("flik_Avloppsa_Besiktningsdatum") > 1 AND not(countOccurences("flik_Avloppsanläg_Beslutsdatum") > 1)) then				
+				call asignmentMethod("getlatest","flik_Avloppsa_Besiktningsdatum",0)		
+				rowId = getrowIDByColumn("flik_Avloppsa_Besiktningsdatum", insertValues(20))		
+				call asignmentMethod("getByRowID","flik_Avloppsanläg_Beslutsdatum",rowId)
+			end if
+			
+			call assignFirstkontaktUpgifter()
+			
+			call asignmentMethod("getByRowID","flik_Avloppsänlaggni_Boendetyp",rowId)
+			call asignmentMethod("getByRowID","flik_Avloppsa_Avrinningsområde",rowId)
+			call asignmentMethod("getByRowID","Anläggning_för_S_Anläggningstyp",rowId)
+			call asignmentMethod("getByRowID","Anläggning_för_Slam_Toaletttyp",rowId)
+			call asignmentMethod("getByRowID","AnlförEfterR_Anläggningstyp",rowId)
+			call asignmentMethod("getByRowID","Anläggning_för_EfTR_Toaletttyp",rowId)
+			call asignmentMethod("getByRowID","Anläggning_fö_SCertifieringstyp",rowId)
+			call asignmentMethod("getByRowID","Anläggning_för_Slamav_Volym_m3",rowId)
+			call asignmentMethod("getByRowID","flik_Avloppsanläggn_Byggnadsår",rowId)
+			call asignmentMethod("getByRowID","Fliken_Koordinater",rowId)
+			call asignmentMethod("getByRowID","Inventeringsinformation_Status",rowId)
+			call asignmentMethod("getByRowID","Inventeringsinformation_Datum",rowId)
+			call asignmentMethod("getByRowID","Anl_för_EftR_TöInterv_mån",rowId)
+			call asignmentMethod("getByRowID","fliken_Fastigheter",rowId)
+			call asignmentMethod("getByRowID","AnlF_efR_Koordinater_X_o_Y",rowId)
+			call asignmentMethod("getByRowID","Anläggning_för_EfterföljRText",rowId)
+			call asignmentMethod("getByRowID","PunkttypAB",rowId)
+			call asignmentMethod("getByRowID","PunkttypER",rowId)
+			call asignmentMethod("getByRowID","Anteckning",rowId)
+			call asignmentMethod("getFirst","FNR",0)
+			call appendToColumn("Anteckning"," (äldre:) " & dumpAllBut(rowId))
+			
+			readyToExecute = true
+		end if
+		
+		if(hasDupes = 2 AND countOccurences("Anteckning") > 1 AND countOccurences("Anläggning_för_EfterföljRText") > 1 AND not(readyToExecute) ) then	
+			call asignmentMethod("getAll","Anteckning",0)
+			call asignmentMethod("getAll","Anläggning_för_EfterföljRText",0)
+			
+			readyToExecute = true
+		end if
+				
+		if (not(readyToExecute))then 'merge as far as it goes and dump rest in anteckningar
+			
+			call asignmentMethod("getFirst","Besöksadress_Huvudfastighet",0)
+	
+			rowId = getrowIDByColumn("Besöksadress_Huvudfastighet", insertValues(1))
+
+			call assignFirstkontaktUpgifter()
+	
+			call ifEmptyByRowIdAssignFirst("flik_Avloppsänlaggni_Boendetyp",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_Avloppsa_Avrinningsområde",rowID)
+			call ifEmptyByRowIdAssignFirst("Anläggning_för_S_Anläggningstyp",rowID)
+			call ifEmptyByRowIdAssignFirst("Anläggning_för_Slam_Toaletttyp",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlförEfterR_Anläggningstyp",rowID)
+			call ifEmptyByRowIdAssignFirst("Anläggning_för_EfTR_Toaletttyp",rowID)
+			call ifEmptyByRowIdAssignFirst("Anläggning_fö_SCertifieringstyp",rowID)
+			call ifEmptyByRowIdAssignFirst("Anläggning_för_Slamav_Volym_m3",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_Avloppsanläg_Beslutsdatum",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_Avloppsa_Besiktningsdatum",rowID)
+			call ifEmptyByRowIdAssignFirst("flik_Avloppsanläggn_Byggnadsår",rowID)
+			call ifEmptyByRowIdAssignFirst("Fliken_Koordinater",rowID)
+			call ifEmptyByRowIdAssignFirst("Inventeringsinformation_Status",rowID)
+			call ifEmptyByRowIdAssignFirst("Inventeringsinformation_Datum",rowID)
+			call ifEmptyByRowIdAssignFirst("Anl_för_EftR_TöInterv_mån",rowID)
+			call ifEmptyByRowIdAssignFirst("fliken_Fastigheter",rowID)
+			call ifEmptyByRowIdAssignFirst("AnlF_efR_Koordinater_X_o_Y",rowID)
+			call ifEmptyByRowIdAssignFirst("Anläggning_för_EfterföljRText",rowID)
+			call ifEmptyByRowIdAssignFirst("PunkttypAB",rowID)
+			call ifEmptyByRowIdAssignFirst("PunkttypER",rowID)
+			call asignmentMethod("getByRowID","Anteckning",rowID)
+			call asignmentMethod("getFirst","FNR",0)
+			call appendToColumn("Anteckning"," (äldre:) " & dumpAllBut(rowId))
+			
+								
+			readyToExecute = true
+		end if
+		
+		if(hasDupes = 3 AND not(readyToExecute)) then
+			goto hasDupes3ANDnotreadyToExecute
+		end if
+		
+		if (readyToExecute = false) then
+			goto readyToExecutefalse
+		else
+			onError goto executeQueryInsertValues
+				call executeQuery(insertValues)
+				i = i + 1
+				print fastigheter.rowid
+			onError goto 0
+		end if					
+		
+		commit table ressult
+
+		Fetch Next From fastigheter
+	fetchNext:
+	loop
+	
+	close table ressult
+	close table errorTable
+	close table StructureTable
+	close table bucketTable
+	
+	Y = Timer()-statTime 
+	Print Y & "(" & Y/begränsningsVariabel & ")"
+	
+exit sub
+	hasDupes3ANDnotreadyToExecute:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"hasDupes3ANDnotreadyToExecute:" & Error$())
+			commit table errorTable
+			resume fetchNext
+
+
+	executeQueryInsertValues:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"executeQueryInsertValues:" & Error$())
+			commit table errorTable
+			resume fetchNext
+
+
+	readyToExecutefalse:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"readyToExecutefalse:" & Error$())
+			commit table errorTable
+			resume fetchNext	
+
+	executeQueryEr:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"executeQueryEr:" & Error$())
+			commit table errorTable
+			resume fetchNext	
+	
+	beforeExecutionError:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"beforeExecutionError:" & Error$())
+			commit table errorTable
+			resume fetchNext	
+	
+	LineInsertionFail:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"LineInsertionFail:" & Error$())
+			commit table errorTable
+			resume fetchNext
+		
+	ErrorINerror:
+		print "ERRRORRRRR " & Err()
+	endSub:
+
+End Sub
+
+function countDupes(byVal fastighetsBet as string) as integer
+
+dim hasDupes,x as integer
+
+		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
+		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
+     		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
+     			hasDupes = hasDupes + 1
+     		end if
+		Next
+
+countDupes = hasDupes
+end function
+
+sub asignmentMethod(byVal methodX as string,byVal ColumnX as string,byVal optionalRowID as integer)
+	
+	dim insertionValue as string
+	Dim query As String
+	dim tempAlias as alias
+	dim columnPos as integer
+	dim rowIdx as integer
+	Dim concactedString As String
+	dim aliass as alias
+
+onError goto QueryError
+	tempAlias = "urval." & columnX
+	
+	do case MethodX
+		case "getFirst"
+			select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
+			
+			fetch first from tempcolumnFiltered
+			insertionValue = str$(tempcolumnFiltered.col1)				
+		
+		case "getByRowID"
+			rowIdx = optionalRowId
+			select tempAlias from urval where rowId = rowIdX into temporay
+			
+			fetch first from temporay
+			
+			insertionValue = temporay.col1
+		
+		case "getAll"
+					
+			select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered 'empty counts as 1
+			
+			Fetch First From tempcolumnFiltered
+			Do Until EOT(tempcolumnFiltered)
+			
+				concactedString = concactedString + tempcolumnFiltered.col1 + " || "  
+			
+				Fetch Next From tempcolumnFiltered
+			loop
+			
+			insertionValue = concactedString
+			
+		case "getLatest"
+			aliass = columnX
+			select Max(aliass) "C" From urval Group By Col2 into tempcolumnFiltered fetch first from tempcolumnFiltered
+			insertionValue = tempcolumnFiltered.col1						
+	end case
+	
+		select col2 from StructureTable where col1 = columnx into columnNumber
+		fetch first from columnNumber
+		columnPos = columnNumber.col1
+		
+final:
+		insertValues(columnPos) = insertionValue
+
+exit sub
+	QueryError:
+		print "asignmentMethod, : " & columnX & " : "  & Error$()
+		insertionValue = ""
+		resume final	
+end sub
+
+function assignAllWithFirstExcept(values() as string) as logical
+	onError goto Boleanize
+	dim x as integer
+	dim query as string
+	
+
+	if(ubound(values) > 0) then
+		query = "select * from structureTable where Not("
+	
+		for x=1 to ubound(values)
+			query = query & "col1=" & chr$(34) & values(x) & chr$(34) & " OR "
+		next
+		
+		query = query & "1=0 ) into structureTableFiltered"
+		
+		run command query
+	else 
+		select * from structureTable into structureTableFiltered
+	end if
+
+	fetch First from structureTableFiltered
+	do until eot(structureTableFiltered)
+		call asignmentMethod("getFirst",structureTableFiltered.col1,0)				
+		fetch next from structureTableFiltered
+	loop
+	
+	close table structureTableFiltered
+	
+	assignAllWithFirstExcept = true
+	
+exit function
+	boleanize:
+	
+	assignAllWithFirstExcept = false
+end function
+
+sub assignFirstkontaktUpgifter()
+
+			call asignmentMethod("getFirst","Besöksadress_Adress",0)
+			call asignmentMethod("getFirst","Besöksadress_Postnr",0)
+			call asignmentMethod("getFirst","Besöksadress_Ort",0)
+			call asignmentMethod("getFirst","Verksamhetsutövare_Namn",0)
+			call asignmentMethod("getFirst","Verksamhetsutöv_Person_orgnr",0)
+			call asignmentMethod("getFirst","Fakturamottagare_NAMN",0)
+			call asignmentMethod("getFirst","Fakturamottagare_Faktura_ADRESS",0)
+			call asignmentMethod("getFirst","Fakturamottagare_Faktura_POSTNR",0)
+			call asignmentMethod("getFirst","Fakturamottagare_Faktura_POSTOR",0)
+
+end sub
+
+function dumpAllBut(rowId as integer) as string
+	dim ToBecomeAnteckningar as string
+	dim tempInteger as integer
+	call getrowsExcludingRowID(rowId) 'generating table "older"
+	
+	create table "tempTable" (x char (254)) file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
+	
+	fetch first from older
+	do until EOT(older)
+		tempInteger = older.rowId
+		insert into tempTable (x) values (columnsAsString(tempInteger))				
+	fetch next from older	
+	loop
+	
+	select * from tempTable group by col1 into tempTableGrouped
+	
+	fetch first from tempTableGrouped
+	do until EOT(tempTableGrouped)
+		ToBecomeAnteckningar = ToBecomeAnteckningar + tempTableGrouped.col1
+	fetch next from tempTableGrouped
+	loop
+	
+	close table "tempTable"
+		
+	dumpAllBut = ToBecomeAnteckningar
+
+end function
+
+sub appendToColumn(byVal ColumnNamn as string,ByVal attAppendera as string)
+
+		select col2 from StructureTable where col1 = ColumnNamn into columnNumber
+		fetch first from columnNumber
+			
+		insertValues(columnNumber.col1) = insertValues(columnNumber.col1) & attAppendera
+
+end sub
+
+sub ifEmptyByRowIdAssignFirst(byVal columnNamn as string,rowID as integer)
+
+if(not(getByRowID(rowId,columnNamn)="")) then 
+				call asignmentMethod("getByRowID",columnNamn,rowID)	
+			else
+				call asignmentMethod("getFirst",columnNamn,0)
+end if
+
+end sub
+
+function getByRowID(rowIdx as integer,byVal kolumnName as string) as string
+
+	dim tempAlias as alias
+	tempAlias = "urval." & kolumnName
+	select tempAlias from urval where rowId = rowIdX into temporay
+	
+	fetch first from temporay
+	
+	getByRowID = temporay.col1
+end function
+
+function columnsAsString(byVal rowIdX as integer) as string
+		dim ColumnOFinterest(21),returnstring as string
+		dim x as integer
+		dim tempAlias as alias
+		dim ressultArray(1) as string
+		
+		select * from older where rowId = rowIdX into olderX
+		fetch first from olderX
+		
+		ColumnOFinterest(1) = "flik_Avloppsänlaggni_Boendetyp"
+		ColumnOFinterest(2) = "flik_Avloppsa_Avrinningsområde"
+		ColumnOFinterest(3) = "Anläggning_för_S_Anläggningstyp"
+		ColumnOFinterest(4) = "Anläggning_för_Slam_Toaletttyp"
+		ColumnOFinterest(5) = "AnlförEfterR_Anläggningstyp"
+		ColumnOFinterest(6) = "Anläggning_för_EfTR_Toaletttyp"
+		ColumnOFinterest(7) = "Anläggning_fö_SCertifieringstyp"
+		ColumnOFinterest(8) = "Anläggning_för_Slamav_Volym_m3"
+		ColumnOFinterest(9) = "flik_Avloppsanläg_Beslutsdatum"
+		ColumnOFinterest(10) = "flik_Avloppsa_Besiktningsdatum"
+		ColumnOFinterest(11) = "flik_Avloppsanläggn_Byggnadsår"
+		ColumnOFinterest(12) = "Fliken_Koordinater"
+		ColumnOFinterest(13) = "Inventeringsinformation_Status"
+		ColumnOFinterest(14) = "Inventeringsinformation_Datum"
+		ColumnOFinterest(15) = "Anl_för_EftR_TöInterv_mån"
+		ColumnOFinterest(16) = "fliken_Fastigheter"
+		ColumnOFinterest(17) = "AnlF_efR_Koordinater_X_o_Y"
+		ColumnOFinterest(18) = "Anläggning_för_EfterföljRText"
+		ColumnOFinterest(19) = "PunkttypAB"
+		ColumnOFinterest(20) = "PunkttypER"
+		ColumnOFinterest(21) = "Anteckning"
+				
+		returnstring = "("
+		
+		
+		For x=1 to UBound(ColumnOFinterest)
+    		tempAlias = "olderX."+ ColumnOFinterest(x)
+    		if not(tempAlias & "" = "" or tempAlias & "" = "0") then
+    			
+    			returnString = returnString & "col"+str$(x+10) & ":" & tempAlias & ", "
+    		end if
+		Next
+	
+		columnsAsString = returnString + ")"
+		
+end function
+
+function kollaBredd(values() as string) as logical
+
+	kollaBredd = true
+	dim x as integer
+
+	for x = 1 to ubound(values)
+		select col2 from referenceTable where col1 = x into bucketSize
+			fetch first from bucketSize
+		if(bucketSize.col1 < len(values(x))) then
+			kollaBredd = false
+		end if
+	next
+
+end function
+
+sub executeQuery(insertValues() as string)
+	dim qM,query,tempArray(1),tempstring as string
+	dim i as integer
+	
+	qM = chr$(34)
+	
+	
+	if len(insertValues(26)) > 0 then
+	OnERRor goto commaUpdelningsFel
+		tempstring = ""
+		i = SplitStringAtCharacter(insertValues(26),",",tempArray) 'fliken_Fastigheter Char(254),					
+		
+		for i = 1 to ubound(tempArray)
+			
+			if(not(tempArray(i)="" OR tempArray(i)=",")) then
+				tempstring = tempstring & tempArray(i) & ","
+			end if	
+		next
+		
+	insertValues(26) = tempstring
+	OnERRor goto 0
+	end if 
+	
+	
+	if StringContains(insertValues(31),qm) then
+	OnERRor goto hartassBortagningsfel
+		tempstring = ""
+		i = SplitStringAtCharacter(insertValues(31),qm,tempArray) 'fliken_Fastigheter Char(254),					
+		
+		for i = 1 to ubound(tempArray)
+			
+			if(not(tempArray(i)="" OR tempArray(i)=qm)) then
+				tempstring = tempstring & tempArray(i) & "''"
+			end if	
+		next
+		
+		insertValues(31) = tempstring
+	OnERRor goto 0
+	end if
+		
+	
+	OnERRor goto BreddenFörFältetLiggerUtanförIn
+			if(not(kollaBredd(insertValues())))then
+				Error 666
+			end if			
+	OnERRor goto 0
+	
+	OnERRor goto runCommandError
+		query =
+		"Insert Into ressult (Besöksadress_Huvudfastighet,Besöksadress_Adress,Besöksadress_Postnr,Besöksadress_Ort,Verksamhetsutövare_Namn,Verksamhetsutöv_Person_orgnr,Fakturamottagare_NAMN,Fakturamottagare_Faktura_ADRESS,Fakturamottagare_Faktura_POSTNR,Fakturamottagare_Faktura_POSTOR,flik_Avloppsänlaggni_Boendetyp,flik_Avloppsa_Avrinningsområde,Anläggning_för_S_Anläggningstyp,Anläggning_för_Slam_Toaletttyp,AnlförEfterR_Anläggningstyp,Anläggning_för_EfTR_Toaletttyp,Anläggning_fö_SCertifieringstyp,Anläggning_för_Slamav_Volym_m3,flik_Avloppsanläg_Beslutsdatum,flik_Avloppsa_Besiktningsdatum,flik_Avloppsanläggn_Byggnadsår,Fliken_Koordinater,PunkttypAB,Inventeringsinformation_Status,Inventeringsinformation_Datum,Anl_för_EftR_TöInterv_mån,fliken_Fastigheter,Anläggning_för_EfterföljRText,AnlF_efR_Koordinater_X_o_Y,PunkttypER,Anteckning,FNR) 				values ("
+		&
+		surroundWithQm()
+		run command query
+	OnERRor goto 0
+	
+exit sub
+
+runcommandError:
+	onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"runcommandError"& Error$())
+	commit table errorTable
+	resume endSub
+
+
+breddenförfältetLiggerutanförin:
+	onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"breddenförfältetLiggerutanförin"& Error$())
+			commit table errorTable
+			resume endSub
+
+
+Hartassbortagningsfel:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"Hartassbortagningsfel"& Error$())
+			commit table errorTable
+			resume endSub
+
+
+CommaUpdelningsfel:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"CommaUpdelningsfel"& Error$())
+			commit table errorTable
+			resume endSub
+
+LineInsertionFail:
+		onError goto ErrorINerror
+			insert into errorTable (col1,col2) values (insertValues(1),"LineInsertionFail:" & Error$())
+			commit table errorTable
+			resume endSub
+		
+		ErrorINerror:
+			print "ERRRORRRRR " & Err()
+		endSub:
+end sub
+
+function surroundWithQm() as string
+
+dim returnvalue as string
+dim qM as string
+dim x as integer
+
+qM = chr$(34)
+returnvalue = qM
+
+for x=1 to ubound(insertValues)
+	onError goto InsertionError
+		returnvalue = returnvalue & insertValues(x) & qM
+		
+		if(not (x = ubound(insertValues))) then
+			returnvalue = returnvalue &  "," & qM
+		end if
+	continueX:
+next
+
+ surroundWithQm = returnvalue & ")"
+ 
+ exit function
+ 
+ InsertionError:
+ 	print insertValues(x) &"][" & x &"][" & Error$()
+	resume continueX
+end function
+
+function getrowIDByColumn(byVal columnName as string, columnValue as string) as integer
+
+	select * from urval where columnName = columnValue into latest
+	
+	fetch first from latest
+
+	getrowIDByColumn = latest.rowid
+end function
+
+function getColumnsAsString(columns() as string) as String
+
+	Dim query,concactedString As String
+	query = "select Older."& colummn & " from Older group by " & colummn & " into tempcolumn"
+		
+	onError goto QueryError
+	Run Command query
+	
+	select * from tempcolumn where not(tempcolumn.col1 = "") into tempcolumnFiltered 'empty counts as 1
+	
+	Fetch First From tempcolumnFiltered
+	Do Until EOT(tempcolumnFiltered)
+	
+		concactedString = concactedString + tempcolumnFiltered.col1 + " || "  
+	
+		Fetch Next From tempcolumnFiltered
+	loop
+	
+	getColumnsAsString = concactedString
+	
+exit function
+	QueryError:
+		print "possible dataloss, " & Error$()
+end function
+
+sub getrowsExcludingRowID(rowIdx as integer)
+
+	select * from urval where not(rowid = rowidx) into Older
+
+end sub
+
+function countOccurences(byVal colummn as string) as integer
+	
+	Dim query As String
+	dim tempAlias as alias
+	tempAlias = "urval." & colummn
+	
+	onError goto QueryError
+	
+	select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
+	
+	fetch first from tempcolumnFiltered
+	countOccurences = tableInfo(tempcolumnFiltered,8)	
+exit function
+	QueryError:
+		print query & "]countOccurences[" & Error$()
+		countOccurences = 0
+end function
+
+sub printOccurences()
+	
+	Dim query,columnNamn As String
+	Dim x as integer
+	
+	For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
+	
+		columnNamn = ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME)
+	
+		query = "select urval."& columnNamn & " from urval group by " & columnNamn & " into tempcolumn"
+			
+		onError goto QueryError
+		Run Command query
+	
+		select * from tempcolumn where not(tempcolumn.col1 = "") into tempcolumnFiltered 'empty counts as 1
+		
+		if tableInfo(tempcolumnFiltered,8) > 1 then
+			print columnNamn & ": " & tableInfo(tempcolumnFiltered,8)
+		end if
+		
+	Next
+	
+	
+exit sub
+	QueryError:
+		print "printOccurences:" & Error$()
+end sub
+
+sub OccurencesAsArray(OccurenceArray() as string)
+	
+	Dim query,columnNamn As String
+	Dim x as integer
+	
+	For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
+	
+		columnNamn = ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME)
+	
+		query = "select urval."& columnNamn & " from urval group by " & columnNamn & " into tempcolumn"
+			
+		onError goto QueryError
+		Run Command query
+	
+		select * from tempcolumn where not(tempcolumn.col1 = "") into tempcolumnFiltered 'empty counts as 1
+		
+		if tableInfo(tempcolumnFiltered,8) > 1 then
+			redim OccurenceArray(x)
+			OccurenceArray(x) = columnNamn
+		end if
+		
+	Next
+	
+	
+exit sub
+	QueryError:
+		print query &"]OccurencesAsArray["& Error$()
+end sub
+
+function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
+	
+	dim tempAlias as alias
+	tempAlias = ColumnName
+	dim tempInteger as integer
+	
+	select * from urval where not(tempAlias = "") into objUrval
+	tempInteger = tableInfo(objUrval,8)
+		
+	if tempInteger > 0 then
+		onError goto noCordError	
+		fetch first from objUrval
+		getCOrd =  ObjectGeography(objUrval.obj,1) & "," & ObjectGeography(objUrval.obj,2)
+	end if
+
+exit function
+noCordError:
+	print tempInteger & " :rader, " & error$()
+end function
+
+Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
+
+	OnError Goto HandleError
+	
+	Dim iPos, iEnd, iCount As Integer
+	
+	If Len(sInput) = 0 Then
+	SplitStringAtCharacter = 0
+	Exit Function
+	End If
+	    
+	Do While iEnd <= Len(sInput)
+	iPos = iEnd + 1
+	iEnd = InStr(iPos, sInput, sSplitChar)
+	If iEnd = 0 Then
+	iEnd = Len(sInput) + 1
+	End If
+	
+	iCount = iCount + 1
+	ReDim sPartsArray(iCount)
+	sPartsArray(iCount) = Mid$(sInput, iPos, iEnd - iPos)
+	Loop
+	
+	SplitStringAtCharacter = UBound(sPartsArray)
+
+Exit Function
+'---------------------------
+	HandleError:
+	Note Error$()
+
+End Function
+
+Function StringContains(ByVal strInput as String, ByVal charToFind as String) as Logical
+
+Dim iPos as Integer
+Dim strOut as String
+Dim i as Integer
+    iPos = InStr(1, strInput, charToFind)
+    If iPos < 1 then          
+        StringContains = false
+    else
+    	StringContains = true
+    End If
+    
+End Function

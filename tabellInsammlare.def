@@ -1,0 +1,78 @@
+Declare Function APICreateDirectory(ByVal szPath As String) As Logical
+declare function arrayAsStringIgnoreEmpty(tableX() as string) as string
+declare Function CheckTable (table_name As String) As Logical
+Declare Function CommitEveryTable() as logical
+Declare function CountRows(ByVal tableName as String) as integer
+Declare Function CreateDirectory Lib "kernel32" Alias "CreateDirectoryA"(ByVal lpPathName As String, ByVal lpSecurityAttributes As Integer) As Integer
+declare Function doDialog() as String
+declare function compareTwoTablesColumns(table1s as string, table2s as string,columnNamesX() as string, columnNamesY() as string) as integer
+
+declare function getColumnsOfTable_asString(ByVal tableName as string) as string
+declare Sub getColumnsOfTable_intoArray(ByVal tableName as string,columnNames() as string)
+Declare Function RowColumnAsString(ByVal tableName as String, ByVal columnName as String) as String
+
+Declare Function ReturnTrue() as Logical
+Declare Function SearchReplace(ByVal strInput as String, ByVal strReplace as String, ByVal strReplacement as String) as String
+Declare Function TableDoesntExist (table_name As String) As Logical
+declare function tidsdialog(i as integer, y as integer,total as integer) as integer
+declare sub removeDupesFromHarRe()
+declare sub cleanUpFormerSession
+declare sub closeAllBut(tableNames() as string)
+declare sub columnAssosiation(tableName as alias,värde() as string,påPlatts() as string)
+declare sub tidsSummering(iProgress as integer,iProgressRange as integer,starttime as integer)
+declare sub createPathTable
+declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
+declare sub doEnskijtSecond()
+declare sub knytEnskiljt(värde() as string,påPlatts() as string)
+declare sub doEnskiljtSecond()
+declare sub doReningFirst()
+declare sub knytSweref(värde() as string,påPlatts() as string)
+
+declare sub genereraFastighetsYtaMedFastighetsAdress()
+declare sub getAnslutna(anslutan() as string)
+declare sub GetOpentables(openTables() as string)
+declare sub SpatialNInsertToSammanfogadTabell(byVal tablePath as string)
+
+declare sub knyt_sColumn_TillRessultatTabellsColumn_(byVal påPosition as string,byVal MedVärde as string,värde() as string,påPlatts() as string)
+declare sub knytRening(värde() as string,påPlatts() as string)
+
+declare sub openSingleTable(byVal tableName as string)
+declare sub opentable(TableArray() as String)
+
+declare sub knytTabell(tableName as alias,värde() as string,påPlatts() as string)
+
+
+declare sub printEveryString(StringArray() as String)
+declare sub RunSpatial(ByVal tempString as string)
+
+declare sub RunUnSpatial(byVal x as string)
+declare sub spatialPailing(tablePaths as string)
+declare sub UNspatialPailing(tablePaths as string)
+
+
+Declare Sub StepProgressRening
+Declare sub StepProgressReAnalyze
+declare sub stepProgressEnskiljt
+declare sub StepProgressAnslutningarNDatum
+declare sub SilenttidsSummering(iProgress as integer,iProgressRange as integer,starttime as integer)
+declare sub tableopener(tableNames() as string)
+declare sub oldOrNewProcess
+declare function sqlGereraTodo as integer
+Declare Sub Wait3Seconds
+declare sub sqlPopulateTableWithTable(värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string)
+declare sub sqlJoinSammanfogadTablleAndGroupedEnskiljtintoHarRening
+declare sub ressultProcessor()
+
+declare sub createSammanfogadTabell( byval filePath as string)
+declare sub actOnRessultTables()
+declare sub knytsamTillSam(värde() as string,påPlatts() as string)
+declare sub openAndRemoveDupes(tablePath as string,byVal tableName as string, byval groupbyColumnsSeparatedWithComma as string)
+declare sub assignObjectName
+declare sub updateObjectNames
+declare sub mergeTables(värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string,condition as string,byval ressultName as string,composite as logical,byVal compositeString as string)
+declare function generateMergestring (värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string) as string
+declare sub görTillBasTabell(byval tableName as string)
+declare sub runInvertCommit(byval query as string, byVal commitPath as string)
+declare sub outerJoinWithSlowSubQ(byVal table1 as string,byVal table2 as string)
+declare sub commitCloseAndReopen
+declare sub removeAtIndex(InputArray() as string,byval removeIndex as integer, outputArray() as string)
