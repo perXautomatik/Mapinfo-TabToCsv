@@ -10,6 +10,7 @@ declare sub insertFulaFastigheter()
 declare sub insertMultiplaFastigheter
 declare sub insertMånsBilder
 declare sub insertMHK()
+declare sub asspsoeraFnr()
 
 sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
 
@@ -101,11 +102,11 @@ Sub Main()
 	
 	call förberedAvslut() call insertMultiplaFastigheter call insertAnteckningar call insertFulaFastigheter() call insertMånsBilder() call insertMHK()
 	
-	call klartVattenStatusEndastVidFlagga()
-	call KlartVattenUtskicksDatumIDatumKolumn()
-	call assosieraFnr()
-	call slamdispFält()
-	call assosieraGammlaFastigheterTillNyaFnr()
+	'call klartVattenStatusEndastVidFlagga()
+	'call KlartVattenUtskicksDatumIDatumKolumn()
+	'call assosieraFnr()
+	'call slamdispFält()
+	'call assosieraGammlaFastigheterTillNyaFnr()
 	
 	
 '   gerdins anläggningar är inte färdiga, not added in endressult !
