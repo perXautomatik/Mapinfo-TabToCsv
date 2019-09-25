@@ -4,7 +4,6 @@ Include "tabellInsammlare.def"
 declare sub attemptSlowInsert(påPlatts() as string,värde() as string,er as string)
 declare sub flerAnslutningarenSigSjalv(ressultArray() as string)
 declare Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
-
 declare sub extraheraAnslutningar(ressultArray() as string)
 
 Dim iProgress,iProgressRange,starttime as integer
@@ -16,10 +15,10 @@ sub doReningFirst()
 	startTime = Timer()
 	call openSingleTable("reningIhopslagen")
 	
-	iProgressRange = tableinfo(reningihopslagen, 8)+2
+	iProgressRange = tableinfo(reningihopslagen, 8)+1
 	
 	ProgressBar "Processing...." & iProgressRange & " items"
-	      Calling StepProgressAnslutningar
+	      Calling StepProgressAnslutningarNDatum
 	Range iProgressRange
 	
 	'call tidsSummering(iProgress,iProgressRange,starttime)
@@ -53,51 +52,73 @@ sub extraheraAnslutningar(ressultArray() as string)
 		
 End Sub
 
-Sub StepProgressAnslutningar
+Sub StepProgressAnslutningarNDatum
 	dim currentId as integer
-	,query,ressultArray(),tempArray() as string
+	,värde(),påPlatts() as string
+	
 
 	do case iprogress
 		case 1
-			call openSingleTable("sammanfogadTabell")
-		case 2
-			call sqlPopulateSammanfogadTabell(ressultArray(),tempArray(),"","")
-			iProgressRange = tableInfo(sammanfogadTabell,8)
+			onError goto stepError
+				redim värde(0)
+				redim påPlatts(0)
+				call knytRening(värde,påPlatts)
+				
+				call sqlPopulateTableWithTable(värde,påPlatts,"sammanfogadTabell","ReningIhopSlagen")
+			onError goto 0
+		
 		case else
-	
+			
 			Fetch rec iProgress From sammanfogadTabell
 			
-			redim ressultArray(0)
-			call extraheraAnslutningar(ressultArray)
-			
-			if ubound(ressultArray) > 1 then 'fler anslutningar än sig själv
-				call flerAnslutningarenSigSjalv(ressultArray)
-			else
-				query = "Update sammanfogadtabell Set fliken_fastigheter = " & qM
-			
-				if ubound(ressultArray) = 1 then 'set fliken_fastigheter to kir
-					query = query & ressultArray(1) & qM & ",besöksadress_huvudfastighet = " & qM & ressultArray(1) 
-				else
-					query = query & "Update sammanfogadtabell Set fliken_fastigheter = " & qM & " " 
-				end if
-				
-				query = query & qM & " Where ROWID = " & iProgress-2 'iprogress doesn't start att rowid 1 but at 3 if no sub
-				
-				onError goto queryError
-					run command query
-				onError goto 0
-			end if
+			call doTheAnslutningsCorrection(iProgress)
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
 exit sub
-	
+
 queryError:
 		print "er: " & error$() & TableOfChoiseKir.kir
 		print query
 Resume next
 
 End Sub
+
+sub doTheAnslutningsCorrection(iprogress as integer
+	qM = chr$(34)
+	
+	onError goto stepError
+		dim query,ressultArray(0) as string
+		call extraheraAnslutningar(ressultArray)
+	
+		if ubound(ressultArray) > 1 then 'fler anslutningar än sig själv
+			call flerAnslutningarenSigSjalv(ressultArray)
+		else
+			query = "Update sammanfogadtabell Set fliken_fastigheter = " & qM
+	
+			if ubound(ressultArray) = 1 then 'set fliken_fastigheter to kir
+				query = query & ressultArray(1) & qM & ",besöksadress_huvudfastighet = " & qM & ressultArray(1) 
+			else
+				query = query & " "
+			end if
+				
+			query = query & qM & " Where ROWID = " & (iProgress-1) 'iprogress doesn't start att rowid 1 but at 2 if no sub
+			
+			onError goto queryError
+				run command query
+			onError goto 0
+			
+		end if
+	onError goto 0
+
+exit sub
+
+stepError:
+		print "er: " & iProgress & "|" & error$()
+		end program
+		resume next
+
+end sub
 
 sub flerAnslutningarenSigSjalv(ressultArray() as string)
 		'set fliken_fastigheter to ressultArray + kir
@@ -127,7 +148,6 @@ exit sub
 		print query
 	Resume next
 end sub
-
 
 Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
 
