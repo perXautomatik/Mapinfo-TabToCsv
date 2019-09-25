@@ -2,247 +2,294 @@ Include "MapBasic.def"
 Include "tabellInsammlare.def"
 
 declare sub attemptSlowInsert(påPlatts() as string,värde() as string,er as string)
-declare sub flerAnslutningarenSigSjalv(ressultArray() as string,Iprogressx as integer)
-declare Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
-declare sub extraheraAnslutningar(ressultArray() as string,anslutningar as string)
-declare function mixedDateToUnion(datumString as string) as string
-declare sub AnslutningOchDatumStandardisering(iprogress as integer)
-declare function doTheDateStandardisation(tempstring as string,tempstring2 as string) as string
-
 Dim iProgress,iProgressRange,starttime as integer
 ,qm as string
 
 sub doReningFirst()
+	call openSingleTable("sammanfogadTabell")
+	call openSingleTable("todo")
+	
+	qM = chr$(34)
+	dim endtime,totalTid as integer
+	dim tidsöversikt,canceledString as string
 	iProgress = 1
-	
-	startTime = Timer()
 	call openSingleTable("reningIhopslagen")
+	iProgressRange = tableInfo(reningIhopslagen,8)
+	startTime = Timer()
 	
-	iProgressRange = tableinfo(reningihopslagen, 8)+1
+	if(tableInfo(sammanfogadTabell,8)> 0) then
+		Dialog
+		Control StaticText title "ok to analyze, cansle to continue:"
+		Control OKButton
+		Control Cancelbutton
+		 
+		If CommandInfo(CMD_INFO_DLG_OK) Then	
+'			ProgressBar "analysing old...." & iProgressRange & " items"
+'			      Calling StepProgressReAnalyze
+'			Range iProgressRange
+
+		Select * from reningIhopslagen,sammanfogadTabell where kir=ObjectNamn AND 
+		(
+		  Reningstyp & ""<>AnlförEfterR_Anläggningstyp & ""
+		  OR Storlek_m2 & ""<>Anläggning_för_EfTR_Toaletttyp & "" 
+		  OR Antal_hushåll_rening & "" <>Anl_för_EftR_TöInterv_mån  & ""
+		  OR Beslut_datum  & ""<>flik_Avloppsanläg_Beslutsdatum  & ""
+		  OR Utförd_datum  & ""<>flik_Avloppsa_Besiktningsdatum  & ""
+		  OR (Fastighet_rening & "," & Anslutna_fastigheter_1 & "," & Anslutna_fastigheter_2 & "," & Anslutna_fastigheter_3 & "," & Anslutna_fastigheter_4 & "," & Anslutna_fastigheter_5 & "," & Anslutna_fastigheter_6 & "," & Anslutna_fastigheter_7 & "," & Anslutna_fastigheter_8 & "," & Anslutna_fastigheter_9 & "," & Anslutna_fastigheter_10)<>fliken_Fastigheter  & ""
+		  OR Kommentarer & ""<>Anläggning_för_EfterföljRText  & ""
+		  OR Cor & ""<>AnlF_efR_Koordinater_X_o_Y & ""
+		) into todo
+		
+		end if	
+	else
+		ProgressBar "Processing...." & iProgressRange & " items"
+		      Calling StepProgressRening
+		Range iProgressRange
+	end if
 	
-	ProgressBar "Processing...." & iProgressRange & " items"
-	      Calling StepProgressAnslutningarNDatum
-	Range iProgressRange
-	
-	'call tidsSummering(iProgress,iProgressRange,starttime)
-	call SilenttidsSummering(iProgress,iProgressRange,starttime)
+	endTime = Timer()		
+	totalTid = endTime-startTime
+	tidsÖversikt = totalTid & " | " & ((totalTid)/iProgress) & " sec/step"
+	canceledString = iProgress & "total: " & tidsÖversikt
+		
+	If CommandInfo(CMD_INFO_STATUS) then
+		If iProgress <= iProgressRange then
+			Note "ended early, got to step: " & canceledString
+		Else
+			Note "Complete! total time: " & tidsÖversikt
+		End If
+	Else
+	      Note "cancel, got to step: " & canceledString
+	End If	
+
 end sub
 
-sub extraheraAnslutningar(ressultArray() as string,anslutningar as string)
+function compareTwoTablesColumns(table1s as string, table2s as string,columnNamesX() as string, columnNamesY() as string) as integer
+
+	dim returnInteger, i,rowIdTable1,rowIdTable2 as integer
+	,TempAlias, table1,table2 as alias
+	,tempStringX,TempStringY,query as string
+		
+	table1 = table1s
+	table2 = table2s
 	
-	dim tempInteger,Y,i as integer
-	,sPartsArray() as string
-	
-	tempInteger = SplitStringAtCharacter(anslutningar, ",", sPartsArray())
-	y = 0
-	
-	for i = 1 to ubound(spartsArray)
-		if y = 0 then	
-			if(spartsArray(i) <> "" ) then
-				y = y+1
-				redim ressultArray(y)
-				ressultArray(y) = spartsArray(i)
-			end if
-		else 
-			if(spartsArray(i) <> "" AND spartsArray(i) <> spartsArray(1)) then
-				y = y+1
-				redim ressultArray(y)
-				ressultArray(y) = spartsArray(i)
-			end if
+	returnInteger = 0
+
+	for i = 1 to ubound(columnNamesX)
+	onerror goto columnFel
+		query = "select " & columnNamesX(i) & " from " & table1 & " where rowid = 1 into joinTable1" 
+		run command query
+		
+		query = "select " & columnNamesY(i) & " from " & table2 & " where rowid = 1 into joinTable2" 
+		run command query
+		
+		fetch first from joinTable1
+		fetch first from joinTable2
+		
+		if not(joinTable1.col1 & "" = joinTable2.col1 & "") then
+			returnInteger = returnInteger + 1
 		end if
+	onerror goto 0
 	next
-		
-End Sub
 
-Sub StepProgressAnslutningarNDatum
+	compareTwoTablesColumns = returnInteger
 
-	dim currentId as integer
-	,värde(),påPlatts() as string
-	do case iprogress
-		case 1
-			onError goto stepError
-				redim värde(0)
-				redim påPlatts(0)
-				call knytRening(värde,påPlatts)
-				
-				call sqlPopulateTableWithTable(värde,påPlatts,"sammanfogadTabell","ReningIhopSlagen")
-			onError goto 0
-		case else
-			call AnslutningOchDatumStandardisering(iProgress)
-	end case
+exit function
+
+columnFel:
+	print error$()
+	print query
+	for i = 1 to ubound(columnNamesX)
+		print columnNamesX(i) & "|" & columnNamesY(i)
+	next
 	
-	call increment(iProgress,iProgressRange,starttime)
-exit sub
-
-StepError:
-		print "er: " & error$() & TableOfChoiseKir.kir
-		print query
-Resume next
-End Sub
-
-function mixedDateToUnion(datumString as string) as string
-	dim tempInteger,i,theYear,theMonth,theDay as integer
-	,sPartsArray(),cleanedNumber,ressultString,PaddedMonth,PaddedDay,tempstring as string
+resume next
 	
-	tempInteger = SplitStringAtCharacter(datumString & "", "-", sPartsArray())
-	
-	if tempInteger > 1 then	
-			if(tempInteger = 3) then
-				cleanedNumber = spartsArray(1) & spartsArray(2) & spartsArray(3)
-			else
-				for i = 1 to tempInteger		
-					cleanedNumber = cleanedNumber & spartsArray(i)
-				next
-			end if	
-	else
-		cleanedNumber = datumString
-	end if
-	
-	tempInteger = len(cleanedNumber)
-		
-	if (tempinteger = 8) then
-			TheYear = val(left$(cleanedNumber, 4))
-			theDay = val(right$(cleanedNumber,2))
-			
-			if theDay < 10 then
-				PaddedDay = "0" & theDay
-			else
-				PaddedDay = theDay & ""
-			end if
-			
-'			if TheMonth < 10 then ' didn't work for some damn reason, 
-'				TheMonth = "0" & TheMonth
-'			else
-'				PaddedMonth = TheMonth & ""
-'			end if
-			tempstring = right$(cleanedNumber,4)
-			tempstring = left$(tempString,2)			
-			
-			ressultString = theYear & "-" & tempstring & "-" & PaddedDay
-	else
-			ressultString = ""
-	end if
-		
-	mixedDateToUnion = ressultString
-End function
-
-function doTheDateStandardisation(beslutsDatum as string,besiktningsDatum as string) as string
-		qM = chr$(34)											
-		doTheDateStandardisation =  "flik_Avloppsa_Besiktningsdatum = " & qM & mixedDateToUnion(beslutsDatum) & qM & ",flik_Avloppsa_Besiktningsdatum = " & qM & mixedDateToUnion(besiktningsDatum) & qM
 end function
 
-sub AnslutningOchDatumStandardisering(iprogress as integer)
-	qM = chr$(34)
-	dim query,ressultArray(0),tempstring,beslutsDatum,besiktningsDatum,kopplingar,kopplingsString,datumString as string
-	,tempinteger as integer 
-	,merÄnEnKoppling as logical
+Sub StepProgressReAnalyze
 	
-	Fetch rec iProgress From sammanfogadTabell
-	
-	tempinteger = iProgress-1 'iprogress doesn't start att rowid 1 but at 2 if no sub
-	
-	tempstring = sammanfogadTabell.fliken_fastigheter
-	beslutsDatum = sammanfogadTabell.flik_Avloppsanläg_Beslutsdatum
-	besiktningsDatum = sammanfogadTabell.flik_Avloppsa_Besiktningsdatum
+	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,tempInteger,currentId,x,different as integer
+	,avslutsvariabel as logical
+	,tempString,query,påPlatts(),värde(),anslutna()
+	,table1ColumnNames() 'reningIhopslagen
+	,table2ColumnNames() 'sammanfogadTabell
+	as string
+	, temporaryAlias1,temporaryAlias2 as string
 		
-	call extraheraAnslutningar(ressultArray,tempstring)
 		
-	merÄnEnKoppling = ubound(ressultArray) > 1
+	Fetch rec iProgress From reningIhopslagen	
+	currentId = reningIhopslagen.rowID
+	
+	tempstring = reningIhopslagen.kir
+	select * from reningIhopslagen where rowid = currentId into currentRow
+	select * from sammanfogadTabell where objectNamn = tempString into match 'sammanfogadTabell
+	
+	temporaryAlias2 = "match" 'sammanfogadTabell
+	temporaryAlias1 = "currentRow" 'reningIhopslagen
+	
+	call knytReningQueryFriendly(table1ColumnNames,table2ColumnNames)
+	
+	if(tableInfo(match, 8)> 0) then
+		if (tableInfo(match, 8)> 1) then
 		
-	if ubound(ressultArray) >= 1 then 'set fliken_fastigheter to kir
-			
-'		if (merÄnEnKoppling) then 'fler anslutningar än sig själv
-'			kopplingar = arrayAsStringIgnoreEmpty(ressultArray)
-'		else
-'			kopplingar = ressultArray(1)
-'		end if	
-			
-		kopplingsString = qM & arrayAsStringIgnoreEmpty(ressultArray) & qM & ",besöksadress_huvudfastighet = " & qM & ressultArray(1) & qM
-	
-	else
-		kopplingsString = qM & " " & qM
-	end if	
-	
-	datumString = doTheDateStandardisation(beslutsDatum,besiktningsDatum)
+			fetch first from match
+			do until eot(match)
+				different = compareTwoTablesColumns(temporaryAlias1,temporaryAlias2,table1ColumnNames, table2ColumnNames)
 					
-	query = "Update sammanfogadtabell Set fliken_fastigheter = " & kopplingsString & "," & datumString & " Where ROWID = " & tempinteger
-
-	onError goto queryError
-		'print query
-		run command query
-	onError goto 0
-	
-	if (merÄnEnKoppling) then 'fler anslutningar än sig själv
-		call flerAnslutningarenSigSjalv(ressultArray,tempinteger)
+				fetch next from match
+			loop		
+		else
+			different = compareTwoTablesColumns(temporaryAlias1,temporaryAlias2,table1ColumnNames, table2ColumnNames)
+		end if
 	end if
-
-exit sub
-
-stepError:
-		print "er: " & iProgress & "|" & error$()
-		end program
-		resume next
-queryError:
-	print "er: " & error$() & TableOfChoiseKir.kir
-	print query
-	Resume next
-end sub
-
-sub flerAnslutningarenSigSjalv(ressultArray() as string,Iprogressx as integer)
-		'set fliken_fastigheter to ressultArray + kir
+		
+	redim table1ColumnNames(0)
+	redim table2ColumnNames(0)
 	
-	dim query as string
-	,x as integer
-
-	select * from sammanfogadTabell where rowid = Iprogress into rowWithID
-	'x = 1 is to be compared with
-	for x = 2 to ubound(ressultArray)	
-		'query = "Insert Into sammanfogadTabell ( COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8, COL9, COL10, COL11, COL12, COL13, COL14, COL15, COL16, COL17, COL18, COL19, COL20, COL21, COL22, COL23, COL24, COL25, COL26, COL27, COL28, COL29, COL30, COL31, COL32, COL33) Select  COL1," & qM & ressultArray(x) & qM & ", COL3, COL4, COL5, COL6, COL7, COL8, COL9, COL10, COL11, COL12, COL13, COL14, COL15, COL16, COL17, COL18, COL19, COL20, COL21, COL22, COL23, COL24, COL25, COL26, COL27, COL28, COL29, COL30, COL31, COL32, COL33 From rowWithID DropIndex Auto"
-		
-		
-		
-		
-		
-		query = "Insert Into sammanfogadTabell Select Anteckning," & qM & ressultArray(x) & qM & ", Besöksadress_Adress,Besöksadress_Postnr,Besöksadress_Ort,Verksamhetsutövare_Namn,Verksamhetsutöv_Person_orgnr,Fakturamottagare_NAMN,Fakturamottagare_Faktura_ADRESS,Fakturamottagare_Faktura_POSTNR,Fakturamottagare_Faktura_POSTOR,flik_Avloppsänlaggni_Boendetyp,flik_Avloppsa_Avrinningsområde,Anläggning_för_S_Anläggningstyp,Anläggning_för_Slam_Toaletttyp,AnlförEfterR_Anläggningstyp,Anläggning_för_EfTR_Toaletttyp,Anläggning_fö_SCertifieringstyp,Anläggning_för_Slamav_Volym_m3,flik_Avloppsanläg_Beslutsdatum,flik_Avloppsa_Besiktningsdatum,flik_Avloppsanläggn_Byggnadsår,Fliken_Koordinater,PunkttypAB,Inventeringsinformation_Status,Inventeringsinformation_Datum,Anl_för_EftR_TöInterv_mån,fliken_Fastigheter,Anläggning_för_EfterföljRText,AnlF_efR_Koordinater_X_o_Y,PunkttypER,FNR,ObjectNamn From rowWithID DropIndex Auto"
-		onError goto queryError	
+	
+	call getColumnsOfTable_intoArray("todo",table1ColumnNames)
+	call getColumnsOfTable_intoArray("currentRow",table2ColumnNames)
+	
+	if different > 0 OR (tableInfo(match, 8) = 0)then
+	
+		onerror goto queryError
+			query = "Insert Into todo (" & arrayAsStringIgnoreEmpty(table1ColumnNames) & ") Select " & arrayAsStringIgnoreEmpty(table2ColumnNames) & " From currentRow DropIndex Auto"
 			run command query
-		onError goto 0	
-	next
+		onerror goto 0
+
+	end if
+	
+
+	iProgress = iProgress + 1 
+	If iProgress <= iProgressRange Then
+		if iProgress mod 100 = 0 then
+			dim totaltid,tidperEnhet as integer
+			
+			totaltid = timer() - starttime	
+			tidperEnhet = totaltid/iprogress		
+			print iProgress & "upskattat: " & ((iprogressRange-iprogress)*tidPerEnhet)/360 & " timmar kvar. " & totaltid\360 & "." & (totaltid mod 360)\60 & "." & (totaltid mod 360) mod 60 & " timmar passerade"
+		End If
+		
+		ProgressBar = iProgress
+	Else
+		ProgressBar = -1
+	End If
+		
 exit sub
-	queryError:
+	
+queryError:
 		print "er: " & error$() & TableOfChoiseKir.kir
 		print query
-	Resume next
+'		tempstring = TableOfChoiseKir.kir
+'		insert into errorTable (t1,f1,p1) values (error$(), tempString, query)
+'		commit table errorTable
+Resume next
+
+End Sub
+
+Sub StepProgressRening
+	
+	dim Y,begränsningsvariabel,statTime,i,tidsbegränsning,tempInteger,currentId,x as integer
+	,avslutsvariabel as logical
+	,tempString,query,påPlatts(),värde(),anslutna() as string
+	
+	Fetch rec iProgress From reningIhopslagen	
+	
+	currentID = reningIhopslagen.rowId 
+	
+	select * from reningIhopslagen where rowId = currentId into TableOfChoiseKir
+		
+	redim värde(0)
+	redim påPlatts(0)
+	call knytReningQueryFriendly(värde,påPlatts)
+	
+	reDim anslutna(0)
+	call getAnslutna(anslutna)
+		
+	for x = 1 to ubound(anslutna)
+			
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & anslutna(x) & qM,"Besöksadress_Huvudfastighet",värde,påPlatts)'skälet till buggen då query blev längre och längre för varje iteration
+		'höll på till och med 592 om denna flyttas ut tillsammans med DoRening, kanske man inte behöver redimma värde eller påPlatts
+
+			query = "Insert Into sammanfogadTabell (" & arrayAsStringIgnoreEmpty(påPlatts) & ") Select " & arrayAsStringIgnoreEmpty(värde) & " From TableOfChoiseKir DropIndex Auto"
+	
+		onError goto queryError	
+			run command query
+		onError goto 0
+	next
+				
+	iProgress = iProgress + 1
+	   
+	If iProgress <= iProgressRange Then
+		
+		if iProgress mod 100 = 0 then
+			dim totaltid,tidperEnhet as integer
+			
+			totaltid = timer() - starttime
+			
+			tidperEnhet = totaltid/iprogress
+			
+			print iProgress & "upskattat: " & ((iprogressRange-iprogress)*tidPerEnhet)/360 & " timmar kvar. " & totaltid/360 & " timmar passerade"
+		End If
+		
+		ProgressBar = iProgress
+	Else
+		ProgressBar = -1
+	End If
+	
+	
+exit sub
+	
+queryError:
+		print "er: " & error$() & TableOfChoiseKir.kir
+'		tempstring = TableOfChoiseKir.kir
+'		insert into errorTable (t1,f1,p1) values (error$(), tempString, query)
+'		commit table errorTable
+Resume next
+
+End Sub
+
+sub getAnslutna(anslutan() as string)
+	dim tempAlias as alias
+	dim x,y as integer
+
+	For x=1 to TableInfo(TableOfChoiseKir, TAB_INFO_NCOLS)    		
+		tempAlias = "TableOfChoiseKir.col"+str$(x)
+ 		
+ 		if ColumnInfo(TableOfChoiseKir, "col"+str$(x), COL_INFO_NAME) like "anslutna_%" then
+ 			select tempAlias from TableOfChoiseKir into valdKolumn
+ 			fetch first from valdKolumn
+ 			
+ 			if(not(valdKolumn.col1 = "")) then
+ 				y = ubound(anslutan())+1
+ 				redim anslutan(y)
+ 				anslutan(y)= valdKolumn.col1
+ 			end if
+ 		end if     		
+	Next
+	
 end sub
 
-Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
+sub knytReningQueryFriendly(värde() as string,påPlatts() as string)
+	
+	call knyt_sColumn_TillRessultatTabellsColumn_("Reningstyp","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Storlek_m2","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Antal_hushåll_rening","Anl_för_EftR_TöInterv_mån",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Beslut_datum","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Utförd_datum","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(
+	"Fastighet_rening & " & qM & "," & qM & " & Anslutna_fastigheter_1 & " & qM & "," & qM & " & Anslutna_fastigheter_2 & " & qM & ","
+	 & qM & 
+	 " & Anslutna_fastigheter_3 & " & qM & "," & qM & " & Anslutna_fastigheter_4 & " & qM & "," & qM & " & Anslutna_fastigheter_5 & " & qM & ","
+	 & qM & 
+	 " & Anslutna_fastigheter_6 & " & qM & "," & qM & " & Anslutna_fastigheter_7 & " & qM & "," & qM & " & Anslutna_fastigheter_8 & " & qM & "," 
+	 & qM &
+	 " & Anslutna_fastigheter_9 & " & qM & "," & qM & " & Anslutna_fastigheter_10"
+	 ,"fliken_Fastigheter",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Kommentarer","Anläggning_för_EfterföljRText",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Efterföljande rening"& qM,"PunkttypER",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("Cor","AnlF_efR_Koordinater_X_o_Y",värde,påPlatts)
+	call knyt_sColumn_TillRessultatTabellsColumn_("kir","ObjectNamn",värde,påPlatts)
 
-	OnError Goto HandleError
-	
-	Dim iPos, iEnd, iCount As Integer
-	
-	If Len(sInput) = 0 Then
-	SplitStringAtCharacter = 0
-	Exit Function
-	End If
-	    
-	Do While iEnd <= Len(sInput)
-	iPos = iEnd + 1
-	iEnd = InStr(iPos, sInput, sSplitChar)
-	If iEnd = 0 Then
-	iEnd = Len(sInput) + 1
-	End If
-	
-	iCount = iCount + 1
-	ReDim sPartsArray(iCount)
-	sPartsArray(iCount) = Mid$(sInput, iPos, iEnd - iPos)
-	Loop
-	
-	SplitStringAtCharacter = UBound(sPartsArray)
-	
-	Exit Function
-	'---------------------------
-	HandleError:
-	Note Error$()
-
-End Function
+end sub

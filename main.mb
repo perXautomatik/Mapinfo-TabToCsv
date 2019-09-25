@@ -1,82 +1,62 @@
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
-include "Menu.def"
 Declare Sub Main
-declare sub populatePathTable
 
-Dim tablenames(3) as string
-Dim iProgress,iProgressRange,starttime as integer
-,qm as string
 
 Sub Main()
 	print Chr$(12)
-	dim runTime,tempInteger as integer
-	runTime = timer()
 	
+	Dim tablenames(2) as string
+		
 	tablenames(1) = "ErrorTable"
 	tablenames(2) = "fastighet_yta"
-		
+
+	
 	call closeAllBut(tableNames)
-
-	iprogressRange = 11
-	iprogress = 0	
-	ProgressBar "Processing...." & iProgressRange & " items"
-		     Calling populatePathTable
-	Range iProgressRange
-	
-	tablenames(3) = "sammanfogadTabell"
-	
+	call createPathTable
 	call tableOpener(tablenames)
-
-	call doReningFirst()
-	
-	close table ReningIhopslagen
-	
-	call doEnskiljtSecond()
 		
-	call ressultProcessor()
+	call doReningFirst()
+	Call assignObjectNames()
+	close table ReningIhopslagen
+	call doEnskiljtSecond()
 
-	call silenttidsSummering(iprogress,iprogressRange,runTime)
-	
 End Sub
 
 
-sub populatePathTable
+sub createPathTable
 	dim tempstring,tablenames(3) as string
 	
-	do case iProgress
-	case 1
-		tempstring = "PathTABLE"
-		if not(tableDoesntExist(tempstring)) then
-			close table "pathTable"
-		End If
+	tempstring = "PathTABLE"
+	if not(tableDoesntExist(tempstring)) then
+		close table "pathTable"
+	End If
+	
+	if tableDoesntExist(tempstring) then
+		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
 		
-		if tableDoesntExist(tempstring) then
-			CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
-		end if
-	case 2
 		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Enskilt_avlopp_Södra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Enskilt_avlopp_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Enskilt_avlopp_Mellersta")
-	case 3	
+				
 		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Rening_Södra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Rening_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Rening_Mellersta")
-	case 4	
+		
 		Tempstring = "K:\KARTOR\SOLEN_PUNKTER\Adresspunkter.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "Adresspunkter")
-	case 5	
+		
 		Tempstring = "K:\KARTOR\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_ytaORg")		
-	case 6
+
 		Tempstring = ApplicationDirectory$() & "ErrorTable.TAB"
 		if(not(FileExists(Tempstring))) then
 			Create Table "ErrorTable" (t1 Char(20),f1 Char(100),p1 Char(254)) file Tempstring TYPE NATIVE Charset "WindowsLatin1"
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "ErrorTable")		
-	case 7
+
 		Tempstring = applicationDirectory$() & "fastighet_ytaAd.tab"
 		if(not(FileExists(Tempstring))) then
 			redim tableNames(2)
@@ -93,7 +73,7 @@ sub populatePathTable
 			
 		end if
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
-	case 8
+
 		Tempstring = applicationDirectory$() & "reningIhopslagen.tab"
 		if(true) then 'should always be rebuilt
 			Create Table "reningIhopslagen" (
@@ -125,7 +105,7 @@ sub populatePathTable
 			call RunUnSpatial("Rening_Norra")
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")		
-	case 9
+
 		Tempstring = applicationDirectory$() & "todo.tab"
 		if(true) then 'should always be rebuilt
 			Create Table "todo" (
@@ -153,7 +133,7 @@ sub populatePathTable
 			file Tempstring TYPE NATIVE Charset "WindowsLatin1"
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "todo")		
-	case 10
+
 		Tempstring = applicationDirectory$() & "EnskiljtIhopslagen.tab"
 		if(true) then
 			Create Table "EnskiljtIhopslagen" 
@@ -190,14 +170,106 @@ sub populatePathTable
 			commit table EnskiljtIhopslagen
 		end if	
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "EnskiljtIhopslagen")		
-	case 11	
+		
 		Tempstring = applicationDirectory$() & "sammanfogadTabell.TAB"
 		if(not(FileExists(Tempstring))) then
-			call createSammanfogadTabell(tempString)
+			Create Table "sammanfogadTabell" (
+				Anteckning Char(254),
+				Besöksadress_Huvudfastighet Char(50),
+				Besöksadress_Adress Char(50),
+				Besöksadress_Postnr Char(10),
+				Besöksadress_Ort Char(30),
+				Verksamhetsutövare_Namn Char(40),
+				Verksamhetsutöv_Person_orgnr Char(20),
+				Fakturamottagare_NAMN Char(40),
+				Fakturamottagare_Faktura_ADRESS Char(50),
+				Fakturamottagare_Faktura_POSTNR Char(10),
+				Fakturamottagare_Faktura_POSTOR Char(30),
+				flik_Avloppsänlaggni_Boendetyp Char(10),
+				flik_Avloppsa_Avrinningsområde Char(5),
+				Anläggning_för_S_Anläggningstyp Char(10),
+				Anläggning_för_Slam_Toaletttyp Char(10),
+				AnlförEfterR_Anläggningstyp Char(10),
+				Anläggning_för_EfTR_Toaletttyp Char(10),
+				Anläggning_fö_SCertifieringstyp Char(10),
+				Anläggning_för_Slamav_Volym_m3 Char(10),
+				flik_Avloppsanläg_Beslutsdatum Date,
+				flik_Avloppsa_Besiktningsdatum Date,
+				flik_Avloppsanläggn_Byggnadsår Date,
+				Fliken_Koordinater Char(30),
+				PunkttypAB Char(30),
+				Inventeringsinformation_Status Char(10),
+				Inventeringsinformation_Datum Date,
+				Anl_för_EftR_TöInterv_mån Char(10),
+				fliken_Fastigheter Char(254),
+				Anläggning_för_EfterföljRText Char(254),
+				AnlF_efR_Koordinater_X_o_Y Char(30),
+				PunkttypER Char(30),
+				FNR integer,
+				ObjectNamn Char(50)
+			) file tempString TYPE NATIVE Charset "WindowsLatin1"
+			Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
 		end if
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "sammanfogadTabell")				
-	end case
+	insert into Pathtable (tablePath,TableName) values (Tempstring, "sammanfogadTabell")			
 	
-	call increment(iProgress,iProgressRange,starttime)
+	end if
 		
+end sub
+
+sub assignObjectNames
+	
 End Sub
+
+sub RunUnSpatial(ByVal tableName as string)
+
+	dim query,tableColumns, qM,radEtt,radTvå as string
+	,x as integer
+	,tempAlias as alias
+	
+	qM = chr$(34)
+
+	call opensingleTable(tableName)
+	tempAlias = tableName
+	select * from tempAlias into TableOfChoise
+	
+	call opensingleTable("fastighet_yta")
+
+
+	onerror goto NoObjectError
+		do case TableInfo(TableOfChoise, 4)
+			case 10 'sweref
+				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10 from TableOfChoise into tableOfChoiseXY
+			
+			case 17  'rening
+			
+				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,col17,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord",Fastighet_yta.KIR from TableOfChoise, Fastighet_yta where TableOfChoise.obj within Fastighet_yta.obj into tableOfChoiseKir				
+				query = "Insert Into reningIhopslagen (" & getColumnsOfTable_asString("reningIhopslagen") & ") Select " & getColumnsOfTable_asString("tableOfChoiseKir") & " From tableOfChoiseKir DropIndex Auto"
+						
+			case 16  'enskiljt
+							
+				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord",Fastighet_yta.KIR,Fastighet_yta.ADRESS,Fastighet_yta.POSTNR,Fastighet_yta.POSTORT,Fastighet_yta.FNR from TableOfChoise, Fastighet_yta where TableOfChoise.obj within Fastighet_yta.obj into tableOfChoiseKir			
+				query = "Insert Into EnskiljtIhopSlagen (" & getColumnsOfTable_asString("EnskiljtIhopSlagen") & ") Select " & getColumnsOfTable_asString("tableOfChoiseKir") & " From tableOfChoiseKir DropIndex Auto"
+						
+			case else
+				Error 1
+		end case 
+	onError goto 0
+	
+	onError goto ContinueError
+		run command query
+	onError goto 0
+	close table tableOfChoise
+		
+
+exit sub
+
+NoObjectError:
+	print "NoObjectError:" & error$()
+	print query	
+	resume next
+	
+	ContinueError:
+	print "ContinueError" & error$()
+	print query	
+	resume next
+end sub

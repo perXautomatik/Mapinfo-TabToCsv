@@ -1,156 +1,197 @@
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
-include "Menu.def"
-
-
-declare sub ProgressEnskiljt
-declare sub commitAndAdindexColumn(tempAlias as alias)
 
 Dim iProgress,iProgressRange,starttime as integer
 ,qm as string
 
+
+sub stepProgressEnskiljt
+
+	dim t1,t2 as date
+	,rowIdX,x,Y,begränsningsvariabel,statTime,tidsbegränsning,tempInteger,currentId as integer
+	,avslutsvariabel as logical
+	,tempString,query,påPlatts(),värde(),anslutna(),kir as string
+	
+	fetch rec iProgress from HarReningTabel
+	rowIdx = iProgress
+	
+	onError goto printError
+	
+		select * from HarReningTabel where rowId = rowIdX into nuvarandeRad
+			
+		t1 = nuvarandeRad.beslut_datum 
+		t2 = nuvarandeRad.utförd_Datum	
+		kir = nuvarandeRad.kir
+		
+		call doEnskiljt(värde,påPLatts)
+		
+		select * from sammanfogadTabell where flik_Avloppsanläg_Beslutsdatum=t1 AND flik_Avloppsa_Besiktningsdatum=t2 AND kir=Besöksadress_Huvudfastighet into sammanfogadTabellMatch
+	onError goto 0
+	
+	if(tableInfo(sammanfogadTabellMatch,8) > 0) then
+		for x = 1 to ubound(påPlatts)
+			onError goto queryError
+				query = "Add Column " & qM & sammanfogadTabellMatch & qM & " (" & påPlatts(x) & ") "  & "From nuvarandeRad Set To " & värde(x) & " where flik_Avloppsanläg_Beslutsdatum=beslut_datum"
+				run command query
+			onError goto 0
+		next
+	end if
+	
+	redim värde(0)
+	redim påPlatts(0)
+	
+	iProgress = iProgress + 1
+
+	If iProgress <= iProgressRange Then
+		if iProgress mod 100 = 0 then
+			dim totaltid,tidperEnhet as integer
+			totaltid = 0
+			tidPerEnhet = 0
+			
+			
+			totaltid = timer() - starttime
+			tidperEnhet = totaltid/iprogress
+			
+			
+			print iProgress & "upskattat: " & ((iprogressRange-iprogress)*tidPerEnhet)\360 & " timmar kvar. " & totaltid/360 & " timmar passerade"
+		End If
+		
+		ProgressBar = iProgress
+		Else
+		ProgressBar = -1
+	End If
+	
+exit sub
+	
+queryError:
+		print "Qer: " & error$() & TableOfChoiseKir.kir
+		print query
+printError:
+		print "Per: " & error$() & TableOfChoiseKir.kir
+		print query
+end sub
+
+
 sub doEnskiljtSecond()
 
-	dim qM,tempString,query,värde(), påPlatts(),kir,tidsöversikt,canceledString as string
-	,Y,begränsningsvariabel,tidsbegränsning,endtime,totalTid as integer
+	dim Y,begränsningsvariabel,tidsbegränsning,endtime,totalTid as integer
 	,avslutsvariabel as logical
+	,qM,tempString,query,värde(), påPlatts(),kir,tidsöversikt,canceledString as string
 	
-	iProgressRange = 5
+	
+	qM = chr$(34)
+	avslutsvariabel = false
+	tidsbegränsning = Timer() +1
+	qM = chr$(34)
 	iProgress = 1
-	startTime = Timer()
+	startTime = 0
 	
 	call openSingleTable("enskiljtIhopslagen")
+	startTime = Timer()
+				
+	query = "select * from EnskiljtIhopSlagen where kir = any(select Besöksadress_Huvudfastighet from sammanfogadTabell) into HarReningTabel"	
+	run command query
 	
-	ProgressBar "Processing...." & iProgressRange & " items"
-		     Calling ProgressEnskiljt
+	iProgressRange = tableInfo(HarReningTabel,8)
+	
+	
+	ProgressBar "ProcessingEnskiljt...." & iProgressRange & " items"
+	      Calling StepProgressEnskiljt
 	Range iProgressRange
-			
-	call silenttidsSummering(iProgress,iProgressRange,starttime)
 	
-end sub
-
-sub ProgressEnskiljt()
-
-	dim påPlatts(),värde() as string
-	,tempalias as alias
+	endTime = Timer()		
+	totalTid = endTime-startTime
+	tidsÖversikt = totalTid & " | " & ((totalTid)/iProgress) & " sec/step"
+	canceledString = iProgress & "total: " & tidsÖversikt
 		
-	do case iprogress
-		case 1
-			tempAlias = "enskiljtIhopslagen"
-			call commitAndAdindexColumn(tempAlias)	
-		case 2
-			tempAlias = "sammanfogadTabell"
-			call commitAndAdindexColumn(tempAlias)
-		case 3
-			select * from EnskiljtIhopslagen group by cor, anteckningar into groupedEnskiljt
-		case 4
-			call knytEnskiljt(värde,påPLatts)
-			dim tempboolean as logical
-			,compositeString,condition,kortVärde(),KortPåPlatts() as string
-			
-			tempBoolean = true
-			qM = chr$(34)
-			compositeString = qm & "[" & qm & "& groupedEnskiljt.Col1 & " & qm & "] " & qm & " & groupedEnskiljt.Col16 "
-			värde(1) = ""
-			
-			call removeAtIndex(värde,16,kortVärde)
-			call removeAtIndex(påPlatts,16,KortPåPlatts)
-			
-			condition = "groupedEnskiljt.kir=Besöksadress_Huvudfastighet AND ((flik_Avloppsa_Besiktningsdatum & " & qm & qm &
-			" = groupedEnskiljt.utförd_Datum & " & qm & qm & ") AND ((flik_Avloppsanläg_Beslutsdatum & " & qm & qm &
-			" = groupedEnskiljt.beslut_datum & " & qm & qm & ") OR flik_Avloppsanläg_Beslutsdatum=" & qm & qm &
-			") OR (flik_Avloppsanläg_Beslutsdatum & " & qm & qm & " = groupedEnskiljt.beslut_datum & " & qm & qm &
-			") AND ((flik_Avloppsa_Besiktningsdatum & " & qm & qm & " = groupedEnskiljt.utförd_Datum & " & qm & qm &
-			") OR flik_Avloppsa_Besiktningsdatum=" & qm & qm & "))"
-			
-			call mergeTables(kortVärde,KortPåPlatts,"sammanfogadTabell","groupedEnskiljt",condition,"harRening",tempBoolean, compositeString)
-			call görTillBasTabell(harRening)
-			
-			Alter Table "harRening" ( rename rowIndex GrowIndex ) Interactive
-			'call sqlJoinSammanfogadTablleAndGroupedEnskiljtintoHarRening
-	end case
+	If CommandInfo(CMD_INFO_STATUS) then
+		If iProgress <= iProgressRange then
+			Note "ended early, got to step: " & canceledString
+		Else
+			Note "Complete! total time: " & tidsÖversikt
+		End If
+	Else
+	      Note "cancel, got to step: " & canceledString
+	End If	
+	
+	select * from EnskiljtIhopSlagen where not(kir = any (select Besöksadress_Huvudfastighet from sammanfogadTabell)) into noReningTabel
+exit sub
 
-	call increment(iProgress,iProgressRange,starttime)
+erro1:
+	print "Error1:" & rowIdX & ":row " & error$()
+	print query
+resume exitSub
 
+
+ContinueError:
+	print "ContinueError:" & x & "/" & rowIdX & ":row " & error$()
+	print query
+	resume exitSub
+
+printError3:
+	print 3 & error$()
+	print query
+	resume exitSub
+	
+printError2:
+	print 2 & error$() 
+	print query
+	resume exitSub
+	
+printError4:
+	print 4 & error$()
+	print query
+	resume exitSub
+
+printError5:
+	print 3 & error$()
+	print query
+resume exitSub
+
+
+queryError:
+		tempstring = TableOfChoiseKir.kir
+		insert into errorTable (t1,f1,p1) values ("queryError", tempString, query)
+		print "error commited"
+		commit table errorTable
+Resume continueError
+
+exitSub:
 end sub
 
 
-sub commitAndAdindexColumn(tableName as alias)
-dim query as string
+sub DoEnskiljt(värde() as string,påPlatts() as string)
+	dim qM as string
+	qM = chr$(34)
 
-commit table tableName
-query = "Alter Table " & tableName & " ( add rowIndex Integer ) Interactive"
 
-onError goto queryError
-run command query
-onError goto 0
-
-query = "Update "& tableName & " Set rowIndex = rowid DropIndex Auto"
-
-onError goto queryError
-run command query
-onError goto 0
+	onError goto knytningsFel
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "[" & qM &"& Col1 & " & qM & "] " & qM & " & Col16","Anteckning",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col18","Besöksadress_Huvudfastighet",värde,påPlatts)'kir
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col3","flik_Avloppsänlaggni_Boendetyp",värde,påPlatts)'typ_byggnad
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col4","flik_Avloppsa_Avrinningsområde",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col6","Anläggning_för_S_Anläggningstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col7","Anläggning_för_Slam_Toaletttyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col8","AnlförEfterR_Anläggningstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col9","Anläggning_för_EfTR_Toaletttyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col10","Anläggning_fö_SCertifieringstyp",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col11","Anläggning_för_Slamav_Volym_m3",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col12","flik_Avloppsanläg_Beslutsdatum",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col13","flik_Avloppsa_Besiktningsdatum",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col15","flik_Avloppsanläggn_Byggnadsår",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col5","Anläggning_för_EfterföljRText",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col17","Fliken_Koordinater",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_(qM & "Ansluten byggnad"& qM,"PunkttypAB",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col19","Besöksadress_Adress",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col20","Besöksadress_Postnr",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("col21","Besöksadress_Ort",värde,påPlatts)
+		call knyt_sColumn_TillRessultatTabellsColumn_("Col22","FNR",värde,påPlatts)
+	onError goto 0
 
 exit sub
-queryError:
-	print error$()
-	resume next
 
-end sub
-
-
-sub sqlJoinSammanfogadTablleAndGroupedEnskiljtintoHarRening
-
-	SELECT "["& groupedEnskiljt.Col1 & "] " & groupedEnskiljt.Col16 "Anteckning",
-       groupedEnskiljt.col18 "Besöksadress_Huvudfastighet",
-       groupedEnskiljt.col19 "Besöksadress_Adress",
-       groupedEnskiljt.col20 "Besöksadress_Postnr",
-       groupedEnskiljt.col21 "Besöksadress_Ort",
-       Verksamhetsutövare_Namn,
-       Verksamhetsutöv_Person_orgnr,
-       Fakturamottagare_NAMN,
-       Fakturamottagare_Faktura_ADRESS,
-       Fakturamottagare_Faktura_POSTNR,
-       Fakturamottagare_Faktura_POSTOR,
-       groupedEnskiljt.Col3 "flik_Avloppsänlaggni_Boendetyp",
-       groupedEnskiljt.Col4 "flik_Avloppsa_Avrinningsområde",
-       groupedEnskiljt.Col6 "Anläggning_för_S_Anläggningstyp",
-       groupedEnskiljt.Col7 "Anläggning_för_Slam_Toaletttyp",
-       groupedEnskiljt.Col8 "AnlförEfterR_Anläggningstyp",
-       groupedEnskiljt.Col9 "Anläggning_för_EfTR_Toaletttyp",
-       groupedEnskiljt.Col10 "Anläggning_fö_SCertifieringstyp",
-       groupedEnskiljt.Col11 "Anläggning_för_Slamav_Volym_m3",
-       groupedEnskiljt.Col12 "flik_Avloppsanläg_Beslutsdatum",
-       groupedEnskiljt.Col13 "flik_Avloppsa_Besiktningsdatum",
-       groupedEnskiljt.Col15 "flik_Avloppsanläggn_Byggnadsår",
-       groupedEnskiljt.Col17 "Fliken_Koordinater",
-       "Ansluten byggnad" "PunkttypAB",
-       Inventeringsinformation_Status,
-       Inventeringsinformation_Datum,
-       Anl_för_EftR_TöInterv_mån,
-       fliken_Fastigheter,
-       groupedEnskiljt.Col5 "Anläggning_för_EfterföljRText",
-       AnlF_efR_Koordinater_X_o_Y,
-       PunkttypER,
-       groupedEnskiljt.Col22 "FNR",
-       ObjectNamn,
-       rowIndex,
-       groupedEnskiljt.rowIndex "gRowIndex"
-	       
-	FROM 
-		sammanfogadTabell,
-	     groupedEnskiljt
-	     
-	WHERE 
-		groupedEnskiljt.kir=Besöksadress_Huvudfastighet
-		AND 
-		(
-				(flik_Avloppsa_Besiktningsdatum & "" = groupedEnskiljt.utförd_Datum & "") AND ((flik_Avloppsanläg_Beslutsdatum & "" = groupedEnskiljt.beslut_datum & "") OR flik_Avloppsanläg_Beslutsdatum="")
-			OR
-				(flik_Avloppsanläg_Beslutsdatum & "" = groupedEnskiljt.beslut_datum & "") AND ((flik_Avloppsa_Besiktningsdatum & "" = groupedEnskiljt.utförd_Datum & "") OR flik_Avloppsa_Besiktningsdatum="")
-		)
-		
-	INTO
-		harRening
-
+	knytningsFel:
+	print "knytningsFel" & error$()
+	end program
+	
 end sub
