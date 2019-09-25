@@ -1,679 +1,109 @@
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
-include "Menu.def"
 Declare Sub Main
 
-Dim tablenames(3) as string
-Dim iProgress,iProgressRange,starttime as integer
-,qm as string
-
-declare sub populatePathTable
-declare sub removeDupesFromHarRe()
-declare sub createSammanfogadTabell( byval filePath as string)
-declare sub actOnRessultTables()
-declare sub knytsamTillSam(värde() as string,påPlatts() as string)
-declare sub openAndRemoveDupes(tablePath as string,byVal tableName as string, byval groupbyColumnsSeparatedWithComma as string)
-declare sub assignObjectName
-declare sub updateObjectNames
-declare sub mergeTables(värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string)
-declare function generateMergestring (värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string) as string
-declare sub görTillBasTabell(byval tableName as string)
-declare sub runInvertCommit(byval query as string, byVal commitPath as string)
-declare sub outerJoinWithSlowSubQ(byVal table1 as string,byVal table2 as string)
-declare sub commitCloseAndReopen
+sub createsammanfogadTabell()
+	Create Table "sammanfogadTabell" (
+		Anteckning Char(254),
+		Besöksadress_Huvudfastighet Char(50),
+		Besöksadress_Adress Char(50),
+		Besöksadress_Postnr Char(10),
+		Besöksadress_Ort Char(30),
+		Verksamhetsutövare_Namn Char(40),
+		Verksamhetsutöv_Person_orgnr Char(20),
+		Fakturamottagare_NAMN Char(40),
+		Fakturamottagare_Faktura_ADRESS Char(50),
+		Fakturamottagare_Faktura_POSTNR Char(10),
+		Fakturamottagare_Faktura_POSTOR Char(30),
+		flik_Avloppsänlaggni_Boendetyp Char(10),
+		flik_Avloppsa_Avrinningsområde Char(5),
+		Anläggning_för_S_Anläggningstyp Char(10),
+		Anläggning_för_Slam_Toaletttyp Char(10),
+		AnlförEfterR_Anläggningstyp Char(10),
+		Anläggning_för_EfTR_Toaletttyp Char(10),
+		Anläggning_fö_SCertifieringstyp Char(10),
+		Anläggning_för_Slamav_Volym_m3 Char(10),
+		flik_Avloppsanläg_Beslutsdatum Date,
+		flik_Avloppsa_Besiktningsdatum Date,
+		flik_Avloppsanläggn_Byggnadsår Date,
+		Fliken_Koordinater Char(30),
+		PunkttypAB Char(30),
+		Inventeringsinformation_Status Char(10),
+		Inventeringsinformation_Datum Date,
+		Anl_för_EftR_TöInterv_mån Char(10),
+		fliken_Fastigheter Char(254),
+		Anläggning_för_EfterföljRText Char(254),
+		AnlF_efR_Koordinater_X_o_Y Char(30),
+		PunkttypER Char(30),
+		FNR integer,
+		ObjectNamn Char(50)
+	) file "H:\mina grejer\att göra\häljpa sara swart\slå samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\sammanfogadTabell.TAB" TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
+end sub
 
 Sub Main()
 	print Chr$(12)
-	dim runTime,tempInteger as integer
-	runTime = timer()
 	
-	tablenames(1) = "ErrorTable"
-	tablenames(2) = "fastighet_yta"
-		
-	call closeAllBut(tableNames)
-
-	iprogressRange = 11
-	iprogress = 0	
-	ProgressBar "Processing...." & iProgressRange & " items"
-		     Calling populatePathTable
-	Range iProgressRange
+	Dim tablenames(2) as string
+		Create Table "ErrorTable" (t1 Char(20),f1 Char(100),p1 Char(254)) file ApplicationDirectory$() & "\printTable.TAB" TYPE NATIVE Charset "WindowsLatin1"
 	
-	tablenames(3) = "sammanfogadTabell"
+	tablenames(1) = "fastighet_ytaORg"
+	tablenames(2) = "Adresspunkter"
 	
+	call createPathTable
 	call tableOpener(tablenames)
+	call closeAllBut(tableNames)
+	
+	call genereraFastighetsYtaMedFastighetsAdress()
+	call createsammanfogadTabell()
 
 	call doReningFirst()
-	
+	Call assignObjectNames()
 	close table ReningIhopslagen
-	
-	call knytEnskiljtSecond()
-		
-	iprogressRange = 20
-	iprogress = 0	
-	
-	ProgressBar "Processing...." & iProgressRange & " items"
-	     Calling actOnRessultTables
-	Range iProgressRange
-	
+	call doEnskiljtSecond()
 
-	call silenttidsSummering(iprogress,iprogressRange,runTime)
-	
 End Sub
 
-sub görTillBasTabell(byval tableName as string)
+sub genereraFastighetsYtaMedFastighetsAdress()
+
 	dim tempPath as string
 	tempPath = TempFileName$("")
 	
-	Commit Table tableName As tempPath TYPE NATIVE Charset "WindowsLatin1" Interactive
-	close table tableName
-	open table tempPath as tableName
+	Select Fastighet_ytaOrg.KIR ,Adresspunkter.ADRESS , Adresspunkter.POSTORT , Adresspunkter .POSTNR,Fastighet_ytaORg.FNR From Fastighet_ytaOrg,Adresspunkter where Adresspunkter . FNR = Fastighet_ytaORg . FNR into temp 
+	commit table temp As tempPath 
+	close table fastighet_ytaORg
+	close table Adresspunkter
+	open table tempPath as fastighet_yta
 
 end sub
 
-sub actOnRessultTables()
-	dim värde(),påPlatts(),insertinto,fromTable,tempstring as string
-	
-	tablenames(1) = "ErrorTable"
-	tablenames(2) = "pathTable"
-	tempstring= applicationDirectory$()
-	
-	onerror goto printCase
-	do case iProgress
-	case 1
-		call commitCloseAndReopen
-	case 2
-		call runInvertCommit("select "& getColumnsOfTable_asString("sammanfogadTabell") &" from sammanfogadTabell,harrening where rowindex = harrening.rowindex into selection",applicationDirectory$() & "HarInteBeslut.TAB")
-	case 3
-		call outerJoinWithSlowSubQ("groupedEnskiljt","harRening")
-	case 4
-		commit table harRening as applicationDirectory$() & "harReningUtanDubbletter.tab"
-	case 5
-		commit table harInteRening as applicationDirectory$() & "harInteRening.tab"
-	case 6
-		Drop Table sammanfogadTabell
-	case 7
-		call closeAllBut(tablenames)
-	case 8
-		call openAndRemoveDupes(tempstring,"harRening","ObjectNamn, AnlF_efR_Koordinater_X_o_Y, Fliken_Koordinater")
-	case 9
-		call openAndRemoveDupes(tempstring,"harInteRening","Cor, Anteckningar")
-	case 10
-		call openAndRemoveDupes(tempstring,"harInteBeslut","ObjectNamn, AnlF_efR_Koordinater_X_o_Y, Fliken_Koordinater")
-	case 11
-		tempstring= applicationDirectory$() & "sammanfogadTabell.TAB"
-		call createSammanfogadTabell(tempstring)
-	case 12
-		redim värde(0)
-		redim påPlatts(0)
-		call knytEnskiljt(värde,påPlatts)
-		call sqlPopulateTableWithTable(värde,påPlatts,"sammanfogadTabell","harInteRening")
-	case 13
-		call assignObjectName()
-	case 14
-		redim värde(0)
-		redim påPlatts(0)
-		call knytsamTillSam(värde,påPlatts)
-		call sqlPopulateTableWithTable(värde,påPlatts,"sammanfogadTabell","harInteBeslut")
-	case 15
-		redim värde(0)
-		redim påPlatts(0)
-		call knytsamTillSam(värde,påPlatts)
-		call sqlPopulateTableWithTable(värde,påPlatts,"sammanfogadTabell","harRening")
-	case 16
-		call updateObjectNames
-	case 17
-		call openSingleTable("Fastighet_yta")
-	case 18	
-		tempstring = "G:\sbf\Livsmiljö\Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB"
-		call SpatialPailing(tempstring)
-		call görTillBasTabell("tableOfChoiseKir")
-	case 19	
-		redim värde(0)
-		redim påPlatts(0)
+sub createPathTable
+	dim tempstring as string
+	tempstring = "PathTABLE"
+	if tableDoesntExist(tempstring) then
+		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
 		
-		call knytSweref(Värde(),påPlatts())
-		call mergeTables(värde,påPlatts,"sammanfogadTabell","tableOfChoiseKir")
-	case 20
-		Run Menu Command 311 'aka 311 in the Menu.def
-		Commit Table Selection As "H:\mina grejer\att göra\häljpa sara swart\slå samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\utanSweref.TAB" TYPE NATIVE Charset "WindowsLatin1" Interactive
-		open table "H:\mina grejer\att göra\häljpa sara swart\slå samman alla avloppskikt till ett exeldokument, med endast en rad per fastighet\utanSweref.TAB" as utanSweref
-		Insert Into utanSweref ( COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8, COL9, COL10, COL11, COL12, COL13, COL14, COL15, COL16, COL17, COL18, COL19, COL20, COL21, COL22, COL23, COL24, COL25, COL26, COL27, COL28, COL29, COL30, COL31, COL32, COL33) Select COL1, COL2, COL3, COL4, COL5, COL6, COL7, COL8, COL9, COL10, COL11, COL12, COL13, COL14, COL15, COL16, COL17, COL18, COL19, COL20, COL21, COL22, COL23, COL24, COL25, COL26, COL27, COL28, COL29, COL30, COL31, COL32, COL33 From mergedWithSweref DropIndex Auto
-	end case
-	print iProgress
-	call increment(iProgress,iProgressRange,starttime)
-	onerror goto 0
-	
-exit sub
-	printCase:
-	print "(" & iprogress & ")" & Error$()
-	end program
-End Sub
-
-sub mergeTables(värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string)
-	dim query,condition,värdeUtanFörsta(),påPlattsUtanFörsta(),qm as string
-	,i as integer
-	qM = chr$(34)
-	condition = fromTable & ".kir = " & insertInto & ".besöksadress_huvudfastighet"
-	query =  "select " & qm & "["& qm & " & " & fromTable & ".Col3 & " & qm & "] " & qm & " & " & fromTable & ".Col7 "
-	värde(1) = ""
-
-	query = query & generateMergestring (värde,påPlatts,insertinto,fromTable) & " FROM "	& insertInto & "," & fromTable & " WHERE " & condition & " INTO mergedWithSweref"	
-	print query 'debug
-	
-	onError goto queryError
-		run command query
-	onError goto 0
-	
-exit sub
-
-	queryError:
-	print "queryError:" & error$()
-	print query	
-	resume next
-end sub
-
-function generateMergestring (värde() as string,påPlatts() as string,byVal insertinto as string,byVal fromTable as string) as string
-onerror goto strangeError
-	dim allaColumner(),qm,mergeString,jVärde,allaColumnerI as string
-	, i,j,uBoundaCol as integer
-	,found,tempBoolean as logical
-	
-	call getColumnsOfTable_intoArray(insertInto,allaColumner)
-	
-	qM = chr$(34)
-	mergeString = ""
-	uBoundaCol = ubound(allaColumner)
-
-	for i = 1 to uBoundaCol
-	
-		allaColumnerI = allaColumner(i)
-		found = false
-				
-		for j = 1 to ubound(påPlatts)
-		
-			jVärde = värde(j) & ""
-			tempBoolean = (allaColumnerI = påPlatts(j))
-		
-			if tempBoolean then
-				tempBoolean = (jVärde <> "")
-			
-				if tempBoolean then
-					mergeString = mergeString & fromTable & "." 'to compensate for composit columns
-				end if
-				
-				mergeString = mergeString & jVärde & " " & qm & allaColumnerI & qm
-				found = true		
-			end if
-		next
-		
-		tempBoolean = (found = false)
-		
-		if tempBoolean then
-			mergeString = mergeString & insertInto  & "." & allaColumnerI
-		end if
-		
-		if i < uBoundaCol then
-			mergeString = mergeString & ","
-		end if
-	next
-		
-	generateMergeString = mergeString
-onerror goto 0	
-exit function
-	strangeError:
-		print ubound(värde) & "|" & error$()
-		end program
-		resume next
-end function
-
-sub sqlJoinSammanfogadTablleAndGroupedEnskiljtintoHarRening
-
-	SELECT "["& groupedEnskiljt.Col1 & "] " & groupedEnskiljt.Col16 "Anteckning",
-       groupedEnskiljt.col18 "Besöksadress_Huvudfastighet",
-       groupedEnskiljt.col19 "Besöksadress_Adress",
-       groupedEnskiljt.col20 "Besöksadress_Postnr",
-       groupedEnskiljt.col21 "Besöksadress_Ort",
-       Verksamhetsutövare_Namn,
-       Verksamhetsutöv_Person_orgnr,
-       Fakturamottagare_NAMN,
-       Fakturamottagare_Faktura_ADRESS,
-       Fakturamottagare_Faktura_POSTNR,
-       Fakturamottagare_Faktura_POSTOR,
-       groupedEnskiljt.Col3 "flik_Avloppsänlaggni_Boendetyp",
-       groupedEnskiljt.Col4 "flik_Avloppsa_Avrinningsområde",
-       groupedEnskiljt.Col6 "Anläggning_för_S_Anläggningstyp",
-       groupedEnskiljt.Col7 "Anläggning_för_Slam_Toaletttyp",
-       groupedEnskiljt.Col8 "AnlförEfterR_Anläggningstyp",
-       groupedEnskiljt.Col9 "Anläggning_för_EfTR_Toaletttyp",
-       groupedEnskiljt.Col10 "Anläggning_fö_SCertifieringstyp",
-       groupedEnskiljt.Col11 "Anläggning_för_Slamav_Volym_m3",
-       groupedEnskiljt.Col12 "flik_Avloppsanläg_Beslutsdatum",
-       groupedEnskiljt.Col13 "flik_Avloppsa_Besiktningsdatum",
-       groupedEnskiljt.Col15 "flik_Avloppsanläggn_Byggnadsår",
-       groupedEnskiljt.Col17 "Fliken_Koordinater",
-       "Ansluten byggnad" "PunkttypAB",
-       Inventeringsinformation_Status,
-       Inventeringsinformation_Datum,
-       Anl_för_EftR_TöInterv_mån,
-       fliken_Fastigheter,
-       groupedEnskiljt.Col5 "Anläggning_för_EfterföljRText",
-       AnlF_efR_Koordinater_X_o_Y,
-       PunkttypER,
-       groupedEnskiljt.Col22 "FNR",
-       ObjectNamn,
-       rowIndex,
-       groupedEnskiljt.rowIndex "gRowIndex"
-	       
-	FROM 
-		sammanfogadTabell,
-	     groupedEnskiljt
-	     
-	WHERE 
-		groupedEnskiljt.kir=Besöksadress_Huvudfastighet
-		AND 
-		(
-				(flik_Avloppsa_Besiktningsdatum & "" = groupedEnskiljt.utförd_Datum & "") AND ((flik_Avloppsanläg_Beslutsdatum & "" = groupedEnskiljt.beslut_datum & "") OR flik_Avloppsanläg_Beslutsdatum="")
-			OR
-				(flik_Avloppsanläg_Beslutsdatum & "" = groupedEnskiljt.beslut_datum & "") AND ((flik_Avloppsa_Besiktningsdatum & "" = groupedEnskiljt.utförd_Datum & "") OR flik_Avloppsa_Besiktningsdatum="")
-		)
-		
-	INTO
-		harRening
-
-end sub
-
-sub updateObjectNames
-
-Update sammanfogadTabell Set ObjectNamn = ObjectNamn & " > " & (Len(Fliken_Koordinater)>0) & "|" & (Len(AnlF_efR_Koordinater_X_o_Y)>0) & "^" & rowid DropIndex Auto
-
-end sub
-
-sub assignObjectName
-
-Update sammanfogadTabell Set ObjectNamn = Besöksadress_Huvudfastighet DropIndex Auto
-
-end sub
-
-sub openAndRemoveDupes(tablePath as string,byVal tableName as string, byval groupbyColumnsSeparatedWithComma as string)
-	dim query1,query2 as string
-	,i as integer
-	
-	open table tablePath & tableName & ".tab" as tableToDedupe
-	
-	query1 = "UPDATE tableToDedupe SET dataLängd = "
-		for i = 1 to tableInfo(tableToDedupe,TAB_INFO_NCOLS)
-			query1 = query1 & "len(Col" & i & ") + "
-		next
-	query1 = query1 & "0"
-	
-	Alter Table "tableToDedupe" ( add dataLängd Integer ) Interactive
-	
-	query2 = "SELECT " & getColumnsOfTable_asString("tableToDedupe") &", MAX (dataLängd)FROM tableToDedupe Group BY "& groupbyColumnsSeparatedWithComma &" INTO tableToDedupeUtanDubbletter"
-	
-	onerror goto queryError1
-		run command query1 
-	onerror goto 0
-	
-	onerror goto queryError2
-		run command query2 
-	onerror goto 0
-		
-	commit table tableToDedupeUtanDubbletter as tablePath & "temp.tab"
-	close table tableToDedupe
-	open table tablePath & "temp.tab" as tableName
-	commit table tableName as tablePath & tableName & ".tab"
-	close table tableName
-	open table tablePath & tableName & ".tab"
-	
-exit sub
-queryError1:
-	print "queryError:" & error$()
-	print query1
-	resume next
-queryError2:
-	print "queryError:" & error$()
-	print query2
-	resume next
-end sub
-
-sub knytsamTillSam(värde() as string,påPlatts() as string)
-dim i as integer
-
-	onError goto knytningsFel
-		for i = 1 to 33
-			call knyt_sColumn_TillRessultatTabellsColumn_("Col"&i,"Col"&i,värde,påPlatts)
-		next
-	onError goto 0
-
-exit sub
-
-	knytningsFel:
-	print "knytningsFel" & error$()
-	end program
-end sub
-
-sub populatePathTable
-	dim tempstring,tablenames(3) as string
-	
-	do case iProgress
-	case 1
-		tempstring = "PathTABLE"
-		if not(tableDoesntExist(tempstring)) then
-			close table "pathTable"
-		End If
-		
-		if tableDoesntExist(tempstring) then
-			CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
-		end if
-	case 2
-		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Enskilt_avlopp_Södra")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Enskilt_avlopp_Norra")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Enskilt_avlopp_Mellersta")
-	case 3	
-		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Rening_Södra")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Rening_Norra")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Rening_Mellersta")
-	case 4	
 		Tempstring = "K:\KARTOR\SOLEN_PUNKTER\Adresspunkter.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "Adresspunkter")
-	case 5	
+		
 		Tempstring = "K:\KARTOR\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.TAB"
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_ytaORg")		
-	case 6
-		Tempstring = ApplicationDirectory$() & "ErrorTable.TAB"
-		if(not(FileExists(Tempstring))) then
-			Create Table "ErrorTable" (t1 Char(20),f1 Char(100),p1 Char(254)) file Tempstring TYPE NATIVE Charset "WindowsLatin1"
-		end if	
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "ErrorTable")		
-	case 7
-		Tempstring = applicationDirectory$() & "fastighet_ytaAd.tab"
-		if(not(FileExists(Tempstring))) then
-			redim tableNames(2)
-			
-			tablenames(1) = "fastighet_ytaORg"
-			tablenames(2) = "Adresspunkter"
-						
-			call tableOpener(tablenames)
-						
-			Select Fastighet_ytaOrg.KIR ,Adresspunkter.ADRESS , Adresspunkter.POSTORT , Adresspunkter .POSTNR,Fastighet_ytaORg.FNR From Fastighet_ytaOrg,Adresspunkter where Adresspunkter . FNR = Fastighet_ytaORg . FNR into temp 
-			commit table temp As Tempstring
-			close table fastighet_ytaORg
-			close table Adresspunkter
-			
-		end if
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
-	case 8
-		Tempstring = applicationDirectory$() & "reningIhopslagen.tab"
-		if(true) then 'should always be rebuilt
-			Create Table "reningIhopslagen" (
-				Fastighet_rening Char(50),
-				Antal_hushåll_rening Char(17),
-				Reningstyp Char(15),
-				Storlek_m2 Float,
-				Beslut_datum Char(10),
-				Utförd_datum Char(10),
-				Kommentarer Char(254),
-				Anslutna_fastigheter_1 Char(34),
-				Anslutna_fastigheter_2 Char(50),
-				Anslutna_fastigheter_3 Char(50),
-				Anslutna_fastigheter_4 Char(50),
-				Anslutna_fastigheter_5 Char(50),
-				Anslutna_fastigheter_6 Char(50),
-				Anslutna_fastigheter_7 Char(50),
-				Anslutna_fastigheter_8 Char(50),
-				Anslutna_fastigheter_9 Char(50),
-				Anslutna_fastigheter_10 Char(50),
-				
-				Cor Char(30),
-				kir Char(50)
-			)
-			file Tempstring TYPE NATIVE Charset "WindowsLatin1"
-			commit table reningIhopslagen 'clears table
-			call RunUnSpatial("Rening_Mellersta")
-			call RunUnSpatial("Rening_Södra")
-			call RunUnSpatial("Rening_Norra")
-		end if	
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")		
-	case 9
-		Tempstring = applicationDirectory$() & "todo.tab"
-		if(true) then 'should always be rebuilt
-			Create Table "todo" (
-				Fastighet_rening Char(50),
-				Antal_hushåll_rening Char(17),
-				Reningstyp Char(15),
-				Storlek_m2 Float,
-				Beslut_datum Char(10),
-				Utförd_datum Char(10),
-				Kommentarer Char(254),
-				Anslutna_fastigheter_1 Char(34),
-				Anslutna_fastigheter_2 Char(50),
-				Anslutna_fastigheter_3 Char(50),
-				Anslutna_fastigheter_4 Char(50),
-				Anslutna_fastigheter_5 Char(50),
-				Anslutna_fastigheter_6 Char(50),
-				Anslutna_fastigheter_7 Char(50),
-				Anslutna_fastigheter_8 Char(50),
-				Anslutna_fastigheter_9 Char(50),
-				Anslutna_fastigheter_10 Char(50),
-				
-				Cor Char(30),
-				kir Char(50)
-			)
-			file Tempstring TYPE NATIVE Charset "WindowsLatin1"
-		end if	
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "todo")		
-	case 10
-		Tempstring = applicationDirectory$() & "EnskiljtIhopslagen.tab"
-		if(true) then
-			Create Table "EnskiljtIhopslagen" 
-			(
-				Diarienummer Char(30),
-				Fastighet_tillstånd Char(40),
-				Typ_byggnad Char(15),
-				Antal_hushåll_tillstånd Char(17),
-				Fastighet_rening Char(33),
-				Typ_Slamavskiljare Char(15),
-				Storlek_m3 Float,
-				Typ_rening Char(15),
-				Storlek_m2 Float,
-				Typ_sluten_tank Char(8),
-				Storlek__m3 Float,
-				Beslut_datum Date,
-				Utförd_datum Date,
-				Avgift Char(10),
-				Tillstånd_giltigt_tom Date,
-				Anteckningar Char(254),
-				
-				Cor Char (30),
-				
-				KIR Char(40),
-				ADRESS Char(105),
-				POSTNR Char(9),
-				POSTORT Char(105),
-				FNR integer
-			)
-			file Tempstring TYPE NATIVE Charset "WindowsLatin1"
-			call RunUnSpatial("Enskilt_avlopp_Mellersta")
-			call RunUnSpatial("Enskilt_avlopp_Södra")
-			call RunUnSpatial("Enskilt_avlopp_Norra")
-			commit table EnskiljtIhopslagen
-		end if	
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "EnskiljtIhopslagen")		
-	case 11	
-		Tempstring = applicationDirectory$() & "sammanfogadTabell.TAB"
-		if(not(FileExists(Tempstring))) then
-			call createSammanfogadTabell(tempString)
-		end if
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "sammanfogadTabell")				
-	end case
-	
-	call increment(iProgress,iProgressRange,starttime)
-		
+
+'		insert into Pathtable (tablePath,TableName) values ("G:\sbf\LivsMiljö\Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\Fastigheter_Sweref.TAB", "Fastigheter_sweref")
+'		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Enskilt_avlopp_"
+'		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "EnskiljtSödra")
+'		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "EnskiljtNorra")
+'		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "EnskiljtMellersta")
+'				
+'		Tempstring = "K:\KARTOR\GOTLANDS KOMMUN\VA\AVLOPP\Rening_"
+'		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "ReningSödra")
+'		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "ReningNorra")
+'		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "ReningMellersta")
+'				
+	end if
 End Sub
 
-sub createSammanfogadTabell( byval filePath as string)
-		Create Table "sammanfogadTabell" (
-				Anteckning Char(254),
-				Besöksadress_Huvudfastighet Char(50),
-				Besöksadress_Adress Char(50),
-				Besöksadress_Postnr Char(10),
-				Besöksadress_Ort Char(30),
-				Verksamhetsutövare_Namn Char(40),
-				Verksamhetsutöv_Person_orgnr Char(20),
-				Fakturamottagare_NAMN Char(40),
-				Fakturamottagare_Faktura_ADRESS Char(50),
-				Fakturamottagare_Faktura_POSTNR Char(10),
-				Fakturamottagare_Faktura_POSTOR Char(30),
-				flik_Avloppsänlaggni_Boendetyp Char(10),
-				flik_Avloppsa_Avrinningsområde Char(5),
-				Anläggning_för_S_Anläggningstyp Char(10),
-				Anläggning_för_Slam_Toaletttyp Char(10),
-				AnlförEfterR_Anläggningstyp Char(10),
-				Anläggning_för_EfTR_Toaletttyp Char(10),
-				Anläggning_fö_SCertifieringstyp Char(10),
-				Anläggning_för_Slamav_Volym_m3 Char(10),
-				flik_Avloppsanläg_Beslutsdatum Char(11),
-				flik_Avloppsa_Besiktningsdatum Char(11),
-				flik_Avloppsanläggn_Byggnadsår Char(11),
-				Fliken_Koordinater Char(30),
-				PunkttypAB Char(30),
-				Inventeringsinformation_Status Char(10),
-				Inventeringsinformation_Datum Char(11),
-				Anl_för_EftR_TöInterv_mån Char(10),
-				fliken_Fastigheter Char(254),
-				Anläggning_för_EfterföljRText Char(254),
-				AnlF_efR_Koordinater_X_o_Y Char(30),
-				PunkttypER Char(30),
-				FNR integer,
-				ObjectNamn Char(50)
-			) file filePath TYPE NATIVE Charset "WindowsLatin1"
-			Create Map For sammanfogadTabell CoordSys Earth Projection 1, 104
-end sub
-
-sub removeDupesFromHarRe
-dim query1,query2 as string
-
-Alter Table "harRening" ( add dataLängd Integer ) Interactive
-
-query1 = "UPDATE harRening SET dataLängd = len(Anteckning) + len(flik_Avloppsänlaggni_Boendetyp) + len(flik_Avloppsa_Avrinningsområde) + len(Anläggning_för_S_Anläggningstyp) + len(Anläggning_för_Slam_Toaletttyp) + len(AnlförEfterR_Anläggningstyp) + len(Anläggning_för_EfTR_Toaletttyp) DropIndex Auto"
-query2 = "SELECT " & getColumnsOfTable_asString("harRening") &", MAX (dataLängd)FROM harRening Group BY ObjectNamn, AnlF_efR_Koordinater_X_o_Y, Fliken_Koordinater INTO HarReningUtanDubbletter"
-
-onerror goto queryError1
-	run command query1 
-onerror goto 0
-
-onerror goto queryError2
-	run command query2 
-onerror goto 0
-
-exit sub
-queryError1:
-	print "queryError:" & error$()
-	print query1
-	resume next
-queryError2:
-	print "queryError:" & error$()
-	print query2
-	resume next
+sub assignObjectNames
+	
 End Sub
 
-sub RunUnSpatial(ByVal tableName as string)
-
-	dim query,tableColumns, qM,radEtt,radTvå as string
-	,x as integer
-	,tempAlias as alias
-	
-	qM = chr$(34)
-
-	call opensingleTable(tableName)
-	tempAlias = tableName
-	select * from tempAlias into TableOfChoise
-	
-	call opensingleTable("fastighet_yta")
-
-
-	onerror goto NoObjectError
-		do case TableInfo(TableOfChoise, 4)
-			case 10 'sweref
-				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10 from TableOfChoise into tableOfChoiseXY
-			
-			case 17  'rening
-			
-				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,col17,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord",Fastighet_yta.KIR from TableOfChoise, Fastighet_yta where TableOfChoise.obj within Fastighet_yta.obj into tableOfChoiseKir				
-				query = "Insert Into reningIhopslagen (" & getColumnsOfTable_asString("reningIhopslagen") & ") Select " & getColumnsOfTable_asString("tableOfChoiseKir") & " From tableOfChoiseKir DropIndex Auto"
-						
-			case 16  'enskiljt
-							
-				Select col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,col11,col12,col13,col14,col15,col16,ObjectGeography(object,1) & "," & ObjectGeography(object,2) "cord",Fastighet_yta.KIR,Fastighet_yta.ADRESS,Fastighet_yta.POSTNR,Fastighet_yta.POSTORT,Fastighet_yta.FNR from TableOfChoise, Fastighet_yta where TableOfChoise.obj within Fastighet_yta.obj into tableOfChoiseKir			
-				query = "Insert Into EnskiljtIhopSlagen (" & getColumnsOfTable_asString("EnskiljtIhopSlagen") & ") Select " & getColumnsOfTable_asString("tableOfChoiseKir") & " From tableOfChoiseKir DropIndex Auto"
-						
-			case else
-				Error 1
-		end case 
-	onError goto 0
-	
-	onError goto ContinueError
-		run command query
-	onError goto 0
-	close table tableOfChoise
-		
-
-exit sub
-
-NoObjectError:
-	print "NoObjectError:" & error$()
-	print query	
-	resume next
-	
-	ContinueError:
-	print "ContinueError" & error$()
-	print query	
-	resume next
-end sub
-
-sub runInvertCommit(byval query as string, byVal commitPath as string)
-
-	onError goto queryError
-		run command query
-	onError goto 0
-	
-	Run Menu Command 311 'aka 311 in the Menu.def
-	Commit Table selection As commitPath
-	
-	open table commitPath
-			
-exit sub
-	
-queryError:
-		print "Qer: " & error$() & TableOfChoiseKir.kir
-		print query	
-end sub
-
-sub commitCloseAndReopen
-
-		Commit Table harRening As applicationDirectory$() & "harRening.TAB" TYPE NATIVE Charset "WindowsLatin1" Interactive
-		close table harRening
-		open table applicationDirectory$() & "harRening.TAB" As harRening
-
-end sub
-
-sub outerJoinWithSlowSubQ(byVal table1 as string,byVal table2 as string)
-	
-	'couldn't figure out the fast way to do it faster, some how mapbasic refuse to make outer join, and keep doing inner join, ressulting in an empty set when inverting.
-		
-	dim query as string
-	qM = chr$(34)
-	
-	query = "select * from  " & table1 & "  where rowindex not in(select growindex from  " & table2 & " ) into harInteRening"
-	onError goto queryError
-		run command query
-	onError goto 0
-			
-exit sub
-	
-queryError:
-		print "Qer: " & error$() & TableOfChoiseKir.kir
-		print query	
-end sub
