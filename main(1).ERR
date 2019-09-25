@@ -1,15 +1,15 @@
-(commonlib1.def:4) Subroutine or function already defined: görTillBasTabell.  Too many errors.  Error information has been lost.
-(commonlib1.def:6) Subroutine or function already defined: RowColumnAsString.  Too many errors.  Error information has been lost.
-(commonlib1.def:10) Subroutine or function already defined: GetOpentables.  Too many errors.  Error information has been lost.
-(commonlib1.def:12) Subroutine or function already defined: closeAllBut.  Too many errors.  Error information has been lost.
-(commonlib1.def:14) Subroutine or function already defined: tableopener.  Too many errors.  Error information has been lost.
-(commonlib1.def:16) Subroutine or function already defined: openSingleTable.  Too many errors.  Error information has been lost.
-(commonlib1.def:19) Subroutine or function already defined: cleanUpFormerSession.  Too many errors.  Error information has been lost.
-(commonlib1.def:19) Subroutine or function already defined: printEveryString.  Too many errors.  Error information has been lost.
-(commonlib1.def:21) Subroutine or function already defined: SearchReplace.  Too many errors.  Error information has been lost.
-(commonlib1.def:23) Subroutine or function already defined: CreateDirectory.  Too many errors.  Error information has been lost.
-(commonlib1.def:24) Subroutine or function already defined: APICreateDirectory.  Too many errors.  Error information has been lost.
-(commonlib1.def:28) Subroutine or function already defined: CountRows.  Too many errors.  Error information has been lost.
-(commonlib1.def:30) Subroutine or function already defined: CheckTable.  Too many errors.  Error information has been lost.
-(commonlib1.def:32) Subroutine or function already defined: CommitEveryTable.  Too many errors.  Error information has been lost.
-(commonlib1.def:70) Subroutine or function already defined: arrayAsStringIgnoreEmpty.  Too many errors.  Error information has been lost.
+(main(1).mb:14) No prototype declared for Sub procedure or Function saveProgress.  Too many errors.  Error information has been lost.
+(main(1).mb:14) Invalid variable type: utskriftsObjekt.  Too many errors.  Error information has been lost.
+(main(1).mb:16) Found [dim] while searching for [)]. Sub procedure or Function saveProgress does not match Declare.  Too many errors.  Error information has been lost.
+(main(1).mb:23) Invalid Sub procedure name: createRessultTableX.  Too many errors.  Error information has been lost.
+(main(1).mb:26) Invalid Sub procedure name: genereraSQLVärdeArray.  Too many errors.  Error information has been lost.
+(main(1).mb:27) Found [(] while searching for [)].  Too many errors.  Error information has been lost.
+(main(1).mb:30) Expecting then.  Too many errors.  Error information has been lost.
+(main(1).mb:46) Subroutine argument användaReningar not defined.  Too many errors.  Error information has been lost.
+(main(1).mb:47) Found [(] while searching for [)].  Too many errors.  Error information has been lost.
+(main(1).mb:67) [End sub] found without corresponding sub statement.  Too many errors.  Error information has been lost.
+(main(1).mb:69) Unrecognized command: sub.  Too many errors.  Error information has been lost.
+(main(1).mb:77) Variable startTime not defined.  Too many errors.  Error information has been lost.
+(main(1).mb:81) Invalid Sub procedure name: populatePathTable.  Too many errors.  Error information has been lost.
+(main(1).mb:82) Unrecognized command: populatePathTable.  Too many errors.  Error information has been lost.
+(main(1).mb:86) Variable iprogressRange not defined.  Too many errors.  Error information has been lost.

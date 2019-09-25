@@ -1,78 +1,328 @@
-ÔªøDeclare Function APICreateDirectory(ByVal szPath As String) As Logical
-declare function arrayAsStringIgnoreEmpty(tableX() as string) as string
-declare Function CheckTable (table_name As String) As Logical
-Declare Function CommitEveryTable() as logical
-Declare function CountRows(ByVal tableName as String) as integer
-Declare Function CreateDirectory Lib "kernel32" Alias "CreateDirectoryA"(ByVal lpPathName As String, ByVal lpSecurityAttributes As Integer) As Integer
-declare Function doDialog() as String
-declare function compareTwoTablesColumns(table1s as string, table2s as string,columnNamesX() as string, columnNamesY() as string) as integer
+Dim tablenames(5),distrikt,FastighetsBetInput,qm as string
+,iProgress,iProgressRange,jProgress,jProgressRange,starttime as integer
+,reningDistrikt,enskiltDistrikt as alias
+dim socken as string
 
-declare function getColumnsOfTable_asString(ByVal tableName as string) as string
-declare Sub getColumnsOfTable_intoArray(ByVal tableName as string,columnNames() as string)
-Declare Function RowColumnAsString(ByVal tableName as String, ByVal columnName as String) as String
+Type ReningsObjekt
 
-Declare Function ReturnTrue() as Logical
-Declare Function SearchReplace(ByVal strInput as String, ByVal strReplace as String, ByVal strReplacement as String) as String
-Declare Function TableDoesntExist (table_name As String) As Logical
-declare function tidsdialog(i as integer, y as integer,total as integer) as integer
-declare sub removeDupesFromHarRe()
-declare sub cleanUpFormerSession
-declare sub closeAllBut(tableNames() as string)
-declare sub columnAssosiation(tableName as alias,v√§rde() as string,p√•Platts() as string)
-declare sub tidsSummering(iProgress as integer,iProgressRange as integer,starttime as integer)
-declare sub createPathTable
-declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
-declare sub doEnskijtSecond()
-declare sub knytEnskiljt(v√§rde() as string,p√•Platts() as string)
-declare sub doEnskiljtSecond()
-declare sub doReningFirst()
-declare sub knytSweref(v√§rde() as string,p√•Platts() as string)
+	Fastighet_rening as string
+	Antal_hushÂll_rening as integer
+	Reningstyp as string
+	Storlek_m2 as float
+	Beslut_datum as date
+	Utfˆrd_datum as date
+	Kommentarer as string
+	spatialFastighet as string
+	spatialShift as string
+	rowIndex as integer
+	kordinater as string
+	Anslutna_fastigheter() as string
+
+end Type
+
+Type SwerefObjekt
+
+	FASTIGHET as string
+	Fastighet_tillstÂnd as string
+	ƒrendenr as string
+	Beslut_datum as date
+	Status as string
+	Utskick1_datum as date
+	Anteckning as string
+	utfˆrddatum as date
+	slamh‰mtning as string
+	Antal_byggnader as integer	
+	kordinater as string
+	SpatialFastighet as string
+
+end Type
+
+Type EnskiltObjekt
+
+	Diarienummer as string
+	Fastighet_tillstÂnd as string
+	Typ_byggnad as string
+	Antal_hushÂll_tillstÂnd as string
+	Fastighet_rening as string
+	Typ_Slamavskiljare as string
+	Storlek_m3 as float
+	Typ_rening as string
+	Storlek_m2 as float
+	Typ_sluten_tank as string
+	Storlek__m3 as float
+	Beslut_datum as date
+	Utfˆrd_datum as date
+	Avgift as integer
+	TillstÂnd_giltigt_tom as date
+	Anteckningar as string
+	spatialShift as string
+	spatialFastighet as string
+	kordinater as string
+	
+end Type
+
+Type UtskriftsObjekt
+	
+	trov‰rdighetsIndex as float
+
+	Besˆksadress_Adress as String
+	Besˆksadress_Postnr as String
+	Besˆksadress_Ort as String
+	Besˆksadress_Huvudfastighet as String
+	FNR as integer
+	 
+	Verksamhetsutˆvare_Namn as String
+	Verksamhetsutˆv_Person_orgnr as integer
+ 
+	Fakturamottagare_NAMN as String
+	Fakturamottagare_Faktura_ADRESS as String
+	Fakturamottagare_Faktura_POSTNR as String
+	Fakturamottagare_Faktura_POSTOR as String
+ 
+	Enhet as String
+	Anteckning as String
+	Aktuell_timavgift as integer
+	Timdebitering as Logical
+	Objektnamn as String
+
+	flik_Avlopps‰nlaggni_Boendetyp as String
+	flik_Avloppsanl‰ggn_ByggnadsÂr as date
+	flik_Avloppsa_Besiktningsdatum as date
+	flik_Avloppsanl‰g_Beslutsdatum as date
+	Vatten as String
+  
+	Recipient as String
+
+	Inventering as String
+	Inventeringsinformation_Datum as date
+	Inventeringsinformation_Status as String
+	Bedˆmning as String
+  
+	fliken_Fastigheter as String
+	fliken_Fastigheter_FNR as integer
+
+	PunkttypAB as String
+	Fliken_Koordinater as String
+
+	fliken_ƒrenden as String
+
+	Anl‰ggningskategori as String
+	besiktningdatum as date
+	beslutsdatum as date
+	Anl‰ggningstyp as String
+	Volym_m3 as float
+	Anl_fˆr_EftR_TˆInterv_mÂn as integer
+	AnlF_efR_Koordinater_X_o_Y as String
+	PunkttypER as String
+	Anl‰ggning_fˆr_EfterfˆljRText as String
+
+	Anl‰ggningskategori_2 as String
+	Anl‰ggning_fˆr_S_Anl‰ggningstyp as String
+	Externt_Tj‰nsteid as String
+	text as String
+	Anl‰ggning_fˆr_Slamav_Volym_m3 as float
+	
+	Anl‰ggningskategori_3 as String
+	AnlfˆrEfterR_Anl‰ggningstyp as String
+	besiktningdatum_2 as date
+	beslutsdatum_2 as date
+	Externt_Tj‰nsteid_2 as String
+	Volym_m3_2 as float
+
+	Objektid as integer
+	Path as String
+	Diarienummer as String
+	Lˆpnummer as integer
+
+
+
+	sql as string
+	reningsindex as integer
+	
+end Type
+
+Type FastighetsObjekt
+	
+	fastighet as string
+	fnr as integer
+	
+	swerefobjekt() as SwerefObjekt
+	reningsobjekt() as reningsObjekt
+	enskiltobjekt() as enskiltObjekt
+	
+	adress as string
+	postnr as string
+	ort as string
+	kir as string
+			
+	namn as string
+	personnr as integer
+
+	adressNamn as string
+	PostNrNamn as string
+	PostortNamn as string
+	
+End Type
+
+Type Trov‰rdighetsObjekt
+	index as float
+	ex as integer
+	fx as integer
+	rx as integer
+End Type
+
+declare sub populatePathTable 'own defenition for class, no possibility to generalize
+
+	' hur vet vi att en gemensam rening redan refferats till?
+	' skapar att objekt enligt rutin fˆr gemensamhetanl‰ggningar, samt att vi l‰gger till det radindex
+	' n‰r vi sedan ‰r pÂv‰g att skapa ett gemensamhetsobjekt i ressultattabellen, skippar vi att skapaom rOet
+	' om index redan finns d‰r.
+declare sub utskrivningsobjektsKonstruktor(
+		swerefobjekt as swerefobjekt,
+		reningsobjekt as reningsobjekt,
+		enskiltobjekt as enskiltobjekt,
+		UtskriftsObjekt() as UtskriftsObjekt,
+		anv‰ndaReningar() as integer,
+		trov‰rdighetsIndex as float,
+		fastighetsObjekt as fastighetsObjekt
+	)
+	
+declare function trov‰rdighetsIndexer(
+	anv‰ndaReningar() as integer,
+	swerefobjekt as swerefobjekt,
+	reningsobjekt as reningsobjekt,
+	enskiltobjekt as enskiltobjekt
+	) as float
+
+		
+	'‰r det fˆr kr‰vande att h‰mta poster enligt index?
+	'FastighetsBetInput = columnAtIndexAsString(temp,tempString,iprogress)
+
+	'gissar vilket distrikt som fastighet hˆr till som skall ˆppnas
+	'nˆdv‰ndigt fˆr att spara tid?'''ja det ‰r nˆdv‰ndigt, fundera pÂ att sk‰ra ner i ‰nnu mindre delar.
+	'bit nedsk‰rning gjorde v‰ldigt liten tidskillnad gemnfˆrelse att fˆrindexera alla sˆkvariabler.
+
+declare sub inl‰sning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
+declare sub tolkning(FastighetsObjekt as FastighetsObjekt, UtskriftsObjekt() as UtskriftsObjekt,anv‰ndaReningar() as integer)
+
+'‰ven ifall man "pregenerating area" tar hela processen fortfarande v‰ldigt lÂng tid, frÂgan ‰r om skulle kunna fˆrindexera alla fastigheter
+'ty varjer within+within+within tar l‰ngretid ‰n en tre gÂnger sÂ stor within.
+declare function findInINTArray(byVal v‰rde as integer, array() as integer) as logical
+
+declare function findInStringArray(byVal v‰rde as string, array() as string) as logical
+
+'‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰
+'n‰r en matchning gjorts, ta bort delarna frÂn ittarationen
+'gˆr ny matchning pÂ resterande.
+'ˆnskade mutationer ‰r ihopparade ressultat, samt de ej assosicerade bitarna fˆr sig
+'ˆnskade mutationer ‰r ihopparade ressultat, samt de ej assosicerade bitarna fˆr sig
+' tex om en enskilt som inte har en rening att matcha denne
+' tex en sweref som inte har en enskilt att matcha med
+' dock inga reningar dÂ dessa fÂr tas fram senare.
+'	print FastighetsObjekt.fastighet & ":" & ubound(FastighetsObjekt.enskiltobjekt()) & ":" & ubound(FastighetsObjekt.swerefobjekt()) & ":" & ubound(FastighetsObjekt.reningsobjekt())
+'
+'	if(ubound(fastighetsobjekt.swerefobjekt)>ubound(fastighetsobjekt.enskiltobjekt)) then
+'		'make regular mutations
+'		'for each beslut pick most accurat
+'		'if the is one that's not
+'		'make a mutation where only sweref left
+'		'the mutation with the swerefobjekt who have the highest match get picked
+'	end if
+'	
+'	if(ubound(fastighetsobjekt.reningsobjekt)>ubound(fastighetsobjekt.enskiltobjekt)) then
+'		'the mutation with the rening who have the highest match get picked
+'	end if
+			'n‰r hˆgst trov‰rdighet valts ut, skapas ett utskriftsobjekt			
+			'			print ubound(FastighetsObjekt.swerefobjekt) & "fx" '& trov‰rdighetsobjekt(mestTrov).fx
+			'			print ubound(FastighetsObjekt.reningsobjekt) & "rx" '& trov‰rdighetsobjekt(mestTrov).rx
+			'			print ubound(FastighetsObjekt.enskiltobjekt) & "ex" '& trov‰rdighetsobjekt(mestTrov).ex
+			'			print ubound(trov‰rdighetsobjekt) & "tro " & mestTrov & " tra"
+declare sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,anv‰ndaReningar as integer,UtskriftsObjekt() as utskriftsobjekt, tolkningsobjekt() as Trov‰rdighetsObjekt)
+
+declare sub removeFromIntArray(array() as integer,v‰rde as integer)
+
+declare function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+declare function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+declare function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+declare function intArrayAsPrintString(tableX() as integer) as string
+declare function StringArrayAsString(tableX() as string) as string
+
+declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
+declare function ReningƒrInteToken(x as reningsobjekt) as logical
+declare function EnskiltƒrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
+declare sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
+
+declare function countFasGenerateUtvald(FastighetB as string) as integer
+declare sub insertXintoYtable(ByVal tableToInsert as string,byVal insertWhere as string)
+declare function CreateTable_reningIhopslagen as string
+declare function CreateTable_EnskiltIhopslagen as string
+declare function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
+
+declare function countDupes(byVal fastighetsBet as string) as integer
+declare function kollaBredd(values() as string) as logical
+declare function getCOrd(byVal ColumnName as string) as string
+declare function countOccurences(byVal colummn as string) as integer
+declare sub insertXintoYtableWhereXcolLessThaYcol(ByVal tableToInsert as string,byVal insertWhere as string)
+declare function sqlPart_ColNrs(byVal nr as integer) as string
+declare sub injectGemensamma()
+declare sub insertInitialTables()
+
+declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
+
+declare sub diarienummerForUtskriftsObjekt(
+	utskriftsObjekt() as utskriftsobjekt,
+	itterator as integer,
+	enskiltObjekt as enskiltobjekt,
+	swerefObjekt as swerefobjekt, 
+	objektid as integer
+	)
+
+declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
+
+declare sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
+declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,anv‰ndaReningar() as integer)
+declare sub createRessultTableX(byval tablename as string, byval filePath as string)
+declare function generateInsertStringWithArray(insertinto as string,v‰rde() as string) as string
+declare sub genereraSQLV‰rdeArray(v‰rde() as string, utskriftsobjekt as utskriftsobjekt)
+
+declare sub doTheDateStandardisation(v‰rde() as string,pÂPlatts() as string,byVal DatumStr‰ngTagIsammanfogad as string)
+
+declare function DiarieMixedToUnit(byVal text as string) as string
+declare function getFnr(ByVal fastighetsNamn as string) as integer
 
 declare sub genereraFastighetsYtaMedFastighetsAdress()
+
 declare sub getAnslutna(anslutan() as string)
-declare sub GetOpentables(openTables() as string)
-declare sub SpatialNInsertToSammanfogadTabell(byVal tablePath as string)
 
-declare sub knyt_sColumn_TillRessultatTabellsColumn_(byVal p√•Position as string,byVal MedV√§rde as string,v√§rde() as string,p√•Platts() as string)
-declare sub knytRening(v√§rde() as string,p√•Platts() as string)
+declare sub StandardiseraDiarie(byval a as string,byval b as string,c() as string)
 
-declare sub openSingleTable(byVal tableName as string)
-declare sub opentable(TableArray() as String)
+Declare Sub Main
 
-declare sub knytTabell(tableName as alias,v√§rde() as string,p√•Platts() as string)
+declare function enskiltAsString(enskiltTokenObjekt as EnskiltObjekt) as string
+declare function ReningAsString(reningsTokenObjekt as reningsobjekt) as string
+declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
 
+declare function swerefƒrInteToken(swerefObjekt as swerefObjekt) as logical
+Declare Sub gemAnslutna(caseString as string,ressultArray() as string)
+declare function FirstLeftMostNumber(byVal inputString as string) as integer
+declare function FindCharTurncStringByPos(byVal toRemove as string,byVal inputString as string) as string
+declare function DiarieUtanBokst‰ver(ByVal diarienummer as string) as string
+declare function IFSAMEoneDIFFRENTzeroONEBLANKhalf(byVal valX as string,byVal valY as string) as float
+declare function XOR(byVal a as logical, byVal b as logical) as logical
 
-declare sub printEveryString(StringArray() as String)
-declare sub RunSpatial(ByVal tempString as string)
+declare function stringEveryString(StringArray() as String) as string
+declare function stringEveryInt(IntArray() as integer) as string
 
-declare sub RunUnSpatial(byVal x as string)
-declare sub spatialPailing(tablePaths as string)
-declare sub UNspatialPailing(tablePaths as string)
+declare function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
+declare function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
+declare function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
 
+declare sub readCurrentState(anv‰ndaReningar() as integer)
+declare function getPathFromPathTable(byVal tableName as string) as string
+declare sub sockenProcessor()
+declare sub PrepareGemensamma()
 
-Declare Sub StepProgressRening
-Declare sub StepProgressReAnalyze
-declare sub stepProgressEnskiljt
-declare sub StepProgressAnslutningarNDatum
-declare sub SilenttidsSummering(iProgress as integer,iProgressRange as integer,starttime as integer)
-declare sub tableopener(tableNames() as string)
-declare sub oldOrNewProcess
-declare function sqlGereraTodo as integer
-Declare Sub Wait3Seconds
-declare sub sqlPopulateTableWithTable(v√§rde() as string,p√•Platts() as string,byVal insertinto as string,byVal fromTable as string)
-declare sub sqlJoinSammanfogadTablleAndGroupedEnskiljtintoHarRening
-declare sub ressultProcessor()
+declare function SqlGenWhereColIsNotAny(byVal kolName, toFilterBy() as string) as string
+declare function ifOpenFetchFirstCol11Asinteger(byVal tableName as string) as integer
+declare sub columnAsStringArray(byVal tableName as string,byVal columnName as string, Array() as string)
 
-declare sub createSammanfogadTabell( byval filePath as string)
-declare sub actOnRessultTables()
-declare sub knytsamTillSam(v√§rde() as string,p√•Platts() as string)
-declare sub openAndRemoveDupes(tablePath as string,byVal tableName as string, byval groupbyColumnsSeparatedWithComma as string)
-declare sub assignObjectName
-declare sub updateObjectNames
-declare sub mergeTables(v√§rde() as string,p√•Platts() as string,byVal insertinto as string,byVal fromTable as string,condition as string,byval ressultName as string,composite as logical,byVal compositeString as string)
-declare function generateMergestring (v√§rde() as string,p√•Platts() as string,byVal insertinto as string,byVal fromTable as string) as string
-declare sub g√∂rTillBasTabell(byval tableName as string)
-declare sub runInvertCommit(byval query as string, byVal commitPath as string)
-declare sub outerJoinWithSlowSubQ(byVal table1 as string,byVal table2 as string)
-declare sub commitCloseAndReopen
-declare sub removeAtIndex(InputArray() as string,byval removeIndex as integer, outputArray() as string)

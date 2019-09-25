@@ -1,15 +1,14 @@
-(commonlib1.def:4) Subroutine or function already defined: görTillBasTabell.  Too many errors.  Error information has been lost.
-(commonlib1.def:6) Subroutine or function already defined: RowColumnAsString.  Too many errors.  Error information has been lost.
-(commonlib1.def:10) Subroutine or function already defined: GetOpentables.  Too many errors.  Error information has been lost.
-(commonlib1.def:12) Subroutine or function already defined: closeAllBut.  Too many errors.  Error information has been lost.
-(commonlib1.def:14) Subroutine or function already defined: tableopener.  Too many errors.  Error information has been lost.
-(commonlib1.def:16) Subroutine or function already defined: openSingleTable.  Too many errors.  Error information has been lost.
-(commonlib1.def:19) Subroutine or function already defined: cleanUpFormerSession.  Too many errors.  Error information has been lost.
-(commonlib1.def:19) Subroutine or function already defined: printEveryString.  Too many errors.  Error information has been lost.
-(commonlib1.def:21) Subroutine or function already defined: SearchReplace.  Too many errors.  Error information has been lost.
-(commonlib1.def:23) Subroutine or function already defined: CreateDirectory.  Too many errors.  Error information has been lost.
-(commonlib1.def:24) Subroutine or function already defined: APICreateDirectory.  Too many errors.  Error information has been lost.
-(commonlib1.def:28) Subroutine or function already defined: CountRows.  Too many errors.  Error information has been lost.
-(commonlib1.def:30) Subroutine or function already defined: CheckTable.  Too many errors.  Error information has been lost.
-(commonlib1.def:32) Subroutine or function already defined: CommitEveryTable.  Too many errors.  Error information has been lost.
-(commonlib1.def:70) Subroutine or function already defined: arrayAsStringIgnoreEmpty.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:7) No prototype declared for Sub procedure or Function createRessultTableX.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:9) Sub procedure or Function createRessultTableX does not match Declare.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:108) Invalid Sub procedure name: gemAnslutna.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:114) No prototype declared for Sub procedure or Function getFnr.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:114) Sub procedure or Function getFnr does not match Declare.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:115) Sub procedure or Function getFnr does not match Declare.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:118) Variable getFnr not defined.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:121) No prototype declared for Sub procedure or Function EnskiltFilterByBet.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:121) Invalid variable type: EnskiltObjekt.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:124) Found [dim] while searching for [)]. Sub procedure or Function EnskiltFilterByBet does not match Declare. Found [dim] while searching for [as].  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:127) Subroutine argument tabloid not defined.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:129) Found [(] while searching for [)].  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:130) Found [redim] while searching for [)]. Expecting then.  Too many errors.  Error information has been lost.
+(tabellinsammlare.mb:130) Variable EnskiltObjekt not defined.  Too many errors.  Error information has been lost.
