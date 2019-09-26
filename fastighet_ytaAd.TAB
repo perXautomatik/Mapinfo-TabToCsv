@@ -1,17 +1,18 @@
 !table
-!version 450
+!version 300
 !charset WindowsLatin1
 
 Definition Table
   Type NATIVE Charset "WindowsLatin1"
-  Fields 5
+  Fields 6
     KIR Char (40) ;
     ADRESS Char (105) ;
-    POSTORT Char (105) ;
     POSTNR Char (9) ;
-    FNR Integer Index 1 ;
+    POSTORT Char (105) ;
+    FASTIGHET Char (54) ;
+    FNR Integer ;
 begin_metadata
 "\IsReadOnly" = "FALSE"
 "\MapInfo" = ""
-"\MapInfo\TableID" = "28a209c3-fe6a-44d7-b80e-537d53c673d3"
+"\MapInfo\TableID" = "12da8ddc-bae6-45b8-a6be-58b9f99b869e"
 end_metadata

@@ -1188,7 +1188,7 @@ sub insertInitialTables()
 		tempstringx = "K:\KARTOR"
 		Tempstring = tempstringx & "\SOLEN_PUNKTER\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "Adresspunkter.TAB", "Adresspunkter")
-		insert into Pathtable (tablePath,TableName) values (tempstringx + "LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.tab", "fastighet_ytaORg")
+		insert into Pathtable (tablePath,TableName) values (tempstringx + "\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.tab", "fastighet_ytaORg")
 		
 		tempstringx = tempstringx & "\GOTLANDS KOMMUN\VA\AVLOPP\"
 		Tempstring = tempstringx & "Enskilt_avlopp_"
