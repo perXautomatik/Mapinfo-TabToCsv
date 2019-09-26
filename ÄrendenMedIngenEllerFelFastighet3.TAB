@@ -1,0 +1,18 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 5
+    Diarienummer Char (13) ;
+    Sökbegrepp Char (59) ;
+    Fastighet Char (59) ;
+    Fnr Integer ;
+    leftHalf Char (59) ;
+begin_metadata
+"\MapInfo" = ""
+"\MapInfo\TableID" = "079b0291-3524-4449-a1c3-e9b67b6d1f2d"
+"\MapInfo\ParentTableID" = "416af03e-1714-42f0-952f-981d1ef69f6b"
+"\IsReadOnly" = "FALSE"
+end_metadata

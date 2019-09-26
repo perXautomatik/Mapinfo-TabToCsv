@@ -1,8 +1,8 @@
 
 Include "MapBasic.def"
 include "Menu.def"
-Include "P:\EDP\EDP VISION\TempFilMapp\CRBK01\tabellInsammlare(1).def"
-include "P:\EDP\EDP VISION\TempFilMapp\CRBK01\commonLib1.def"
+Include "tabellInsammlare.def"
+include "commonLib\commonLib1.def"
 
 declare sub insertAnteckningar
 declare sub förberedAvslut()
@@ -10,6 +10,10 @@ declare sub insertFulaFastigheter()
 declare sub insertMultiplaFastigheter
 declare sub insertMånsBilder
 declare sub insertMHK()
+declare sub asspsoeraFnr()
+global workDir as string
+
+
 
 sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
 
@@ -68,7 +72,7 @@ end sub
 
 Sub Main()
 	print Chr$(12) 'empty message
-	
+	workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv"
 	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))
 	dim tablenames(1) as string
 	tablenames(1) = "fastighet_yta"
@@ -99,17 +103,21 @@ Sub Main()
 		
 	end if
 	
-	call förberedAvslut()
-	call insertMultiplaFastigheter
-	call insertAnteckningar
-	call insertFulaFastigheter()
-
-	call insertMånsBilder()
-
-   	call insertMHK()
+	call förberedAvslut() 
+	call insertMultiplaFastigheter 
+	call insertAnteckningar 
+	call insertFulaFastigheter() 
+	call insertMånsBilder() 
+	call insertMHK()
+	
+	'call klartVattenStatusEndastVidFlagga()
+	'call KlartVattenUtskicksDatumIDatumKolumn()
+	'call assosieraFnr()
+	'call slamdispFält()
+	'call assosieraGammlaFastigheterTillNyaFnr()
+	
+	
 '   gerdins anläggningar är inte färdiga, not added in endressult !
-'	call assosieraFnr()
-'	call slamdisp fält
 ' 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
 '	call assosieraGammlaFastigheterTillNyaFnr()
 ' 	correct fastigheter already before association
@@ -139,13 +147,13 @@ end sub
 
 sub insertMHK()
 	
-	open table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\MhkToVision.TAB" as MhkToVision
+	open table workdir & "\MhkToVision.TAB" as MhkToVision
 	insert into HelaSolen (path,Diarienummer) select * from MhkToVision
 end sub
 
 sub insertMånsBilder
 
-	Open Table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\bilder\bilder.TAB" Interactive
+	Open Table workdir & "\bilder.TAB" Interactive
 	select fastighet,path from bilder where fastighet <> "blött jan2018" into utanJan
 	insert into HelaSolen (fliken_fastigheter,path) select * from utanJan
 	select path from bilder where fastighet = "blött jan2018" into Jan
@@ -154,7 +162,7 @@ sub insertMånsBilder
 end sub
 
 sub förberedAvslut()
-	Create Table "HelaSolen" (Besöksadress_Adress Char(253),Besöksadress_Postnr Char(253),Besöksadress_Ort Char(253),Besöksadress_Huvudfastighet Char(34),FNR Integer,Verksamhetsutövare_Namn Char(253),Verksamhetsutöv_Person_orgnr Integer,Fakturamottagare_NAMN Char(253),Fakturamottagare_Faktura_ADRESS Char(253),Fakturamottagare_Faktura_POSTNR Char(253),Fakturamottagare_Faktura_POSTOR Char(253),Enhet Char(6),Anteckning Char(253),Aktuell_timavgift Integer,Timdebitering Logical,Objektnamn Char(36),flik_Avloppsänlaggni_Boendetyp Char(15),flik_Avloppsanläggn_Byggnadsår Date,flik_Avloppsa_Besiktningsdatum Date,flik_Avloppsanläg_Beslutsdatum Date,Vatten Char(17),Recipient Char(49),Inventering Char(12),Inventeringsinformation_Datum Date,Inventeringsinformation_Status Char(6),Bedömning Char(15),fliken_Fastigheter Char(34),fliken_FastigheterFNR Integer,PunkttypAB Char(16),Fliken_Koordinater Char(19),fliken_Ärenden Char(13),Anläggningskategori Char(20),besiktningdatum Date,beslutsdatum Date,Anläggningstyp Char(15),Volym_m3 Float,Anl_för_EftR_TöInterv_mån Integer,AnlF_efR_Koordinater_X_o_Y Char(19),PunkttypER Char(20),Anläggning_för_EfterföljRText Char(253),Anläggningskategori_2 Char(19),Anläggning_för_S_Anläggningstyp Char(15),Externt_Tjänsteid Integer,text Char(253),Anläggning_för_Slamav_Volym_m3 Float,Anläggningskategori_3 Char(19),AnlförEfterR_Anläggningstyp Char(15),besiktningdatum_2 Date,beslutsdatum_2 Date,Externt_Tjänsteid2 Integer,Volym_m32 Float,ObjektID Integer,Path Char(253),Diarienummer Char(13),Löpnummer Integer) file "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\HelaSolen.TAB" TYPE NATIVE Charset "WindowsLatin1"
+	Create table "HelaSolen" (Besöksadress_Adress Char(253),Besöksadress_Postnr Char(253),Besöksadress_Ort Char(253),Besöksadress_Huvudfastighet Char(34),FNR Integer,Verksamhetsutövare_Namn Char(253),Verksamhetsutöv_Person_orgnr Integer,Fakturamottagare_NAMN Char(253),Fakturamottagare_Faktura_ADRESS Char(253),Fakturamottagare_Faktura_POSTNR Char(253),Fakturamottagare_Faktura_POSTOR Char(253),Enhet Char(6),Anteckning Char(253),Aktuell_timavgift Integer,Timdebitering Logical,Objektnamn Char(36),flik_Avloppsänlaggni_Boendetyp Char(15),flik_Avloppsanläggn_Byggnadsår Date,flik_Avloppsa_Besiktningsdatum Date,flik_Avloppsanläg_Beslutsdatum Date,Vatten Char(17),Recipient Char(49),Inventering Char(12),Inventeringsinformation_Datum Date,Inventeringsinformation_Status Char(6),Bedömning Char(15),fliken_Fastigheter Char(34),fliken_FastigheterFNR Integer,PunkttypAB Char(16),Fliken_Koordinater Char(19),fliken_Ärenden Char(13),Anläggningskategori Char(20),besiktningdatum Date,beslutsdatum Date,Anläggningstyp Char(15),Volym_m3 Float,Anl_för_EftR_TöInterv_mån Integer,AnlF_efR_Koordinater_X_o_Y Char(19),PunkttypER Char(20),Anläggning_för_EfterföljRText Char(253),Anläggningskategori_2 Char(19),Anläggning_för_S_Anläggningstyp Char(15),Externt_Tjänsteid Integer,text Char(253),Anläggning_för_Slamav_Volym_m3 Float,Anläggningskategori_3 Char(19),AnlförEfterR_Anläggningstyp Char(15),besiktningdatum_2 Date,beslutsdatum_2 Date,Externt_Tjänsteid2 Integer,Volym_m32 Float,ObjektID Integer,Path Char(253),Diarienummer Char(13),Löpnummer Integer) file workdir & "\HelaSolen.TAB" TYPE NATIVE Charset "WindowsLatin1"
 	
 	fetch first from socknarOfiltrerade
 	do until eot(socknarOfiltrerade)		
@@ -167,7 +175,7 @@ sub förberedAvslut()
 End Sub
 
 sub insertFulaFastigheter()
-	Open Table "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\ÄrendenMedIngenEllerFelFastighet2.TAB" as fä
+	Open Table workdir & "\ÄrendenMedIngenEllerFelFastighet2.TAB" as fä
 	Select Diarienummer, Fnr from fä where Fnr <> 0 into fä2
 	
 	insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from fä2
@@ -176,7 +184,7 @@ end sub
 
 sub insertMultiplaFastigheter
 
-Open Table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\Mer än en fastighet.TAB" Interactive
+Open Table workdir & "\Mer än en fastighet.TAB" Interactive
 
 Insert Into HelaSolen Select * From Mer_än_en_fastighet
 
@@ -187,7 +195,7 @@ end sub
 sub insertAnteckningar
 
 
-Open Table "C:\Users\crbk01\Desktop\Solen till vision\[Färdigt] att leverera\Anteckningar.TAB" Interactive
+Open Table workdir & "\Anteckningar.TAB" Interactive
 
 insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnummer,path from anteckningar
 

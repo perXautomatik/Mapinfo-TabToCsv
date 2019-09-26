@@ -1,0 +1,15 @@
+!table
+!version 300
+!charset WindowsLatin1
+
+Definition Table
+  Type NATIVE Charset "WindowsLatin1"
+  Fields 3
+    diarienummer Char (13) ;
+    Löpnummer Char (7) ;
+    path Char (33) ;
+begin_metadata
+"\IsReadOnly" = "FALSE"
+"\MapInfo" = ""
+"\MapInfo\TableID" = "753d6fb0-f90d-4993-93f9-8e41bc772e3a"
+end_metadata

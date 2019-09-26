@@ -1,0 +1,14 @@
+﻿!table
+!version 1520
+!charset UTF-16
+
+Definition Table
+  Type NATIVEX Charset "UTF-16" Locale "sv-SE"
+  Fields 2
+    ﻿Fastighet Char (54) ;
+    path Char (94) ;
+begin_metadata
+"\IsReadOnly" = "FALSE"
+"\MapInfo" = ""
+"\MapInfo\TableID" = "5e65fd2c-605e-4af3-8646-cf026d311373"
+end_metadata
