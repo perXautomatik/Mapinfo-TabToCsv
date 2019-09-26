@@ -317,7 +317,7 @@ declare function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInpu
 declare function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
 declare function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
 
-declare sub readCurrentState(användaReningar() as integer)
+
 declare function getPathFromPathTable(byVal tableName as string) as string
 declare sub sockenProcessor()
 declare sub PrepareGemensamma()

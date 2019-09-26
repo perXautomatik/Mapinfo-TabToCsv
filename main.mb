@@ -11,12 +11,16 @@ declare sub insertMultiplaFastigheter
 declare sub insertMånsBilder
 declare sub insertMHK()
 declare sub asspsoeraFnr()
+declare sub readCurrentSockenState(användaReningar() as integer)
 global workDir as string
 
 
 Sub Main()
-	print Chr$(12) 'empty message
+	'empty message
+	print Chr$(12)
+	
 	workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv"
+	
 	'to make sure the coordinationsystem is the right one
 	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))
 	
@@ -26,6 +30,8 @@ Sub Main()
 	ProgressBar "populatePathTable...." & iProgressRange & " items" Calling populatePathTable Range iProgressRange
 	
 	'+ tableinfo(antalKörningar,tab_info_nrows) *9
+	'if sockentabell is zero, this segment is completely skipped
+	'that means that the sockenprogressioncheck has laready bin done in the pathTablePopulation
 	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then				
 		redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)
 	
@@ -160,15 +166,40 @@ sub populatePathTable
 		call UpdateIndex("reningIhopslagen")'already commits
 		call tableCloserAndCommiter(tableNames)	
 	case 7
-		dim tempBool tempBool = SingletableOpenerConfirmation("fastighet_yta")
+		dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta")
 	 	
-	 	tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))") & createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+	 	'creates two empty 1 column tables called sockenTabell and sockentabellX
+	 	tempstring = 
+	 	createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))") 
+	 	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
 
-		insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1),"allmänt","","outrett","",right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","",left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+' why do we need to populate the socken ref table like this everytime rather than using a premade?
+
+		insert into sockentabelx 
+			Select 
+			Cond(
+			left$(KIR,InStr(1,KIR," ",)-1), 'if socken is 
+			"allmänt",
+			"", 'then ""
+			"outrett", 
+			"", 'then ""
+			right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" 
+			AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs",
+			"", 'then ""
+			left$(KIR,InStr(1,KIR," ",)-1)) 'else
+			from fastighet_yta 
+			
+			select * from sockenTabelx where col1 <> ""
+			group by col1 order by col1 into socknarOfiltrerade
    
-		dim användaReningar() as integer call readCurrentState(användaReningar) 
+		dim användaReningar() as integer 
+		call readCurrentSockenState(användaReningar)
 		
-			if tableinfo(sockenTabell,tab_info_nrows) = 0 then iProgress = -2 end if
+		'dosent this always evaluate to 0, or, does the magic happen in read current state? 
+		
+		if tableinfo(sockenTabell,tab_info_nrows) = 0 
+		then iProgress = -2 end if
+	
 	case 8'egen swereftabell med spatial fastighet och index
 		redim tableNames(2)
 		tablenames(1) = "Fastigheter_swerefNoIndex"
@@ -242,6 +273,32 @@ sub populatePathTable
 	call increment(iProgress,iProgressRange,starttime)
 		
 End Sub
+
+
+sub readCurrentSockenState(användaReningar() as integer)
+	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
+	
+	call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
+	
+	fetch first from socknarOfiltrerade
+	
+	do until eot(socknarOfiltrerade)
+		tempstring = socknarOfiltrerade.SockenX & "ressultat"  'if sockenNamnRessultat exsists, then true, else false
+	
+		if SingletableOpenerConfirmation(tempstring) then onError goto exitProg 
+			
+			query = "select max(objektid) " & " from " & tempstring & " " & SqlGenWhereColIsNotAny("objektid", gerdinsID) & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
+			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then	
+				call closeIfnotClosed("LatestObjectID")	
+				select * from LatestObjectX into LatestObjectID	call görTillBastabell("LatestObjectID")	else
+				call closeIfnotClosed("LatestObjectX") end if onError goto 0
+		else
+			tempstring = socknarOfiltrerade.SockenX Insert Into sockenTabell (COL1) values (tempstring) end if fetch next from socknarOfiltrerade
+	loop
+
+	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
+end sub		
+
 
 sub sockenProcessor()
 	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
@@ -534,34 +591,3 @@ sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObje
 End sub
 
 
-
-sub readCurrentState(användaReningar() as integer)
-	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
-	
-	call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
-	fetch first from socknarOfiltrerade
-	do until eot(socknarOfiltrerade)		
-		tempstring = socknarOfiltrerade.SockenX & "ressultat"
-	
-		if SingletableOpenerConfirmation(tempstring) then 'returns true if sucessfully open table
-			onError goto exitProg 
-			query = "select max(objektid) " & " from " & tempstring & " " & SqlGenWhereColIsNotAny("objektid", gerdinsID) & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
-			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then
-				call closeIfnotClosed("LatestObjectID")	select * from LatestObjectX into LatestObjectID	call görTillBastabell("LatestObjectID")
-			else
-				call closeIfnotClosed("LatestObjectX")
-			end if
-			onError goto 0
-		else
-			tempstring = socknarOfiltrerade.SockenX
-			Insert Into sockenTabell (COL1) values (tempstring)
-		end if			
-		
-		fetch next from socknarOfiltrerade
-	loop
-	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if
-exit sub
-exitProg:
-	print query & "||" & error$()
-	end program
-end sub		
