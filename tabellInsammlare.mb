@@ -1004,7 +1004,7 @@ function countFasGenerateUtvald(FastighetB as string) as integer
 end function
 
 function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
-	
+	'todo:should be renamed to less general
 	dim tempAlias as alias
 	tempAlias = ColumnName
 	dim tempInteger as integer
@@ -1024,7 +1024,7 @@ noCordError:
 end function
 
 function kollaBredd(values() as string) as logical
-
+'todo:should be renamed to less general
 	kollaBredd = true
 	dim x as integer
 
@@ -1039,7 +1039,7 @@ function kollaBredd(values() as string) as logical
 end function
 
 function countDupes(byVal fastighetsBet as string) as integer
-
+	'todo:should be renamed to less general
 dim hasDupes,x as integer
 
 		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
