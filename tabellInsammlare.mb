@@ -687,7 +687,7 @@ dim tempString,TempArray() as string
 		call addStringToArrayAsifSet(TempArray,reningsObjekt.Anslutna_fastigheter(loopVar))' reference index
 	next
 		
-	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",stringEveryString(TempArray))' bugg? this would only print to console, not return it in the ressult value
+	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",StringArrayAsString(TempArray))
 
 end function
 
@@ -761,7 +761,7 @@ function StringArrayAsString(tableX() as string) as string
 	StringArrayAsString = returnString
 End Function
 
-function stringEveryString(StringArray() as String) as string
+sub messageEveryString(StringArray() as String)
 	
 	Dim	i As Integer
 		
@@ -769,7 +769,7 @@ function stringEveryString(StringArray() as String) as string
 			print "*" & StringArray(i) & "*"
 		Next
 	
-end function
+end sub
 
 function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
 
