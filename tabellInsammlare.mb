@@ -250,27 +250,6 @@ exit function
 		end program
 End function
 
-function FirstLeftMostNumber(byVal inputString as string) as integer
-	dim returnNr, x as integer
-	,tempString as string
-	returnNr = 0
-	
-	for x=0 to 9
-		if inStr(1,inputString,x & "") <> 0 then
-			returnNR = iif(returnNR = 0,inStr(1,inputString,x & ""),returnNR) 'can never be zero
-			
-			returnNr = iif(returnNr > inStr(1,inputString,x & ""),inStr(1,inputString,x & ""),returnNr)
-		end if
-	next
-	
-	if returnNR <> 0 then
-		returnNr = returnNr-1
-		returnNr = val(right$(inputString,len(inputString)-returnNr))
-	End If
-		
-	FirstLeftMostNumber = returnNr
-End Function
-
 function DiarieMixedToUnit(byVal text as string) as string
 	'skall bli, mhn-xxxx-xxxx
 	'kan vara mhn xxxx/xxxx
@@ -691,75 +670,6 @@ dim tempString,TempArray() as string
 
 end function
 
-function generateInsertStringWithArray(insertinto as string,värde() as string) as string
-	onerror goto strangeError
-	
-	dim påPlatts(),qm,mergeString,FirstHalf,SecondHalf as string
-	,q, j,uBoundaCol as integer
-	qM = chr$(34)
-	mergeString = "Insert Into " & insertInto
-	uBoundaCol = tableInfo(insertInto,TAB_INFO_NCOLS)
-	
-	if (ubound(värde) <> uBoundaCol) then
-		call getColumnsOfTable_intoArray(insertInto,påPlatts)
-		mergeString = mergeString & " (" 
-		
-		for j = 1 to uBoundaCol	
-			mergeString = mergeString & påPlatts(j) & " "
-				
-			if (j < uBoundaCol) then
-				mergeString = mergeString & ","
-			end if	
-		next
-		
-		mergeString = mergeString & ")"
-	end if	
-
-	FirstHalf = mergeString & " Values ("
-
-	for q = 1 to uBoundaCol
-
-		SecondHalf = SecondHalf & " "
-		
-		if(""  & val(Värde(q)) <> Värde(q)) then 'not a digit
-			SecondHalf = SecondHalf & qm & Värde(q) & qm
-		else
-			SecondHalf = SecondHalf & val(Värde(q))
-		end if
-		
-		
-		if (q < uBoundaCol) then
-				SecondHalf = SecondHalf & ","
-		end if	
-	next
-		
-	SecondHalf = SecondHalf & ")"
-
-	generateInsertStringWithArray = firstHalf & SecondHalf
-onerror goto 0	
-
-exit function
-	strangeError:
-	
-		print "strangeError" & ubound(värde) & "|" & uBoundaCol & "|" & error$()
-		end program
-end function
-
-function StringArrayAsString(tableX() as string) as string
-	dim x as integer
-	dim returnString as string
-	
-	For x=1 to UBOUND(tableX)
-	 	returnString = returnString + iif(tableX(x) <> "",tableX(x),"'" & tableX(x) & "'")
-	    
-    	if(x < UBOUND(tableX)) then
-    		returnString = returnString & ","
-    	end if
-	Next
-	
-	StringArrayAsString = returnString
-End Function
-
 sub messageEveryString(StringArray() as String)
 	
 	Dim	i As Integer
@@ -949,13 +859,6 @@ function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,r
 	end if
 end function
 
-function FindCharTurncStringByPos(byVal toRemove as string,byVal inputString as string) as string
-	FindCharTurncStringByPos = left$(inputString,
-	iif(inStr(1,inputString,toRemove)-1<0
-	,len(inputString)
-	,inStr(1,inputString,toRemove)-1))
-End Function
-
 sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
 	onError goto underskriptsFel	
 	dim antal,x,nt as integer
@@ -1004,7 +907,7 @@ function countFasGenerateUtvald(FastighetB as string) as integer
 end function
 
 function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
-	'todo:should be renamed to less general
+	
 	dim tempAlias as alias
 	tempAlias = ColumnName
 	dim tempInteger as integer
@@ -1024,7 +927,7 @@ noCordError:
 end function
 
 function kollaBredd(values() as string) as logical
-'todo:should be renamed to less general
+
 	kollaBredd = true
 	dim x as integer
 
@@ -1039,7 +942,7 @@ function kollaBredd(values() as string) as logical
 end function
 
 function countDupes(byVal fastighetsBet as string) as integer
-	'todo:should be renamed to less general
+
 dim hasDupes,x as integer
 
 		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
@@ -1053,7 +956,7 @@ countDupes = hasDupes
 end function
 
 function countOccurences(byVal colummn as string) as integer
-	'todo:should be renamed to less general
+	
 	Dim query As String
 	dim tempAlias as alias
 	tempAlias = "urval." & colummn
@@ -1069,24 +972,6 @@ exit function
 		print query & "]countOccurences[" & Error$()
 		countOccurences = 0
 end function
-
-sub insertXintoYtable(ByVal tableToInsert as string,byVal insertWhere as string)
-	dim query as string
-	
-	query = "Insert Into " & insertWhere & " Select * From " & tableToInsert & " DropIndex Auto"
-	
-	onError goto ContinueError
-		run command query
-	onError goto 0
-	close table tableToInsert
-exit sub
-	ContinueError:
-	print "insertXintoYtableError" & error$()
-	print query
-	
-	resume next
-	
-end sub
 
 function sqlPart_ColNrs(byVal nr as integer) as string
 	
