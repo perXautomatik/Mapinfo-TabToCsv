@@ -417,60 +417,6 @@ sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 
 end sub
 
-function generateInsertStringWithArray(insertinto as string,värde() as string) as string
-	onerror goto strangeError
-	
-	dim påPlatts(),qm,mergeString,FirstHalf,SecondHalf as string
-	,q, j,uBoundaCol as integer
-	qM = chr$(34)
-	mergeString = "Insert Into " & insertInto
-	uBoundaCol = tableInfo(insertInto,TAB_INFO_NCOLS)
-	
-	if (ubound(värde) <> uBoundaCol) then
-		call getColumnsOfTable_intoArray(insertInto,påPlatts)
-		mergeString = mergeString & " (" 
-		
-		for j = 1 to uBoundaCol	
-			mergeString = mergeString & påPlatts(j) & " "
-				
-			if (j < uBoundaCol) then
-				mergeString = mergeString & ","
-			end if	
-		next
-		
-		mergeString = mergeString & ")"
-	end if	
-
-	FirstHalf = mergeString & " Values ("
-
-	for q = 1 to uBoundaCol
-
-		SecondHalf = SecondHalf & " "
-		
-		if(""  & val(Värde(q)) <> Värde(q)) then 'not a digit
-			SecondHalf = SecondHalf & qm & Värde(q) & qm
-		else
-			SecondHalf = SecondHalf & val(Värde(q))
-		end if
-		
-		
-		if (q < uBoundaCol) then
-				SecondHalf = SecondHalf & ","
-		end if	
-	next
-		
-	SecondHalf = SecondHalf & ")"
-
-	generateInsertStringWithArray = firstHalf & SecondHalf
-onerror goto 0	
-
-exit function
-	strangeError:
-	
-		print "strangeError" & ubound(värde) & "|" & uBoundaCol & "|" & error$()
-		end program
-end function
-
 sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
 		
@@ -558,22 +504,6 @@ sub tolkning(FastighetsObjekt as fastighetsObjekt,UtskriftsObjekt() as Utskrifts
 	end if	
 
 end sub
-
-function StringArrayAsString(tableX() as string) as string
-	dim x as integer
-	dim returnString as string
-	
-	For x=1 to UBOUND(tableX)
- 
-	 	returnString = returnString + iif(tableX(x) <> "",tableX(x),"'" & tableX(x) & "'")
-	    
-    	if(x < UBOUND(tableX)) then
-    		returnString = returnString & ","
-    	end if
-	Next
-	
-	StringArrayAsString = returnString
-End Function
 
 sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
 
@@ -757,9 +687,79 @@ dim tempString,TempArray() as string
 		call addStringToArrayAsifSet(TempArray,reningsObjekt.Anslutna_fastigheter(loopVar))' reference index
 	next
 		
-	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",stringEveryString(TempArray))
+	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",stringEveryString(TempArray))' bugg? this would only print to console, not return it in the ressult value
 
 end function
+
+function generateInsertStringWithArray(insertinto as string,värde() as string) as string
+	onerror goto strangeError
+	
+	dim påPlatts(),qm,mergeString,FirstHalf,SecondHalf as string
+	,q, j,uBoundaCol as integer
+	qM = chr$(34)
+	mergeString = "Insert Into " & insertInto
+	uBoundaCol = tableInfo(insertInto,TAB_INFO_NCOLS)
+	
+	if (ubound(värde) <> uBoundaCol) then
+		call getColumnsOfTable_intoArray(insertInto,påPlatts)
+		mergeString = mergeString & " (" 
+		
+		for j = 1 to uBoundaCol	
+			mergeString = mergeString & påPlatts(j) & " "
+				
+			if (j < uBoundaCol) then
+				mergeString = mergeString & ","
+			end if	
+		next
+		
+		mergeString = mergeString & ")"
+	end if	
+
+	FirstHalf = mergeString & " Values ("
+
+	for q = 1 to uBoundaCol
+
+		SecondHalf = SecondHalf & " "
+		
+		if(""  & val(Värde(q)) <> Värde(q)) then 'not a digit
+			SecondHalf = SecondHalf & qm & Värde(q) & qm
+		else
+			SecondHalf = SecondHalf & val(Värde(q))
+		end if
+		
+		
+		if (q < uBoundaCol) then
+				SecondHalf = SecondHalf & ","
+		end if	
+	next
+		
+	SecondHalf = SecondHalf & ")"
+
+	generateInsertStringWithArray = firstHalf & SecondHalf
+onerror goto 0	
+
+exit function
+	strangeError:
+	
+		print "strangeError" & ubound(värde) & "|" & uBoundaCol & "|" & error$()
+		end program
+end function
+
+function StringArrayAsString(tableX() as string) as string
+	dim x as integer
+	dim returnString as string
+	
+	For x=1 to UBOUND(tableX)
+ 
+	 	returnString = returnString + iif(tableX(x) <> "",tableX(x),"'" & tableX(x) & "'")
+	    
+    	if(x < UBOUND(tableX)) then
+    		returnString = returnString & ","
+    	end if
+	Next
+	
+	StringArrayAsString = returnString
+End Function
 
 function stringEveryString(StringArray() as String) as string
 	
