@@ -207,10 +207,6 @@ declare sub tolkning(FastighetsObjekt as FastighetsObjekt, UtskriftsObjekt() as 
 
 '‰ven ifall man "pregenerating area" tar hela processen fortfarande v‰ldigt lÂng tid, frÂgan ‰r om skulle kunna fˆrindexera alla fastigheter
 'ty varjer within+within+within tar l‰ngretid ‰n en tre gÂnger sÂ stor within.
-declare function findInINTArray(byVal v‰rde as integer, array() as integer) as logical
-
-declare function findInStringArray(byVal v‰rde as string, array() as string) as logical
-
 '‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰‰
 'n‰r en matchning gjorts, ta bort delarna frÂn ittarationen
 'gˆr ny matchning pÂ resterande.
@@ -239,12 +235,9 @@ declare function findInStringArray(byVal v‰rde as string, array() as string) as 
 			'			print ubound(trov‰rdighetsobjekt) & "tro " & mestTrov & " tra"
 declare sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,anv‰ndaReningar as integer,UtskriftsObjekt() as utskriftsobjekt, tolkningsobjekt() as Trov‰rdighetsObjekt)
 
-declare sub removeFromIntArray(array() as integer,v‰rde as integer)
-
 declare function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
 declare function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 declare function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
-declare function intArrayAsPrintString(tableX() as integer) as string
 declare function StringArrayAsString(tableX() as string) as string
 
 declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)

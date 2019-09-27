@@ -274,7 +274,6 @@ sub populatePathTable
 		
 End Sub
 
-
 sub readCurrentSockenState(användaReningar() as integer)
 	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
 	
@@ -298,7 +297,6 @@ sub readCurrentSockenState(användaReningar() as integer)
 
 	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
 end sub		
-
 
 sub sockenProcessor()
 	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt

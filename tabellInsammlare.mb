@@ -341,34 +341,6 @@ exit function
 		DiarieMixedToUnit = (cleanVar) & text 'kan inte tolka nummret
 End Function
 
-function findInINTArray(byVal värde as integer, array() as integer) as logical
-
-	dim itterator as integer
-	
-	for itterator=1 to ubound(array)
-		if(värde = array(itterator)) then
-			findInIntArray = true
-		end if
-	next
-	
-	findInIntArray = false
-
-end function
-
-function findInStringArray(byVal värde as string, array() as string) as logical
-
-	dim itterator as integer
-	
-		for itterator=1 to ubound(array)
-			if(värde = array(itterator)) then
-				findInStringArray = true
-			end if
-		next
-		
-	findInStringArray = false
-
-end function
-
 function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
 
 	dim itterator as integer
@@ -379,53 +351,6 @@ function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
 	expandUtskriftsObjekt = itterator
 
 end function
-
-function intArrayAsPrintString(tableX() as integer) as string
-	dim x as integer
-	dim returnString as string
-	
-	For x=1 to UBOUND(tableX)
- 
- 		returnString = returnString + tableX(x)
-    	
-    	if(x < UBOUND(tableX)) then
-    		returnString = returnString & ","
-    	end if
-
-	Next
-	
-	intArrayAsPrintString = returnString
-End Function
-
-sub removeFromIntArray(array() as integer,värde as integer)
-onerror goto arrayError
-
-	dim x,y,z,temparray() as integer
-	z = 0
-	if(ubound(array) <> 0) then 'inte problemmatiskt
-		for x=1 to ubound(array) '1-2
-			if (array(x) <> värde) then 'triggar inte på x=1, triggar på x=2, vilket är fel, x skall inte bestämma vad som redimmas...
-				z=z+1
-				redim tempArray(z)
-				temparray(z) = array(x)
-			end if
-		next
-		
-		redim array(ubound(temparray))
-		
-		for y=1 to ubound(temparray)
-			array(y) = temparray(y)
-		next
-	else
-		goto ArrayError
-	end if
-	
-onerror goto 0
-
-exit sub
-	arrayerror:
-	print "arrayError:can't remove:" & värde & "|inputArraysize:" & ubound(array) & "|" & error$()
-end sub
 
 sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 	redim värde(55)
