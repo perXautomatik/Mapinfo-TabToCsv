@@ -238,7 +238,6 @@ declare sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,användaReningar
 declare function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
 declare function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 declare function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
-declare function StringArrayAsString(tableX() as string) as string
 
 declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
 declare function ReningÄrInteToken(x as reningsobjekt) as logical
@@ -275,7 +274,6 @@ declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,r
 declare sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
 declare sub createRessultTableX(byval tablename as string, byval filePath as string)
-declare function generateInsertStringWithArray(insertinto as string,värde() as string) as string
 declare sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 
 declare sub doTheDateStandardisation(värde() as string,påPlatts() as string,byVal DatumSträngTagIsammanfogad as string)

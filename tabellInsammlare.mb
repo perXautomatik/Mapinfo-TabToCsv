@@ -750,7 +750,6 @@ function StringArrayAsString(tableX() as string) as string
 	dim returnString as string
 	
 	For x=1 to UBOUND(tableX)
- 
 	 	returnString = returnString + iif(tableX(x) <> "",tableX(x),"'" & tableX(x) & "'")
 	    
     	if(x < UBOUND(tableX)) then
