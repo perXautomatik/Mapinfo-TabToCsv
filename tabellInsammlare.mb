@@ -1053,7 +1053,7 @@ countDupes = hasDupes
 end function
 
 function countOccurences(byVal colummn as string) as integer
-	
+	'todo:should be renamed to less general
 	Dim query As String
 	dim tempAlias as alias
 	tempAlias = "urval." & colummn

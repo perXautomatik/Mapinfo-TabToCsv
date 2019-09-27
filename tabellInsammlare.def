@@ -245,7 +245,6 @@ declare function EnskiltÄrInteToken(enskiltTokenObjekt as enskiltObjekt) as logi
 declare sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
 
 declare function countFasGenerateUtvald(FastighetB as string) as integer
-declare sub insertXintoYtable(ByVal tableToInsert as string,byVal insertWhere as string)
 declare function CreateTable_reningIhopslagen as string
 declare function CreateTable_EnskiltIhopslagen as string
 declare function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
@@ -295,8 +294,6 @@ declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
 
 declare function swerefÄrInteToken(swerefObjekt as swerefObjekt) as logical
 Declare Sub gemAnslutna(caseString as string,ressultArray() as string)
-declare function FirstLeftMostNumber(byVal inputString as string) as integer
-declare function FindCharTurncStringByPos(byVal toRemove as string,byVal inputString as string) as string
 declare function DiarieUtanBokstäver(ByVal diarienummer as string) as string
 declare function IFSAMEoneDIFFRENTzeroONEBLANKhalf(byVal valX as string,byVal valY as string) as float
 declare function XOR(byVal a as logical, byVal b as logical) as logical
