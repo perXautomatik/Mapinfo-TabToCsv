@@ -305,20 +305,6 @@ Create Table "BucketTable" (ColumnName Char(50),columnPosition integer) file App
 
 end sub
 
-function countDupes(byVal fastighetsBet as string) as integer
-
-dim hasDupes,x as integer
-
-		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
-		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
-     		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
-     			hasDupes = hasDupes + 1
-     		end if
-		Next
-
-countDupes = hasDupes
-end function
-
 sub asignmentMethod(byVal methodX as string,byVal ColumnX as string,byVal optionalRowID as integer)
 	
 	dim insertionValue as string
@@ -535,20 +521,6 @@ function columnsAsString(byVal rowIdX as integer) as string
 		
 end function
 
-function kollaBredd(values() as string) as logical
-
-	kollaBredd = true
-	dim x as integer
-
-	for x = 1 to ubound(values)
-		select col2 from referenceTable where col1 = x into bucketSize
-			fetch first from bucketSize
-		if(bucketSize.col1 < len(values(x))) then
-			kollaBredd = false
-		end if
-	next
-
-end function
 
 sub executeQuery(insertValues() as string)
 	dim qM,query,tempArray(1),tempstring as string
@@ -713,24 +685,6 @@ sub getrowsExcludingRowID(rowIdx as integer)
 
 end sub
 
-function countOccurences(byVal colummn as string) as integer
-	
-	Dim query As String
-	dim tempAlias as alias
-	tempAlias = "urval." & colummn
-	
-	onError goto QueryError
-	
-	select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
-	
-	fetch first from tempcolumnFiltered
-	countOccurences = tableInfo(tempcolumnFiltered,8)	
-exit function
-	QueryError:
-		print query & "]countOccurences[" & Error$()
-		countOccurences = 0
-end function
-
 sub printOccurences()
 	
 	Dim query,columnNamn As String
@@ -787,69 +741,4 @@ exit sub
 	QueryError:
 		print query &"]OccurencesAsArray["& Error$()
 end sub
-
-function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
-	
-	dim tempAlias as alias
-	tempAlias = ColumnName
-	dim tempInteger as integer
-	
-	select * from urval where not(tempAlias = "") into objUrval
-	tempInteger = tableInfo(objUrval,8)
-		
-	if tempInteger > 0 then
-		onError goto noCordError	
-		fetch first from objUrval
-		getCOrd =  ObjectGeography(objUrval.obj,1) & "," & ObjectGeography(objUrval.obj,2)
-	end if
-
-exit function
-noCordError:
-	print tempInteger & " :rader, " & error$()
-end function
-
-Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
-
-	OnError Goto HandleError
-	
-	Dim iPos, iEnd, iCount As Integer
-	
-	If Len(sInput) = 0 Then
-	SplitStringAtCharacter = 0
-	Exit Function
-	End If
-	    
-	Do While iEnd <= Len(sInput)
-	iPos = iEnd + 1
-	iEnd = InStr(iPos, sInput, sSplitChar)
-	If iEnd = 0 Then
-	iEnd = Len(sInput) + 1
-	End If
-	
-	iCount = iCount + 1
-	ReDim sPartsArray(iCount)
-	sPartsArray(iCount) = Mid$(sInput, iPos, iEnd - iPos)
-	Loop
-	
-	SplitStringAtCharacter = UBound(sPartsArray)
-
-Exit Function
-'---------------------------
-	HandleError:
-	Note Error$()
-
-End Function
-
-Function StringContains(ByVal strInput as String, ByVal charToFind as String) as Logical
-
-Dim iPos as Integer
-Dim strOut as String
-Dim i as Integer
-    iPos = InStr(1, strInput, charToFind)
     If iPos < 1 then          
-        StringContains = false
-    else
-    	StringContains = true
-    End If
-    
-End Function
