@@ -6,6 +6,119 @@ include "pivotizer.def"
 global senastObjectID as integer
 
 
+sub injectGemensamma()
+	insert into reningIhopslagen select * from gemensamma
+End Sub
+
+sub diarienummerForUtskriftsObjekt(
+	utskriftsObjekt() as utskriftsobjekt,
+	itterator as integer,
+	enskiltObjekt as enskiltobjekt,
+	swerefObjekt as swerefobjekt, 
+	objektid as integer
+	)
+	dim ärendennr() as string
+	if (enskiltObjekt.Diarienummer<>"MHN") then
+		call addStringToArrayAsifSet(ärendennr(),enskiltObjekt.Diarienummer)
+		utskriftsObjekt(itterator).Externt_Tjänsteid = iif(EnskiltÄrInteToken(enskiltObjekt),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
+		utskriftsObjekt(itterator).Externt_Tjänsteid_2 = iif(EnskiltÄrInteToken(enskiltObjekt) AND (enskiltObjekt.Typ_sluten_tank <> "0" and enskiltObjekt.Typ_sluten_tank <> "" and enskiltObjekt.Typ_sluten_tank <> "-"),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
+	end if
+	if (swerefObjekt.Ärendenr<>"MHN") then
+		call addStringToArrayAsifSet(ärendennr(),swerefObjekt.Ärendenr) 
+	end if
+
+	'redan standardiserat call StandardiseraDiarie(swerefObjekt.Ärendenr,EnskiltObjekt.Diarienummer, ärendennr)
+	if(ubound(ärendennr)>0) then
+		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(1)
+	end if
+
+	'skapa en ny rad, med itterator+1 men objektide det samma.
+	'ärendenr(2) har då ett värde 
+	if(ubound(ärendennr)=2) then
+		itterator = itterator + 1
+		redim utskriftsobjekt(itterator)
+		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(2)
+		utskriftsobjekt(itterator).Objektid = objektid	
+	end if
+end sub
+
+function trovärdighetsIndexer(
+	användaReningar() as integer,
+	swerefobjekt as swerefobjekt,
+	reningsobjekt as reningsobjekt,
+	enskiltobjekt as enskiltobjekt
+	) as float
+
+	dim trovärdighetsIndex,tempFloat,xplan,yplan,hypoten,distans as float
+	,swerefKord(),enskiltKord() as string
+	,Et,St,Rt as logical
+	,p as integer
+	
+	Et = EnskiltÄrInteToken(enskiltObjekt)
+	St = swerefÄrInteToken(swerefObjekt)
+	Rt = ReningÄrInteToken(reningsobjekt)
+	
+	if(Et AND St) then			
+		if(SplitStringAtCharacter(swerefobjekt.kordinater,",",swerefKord)+SplitStringAtCharacter(enskiltobjekt.kordinater,",",enskiltKord) = 4) then
+			xplan = val(swerefKord(1)) - val(enskiltKord(1))
+			yplan = val(swerefKord(2)) - val(enskiltKord(2))
+			
+			hypoten = sqr(xplan*xplan+yplan*yplan)'hypotenusan mellan enskilt och sweref
+			distans = sqr(hypoten*hypoten)
+			
+			trovärdighetsIndex = 1/iif(distans<>0,distans,0.1)
+		else
+			print "errorX:" & enskiltAsString(enskiltObjekt)
+			print "errorY:" & SwerefAsString(swerefObjekt)
+		end if
+		
+		trovärdighetsindex = trovärdighetsindex 
+		+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Ärendenr,EnskiltObjekt.Diarienummer)'om diarie nummer stämmer mellan flagga och enskilt 1
+		+ iif(len(swerefobjekt.Ärendenr)>13 OR len(EnskiltObjekt.Diarienummer)>13,-0.3,0)'om diarie är längre än 13 bokstäver -1
+	end if
+	
+	if(Rt) then
+		tempFloat = 0
+		
+		if(Et) then			
+			if XOR(ubound(ReningsObjekt.Anslutna_fastigheter()) = 0,enskiltobjekt.Fastighet_rening = "") then  'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
+				tempFloat = 0.5
+			else
+				for p=1 to ubound(ReningsObjekt.Anslutna_fastigheter())
+					if(enskiltobjekt.Fastighet_rening = ReningsObjekt.Anslutna_fastigheter(p)) then 'om någon av anslutna fastigheter = fastighet rening
+						tempFloat = 1
+					end if
+				next
+				
+				dim a,b,c as logical
+				
+				a = tempFloat=0
+				b = findInINTArray(reningsobjekt.rowIndex,användaReningar)
+				c = ubound(ReningsObjekt.Anslutna_fastigheter)>1
+				
+				if(a) then
+					tempFloat = tempFloat + iif(b,-9.4,iif(c,1,0))'om rening redan är uptagen.. och gemensamt != true = -1
+				end if
+			end if
+			
+			trovärdighetsIndex = trovärdighetsIndex
+			+ tempFloat			
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Fastighet_rening,ReningsObjekt.SpatialFastighet)' om det finns en rening på fastighet_rening
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Typ_rening,ReningsObjekt.Reningstyp)'om rening på fastighet med rening har typ rening = fastighet 1
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Storlek_m2,ReningsObjekt.storlek_m2)'om rening på fastighet med rening har typ storlekrening = fastighet 1
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Utförd_datum,ReningsObjekt.Utförd_datum)'om rening på fastighet med rening har typ Utförandedatum	 
+		end if
+		
+		if(St) then
+			trovärdighetsIndex = trovärdighetsIndex
+			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)	'1 extra poäng om sweref också matchar
+			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)'om rening på fastighet med rening har typ beslutdatum
+		end if
+	end if
+	
+	trovärdighetsIndexer = (trovärdighetsIndex)/9 'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
+end function
+
 sub getAnslutna(anslutan() as string)'hämtar också gemensamhetsanläggningar
 	dim P as integer
 	,tempString as string
@@ -432,119 +545,6 @@ exit function
 		countOccurences = 0
 end function
 
-sub injectGemensamma()
-	insert into reningIhopslagen select * from gemensamma
-End Sub
-
-sub diarienummerForUtskriftsObjekt(
-	utskriftsObjekt() as utskriftsobjekt,
-	itterator as integer,
-	enskiltObjekt as enskiltobjekt,
-	swerefObjekt as swerefobjekt, 
-	objektid as integer
-	)
-	dim ärendennr() as string
-	if (enskiltObjekt.Diarienummer<>"MHN") then
-		call addStringToArrayAsifSet(ärendennr(),enskiltObjekt.Diarienummer)
-		utskriftsObjekt(itterator).Externt_Tjänsteid = iif(EnskiltÄrInteToken(enskiltObjekt),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
-		utskriftsObjekt(itterator).Externt_Tjänsteid_2 = iif(EnskiltÄrInteToken(enskiltObjekt) AND (enskiltObjekt.Typ_sluten_tank <> "0" and enskiltObjekt.Typ_sluten_tank <> "" and enskiltObjekt.Typ_sluten_tank <> "-"),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
-	end if
-	if (swerefObjekt.Ärendenr<>"MHN") then
-		call addStringToArrayAsifSet(ärendennr(),swerefObjekt.Ärendenr) 
-	end if
-
-	'redan standardiserat call StandardiseraDiarie(swerefObjekt.Ärendenr,EnskiltObjekt.Diarienummer, ärendennr)
-	if(ubound(ärendennr)>0) then
-		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(1)
-	end if
-
-	'skapa en ny rad, med itterator+1 men objektide det samma.
-	'ärendenr(2) har då ett värde 
-	if(ubound(ärendennr)=2) then
-		itterator = itterator + 1
-		redim utskriftsobjekt(itterator)
-		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(2)
-		utskriftsobjekt(itterator).Objektid = objektid	
-	end if
-end sub
-
-function trovärdighetsIndexer(
-	användaReningar() as integer,
-	swerefobjekt as swerefobjekt,
-	reningsobjekt as reningsobjekt,
-	enskiltobjekt as enskiltobjekt
-	) as float
-
-	dim trovärdighetsIndex,tempFloat,xplan,yplan,hypoten,distans as float
-	,swerefKord(),enskiltKord() as string
-	,Et,St,Rt as logical
-	,p as integer
-	
-	Et = EnskiltÄrInteToken(enskiltObjekt)
-	St = swerefÄrInteToken(swerefObjekt)
-	Rt = ReningÄrInteToken(reningsobjekt)
-	
-	if(Et AND St) then			
-		if(SplitStringAtCharacter(swerefobjekt.kordinater,",",swerefKord)+SplitStringAtCharacter(enskiltobjekt.kordinater,",",enskiltKord) = 4) then
-			xplan = val(swerefKord(1)) - val(enskiltKord(1))
-			yplan = val(swerefKord(2)) - val(enskiltKord(2))
-			
-			hypoten = sqr(xplan*xplan+yplan*yplan)'hypotenusan mellan enskilt och sweref
-			distans = sqr(hypoten*hypoten)
-			
-			trovärdighetsIndex = 1/iif(distans<>0,distans,0.1)
-		else
-			print "errorX:" & enskiltAsString(enskiltObjekt)
-			print "errorY:" & SwerefAsString(swerefObjekt)
-		end if
-		
-		trovärdighetsindex = trovärdighetsindex 
-		+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Ärendenr,EnskiltObjekt.Diarienummer)'om diarie nummer stämmer mellan flagga och enskilt 1
-		+ iif(len(swerefobjekt.Ärendenr)>13 OR len(EnskiltObjekt.Diarienummer)>13,-0.3,0)'om diarie är längre än 13 bokstäver -1
-	end if
-	
-	if(Rt) then
-		tempFloat = 0
-		
-		if(Et) then			
-			if XOR(ubound(ReningsObjekt.Anslutna_fastigheter()) = 0,enskiltobjekt.Fastighet_rening = "") then  'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
-				tempFloat = 0.5
-			else
-				for p=1 to ubound(ReningsObjekt.Anslutna_fastigheter())
-					if(enskiltobjekt.Fastighet_rening = ReningsObjekt.Anslutna_fastigheter(p)) then 'om någon av anslutna fastigheter = fastighet rening
-						tempFloat = 1
-					end if
-				next
-				
-				dim a,b,c as logical
-				
-				a = tempFloat=0
-				b = findInINTArray(reningsobjekt.rowIndex,användaReningar)
-				c = ubound(ReningsObjekt.Anslutna_fastigheter)>1
-				
-				if(a) then
-					tempFloat = tempFloat + iif(b,-9.4,iif(c,1,0))'om rening redan är uptagen.. och gemensamt != true = -1
-				end if
-			end if
-			
-			trovärdighetsIndex = trovärdighetsIndex
-			+ tempFloat			
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Fastighet_rening,ReningsObjekt.SpatialFastighet)' om det finns en rening på fastighet_rening
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Typ_rening,ReningsObjekt.Reningstyp)'om rening på fastighet med rening har typ rening = fastighet 1
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Storlek_m2,ReningsObjekt.storlek_m2)'om rening på fastighet med rening har typ storlekrening = fastighet 1
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Utförd_datum,ReningsObjekt.Utförd_datum)'om rening på fastighet med rening har typ Utförandedatum	 
-		end if
-		
-		if(St) then
-			trovärdighetsIndex = trovärdighetsIndex
-			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)	'1 extra poäng om sweref också matchar
-			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)'om rening på fastighet med rening har typ beslutdatum
-		end if
-	end if
-	
-	trovärdighetsIndexer = (trovärdighetsIndex)/9 'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
-end function
-
 sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,användaReningar as integer,UtskriftsObjekt() as utskriftsobjekt,tolkningsobjekt() as trovärdighetsobjekt)
 
 	dim enskiltItterator,i,mestTrov,enskiltEjTagna(),reningEjTagna(),swerefEjTagna(),temparray(),temp as integer
@@ -695,7 +695,6 @@ if(debugg) then
 	print trovärdighetsobjekt(mestTrov).fx & " Sremoving from"
 	print DebuggStringEveryInt(swerefEjTagna)
 end if
-		
 		if(trovärdighetsobjekt(mestTrov).fx <> 0) then
 			call removeFromIntArray(swerefEjTagna(),trovärdighetsobjekt(mestTrov).fx)
 		end if

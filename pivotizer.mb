@@ -381,6 +381,360 @@ exit function
 		end program
 End function
 
+function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+	
+	dim storlek as integer
+	storlek = ubound(swerefobjekt)
+	
+	redim swerefTokenObjekt(1)
+	
+	if(storlek = 0 OR intx = 0) then
+		swerefTokenObjekt(1).FASTIGHET = ""
+		swerefTokenObjekt(1).Fastighet_tillstånd = ""
+		swerefTokenObjekt(1).Ärendenr = ""
+		swerefTokenObjekt(1).Beslut_datum = ""
+		swerefTokenObjekt(1).Status = ""
+		swerefTokenObjekt(1).Utskick1_datum = ""
+		swerefTokenObjekt(1).Anteckning = ""
+		swerefTokenObjekt(1).utförddatum = ""
+		swerefTokenObjekt(1).slamhämtning = ""
+		swerefTokenObjekt(1).Antal_byggnader = 0
+		FillerOrSwerefObjekt = 0
+	else
+		swerefTokenObjekt(1).FASTIGHET = swerefobjekt(intx).FASTIGHET
+		swerefTokenObjekt(1).Fastighet_tillstånd = swerefobjekt(intx).Fastighet_tillstånd
+		swerefTokenObjekt(1).Ärendenr = swerefobjekt(intx).Ärendenr
+		swerefTokenObjekt(1).Beslut_datum = swerefobjekt(intx).Beslut_datum
+		swerefTokenObjekt(1).Status = swerefobjekt(intx).Status
+		swerefTokenObjekt(1).Utskick1_datum = swerefobjekt(intx).Utskick1_datum
+		swerefTokenObjekt(1).Anteckning = swerefobjekt(intx).Anteckning
+		swerefTokenObjekt(1).utförddatum = swerefobjekt(intx).utförddatum
+		swerefTokenObjekt(1).slamhämtning = swerefobjekt(intx).slamhämtning
+		swerefTokenObjekt(1).Antal_byggnader = swerefobjekt(intx).Antal_byggnader
+		swerefTokenObjekt(1).kordinater = swerefobjekt(intx).kordinater
+		FillerOrSwerefObjekt = intx
+	end if
+end function
+
+function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(enskiltobjekt)
+	redim enskiltTokenObjekt(1)
+	
+	if(storlek = 0 OR intx = 0) then
+		enskiltTokenObjekt(1).Diarienummer = ""	
+		enskiltTokenObjekt(1).Fastighet_tillstånd = ""
+		enskiltTokenObjekt(1).spatialShift = ""
+		enskiltTokenObjekt(1).Typ_byggnad = ""
+		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = 0
+		enskiltTokenObjekt(1).Fastighet_rening = ""
+		enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
+		enskiltTokenObjekt(1).Storlek_m3 = 0
+		enskiltTokenObjekt(1).Typ_rening = ""
+		enskiltTokenObjekt(1).Storlek_m2 = 0
+		enskiltTokenObjekt(1).Typ_sluten_tank = ""
+		enskiltTokenObjekt(1).Storlek__m3 = 0
+		enskiltTokenObjekt(1).Beslut_datum = ""
+		enskiltTokenObjekt(1).Utförd_datum = ""
+		enskiltTokenObjekt(1).Avgift = ""
+		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
+		enskiltTokenObjekt(1).Anteckningar = ""
+		enskiltTokenObjekt(1).kordinater = ""	
+		FillerOrEnskiltObjekt = 0
+	else
+		enskiltTokenObjekt(1).Diarienummer = enskiltobjekt(intx).Diarienummer
+		enskiltTokenObjekt(1).Fastighet_tillstånd = enskiltobjekt(intx).Fastighet_tillstånd
+		enskiltTokenObjekt(1).spatialShift = enskiltobjekt(intx).spatialShift
+		enskiltTokenObjekt(1).Typ_byggnad = enskiltobjekt(intx).Typ_byggnad
+		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = enskiltobjekt(intx).Antal_hushåll_tillstånd
+		enskiltTokenObjekt(1).Fastighet_rening = enskiltobjekt(intx).Fastighet_rening
+		enskiltTokenObjekt(1).Typ_Slamavskiljare = enskiltobjekt(intx).Typ_Slamavskiljare 
+		enskiltTokenObjekt(1).Storlek_m3 = enskiltobjekt(intx).Storlek_m3
+		enskiltTokenObjekt(1).Typ_rening = enskiltobjekt(intx).Typ_rening
+		enskiltTokenObjekt(1).Storlek_m2 = enskiltobjekt(intx).Storlek_m2
+		enskiltTokenObjekt(1).Typ_sluten_tank = enskiltobjekt(intx).Typ_sluten_tank
+		enskiltTokenObjekt(1).Storlek__m3 = enskiltobjekt(intx).Storlek__m3
+		enskiltTokenObjekt(1).Beslut_datum = enskiltobjekt(intx).Beslut_datum
+		enskiltTokenObjekt(1).Utförd_datum = enskiltobjekt(intx).Utförd_datum
+		enskiltTokenObjekt(1).Avgift = enskiltobjekt(intx).Avgift
+		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = enskiltobjekt(intx).Tillstånd_giltigt_tom
+		enskiltTokenObjekt(1).Anteckningar = enskiltobjekt(intx).Anteckningar
+		enskiltTokenObjekt(1).kordinater = enskiltobjekt(intx).kordinater	
+		FillerOrEnskiltObjekt = intx
+	end if
+end function
+
+function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(reningsobjekt)
+	
+	redim reningsTokenObjekt(1)	
+	
+	if(storlek = 0 OR intx = 0) then
+		reningsTokenObjekt(1).spatialFastighet = ""
+		reningsTokenObjekt(1).spatialShift = ""
+		reningsTokenObjekt(1).Fastighet_rening = ""
+		reningsTokenObjekt(1).Antal_hushåll_rening = 0
+		reningsTokenObjekt(1).Reningstyp = ""
+		reningsTokenObjekt(1).Storlek_m2 = 0
+		reningsTokenObjekt(1).kordinater = ""
+		reningsTokenObjekt(1).Beslut_datum = ""
+		reningsTokenObjekt(1).Utförd_datum = ""
+		reningsTokenObjekt(1).Kommentarer = ""
+		reningsTokenObjekt(1).rowIndex = 0
+		FillerOrReningObjekt = 0
+	else
+		reningsTokenObjekt(1).spatialFastighet = reningsobjekt(intx).spatialFastighet
+		reningsTokenObjekt(1).spatialShift = reningsobjekt(intx).spatialShift
+		reningsTokenObjekt(1).Fastighet_rening = reningsobjekt(intx).Fastighet_rening
+		reningsTokenObjekt(1).Antal_hushåll_rening = reningsobjekt(intx).Antal_hushåll_rening
+		reningsTokenObjekt(1).Reningstyp = reningsobjekt(intx).Reningstyp
+		reningsTokenObjekt(1).Storlek_m2 = reningsobjekt(intx).Storlek_m2
+		reningsTokenObjekt(1).kordinater = reningsobjekt(intx).kordinater
+		reningsTokenObjekt(1).Beslut_datum = reningsobjekt(intx).Beslut_datum
+		reningsTokenObjekt(1).Utförd_datum = reningsobjekt(intx).Utförd_datum
+		reningsTokenObjekt(1).Kommentarer = reningsobjekt(intx).Kommentarer
+		reningsTokenObjekt(1).rowIndex = reningsobjekt(intx).rowIndex
+		
+		redim reningsTokenObjekt(1).anslutna_fastigheter(ubound(reningsobjekt(intx).anslutna_fastigheter))
+		for storlek=1 to ubound(reningsobjekt(intx).anslutna_fastigheter)
+			reningsTokenObjekt(1).anslutna_fastigheter(storlek) = reningsobjekt(intx).anslutna_fastigheter(storlek)
+		next
+		FillerOrReningObjekt = intx
+	end if
+end function
+
+function CreateTable_reningIhopslagen as string
+	dim pathVar as string
+	dim temp as string temp= TempFileName$("") 
+	pathVar = left$(temp,len(temp)-4) & ".tab"
+	Create Table "reningIhopslagen" (
+	
+	Fastighet_rening Char(50),
+	Antal_hushåll_rening Char(17),
+	Reningstyp Char(15),
+	Storlek_m2 Float,
+	Beslut_datum Char(10),
+	Utförd_datum Char(10),
+	Kommentarer Char(254),
+	Anslutna_fastigheter_1 Char(50),
+	Anslutna_fastigheter_2 Char(50),
+	Anslutna_fastigheter_3 Char(50),
+	Anslutna_fastigheter_4 Char(50),
+	Anslutna_fastigheter_5 Char(50),
+	Anslutna_fastigheter_6 Char(50),
+	Anslutna_fastigheter_7 Char(50),
+	Anslutna_fastigheter_8 Char(50),
+	Anslutna_fastigheter_9 Char(50),
+	Anslutna_fastigheter_10 Char(50),
+	SpatialFastighet Char(40),
+	SpatialShift Char(40)
+		
+	)
+	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
+	CreateTable_reningIhopslagen = pathVar
+end function
+
+function CreateTable_EnskiltIhopslagen as string
+	dim pathVar as string
+	dim temp as string temp= TempFileName$("") 
+	pathVar = left$(temp,len(temp)-4) & ".tab"
+	Create Table "EnskiltIhopslagen" (
+	
+	Diarienummer Char(30),
+	Fastighet_tillstånd Char(40),
+	Typ_byggnad Char(15),
+	Antal_hushåll_tillstånd Char(17),
+	Fastighet_rening Char(33),
+	Typ_Slamavskiljare Char(15),
+	Storlek_m3 Float,
+	Typ_rening Char(15),
+	Storlek_m2 Float,
+	Typ_sluten_tank Char(8),
+	Storlek__m3 Float,
+	Beslut_datum Date,
+	Utförd_datum Date,
+	Avgift Char(10),
+	Tillstånd_giltigt_tom Date,
+	Anteckningar Char(254),
+	SpatialFastighet Char(40),
+	SpatialShift Char(40)
+
+		
+	)
+	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
+	CreateTable_EnskiltIhopslagen = pathVar
+end function
+
+sub utskrivningsobjektsKonstruktor(
+		sO as swerefobjekt,
+		rO as reningsObjekt,
+		eO as enskiltobjekt,
+		Uo() as utskriftsobjekt,
+		användaReningar() as integer,
+		trovärdighetsIndex as float,
+		fastighetsObjekt as fastighetsObjekt
+	)
+
+	dim ittr, objektid as integer
+	,reningsTokenObjekt() as reningsObjekt
+	,enskiltTokenObjekt() as enskiltobjekt
+	,swerefTokenObjekt() as swerefobjekt
+	,tableName as string
+	
+	ittr = expandutskriftsobjekt(Uo)
+	tableName = "LatestObjectID"
+	
+	if IsTableOpen(tableName) then 
+		select col1 from LatestObjectID
+		fetch first from latestObjectID
+		senastObjectID = iif(senastObjectID < latestObjectID.col1,latestObjectID.col1,senastObjectID)
+	end if
+	
+	objektid = iif(senastObjectID <> 0,senastObjectID + 1,1)
+	
+	senastObjectID = objektid
+	Uo(ittr).Objektid = objektid
+	
+	Uo(ittr).trovärdighetsIndex = trovärdighetsIndex
+	Uo(ittr).Path = ""
+	Uo(ittr).Diarienummer = ""
+	Uo(ittr).Löpnummer = ""
+	Uo(ittr).Enhet = "VATTEN"
+	Uo(ittr).Timdebitering = TRUE
+	Uo(ittr).Aktuell_timavgift = 925
+
+	Uo(ittr).Verksamhetsutövare_Namn = "" 'fastighetsObjekt.namn
+	Uo(ittr).Verksamhetsutöv_Person_orgnr = "" ' fastighetsObjekt.personnr
+
+	Uo(ittr).Fakturamottagare_NAMN = "" ' fastighetsObjekt.namn
+	Uo(ittr).Fakturamottagare_Faktura_ADRESS = "" ' fastighetsObjekt.adressNamn
+	Uo(ittr).Fakturamottagare_Faktura_POSTNR = "" ' fastighetsObjekt.PostNrNamn
+	Uo(ittr).Fakturamottagare_Faktura_POSTOR = "" ' fastighetsObjekt.PostortNamn
+
+	Uo(ittr).Besöksadress_Adress = fastighetsObjekt.adress
+	Uo(ittr).Besöksadress_Postnr = fastighetsObjekt.postnr
+	Uo(ittr).Besöksadress_Ort = fastighetsObjekt.ort
+	Uo(ittr).Besöksadress_Huvudfastighet = fastighetsObjekt.kir
+	Uo(ittr).FNR = fastighetsObjekt.fnr
+
+	'har sweref
+	if(swerefÄrInteToken(sO)) then
+		Uo(ittr).Inventering = "klart Vatten"
+		Uo(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
+		Uo(ittr).Inventeringsinformation_Status = sO.Status
+		Uo(ittr).Bedömning = sO.Ärendenr
+		Uo(ittr).Anteckning = sO.Anteckning
+	end if
+
+	if(EnskiltÄrInteToken(eO)) then	
+				
+		Uo(ittr).flik_Avloppsänlaggni_Boendetyp = eO.Typ_byggnad
+		Uo(ittr).flik_Avloppsanläggn_Byggnadsår = eO.Tillstånd_giltigt_tom
+		Uo(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utförd_datum
+		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = eO.Beslut_datum
+		Uo(ittr).Vatten = eO.Antal_hushåll_tillstånd
+		
+		Uo(ittr).Objektnamn = iif (eO.spatialShift <> "",eO.spatialShift,fastighetsObjekt.namn & " Återställed enskilt")
+				
+		Uo(ittr).PunkttypAB = "Ansluten byggnad"
+		Uo(ittr).Anläggningskategori_2 = "Slamavskiljare"
+		Uo(ittr).Anläggning_för_S_Anläggningstyp = eO.Typ_Slamavskiljare
+		Uo(ittr).text = eO.Anteckningar
+		Uo(ittr).Anläggning_för_Slamav_Volym_m3 = eO.Storlek_m3
+		Uo(ittr).Fliken_Koordinater = eO.kordinater
+		
+		'har tank
+		if((eO.Typ_sluten_tank <> "0" and eO.Typ_sluten_tank <> "" and eO.Typ_sluten_tank <> "-")) then
+			Uo(ittr).Anläggningskategori_3 = "Tank"
+			Uo(ittr).AnlförEfterR_Anläggningstyp = eO.Typ_sluten_tank
+			Uo(ittr).besiktningdatum_2 = eO.Utförd_datum
+			Uo(ittr).beslutsdatum_2 = eO.Beslut_datum
+	
+			Uo(ittr).Volym_m3_2 = eO.Storlek__m3
+		end if
+
+	else'not(EnskiltÄrInteToken(eO)) then	
+		Uo(ittr).Objektnamn = iif(sO.fastighet_tillstånd <> "",sO.fastighet_tillstånd,fastighetsObjekt.fastighet) & " " & sO.Status
+		Uo(ittr).Fliken_Koordinater = sO.kordinater
+		Uo(ittr).text = sO.Anteckning
+		Uo(ittr).flik_Avloppsa_Besiktningsdatum = sO.utförddatum
+		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = sO.Beslut_datum
+	end if
+	
+	call generateTokenObjekts(reningsTokenObjekt, enskiltTokenObjekt, swerefTokenObjekt)
+	
+	if(ReningÄrInteToken(rO)) then
+		'gemensam är också true om antal fastighet rening är mer än 1
+		if not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) then 'ickeGemensam
+			
+			Uo(ittr).Recipient = iif(rO.spatialShift <> "",rO.spatialShift,eO.fastighet_rening)
+			Uo(ittr).Anläggningskategori = "Efterföljande rening"
+			Uo(ittr).besiktningdatum = rO.Utförd_datum
+			Uo(ittr).beslutsdatum = rO.Beslut_datum
+			Uo(ittr).Anläggningstyp = rO.Reningstyp
+			Uo(ittr).Volym_m3 = rO.Storlek_m2
+			Uo(ittr).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
+			Uo(ittr).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
+			Uo(ittr).PunkttypER = "Efterföljande rening"
+						
+			call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
+			call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,rO,eO, objektid)	
+		else'((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) gemensam
+			 Uo(ittr).Recipient =  "gem. på " & iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))		
+		
+			if (not(findInINTArray(rO.rowIndex,användaReningar))) then 'om den inte redan skapats					
+				dim rInd,rI as integer
+				rI = ittr
+				
+				if((findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then ' om gemensamhetsanläggn, avsluta fastighet, itteratorn ökas, objectidet ändras, men annars behandla det som vanlig rening.
+					call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
+					call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)'onödigt att regga fastigherna flera gånger
+					
+					objektId = val(rO.Kommentarer)
+					rI = ittr+1
+					
+					Uo(ittr).Objektid = objektId
+					Uo(ittr).Vatten = rO.Antal_hushåll_rening
+				end if
+								
+				rInd = ubound(användaReningar())+1
+				redim användaReningar(rInd)
+				användaReningar(rInd) = rO.rowIndex
+		
+				Uo(rI).Anläggning_för_EfterföljRText = rO.Kommentarer
+				Uo(rI).Anläggningskategori = "Efterföljande rening"
+				Uo(rI).besiktningdatum = rO.Utförd_datum
+				Uo(rI).beslutsdatum = rO.Beslut_datum
+				Uo(rI).Anläggningstyp = rO.Reningstyp
+				Uo(rI).Volym_m3 = rO.Storlek_m2
+				
+				Uo(rI).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
+				Uo(rI).PunkttypER = "Efterföljande rening"
+				
+				if(not(findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then
+					Uo(rI).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
+					call diarienummerForutskriftsobjekt(Uo,rI,eO,sO, objektid)
+					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
+				else'(ettTillsynsObjekt)
+					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
+				end if'(not(ettTillsynsObjekt))
+			else
+				call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
+			end if'(not(findInINTArray(rO.rowIndex,användaReningar)))
+			
+		end if'not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar))
+		
+	else'(not(ReningÄrInteToken(rO))
+		Uo(ittr).Recipient = eO.fastighet_rening
+		call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
+		call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
+	end if
+
+End Sub
+
 sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 	redim värde(55)
 
@@ -586,129 +940,6 @@ sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as rening
 		next	
 	
 End Sub
-
-function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
-	
-	dim storlek as integer
-	storlek = ubound(swerefobjekt)
-	
-	redim swerefTokenObjekt(1)
-	
-	if(storlek = 0 OR intx = 0) then
-		swerefTokenObjekt(1).FASTIGHET = ""
-		swerefTokenObjekt(1).Fastighet_tillstånd = ""
-		swerefTokenObjekt(1).Ärendenr = ""
-		swerefTokenObjekt(1).Beslut_datum = ""
-		swerefTokenObjekt(1).Status = ""
-		swerefTokenObjekt(1).Utskick1_datum = ""
-		swerefTokenObjekt(1).Anteckning = ""
-		swerefTokenObjekt(1).utförddatum = ""
-		swerefTokenObjekt(1).slamhämtning = ""
-		swerefTokenObjekt(1).Antal_byggnader = 0
-		FillerOrSwerefObjekt = 0
-	else
-		swerefTokenObjekt(1).FASTIGHET = swerefobjekt(intx).FASTIGHET
-		swerefTokenObjekt(1).Fastighet_tillstånd = swerefobjekt(intx).Fastighet_tillstånd
-		swerefTokenObjekt(1).Ärendenr = swerefobjekt(intx).Ärendenr
-		swerefTokenObjekt(1).Beslut_datum = swerefobjekt(intx).Beslut_datum
-		swerefTokenObjekt(1).Status = swerefobjekt(intx).Status
-		swerefTokenObjekt(1).Utskick1_datum = swerefobjekt(intx).Utskick1_datum
-		swerefTokenObjekt(1).Anteckning = swerefobjekt(intx).Anteckning
-		swerefTokenObjekt(1).utförddatum = swerefobjekt(intx).utförddatum
-		swerefTokenObjekt(1).slamhämtning = swerefobjekt(intx).slamhämtning
-		swerefTokenObjekt(1).Antal_byggnader = swerefobjekt(intx).Antal_byggnader
-		swerefTokenObjekt(1).kordinater = swerefobjekt(intx).kordinater
-		FillerOrSwerefObjekt = intx
-	end if
-end function
-
-function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
-	dim storlek as integer
-	storlek = ubound(enskiltobjekt)
-	redim enskiltTokenObjekt(1)
-	
-	if(storlek = 0 OR intx = 0) then
-		enskiltTokenObjekt(1).Diarienummer = ""	
-		enskiltTokenObjekt(1).Fastighet_tillstånd = ""
-		enskiltTokenObjekt(1).spatialShift = ""
-		enskiltTokenObjekt(1).Typ_byggnad = ""
-		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = 0
-		enskiltTokenObjekt(1).Fastighet_rening = ""
-		enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
-		enskiltTokenObjekt(1).Storlek_m3 = 0
-		enskiltTokenObjekt(1).Typ_rening = ""
-		enskiltTokenObjekt(1).Storlek_m2 = 0
-		enskiltTokenObjekt(1).Typ_sluten_tank = ""
-		enskiltTokenObjekt(1).Storlek__m3 = 0
-		enskiltTokenObjekt(1).Beslut_datum = ""
-		enskiltTokenObjekt(1).Utförd_datum = ""
-		enskiltTokenObjekt(1).Avgift = ""
-		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
-		enskiltTokenObjekt(1).Anteckningar = ""
-		enskiltTokenObjekt(1).kordinater = ""	
-		FillerOrEnskiltObjekt = 0
-	else
-		enskiltTokenObjekt(1).Diarienummer = enskiltobjekt(intx).Diarienummer
-		enskiltTokenObjekt(1).Fastighet_tillstånd = enskiltobjekt(intx).Fastighet_tillstånd
-		enskiltTokenObjekt(1).spatialShift = enskiltobjekt(intx).spatialShift
-		enskiltTokenObjekt(1).Typ_byggnad = enskiltobjekt(intx).Typ_byggnad
-		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = enskiltobjekt(intx).Antal_hushåll_tillstånd
-		enskiltTokenObjekt(1).Fastighet_rening = enskiltobjekt(intx).Fastighet_rening
-		enskiltTokenObjekt(1).Typ_Slamavskiljare = enskiltobjekt(intx).Typ_Slamavskiljare 
-		enskiltTokenObjekt(1).Storlek_m3 = enskiltobjekt(intx).Storlek_m3
-		enskiltTokenObjekt(1).Typ_rening = enskiltobjekt(intx).Typ_rening
-		enskiltTokenObjekt(1).Storlek_m2 = enskiltobjekt(intx).Storlek_m2
-		enskiltTokenObjekt(1).Typ_sluten_tank = enskiltobjekt(intx).Typ_sluten_tank
-		enskiltTokenObjekt(1).Storlek__m3 = enskiltobjekt(intx).Storlek__m3
-		enskiltTokenObjekt(1).Beslut_datum = enskiltobjekt(intx).Beslut_datum
-		enskiltTokenObjekt(1).Utförd_datum = enskiltobjekt(intx).Utförd_datum
-		enskiltTokenObjekt(1).Avgift = enskiltobjekt(intx).Avgift
-		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = enskiltobjekt(intx).Tillstånd_giltigt_tom
-		enskiltTokenObjekt(1).Anteckningar = enskiltobjekt(intx).Anteckningar
-		enskiltTokenObjekt(1).kordinater = enskiltobjekt(intx).kordinater	
-		FillerOrEnskiltObjekt = intx
-	end if
-end function
-
-function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
-	dim storlek as integer
-	storlek = ubound(reningsobjekt)
-	
-	redim reningsTokenObjekt(1)	
-	
-	if(storlek = 0 OR intx = 0) then
-		reningsTokenObjekt(1).spatialFastighet = ""
-		reningsTokenObjekt(1).spatialShift = ""
-		reningsTokenObjekt(1).Fastighet_rening = ""
-		reningsTokenObjekt(1).Antal_hushåll_rening = 0
-		reningsTokenObjekt(1).Reningstyp = ""
-		reningsTokenObjekt(1).Storlek_m2 = 0
-		reningsTokenObjekt(1).kordinater = ""
-		reningsTokenObjekt(1).Beslut_datum = ""
-		reningsTokenObjekt(1).Utförd_datum = ""
-		reningsTokenObjekt(1).Kommentarer = ""
-		reningsTokenObjekt(1).rowIndex = 0
-		FillerOrReningObjekt = 0
-	else
-		reningsTokenObjekt(1).spatialFastighet = reningsobjekt(intx).spatialFastighet
-		reningsTokenObjekt(1).spatialShift = reningsobjekt(intx).spatialShift
-		reningsTokenObjekt(1).Fastighet_rening = reningsobjekt(intx).Fastighet_rening
-		reningsTokenObjekt(1).Antal_hushåll_rening = reningsobjekt(intx).Antal_hushåll_rening
-		reningsTokenObjekt(1).Reningstyp = reningsobjekt(intx).Reningstyp
-		reningsTokenObjekt(1).Storlek_m2 = reningsobjekt(intx).Storlek_m2
-		reningsTokenObjekt(1).kordinater = reningsobjekt(intx).kordinater
-		reningsTokenObjekt(1).Beslut_datum = reningsobjekt(intx).Beslut_datum
-		reningsTokenObjekt(1).Utförd_datum = reningsobjekt(intx).Utförd_datum
-		reningsTokenObjekt(1).Kommentarer = reningsobjekt(intx).Kommentarer
-		reningsTokenObjekt(1).rowIndex = reningsobjekt(intx).rowIndex
-		
-		redim reningsTokenObjekt(1).anslutna_fastigheter(ubound(reningsobjekt(intx).anslutna_fastigheter))
-		for storlek=1 to ubound(reningsobjekt(intx).anslutna_fastigheter)
-			reningsTokenObjekt(1).anslutna_fastigheter(storlek) = reningsobjekt(intx).anslutna_fastigheter(storlek)
-		next
-		FillerOrReningObjekt = intx
-	end if
-end function
 
 sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
 	onError goto underskriptsFel	
@@ -1978,234 +2209,3 @@ sub PrepareGemensamma()
 	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506296","Ardre Kaupungs 6:1","gem,gem","slam. & inf.","36 pe",642)						
 
 end sub
-
-function CreateTable_reningIhopslagen as string
-	dim pathVar as string
-	dim temp as string temp= TempFileName$("") 
-	pathVar = left$(temp,len(temp)-4) & ".tab"
-	Create Table "reningIhopslagen" (
-	
-	Fastighet_rening Char(50),
-	Antal_hushåll_rening Char(17),
-	Reningstyp Char(15),
-	Storlek_m2 Float,
-	Beslut_datum Char(10),
-	Utförd_datum Char(10),
-	Kommentarer Char(254),
-	Anslutna_fastigheter_1 Char(50),
-	Anslutna_fastigheter_2 Char(50),
-	Anslutna_fastigheter_3 Char(50),
-	Anslutna_fastigheter_4 Char(50),
-	Anslutna_fastigheter_5 Char(50),
-	Anslutna_fastigheter_6 Char(50),
-	Anslutna_fastigheter_7 Char(50),
-	Anslutna_fastigheter_8 Char(50),
-	Anslutna_fastigheter_9 Char(50),
-	Anslutna_fastigheter_10 Char(50),
-	SpatialFastighet Char(40),
-	SpatialShift Char(40)
-		
-	)
-	file pathVar TYPE NATIVE Charset "WindowsLatin1"
-	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
-	CreateTable_reningIhopslagen = pathVar
-end function
-
-function CreateTable_EnskiltIhopslagen as string
-	dim pathVar as string
-	dim temp as string temp= TempFileName$("") 
-	pathVar = left$(temp,len(temp)-4) & ".tab"
-	Create Table "EnskiltIhopslagen" (
-	
-	Diarienummer Char(30),
-	Fastighet_tillstånd Char(40),
-	Typ_byggnad Char(15),
-	Antal_hushåll_tillstånd Char(17),
-	Fastighet_rening Char(33),
-	Typ_Slamavskiljare Char(15),
-	Storlek_m3 Float,
-	Typ_rening Char(15),
-	Storlek_m2 Float,
-	Typ_sluten_tank Char(8),
-	Storlek__m3 Float,
-	Beslut_datum Date,
-	Utförd_datum Date,
-	Avgift Char(10),
-	Tillstånd_giltigt_tom Date,
-	Anteckningar Char(254),
-	SpatialFastighet Char(40),
-	SpatialShift Char(40)
-
-		
-	)
-	file pathVar TYPE NATIVE Charset "WindowsLatin1"
-	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
-	CreateTable_EnskiltIhopslagen = pathVar
-end function
-
-sub utskrivningsobjektsKonstruktor(
-		sO as swerefobjekt,
-		rO as reningsObjekt,
-		eO as enskiltobjekt,
-		Uo() as utskriftsobjekt,
-		användaReningar() as integer,
-		trovärdighetsIndex as float,
-		fastighetsObjekt as fastighetsObjekt
-	)
-
-	dim ittr, objektid as integer
-	,reningsTokenObjekt() as reningsObjekt
-	,enskiltTokenObjekt() as enskiltobjekt
-	,swerefTokenObjekt() as swerefobjekt
-	,tableName as string
-	
-	ittr = expandutskriftsobjekt(Uo)
-	tableName = "LatestObjectID"
-	
-	if IsTableOpen(tableName) then 
-		select col1 from LatestObjectID
-		fetch first from latestObjectID
-		senastObjectID = iif(senastObjectID < latestObjectID.col1,latestObjectID.col1,senastObjectID)
-	end if
-	
-	objektid = iif(senastObjectID <> 0,senastObjectID + 1,1)
-	
-	senastObjectID = objektid
-	Uo(ittr).Objektid = objektid
-	
-	Uo(ittr).trovärdighetsIndex = trovärdighetsIndex
-	Uo(ittr).Path = ""
-	Uo(ittr).Diarienummer = ""
-	Uo(ittr).Löpnummer = ""
-	Uo(ittr).Enhet = "VATTEN"
-	Uo(ittr).Timdebitering = TRUE
-	Uo(ittr).Aktuell_timavgift = 925
-
-	Uo(ittr).Verksamhetsutövare_Namn = "" 'fastighetsObjekt.namn
-	Uo(ittr).Verksamhetsutöv_Person_orgnr = "" ' fastighetsObjekt.personnr
-
-	Uo(ittr).Fakturamottagare_NAMN = "" ' fastighetsObjekt.namn
-	Uo(ittr).Fakturamottagare_Faktura_ADRESS = "" ' fastighetsObjekt.adressNamn
-	Uo(ittr).Fakturamottagare_Faktura_POSTNR = "" ' fastighetsObjekt.PostNrNamn
-	Uo(ittr).Fakturamottagare_Faktura_POSTOR = "" ' fastighetsObjekt.PostortNamn
-
-	Uo(ittr).Besöksadress_Adress = fastighetsObjekt.adress
-	Uo(ittr).Besöksadress_Postnr = fastighetsObjekt.postnr
-	Uo(ittr).Besöksadress_Ort = fastighetsObjekt.ort
-	Uo(ittr).Besöksadress_Huvudfastighet = fastighetsObjekt.kir
-	Uo(ittr).FNR = fastighetsObjekt.fnr
-
-	'har sweref
-	if(swerefÄrInteToken(sO)) then
-		Uo(ittr).Inventering = "klart Vatten"
-		Uo(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
-		Uo(ittr).Inventeringsinformation_Status = sO.Status
-		Uo(ittr).Bedömning = sO.Ärendenr
-		Uo(ittr).Anteckning = sO.Anteckning
-	end if
-
-	if(EnskiltÄrInteToken(eO)) then	
-				
-		Uo(ittr).flik_Avloppsänlaggni_Boendetyp = eO.Typ_byggnad
-		Uo(ittr).flik_Avloppsanläggn_Byggnadsår = eO.Tillstånd_giltigt_tom
-		Uo(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utförd_datum
-		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = eO.Beslut_datum
-		Uo(ittr).Vatten = eO.Antal_hushåll_tillstånd
-		
-		Uo(ittr).Objektnamn = iif (eO.spatialShift <> "",eO.spatialShift,fastighetsObjekt.namn & " Återställed enskilt")
-				
-		Uo(ittr).PunkttypAB = "Ansluten byggnad"
-		Uo(ittr).Anläggningskategori_2 = "Slamavskiljare"
-		Uo(ittr).Anläggning_för_S_Anläggningstyp = eO.Typ_Slamavskiljare
-		Uo(ittr).text = eO.Anteckningar
-		Uo(ittr).Anläggning_för_Slamav_Volym_m3 = eO.Storlek_m3
-		Uo(ittr).Fliken_Koordinater = eO.kordinater
-		
-		'har tank
-		if((eO.Typ_sluten_tank <> "0" and eO.Typ_sluten_tank <> "" and eO.Typ_sluten_tank <> "-")) then
-			Uo(ittr).Anläggningskategori_3 = "Tank"
-			Uo(ittr).AnlförEfterR_Anläggningstyp = eO.Typ_sluten_tank
-			Uo(ittr).besiktningdatum_2 = eO.Utförd_datum
-			Uo(ittr).beslutsdatum_2 = eO.Beslut_datum
-	
-			Uo(ittr).Volym_m3_2 = eO.Storlek__m3
-		end if
-
-	else'not(EnskiltÄrInteToken(eO)) then	
-		Uo(ittr).Objektnamn = iif(sO.fastighet_tillstånd <> "",sO.fastighet_tillstånd,fastighetsObjekt.fastighet) & " " & sO.Status
-		Uo(ittr).Fliken_Koordinater = sO.kordinater
-		Uo(ittr).text = sO.Anteckning
-		Uo(ittr).flik_Avloppsa_Besiktningsdatum = sO.utförddatum
-		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = sO.Beslut_datum
-	end if
-	
-	call generateTokenObjekts(reningsTokenObjekt, enskiltTokenObjekt, swerefTokenObjekt)
-	
-	if(ReningÄrInteToken(rO)) then
-		'gemensam är också true om antal fastighet rening är mer än 1
-		if not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) then 'ickeGemensam
-			
-			Uo(ittr).Recipient = iif(rO.spatialShift <> "",rO.spatialShift,eO.fastighet_rening)
-			Uo(ittr).Anläggningskategori = "Efterföljande rening"
-			Uo(ittr).besiktningdatum = rO.Utförd_datum
-			Uo(ittr).beslutsdatum = rO.Beslut_datum
-			Uo(ittr).Anläggningstyp = rO.Reningstyp
-			Uo(ittr).Volym_m3 = rO.Storlek_m2
-			Uo(ittr).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
-			Uo(ittr).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
-			Uo(ittr).PunkttypER = "Efterföljande rening"
-						
-			call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
-			call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,rO,eO, objektid)	
-		else'((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) gemensam
-			 Uo(ittr).Recipient =  "gem. på " & iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))		
-		
-			if (not(findInINTArray(rO.rowIndex,användaReningar))) then 'om den inte redan skapats					
-				dim rInd,rI as integer
-				rI = ittr
-				
-				if((findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then ' om gemensamhetsanläggn, avsluta fastighet, itteratorn ökas, objectidet ändras, men annars behandla det som vanlig rening.
-					call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
-					call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)'onödigt att regga fastigherna flera gånger
-					
-					objektId = val(rO.Kommentarer)
-					rI = ittr+1
-					
-					Uo(ittr).Objektid = objektId
-					Uo(ittr).Vatten = rO.Antal_hushåll_rening
-				end if
-								
-				rInd = ubound(användaReningar())+1
-				redim användaReningar(rInd)
-				användaReningar(rInd) = rO.rowIndex
-		
-				Uo(rI).Anläggning_för_EfterföljRText = rO.Kommentarer
-				Uo(rI).Anläggningskategori = "Efterföljande rening"
-				Uo(rI).besiktningdatum = rO.Utförd_datum
-				Uo(rI).beslutsdatum = rO.Beslut_datum
-				Uo(rI).Anläggningstyp = rO.Reningstyp
-				Uo(rI).Volym_m3 = rO.Storlek_m2
-				
-				Uo(rI).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
-				Uo(rI).PunkttypER = "Efterföljande rening"
-				
-				if(not(findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then
-					Uo(rI).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
-					call diarienummerForutskriftsobjekt(Uo,rI,eO,sO, objektid)
-					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
-				else'(ettTillsynsObjekt)
-					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
-				end if'(not(ettTillsynsObjekt))
-			else
-				call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
-			end if'(not(findInINTArray(rO.rowIndex,användaReningar)))
-			
-		end if'not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar))
-		
-	else'(not(ReningÄrInteToken(rO))
-		Uo(ittr).Recipient = eO.fastighet_rening
-		call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
-		call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
-	end if
-
-End Sub
