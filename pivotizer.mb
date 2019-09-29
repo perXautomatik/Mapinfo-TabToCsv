@@ -1,6 +1,9 @@
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
 include "commonLib\commonLib1.def"
+include "pivotizer.def"
+
+
 sub createRessultTableX(byval tablename as string, byval filePath as string)
 	
 	dim sockenTable,sTbl,query,tempstring as string
@@ -85,6 +88,7 @@ exit sub
 	end program
 	
 end sub
+
 function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
 	
 	
@@ -126,6 +130,7 @@ exit function
 		note commandString & Error$()
 		end program
 End function
+
 function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
 
 		dim x,y,size as integer
@@ -166,6 +171,7 @@ exit function
 		note commandString & Error$()
 		end program
 End function
+
 sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 	redim värde(55)
 
@@ -230,6 +236,7 @@ sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 '	värde(58) = "" & val("" & utskriftsObjekt.reningsindex)
 
 end sub
+
 sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
 
 	redim swerefTokenObjekt(1)
@@ -278,6 +285,7 @@ sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObje
 	enskiltTokenObjekt(1).kordinater = ""	
 
 end sub
+
 sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
 		dim x,q,i as integer
 
@@ -369,6 +377,7 @@ sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as rening
 		next	
 	
 End Sub
+
 function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
 	
 	dim storlek as integer
@@ -403,6 +412,7 @@ function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swe
 		FillerOrSwerefObjekt = intx
 	end if
 end function
+
 function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 	dim storlek as integer
 	storlek = ubound(enskiltobjekt)
@@ -450,6 +460,7 @@ function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,
 		FillerOrEnskiltObjekt = intx
 	end if
 end function
+
 function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
 	dim storlek as integer
 	storlek = ubound(reningsobjekt)
@@ -489,6 +500,7 @@ function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,r
 		FillerOrReningObjekt = intx
 	end if
 end function
+
 sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
 	onError goto underskriptsFel	
 	dim antal,x,nt as integer
@@ -527,6 +539,7 @@ underskriptsFel:
 	note error$()
 	end program
 end sub
+
 sub insertInitialTables()
 
 		dim tempstring,tempstringx as string
@@ -751,6 +764,7 @@ sub insertInitialTables()
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEressultat.TAB", "FLERINGEressultat")
 
 end sub
+
 Sub gemAnslutna(caseString as string,ressultArray() as string)
 	dim caseInt as integer
 	caseInt = val(caseString)
@@ -1521,8 +1535,6 @@ Sub gemAnslutna(caseString as string,ressultArray() as string)
 		case else
 	end case
 End Sub
-include "pivotizer.def"
-
 
 sub PrepareGemensamma()
 	
@@ -1757,6 +1769,7 @@ sub PrepareGemensamma()
 	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506296","Ardre Kaupungs 6:1","gem,gem","slam. & inf.","36 pe",642)						
 
 end sub
+
 function CreateTable_reningIhopslagen as string
 	dim pathVar as string
 	dim temp as string temp= TempFileName$("") 
@@ -1788,6 +1801,7 @@ function CreateTable_reningIhopslagen as string
 	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
 	CreateTable_reningIhopslagen = pathVar
 end function
+
 function CreateTable_EnskiltIhopslagen as string
 	dim pathVar as string
 	dim temp as string temp= TempFileName$("") 
@@ -1819,6 +1833,7 @@ function CreateTable_EnskiltIhopslagen as string
 	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
 	CreateTable_EnskiltIhopslagen = pathVar
 end function
+
 sub utskrivningsobjektsKonstruktor(
 		sO as swerefobjekt,
 		rO as reningsObjekt,
@@ -1983,3 +1998,5 @@ sub utskrivningsobjektsKonstruktor(
 		call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
 		call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
 	end if
+
+End Sub

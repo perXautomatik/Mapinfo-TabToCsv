@@ -27,8 +27,6 @@ sub getAnslutna(anslutan() as string)'hämtar också gemensamhetsanläggningar
 
 end sub
 
-
-
 function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
 
 		dim x,y,z,lenght as integer
@@ -159,7 +157,6 @@ function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
 
 end function
 
-
 sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
 		
@@ -247,9 +244,6 @@ sub tolkning(FastighetsObjekt as fastighetsObjekt,UtskriftsObjekt() as Utskrifts
 	end if	
 
 end sub
-
-
-
 
 function ReningÄrInteToken(reningsTokenObjekt as reningsobjekt) as logical
 	
@@ -362,12 +356,6 @@ function swerefÄrInteToken(swerefTokenObjekt as swerefObjekt) as logical
 
 end function
 
-
-
-
-
-
-
 function countFasGenerateUtvald(FastighetB as string) as integer
 	dim tempcountz as integer
 	
@@ -443,16 +431,9 @@ exit function
 		countOccurences = 0
 end function
 
-
-
 sub injectGemensamma()
 	insert into reningIhopslagen select * from gemensamma
 End Sub
-
-
-
-
-
 
 sub diarienummerForUtskriftsObjekt(
 	utskriftsObjekt() as utskriftsobjekt,
@@ -738,6 +719,3 @@ function DebuggStringEveryInt(IntArray() as integer) as string
 		Next
 	
 end function
-
-
-End Sub
