@@ -7,6 +7,14 @@ include "postProcesses.def"
 
 declare sub förberedAvslut()
 declare sub readCurrentSockenState(användaReningar() as integer)
+declare Sub Main()
+declare sub readCurrentSockenState(användaReningar() as integer)
+declare sub sockenProcessor()
+declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
+declare sub förberedAvslut()
+declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
+declare sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
+
 global workDir as string
 
 'todo: organize code to be more obeus of difference between main and tabellinsammlare
@@ -45,219 +53,6 @@ Sub Main()
 	call postProcessor()	
 	
 end sub
-
-sub populatePathTable
-	dim tempstring,tablenames(3) as string
-		,tempAlias as alias
-		
-	do case iProgress
-	case 1
-		tempstring = "PathTABLE"
-		if IsTableOpen(tempstring) then
-			close table "pathTable"
-		end if
-		
-		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
-	case 2 'grundtabeller
-		call insertInitialTables()
-	case 3'Fastighetskikt med adress	
-		tempString = applicationDirectory$() & "fastighet_ytaAd.tab"
-		if(not(FileExists(tempString))) then
-			redim tableNames(2)
-			
-			tablenames(1) = "fastighet_ytaORg"
-			tablenames(2) = "Adresspunkter"
-						
-			call tableOpener(tablenames)
-
-			Create Table "FaMedAdrPunkt" (KIR Char(40),ADRESS Char(105),POSTNR Char(9),POSTORT Char(105),FASTIGHET Char(54),FNR Integer) file tempString TYPE NATIVE Charset "WindowsLatin1"
-			Create Map For FaMedAdrPunkt CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (-8099143.95363, -10001965.7294) (8399143.95363, 10001965.7294)
-			Insert Into FaMedAdrPunkt (KIR, FASTIGHET,FNR) Select COL2, COL12, Col1  From fastighet_ytaORg DropIndex Auto
-			Add Column "FaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where within
-			Add Column "FaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where within
-			Add Column "FaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where within
-
-			select * from FaMedAdrPunkt where adress = "" into TomtFaMedAdrPunkt
-
-			Add Column "TomtFaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where COL6 = COL3 
-			Add Column "TomtFaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where COL6 = COL3 
-			Add Column "TomtFaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where COL6 = COL3 
-
-			commit table FaMedAdrPunkt
-			Create Index On FaMedAdrPunkt(kir)
-			commit table FaMedAdrPunkt
-			
-			close table fastighet_ytaORg
-			close table Adresspunkter		
-			close table FaMedAdrPunkt
-		end if
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
-	
-	case 4
-		redim tableNames(4)
-		
-		tablenames(1) = "Rening_SödraNoIndex"
-		tablenames(2) = "Rening_NorraNoIndex"
-		tablenames(3) = "Rening_MellerstaNoIndex"
-		tablenames(4) = "fastighet_yta"
-						
-		call tableOpener(tablenames)
-		
-		select * from tablenames(1) into "Rening_Södra"
-		select * from tablenames(2) into "Rening_Norra"
-		select * from tablenames(3) into "Rening_Mellersta"
-				
-		tempstring = görTillBasTabellReturneraPath("Rening_Södra")
-			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Södra")
-		tempstring = görTillBasTabellReturneraPath("Rening_Norra")
-			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Norra")
-		tempstring = görTillBasTabellReturneraPath("Rening_Mellersta")
-			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Mellersta")
-			
-		Alter Table Rening_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
-		Add Column "Rening_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-		Add Column "Rening_Södra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-		commit table Rening_Södra
-		Alter Table "Rening_Södra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
-		
-		Alter Table Rening_Norra (add SpatialFastighet Char(40), SpatialShift Char(40)  )
-		Add Column "Rening_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-		Add Column "Rening_Norra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-		commit table Rening_Norra
-		Alter Table "Rening_Norra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
-		
-		Alter Table Rening_Mellersta ( add SpatialFastighet Char(40), SpatialShift Char(40) )
-		Add Column "Rening_Mellersta" (SpatialFastighet)From fastighet_yta Set To kir Where contains
-		Add Column "Rening_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-		commit table Rening_Mellersta
-		Alter Table "Rening_Mellersta" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
-		
-		call tableCloser(tablenames())
-	case 5''egna reningstabeller med spatial fastighet
-		tempstring = CreateTable_reningIhopslagen()
-		call insertXintoYtableWhereXcolLessThaYcol("rening_mellersta","reningIhopslagen")
-		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
-		call insertXintoYtableWhereXcolLessThaYcol("rening_Södra","reningIhopslagen")
-		Commit table reningIhopslagen
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")	
-	case 6
-		'injesera gemensamhetsanläggningar
-		call PrepareGemensamma()
-		call injectGemensamma()
-		redim tableNames(1)
-		tableNames(1) = "reningIhopslagen"
-		tempAlias = tableNames(1)
-		commit table reningIhopslagen
-		call UpdateIndex("reningIhopslagen")'already commits
-		call tableCloserAndCommiter(tableNames)	
-	case 7
-		dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta")
-	 	
-	 	'creates two empty 1 column tables called sockenTabell and sockentabellX
-	 	tempstring = 
-	 	createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))") 
-	 	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
-
-' why do we need to populate the socken ref table like this everytime rather than using a premade?
-
-		insert into sockentabelx 
-			Select 
-			Cond(
-			left$(KIR,InStr(1,KIR," ",)-1), 'if socken is 
-			"allmänt",
-			"", 'then ""
-			"outrett", 
-			"", 'then ""
-			right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" 
-			AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs",
-			"", 'then ""
-			left$(KIR,InStr(1,KIR," ",)-1)) 'else
-			from fastighet_yta 
-			
-			select * from sockenTabelx where col1 <> ""
-			group by col1 order by col1 into socknarOfiltrerade
-   
-		dim användaReningar() as integer 
-		call readCurrentSockenState(användaReningar)
-		
-		'dosent this always evaluate to 0, or, does the magic happen in read current state? 
-		
-		if tableinfo(sockenTabell,tab_info_nrows) = 0 
-		then iProgress = -2 end if
-	
-	case 8'egen swereftabell med spatial fastighet och index
-		redim tableNames(2)
-		tablenames(1) = "Fastigheter_swerefNoIndex"
-		tablenames(2) = "fastighet_yta"
-		call tableOpener(tablenames)
-		select * from tablenames(1) into "Fastigheter_sweref"
-		tempstring = görTillBasTabellReturneraPath("Fastigheter_sweref")
-		
-		insert into Pathtable (tablePath,TableName) values (tempstring, "Fastigheter_sweref")
-
-		call UpdateIndex("Fastigheter_sweref")
-		Alter Table Fastigheter_sweref (add SpatialFastighet Char(40), SpatialShift Char(40))
-		Commit table Fastigheter_sweref
-		Add Column "Fastigheter_sweref" (SpatialFastighet)From fastighet_yta Set To kir Where contains
-		Add Column "Fastigheter_sweref" (SpatialShift)From fastighet_yta Set To fastighet Where contains
-		call tableCloserAndCommiter(tableNames)
-		
-	case 9'egna EnskiltTabeller med spatial fastighet
-	redim tableNames(4)	
-		tablenames(1) = "Enskilt_avlopp_SödraNoIndex"
-		tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
-		tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
-		tablenames(4) = "fastighet_yta"
-		
-		call tableOpener(tablenames)
-		
-		select * from tablenames(1) into "Enskilt_avlopp_Södra"
-		select * from tablenames(2) into "Enskilt_avlopp_Norra"
-		select * from tablenames(3) into "Enskilt_avlopp_Mellersta"
-'				
-		tempstring = görTillBasTabellReturneraPath("Enskilt_avlopp_Södra")
-		tempstring = görTillBasTabellReturneraPath("Enskilt_avlopp_Norra")
-		tempstring = görTillBasTabellReturneraPath("Enskilt_avlopp_Mellersta")
-		
-		Alter Table Enskilt_avlopp_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40) )
-		Add Column "Enskilt_avlopp_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-		Add Column "Enskilt_avlopp_Södra" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
-		
-		Alter Table Enskilt_avlopp_Norra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
-		Add Column "Enskilt_avlopp_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-		Add Column "Enskilt_avlopp_Norra" (SpatialShift) From fastighet_yta Set To Fastighet Where contains
-		
-		Alter Table Enskilt_avlopp_Mellersta (add SpatialFastighet Char(40), SpatialShift Char(40) )
-		Add Column "Enskilt_avlopp_Mellersta" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-		Add Column "Enskilt_avlopp_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-				
-		call tableCloser(tablenames())
-	case 10
-		tempstring = CreateTable_enskiltIhopslagen()
-		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_mellersta","EnskiltIhopslagen")
-		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_Norra","EnskiltIhopslagen")
-		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_Södra","EnskiltIhopslagen")
-		Commit table EnskiltIhopslagen
-				
-		redim tableNames(2)
-		tableNames(1) = "Lokalt_omhändertagande_slam"
-		tablenames(2) = "fastighet_yta"
-		call tableOpener(tablenames)
-		
-		Select fastighet_yta.KIR, Lokalt_omhändertagande_slam.Diarienr, Lokalt_omhändertagande_slam.Beslutsdatum from Lokalt_omhändertagande_slam, fastighet_yta where Lokalt_omhändertagande_slam.Obj Within fastighet_yta.Obj into slam
-		Alter Table "EnskiltIhopslagen" ( add SlamDispDat Date )
-		Commit table EnskiltIhopslagen
-		Add Column "EnskiltIhopslagen" (SlamDispDat )From slam Set To Beslutsdatum Where COL17 = COL1 
-		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp på: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
-		Commit table EnskiltIhopslagen
-		call UpdateIndex("EnskiltIhopslagen")'already commits
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "EnskiltIhopslagen")
-		call tableCloserAndCommiter(tableNames)	
-	end case
-	
-	call increment(iProgress,iProgressRange,starttime)
-		
-End Sub
 
 sub readCurrentSockenState(användaReningar() as integer)
 	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
@@ -368,8 +163,6 @@ queryError:
 	resume methodEnd
 end sub
 
-
-
 sub förberedAvslut()
 	Create table "HelaSolen" (Besöksadress_Adress Char(253),Besöksadress_Postnr Char(253),Besöksadress_Ort Char(253),Besöksadress_Huvudfastighet Char(34),FNR Integer,Verksamhetsutövare_Namn Char(253),Verksamhetsutöv_Person_orgnr Integer,Fakturamottagare_NAMN Char(253),Fakturamottagare_Faktura_ADRESS Char(253),Fakturamottagare_Faktura_POSTNR Char(253),Fakturamottagare_Faktura_POSTOR Char(253),Enhet Char(6),Anteckning Char(253),Aktuell_timavgift Integer,Timdebitering Logical,Objektnamn Char(36),flik_Avloppsänlaggni_Boendetyp Char(15),flik_Avloppsanläggn_Byggnadsår Date,flik_Avloppsa_Besiktningsdatum Date,flik_Avloppsanläg_Beslutsdatum Date,Vatten Char(17),Recipient Char(49),Inventering Char(12),Inventeringsinformation_Datum Date,Inventeringsinformation_Status Char(6),Bedömning Char(15),fliken_Fastigheter Char(34),fliken_FastigheterFNR Integer,PunkttypAB Char(16),Fliken_Koordinater Char(19),fliken_Ärenden Char(13),Anläggningskategori Char(20),besiktningdatum Date,beslutsdatum Date,Anläggningstyp Char(15),Volym_m3 Float,Anl_för_EftR_TöInterv_mån Integer,AnlF_efR_Koordinater_X_o_Y Char(19),PunkttypER Char(20),Anläggning_för_EfterföljRText Char(253),Anläggningskategori_2 Char(19),Anläggning_för_S_Anläggningstyp Char(15),Externt_Tjänsteid Integer,text Char(253),Anläggning_för_Slamav_Volym_m3 Float,Anläggningskategori_3 Char(19),AnlförEfterR_Anläggningstyp Char(15),besiktningdatum_2 Date,beslutsdatum_2 Date,Externt_Tjänsteid2 Integer,Volym_m32 Float,ObjektID Integer,Path Char(253),Diarienummer Char(13),Löpnummer Integer) file workdir & "\HelaSolen.TAB" TYPE NATIVE Charset "WindowsLatin1"
 	
@@ -383,13 +176,7 @@ sub förberedAvslut()
 	
 End Sub
 
-
-
-
 Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
-				
-		dim sockenTable,sTbl,query,tempstring as string
-		,iLoop,x,size as integer
 		
 '		For iLoop = 1 to numtables() 
 '			do case tableinfo(iLoop,1)
@@ -399,6 +186,10 @@ Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsOb
 '				case else
 '			end case
 '		Next 
+		
+		dim sockenTable,sTbl,query,tempstring as string
+		,iLoop,x,size as integer
+		
 							
 		print "change " & socken & " to " & nSocken socken = nSocken
 		redim tablenames(3) tablenames(1) = nSocken & "Fastigheter" tablenames(2) = "EnskiltIhopslagen" tablenames(3) = "reningIhopslagen" call tableOpener(tablenames) sockenTable = Socken & "Fastigheter"

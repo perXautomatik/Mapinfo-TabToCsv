@@ -1,3 +1,9 @@
+declare sub populatePathTable 'own defenition for class, no possibility to generalize
+Include "MapBasic.def"
+Include "tabellInsammlare.def"
+include "commonLib\commonLib1.def"
+
+
 Type ReningsObjekt
 
 	Fastighet_rening as string
@@ -164,6 +170,41 @@ Type TrovärdighetsObjekt
 	fx as integer
 	rx as integer
 End Type
+
+declare sub createRessultTableX(byval tablename as string, byval filePath as string)
+declare sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
+declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
+declare sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
+declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
+declare sub insertInitialTables()
+declare Sub gemAnslutna(caseString as string,ressultArray() as string)
+declare sub PrepareGemensamma()
+
+declare sub utskrivningsobjektsKonstruktor(
+		swerefobjekt as swerefobjekt,
+		reningsobjekt as reningsobjekt,
+		enskiltobjekt as enskiltobjekt,
+		UtskriftsObjekt() as UtskriftsObjekt,
+		användaReningar() as integer,
+		trovärdighetsIndex as float,
+		fastighetsObjekt as fastighetsObjekt
+	)
+
+	'är det för krävande att hämta poster enligt index?
+	'FastighetsBetInput = columnAtIndexAsString(temp,tempString,iprogress)
+
+	'gissar vilket distrikt som fastighet hör till som skall öppnas
+	'nödvändigt för att spara tid?'''ja det är nödvändigt, fundera på att skära ner i ännu mindre delar.
+	'bit nedskärning gjorde väldigt liten tidskillnad gemnförelse att förindexera alla sökvariabler.
+			'när högst trovärdighet valts ut, skapas ett utskriftsobjekt			
+			'			print ubound(FastighetsObjekt.swerefobjekt) & "fx" '& trovärdighetsobjekt(mestTrov).fx
+			'			print ubound(FastighetsObjekt.reningsobjekt) & "rx" '& trovärdighetsobjekt(mestTrov).rx
+			'			print ubound(FastighetsObjekt.enskiltobjekt) & "ex" '& trovärdighetsobjekt(mestTrov).ex
+			'			print ubound(trovärdighetsobjekt) & "tro " & mestTrov & " tra"
+
+
+
+
 'även ifall man "pregenerating area" tar hela processen fortfarande väldigt lång tid, frågan är om skulle kunna förindexera alla fastigheter
 'ty varjer within+within+within tar längretid än en tre gånger så stor within.
 'ääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääää
@@ -187,40 +228,8 @@ End Type
 '	if(ubound(fastighetsobjekt.reningsobjekt)>ubound(fastighetsobjekt.enskiltobjekt)) then
 '		'the mutation with the rening who have the highest match get picked
 '	end if
-Include "MapBasic.def"
-include "Menu.def"
-
 
 	' hur vet vi att en gemensam rening redan refferats till?
 	' skapar att objekt enligt rutin för gemensamhetanläggningar, samt att vi lägger till det radindex
 	' när vi sedan är påväg att skapa ett gemensamhetsobjekt i ressultattabellen, skippar vi att skapaom rOet
 	' om index redan finns där.
-	
-declare sub createRessultTableX(byval tablename as string, byval filePath as string)
-declare sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
-declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
-declare sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
-declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
-declare sub insertInitialTables()
-declare Sub gemAnslutna(caseString as string,ressultArray() as string)
-declare sub PrepareGemensamma()
-declare sub utskrivningsobjektsKonstruktor(
-		swerefobjekt as swerefobjekt,
-		reningsobjekt as reningsobjekt,
-	'är det för krävande att hämta poster enligt index?
-	'FastighetsBetInput = columnAtIndexAsString(temp,tempString,iprogress)
-
-	'gissar vilket distrikt som fastighet hör till som skall öppnas
-	'nödvändigt för att spara tid?'''ja det är nödvändigt, fundera på att skära ner i ännu mindre delar.
-	'bit nedskärning gjorde väldigt liten tidskillnad gemnförelse att förindexera alla sökvariabler.
-			'när högst trovärdighet valts ut, skapas ett utskriftsobjekt			
-			'			print ubound(FastighetsObjekt.swerefobjekt) & "fx" '& trovärdighetsobjekt(mestTrov).fx
-			'			print ubound(FastighetsObjekt.reningsobjekt) & "rx" '& trovärdighetsobjekt(mestTrov).rx
-			'			print ubound(FastighetsObjekt.enskiltobjekt) & "ex" '& trovärdighetsobjekt(mestTrov).ex
-			'			print ubound(trovärdighetsobjekt) & "tro " & mestTrov & " tra"
-		enskiltobjekt as enskiltobjekt,
-		UtskriftsObjekt() as UtskriftsObjekt,
-		användaReningar() as integer,
-		trovärdighetsIndex as float,
-		fastighetsObjekt as fastighetsObjekt
-	)

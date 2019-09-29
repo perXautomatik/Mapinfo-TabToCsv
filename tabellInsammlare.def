@@ -1,32 +1,10 @@
-
 Dim tablenames(5),distrikt,FastighetsBetInput,qm as string,iProgress,iProgressRange,jProgress,jProgressRange,starttime as integer,reningDistrikt,enskiltDistrikt as alias,socken as string
 
+Include "MapBasic.def"
+include "commonLib\commonLib1.def"
+include "pivotizer.def"
+Include "tabellInsammlare.def"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-		
 declare function countDupes(byVal fastighetsBet as string) as integer
 declare function countFasGenerateUtvald(FastighetB as string) as integer
 declare function countOccurences(byVal colummn as string) as integer
@@ -50,19 +28,14 @@ declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
 declare function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
 declare function swerefÄrInteToken(swerefObjekt as swerefObjekt) as logical
 declare function trovärdighetsIndexer(	användaReningar() as integer,	swerefobjekt as swerefobjekt,	reningsobjekt as reningsobjekt,	enskiltobjekt as enskiltobjekt	) as float
+
 declare sub diarienummerForUtskriftsObjekt(	utskriftsObjekt() as utskriftsobjekt,	itterator as integer,	enskiltObjekt as enskiltobjekt,	swerefObjekt as swerefobjekt, 	objektid as integer	)
 declare sub doTheDateStandardisation(värde() as string,påPlatts() as string,byVal DatumSträngTagIsammanfogad as string)
 declare sub genereraFastighetsYtaMedFastighetsAdress()
 declare sub getAnslutna(anslutan() as string)
 declare sub injectGemensamma()
-declare sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
-Declare Sub Main
 declare sub messageEveryString(StringArray() as String)
-declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
-declare sub populatePathTable 'own defenition for class, no possibility to generalize
 declare sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
-declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
 declare sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,användaReningar as integer,UtskriftsObjekt() as utskriftsobjekt, tolkningsobjekt() as TrovärdighetsObjekt)
-declare sub sockenProcessor()
 declare sub StandardiseraDiarie(byval a as string,byval b as string,c() as string)
 declare sub tolkning(FastighetsObjekt as FastighetsObjekt, UtskriftsObjekt() as UtskriftsObjekt,användaReningar() as integer)
