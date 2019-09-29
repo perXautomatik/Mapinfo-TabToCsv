@@ -1,3 +1,6 @@
+Include "tabellInsammlare.def"
+
+
 Type ReningsObjekt
 
 	Fastighet_rening as string

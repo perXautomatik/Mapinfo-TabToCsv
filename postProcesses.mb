@@ -1,8 +1,7 @@
-Include "MapBasic.def"
-include "Menu.def"
-Include "tabellInsammlare.def"
-include "commonLib\commonLib1.def"
 include "postProcesses.def"
+include "commonLib\commonLib1.def"
+
+global iprogressRange,startTime,iprogress as integer 
 
 sub postProcessor
 	iprogressRange = 10

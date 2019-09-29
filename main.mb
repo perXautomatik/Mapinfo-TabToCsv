@@ -5,6 +5,7 @@ Include "tabellInsammlare.def"
 include "commonLib\commonLib1.def"
 include "postProcesses.def"
 
+
 declare sub förberedAvslut()
 declare sub readCurrentSockenState(användaReningar() as integer)
 global workDir as string
