@@ -2803,47 +2803,5 @@ function getPathFromPathTable(byVal tableNamex as string) as string
 	getPathFromPathTable = tempSelect.col1
 end function
 
-function SqlGenWhereColIsNotAny(byVal kolName, toFilterBy() as string) as string
-	dim i as integer
-	, textString as string
-	
-	for i=1 to ubound(tofilterBy)
-		textString = textString & iif(i<>1," AND ","") & kolName & "<>" & tofilterBy(i)
-	next 
-	
-	SqlGenWhereColIsNotAny = "where " & textString
-end function
 
-function ifOpenFetchFirstCol11Asinteger(byVal tableName as string) as integer
-	if IsTableOpen(tableName) then
-		select col1 from tablename into temp
-		fetch first from temp
-		ifOpenFetchFirstCol11Asinteger = val("" & temp.col1)
-	else
-		ifOpenFetchFirstCol11Asinteger = 0
-	end if
-end function
 
-sub columnAsStringArray(byVal tableName as string,byVal columnName as string, Array() as string)
-
-	dim i as integer
-	,tempstring as string
-	,tempAlias as alias
-	
-	tempAlias = columnName
-
-	select tempAlias from tableName into deleteme
-	i = 1
-	
-	fetch first from deleteme
-	do until eot(deleteme)
-		redim array(i)
-		
-		tempstring = deleteme.col1
-		array(i) = tempstring
-		i = i + 1
-		fetch next from deleteme
-	loop
-	
-	close table deleteme
-end sub

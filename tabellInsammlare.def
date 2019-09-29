@@ -310,7 +310,4 @@ declare function getPathFromPathTable(byVal tableName as string) as string
 declare sub sockenProcessor()
 declare sub PrepareGemensamma()
 
-declare function SqlGenWhereColIsNotAny(byVal kolName, toFilterBy() as string) as string
-declare function ifOpenFetchFirstCol11Asinteger(byVal tableName as string) as integer
-declare sub columnAsStringArray(byVal tableName as string,byVal columnName as string, Array() as string)
 
