@@ -253,8 +253,7 @@ declare function countDupes(byVal fastighetsBet as string) as integer
 declare function kollaBredd(values() as string) as logical
 declare function getCOrd(byVal ColumnName as string) as string
 declare function countOccurences(byVal colummn as string) as integer
-declare sub insertXintoYtableWhereXcolLessThaYcol(ByVal tableToInsert as string,byVal insertWhere as string)
-declare function sqlPart_ColNrs(byVal nr as integer) as string
+
 declare sub injectGemensamma()
 declare sub insertInitialTables()
 
@@ -278,7 +277,6 @@ declare sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskrift
 declare sub doTheDateStandardisation(värde() as string,påPlatts() as string,byVal DatumSträngTagIsammanfogad as string)
 
 declare function DiarieMixedToUnit(byVal text as string) as string
-declare function getFnr(ByVal fastighetsNamn as string) as integer
 
 declare sub genereraFastighetsYtaMedFastighetsAdress()
 
@@ -294,19 +292,13 @@ declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
 
 declare function swerefÄrInteToken(swerefObjekt as swerefObjekt) as logical
 Declare Sub gemAnslutna(caseString as string,ressultArray() as string)
-declare function DiarieUtanBokstäver(ByVal diarienummer as string) as string
-declare function IFSAMEoneDIFFRENTzeroONEBLANKhalf(byVal valX as string,byVal valY as string) as float
-declare function XOR(byVal a as logical, byVal b as logical) as logical
 
 declare sub messageEveryString(StringArray() as String)
-declare function stringEveryInt(IntArray() as integer) as string
+declare function DebuggStringEveryInt(IntArray() as integer) as string
 
 declare function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
 declare function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
 declare function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
-
-
-declare function getPathFromPathTable(byVal tableName as string) as string
 declare sub sockenProcessor()
 declare sub PrepareGemensamma()
 

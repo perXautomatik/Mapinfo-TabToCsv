@@ -111,13 +111,6 @@ sub getAnslutna(anslutan() as string)'hämtar också gemensamhetsanläggningar
 
 end sub
 
-function getFnr(ByVal fastighetsNamn as string) as integer
-	select fnr from fastighet where fastighet = fastighetsNamn into fnrSelect
-	
-	fetch first from fnrSelect
-	getFnr = fnrSelect.fnr
-end function
-
 function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
 	
 	
@@ -971,23 +964,6 @@ exit function
 	QueryError:
 		print query & "]countOccurences[" & Error$()
 		countOccurences = 0
-end function
-
-function sqlPart_ColNrs(byVal nr as integer) as string
-	
-	dim x as integer
-	, tableColumns as string
-		
-	For x=1 to nr
-   		tableColumns = tableColumns & "col"+str$(x)
-	    
-	    if (x < nr) then
-	    	tableColumns = tableColumns + ","
-	    end if
-	Next
-	
-	sqlPart_ColNrs = tableColumns
-	
 end function
 
 sub insertInitialTables()
@@ -2288,22 +2264,6 @@ function CreateTable_EnskiltIhopslagen as string
 	CreateTable_EnskiltIhopslagen = pathVar
 end function
 
-function DiarieUtanBokstäver(ByVal diarienummer as string) as string
-	dim sPartsArray() As String
-	,tempInteger as integer
-		
-	tempInteger = SplitStringAtCharacter(diarienummer,"-",sPartsArray())
-	
-	if(tempInteger = 3) then
-		if (val(spartsArray(1)) = 0) then
-			DiarieUtanBokstäver = val(sPartsArray(2) & sPartsArray(3))
-		end if
-	else
-		DiarieUtanBokstäver = 0
-	end if
-	
-End Function
-
 sub diarienummerForUtskriftsObjekt(
 	utskriftsObjekt() as utskriftsobjekt,
 	itterator as integer,
@@ -2335,39 +2295,6 @@ sub diarienummerForUtskriftsObjekt(
 		utskriftsobjekt(itterator).Objektid = objektid	
 	end if
 end sub
-
-sub insertXintoYtableWhereXcolLessThaYcol(ByVal tableToInsert as string,byVal insertWhere as string)
-	dim query as string
-	,nrCol as integer
-	
-	nrCol = iif(TableInfo(tableToInsert, TAB_INFO_NCOLS)<=TableInfo(insertWhere, TAB_INFO_NCOLS),TableInfo(tableToInsert, TAB_INFO_NCOLS),TableInfo(insertWhere, TAB_INFO_NCOLS))
-	
-	query = "Insert Into " & insertWhere & " (" & sqlPart_ColNrs(nrCol) & ") Select " & sqlPart_ColNrs(nrCol) & " From " & tableToInsert & " DropIndex Auto"
-	
-	onError goto ContinueError
-		run command query
-	onError goto 0
-	close table tableToInsert
-exit sub
-	ContinueError:
-	note "insertXintoYtableError" & error$()
-	print query
-	
-	resume next
-	
-end sub
-
-function IFSAMEoneDIFFRENTzeroONEBLANKhalf(byVal valX as string,byVal valY as string) as float
-
-	if (valx=valy) then
-		IFSAMEoneDIFFRENTzeroONEBLANKhalf = 1.0
-	elseif not(len(valx)*len(valy)) then'om någon av strängarna är toma så blir den true, annars false
-		IFSAMEoneDIFFRENTzeroONEBLANKhalf = 0.5
-	else
-		IFSAMEoneDIFFRENTzeroONEBLANKhalf = 0.0
-	end if
-	
-end function
 
 function trovärdighetsIndexer(
 	användaReningar() as integer,
@@ -2444,12 +2371,6 @@ function trovärdighetsIndexer(
 	end if
 	
 	trovärdighetsIndexer = (trovärdighetsIndex)/9 'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
-end function
-
-function XOR(byVal a as logical, byVal b as logical) as logical
-
-	xor = not( a = b )
-
 end function
 
 sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,användaReningar as integer,UtskriftsObjekt() as utskriftsobjekt,tolkningsobjekt() as trovärdighetsobjekt)
@@ -2579,7 +2500,7 @@ end if
 
 if(debugg) then
 	print trovärdighetsobjekt(mestTrov).rx & " Rremoving from"
-	print stringEveryInt(reningEjTagna)
+	print DebuggStringEveryInt(reningEjTagna)
 end if
 		
 		'denna sektion tar bort de delar som använts i övre delen
@@ -2588,9 +2509,9 @@ end if
 		end if
 
 if(debugg) then
-	print stringEveryInt(reningEjTagna)
+	print DebuggStringEveryInt(reningEjTagna)
 	print trovärdighetsobjekt(mestTrov).ex & " Eremoving from"
-	print stringEveryInt(enskiltEjTagna)
+	print DebuggStringEveryInt(enskiltEjTagna)
 end if
 		
 		if(trovärdighetsobjekt(mestTrov).ex <> 0) then
@@ -2598,9 +2519,9 @@ end if
 		end if
 
 if(debugg) then
-	print stringEveryInt(enskiltEjTagna)
+	print DebuggStringEveryInt(enskiltEjTagna)
 	print trovärdighetsobjekt(mestTrov).fx & " Sremoving from"
-	print stringEveryInt(swerefEjTagna)
+	print DebuggStringEveryInt(swerefEjTagna)
 end if
 		
 		if(trovärdighetsobjekt(mestTrov).fx <> 0) then
@@ -2608,7 +2529,7 @@ end if
 		end if
 
 if(debugg) then
-	print stringEveryInt(swerefEjTagna)
+	print DebuggStringEveryInt(swerefEjTagna)
 end if
 		
 		NrEejtagna = ubound(enskiltEjTagna)
@@ -2618,7 +2539,7 @@ end if
 
 end sub
 
-function stringEveryInt(IntArray() as integer) as string
+function DebuggStringEveryInt(IntArray() as integer) as string
 	
 	Dim	i As Integer
 		
@@ -2794,14 +2715,3 @@ sub utskrivningsobjektsKonstruktor(
 	end if
 
 End Sub
-
-function getPathFromPathTable(byVal tableNamex as string) as string
-	
-	select tablePath from pathTable where TableName = TableNamex into tempSelect
-	fetch first from tempSelect
-
-	getPathFromPathTable = tempSelect.col1
-end function
-
-
-
