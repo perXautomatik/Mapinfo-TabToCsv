@@ -203,9 +203,77 @@ declare sub createRessultTableX(byval tablename as string, byval filePath as str
 declare sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
 declare sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
+<<<<<<< HEAD:pivotizer.def
 declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
 declare sub insertInitialTables()
 declare Sub gemAnslutna(caseString as string,ressultArray() as string)
+=======
+
+declare function countFasGenerateUtvald(FastighetB as string) as integer
+declare function CreateTable_reningIhopslagen as string
+declare function CreateTable_EnskiltIhopslagen as string
+declare function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
+
+declare function countDupes(byVal fastighetsBet as string) as integer
+declare function kollaBredd(values() as string) as logical
+declare function getCOrd(byVal ColumnName as string) as string
+declare function countOccurences(byVal colummn as string) as integer
+declare sub insertXintoYtableWhereXcolLessThaYcol(ByVal tableToInsert as string,byVal insertWhere as string)
+declare function sqlPart_ColNrs(byVal nr as integer) as string
+declare sub injectGemensamma()
+declare sub insertInitialTables()
+
+declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
+
+declare sub diarienummerForUtskriftsObjekt(
+	utskriftsObjekt() as utskriftsobjekt,
+	itterator as integer,
+	enskiltObjekt as enskiltobjekt,
+	swerefObjekt as swerefobjekt, 
+	objektid as integer
+	)
+
+declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
+
+declare sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
+declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
+declare sub createRessultTableX(byval tablename as string, byval filePath as string)
+declare sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
+
+declare sub doTheDateStandardisation(värde() as string,påPlatts() as string,byVal DatumSträngTagIsammanfogad as string)
+
+declare function DiarieMixedToUnit(byVal text as string) as string
+declare function getFnr(ByVal fastighetsNamn as string) as integer
+
+declare sub genereraFastighetsYtaMedFastighetsAdress()
+
+declare sub getAnslutna(anslutan() as string)
+
+declare sub StandardiseraDiarie(byval a as string,byval b as string,c() as string)
+
+Declare Sub Main
+
+declare function enskiltAsString(enskiltTokenObjekt as EnskiltObjekt) as string
+declare function ReningAsString(reningsTokenObjekt as reningsobjekt) as string
+declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
+
+declare function swerefÄrInteToken(swerefObjekt as swerefObjekt) as logical
+Declare Sub gemAnslutna(caseString as string,ressultArray() as string)
+declare function DiarieUtanBokstäver(ByVal diarienummer as string) as string
+declare function IFSAMEoneDIFFRENTzeroONEBLANKhalf(byVal valX as string,byVal valY as string) as float
+declare function XOR(byVal a as logical, byVal b as logical) as logical
+
+declare sub messageEveryString(StringArray() as String)
+declare function stringEveryInt(IntArray() as integer) as string
+
+declare function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
+declare function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
+declare function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
+
+
+declare function getPathFromPathTable(byVal tableName as string) as string
+declare sub sockenProcessor()
+>>>>>>> parent of b5d49e0... stable after pruning:tabellInsammlare.def
 declare sub PrepareGemensamma()
 declare sub utskrivningsobjektsKonstruktor(
 		swerefobjekt as swerefobjekt,
