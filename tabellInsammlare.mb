@@ -1,7 +1,6 @@
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
 include "commonLib\commonLib1.def"
-include "pivotizer.def"
 
 global senastObjectID as integer
 
