@@ -3,6 +3,7 @@ Include "MapBasic.def"
 include "Menu.def"
 Include "tabellInsammlare.def"
 include "commonLib\commonLib1.def"
+indlude "postProcesses.def"
 
 declare sub insertAnteckningar
 declare sub förberedAvslut()
@@ -14,6 +15,11 @@ declare sub asspsoeraFnr()
 declare sub readCurrentSockenState(användaReningar() as integer)
 global workDir as string
 
+'todo: organize code to be more obeus of difference between main and tabellinsammlare
+' ? 	maybe tabellisnammlare actually should only keep long stuffing methods like defining table strucutures 
+' 		a third module should be made to take care of helper functions for the main,
+'		maybe an already exsisting method like module like pivotizer....
+'		fourth module for end effects.
 
 Sub Main()
 	'empty message
@@ -39,19 +45,18 @@ Sub Main()
 			Calling sockenProcessor
 		Range iProgressRange		
 	end if
+
+
+	iprogressRange = 10
+	
+	startTime = timer() iprogress = 0 ProgressBar "postProcesses...." & iProgressRange & " items"
+		Calling postProcesses
+	Range iProgressRange		
+	
+
 	
 	call förberedAvslut() 
-	call insertMultiplaFastigheter 
-	call insertAnteckningar 
-	call insertFulaFastigheter() 
-	call insertMånsBilder() 
-	call insertMHK()
 	
-	'call klartVattenStatusEndastVidFlagga()
-	'call KlartVattenUtskicksDatumIDatumKolumn()
-	'call assosieraFnr()
-	'call slamdispFält()
-	'call assosieraGammlaFastigheterTillNyaFnr()
 	
 	
 '   gerdins anläggningar är inte färdiga, not added in endressult !
@@ -555,7 +560,6 @@ end sub
 
 'läser in forna sockenfiler, laddar listan med använda reningar.
 'rening bör inte skapas igen föräns vid datumskifte, precis som SockenUtsökning
-
 'inläsning förväntar sig att isNewSocken har genrerat tabeller 
 sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
 	

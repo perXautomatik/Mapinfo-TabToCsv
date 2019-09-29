@@ -3,3 +3,5 @@ Application = SolenVision.mbx
 Module = main
 Module = tabellInsammlare
 Module = commonLib\commonLib1
+Module = pivotizer
+Module = postProcesses

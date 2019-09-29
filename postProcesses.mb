@@ -1,0 +1,31 @@
+Include "MapBasic.def"
+
+Declare Sub Main
+
+Sub postProcesses()
+	do case iProgress
+	case 1
+		call insertMultiplaFastigheter
+	case 2
+		call insertAnteckningar 
+	case 3
+		call insertFulaFastigheter() 
+	case 4
+		call insertMånsBilder() 
+	case 5
+		call insertMHK()
+	case 6
+		call klartVattenStatusEndastVidFlagga()
+	case 7
+		call KlartVattenUtskicksDatumIDatumKolumn()
+	case 8
+		call assosieraFnr()
+	case 9
+		call slamdispFält()
+	case 10
+		call assosieraGammlaFastigheterTillNyaFnr()
+	end case
+	
+	call increment(iProgress,iProgressRange,starttime)
+	
+End Sub
