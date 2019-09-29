@@ -1,0 +1,29 @@
+Include "MapBasic.def"
+include "Menu.def"
+
+
+Declare sub appendToColumn(byVal ColumnNamn as string,ByVal attAppendera as string)
+Declare Sub Main
+declare function countOccurences(byVal colummn as string) as integer
+declare function getCOrd(byVal ColumnName as string) as string
+declare sub printOccurences()
+declare sub executeQuery(insertValues() as string)
+declare function getlatest(byVal colummn as string) as string
+declare function getrowIDByColumn(byVal columnName as string, columnValue as string) as integer
+declare function getByRowID(rowIdx as integer,byVal kolumnName as string) as string
+declare function getColumnsAsString(columns() as string) as String
+declare sub getrowsExcludingRowID(rowId as integer)
+declare function columnsAsString(byVal rowIdX as integer) as string
+declare sub OccurencesAsArray(OccurenceArray() as string)
+declare Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
+declare Function StringContains(ByVal strInput as String, ByVal charToFind as String) as Logical
+declare function countDupes(byVal fastighetsbet as string) as integer
+declare sub tableGenerator()
+declare sub asignmentMethod(byVal methodX as string,byVal ColumnX as string,byVal optionalRowID as integer)
+declare sub ifEmptyByRowIdAssignFirst(byVal columnNamn as string,rowID as integer)
+declare function dumpAllBut(rowId as integer) as string
+global insertValues(32) as string
+declare function surroundWithQm() as string
+declare function kollaBredd(values() as string) as logical
+declare function assignAllWithFirstExcept(values() as string) as logical
+declare sub assignFirstkontaktUpgifter()

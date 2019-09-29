@@ -1,8 +1,26 @@
 Include "MapBasic.def"
+include "Menu.def"
+Include "tabellInsammlare.def"
+include "commonLib\commonLib1.def"
+include "postProcesses.def"
 
-Declare Sub Main
+sub postProcessor
+	iprogressRange = 10
+	
+	startTime = timer() iprogress = 0 ProgressBar "postProcesses...." & iProgressRange & " items"
+		Calling postProcesses
+	Range iProgressRange		
+	
+End Sub
 
 Sub postProcesses()
+		
+'   gerdins anläggningar är inte färdiga, not added in endressult !
+' 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
+'	call assosieraGammlaFastigheterTillNyaFnr()
+' 	correct fastigheter already before association
+
+	
 	do case iProgress
 	case 1
 		call insertMultiplaFastigheter
@@ -15,17 +33,80 @@ Sub postProcesses()
 	case 5
 		call insertMHK()
 	case 6
-		call klartVattenStatusEndastVidFlagga()
+		'call klartVattenStatusEndastVidFlagga()
 	case 7
-		call KlartVattenUtskicksDatumIDatumKolumn()
+		'call KlartVattenUtskicksDatumIDatumKolumn()
 	case 8
 		call assosieraFnr()
 	case 9
-		call slamdispFält()
+		'call slamdispFält()
 	case 10
-		call assosieraGammlaFastigheterTillNyaFnr()
+		'call assosieraGammlaFastigheterTillNyaFnr()
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
 	
 End Sub
+
+sub assosieraFnr()
+Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
+
+	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
+	Add Column "NoFas" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 
+	
+	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
+	Add Column "NoFnr" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1 
+
+Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
+Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as ursp
+
+	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
+	Add Column "NoFas" (fliken_Fastigheter )From Ursp Set To Beteckning Where COL2 = COL3
+	
+	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
+	Add Column "NoFnr" (fliken_FastigheterFNR )From Ursp Set To FNR Where COL1 = Col4
+
+
+end sub
+
+sub insertMHK()
+	
+	open table workdir & "\MhkToVision.TAB" as MhkToVision
+	insert into HelaSolen (path,Diarienummer) select * from MhkToVision
+end sub
+
+sub insertMånsBilder
+
+	Open Table workdir & "\bilder.TAB" Interactive
+	select fastighet,path from bilder where fastighet <> "blött jan2018" into utanJan
+	insert into HelaSolen (fliken_fastigheter,path) select * from utanJan
+	select path from bilder where fastighet = "blött jan2018" into Jan
+	insert into HelaSolen (path) select * from Jan
+	
+end sub
+
+sub insertFulaFastigheter()
+	Open Table workdir & "\ÄrendenMedIngenEllerFelFastighet2.TAB" as fä
+	Select Diarienummer, Fnr from fä where Fnr <> 0 into fä2
+	
+	insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from fä2
+	
+end sub
+
+sub insertMultiplaFastigheter
+
+Open Table workdir & "\Mer än en fastighet.TAB" Interactive
+
+Insert Into HelaSolen Select * From Mer_än_en_fastighet
+
+commit table helaSolen
+
+end sub
+sub insertAnteckningar
+
+
+Open Table workdir & "\Anteckningar.TAB" Interactive
+
+insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnummer,path from anteckningar
+
+end sub
