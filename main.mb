@@ -4,14 +4,21 @@ include "Menu.def"
 Include "tabellInsammlare.def"
 include "commonLib\commonLib1.def"
 
-declare sub insertAnteckningar
+declare Sub Main()
+declare sub populatePathTable
+declare sub readCurrentSockenState(användaReningar() as integer)
+declare sub sockenProcessor()
+declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
+declare sub asspsoeraFnr()
+declare sub insertMHK()
+declare sub insertMånsBilder
 declare sub förberedAvslut()
 declare sub insertFulaFastigheter()
 declare sub insertMultiplaFastigheter
-declare sub insertMånsBilder
-declare sub insertMHK()
-declare sub asspsoeraFnr()
-declare sub readCurrentSockenState(användaReningar() as integer)
+declare sub insertAnteckningar
+declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
+declare sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
+
 global workDir as string
 
 
@@ -32,6 +39,15 @@ Sub Main()
 	'+ tableinfo(antalKörningar,tab_info_nrows) *9
 	'if sockentabell is zero, this segment is completely skipped
 	'that means that the sockenprogressioncheck has laready bin done in the pathTablePopulation
+	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then				
+		redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)
+	
+		startTime = timer() iprogress = 0 ProgressBar "sockenProcessor...." & iProgressRange & " items"
+			Calling sockenProcessor
+		Range iProgressRange		
+	end if
+	
+	
 	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then				
 		redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)
 	
