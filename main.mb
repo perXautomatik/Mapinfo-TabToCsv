@@ -19,6 +19,10 @@ declare sub insertAnteckningar
 declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
 declare sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
 declare Sub postProcesses()
+declare sub fastighetMedAdress
+declare sub prepareTables 
+declare sub createPathTable 
+
 
 global workDir as string
 
@@ -77,21 +81,9 @@ Sub postProcesses()
 	
 End Sub
 
-sub populatePathTable
-	dim tempstring,tablenames(3) as string
-		,tempAlias as alias
-		
-	do case iProgress
-	case 1
-		tempstring = "PathTABLE"
-		if IsTableOpen(tempstring) then
-			close table "pathTable"
-		end if
-		
-		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
-	case 2 'grundtabeller
-		call insertInitialTables()
-	case 3'Fastighetskikt med adress	
+sub fastighetMedAdress
+
+		dim tempstring as string
 		tempString = applicationDirectory$() & "fastighet_ytaAd.tab"
 		if(not(FileExists(tempString))) then
 			redim tableNames(2)
@@ -123,8 +115,17 @@ sub populatePathTable
 			close table FaMedAdrPunkt
 		end if
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
-	
-	case 4
+
+end sub
+
+sub createPathTable
+	dim tempstring as string tempstring = "PathTABLE" if IsTableOpen(tempstring) then close table "pathTable" end if	
+		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
+
+end sub
+
+sub prepareTables
+	dim tempstring as string 
 		redim tableNames(4)
 		
 		tablenames(1) = "Rening_SödraNoIndex"
@@ -164,28 +165,35 @@ sub populatePathTable
 		Alter Table "Rening_Mellersta" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 		
 		call tableCloser(tablenames())
-	case 5''egna reningstabeller med spatial fastighet
-		tempstring = CreateTable_reningIhopslagen()
+
+end sub
+
+declare sub egnRenTabWspatialFas sub egnRenTabWspatialFas
+		dim tempstring as string tempstring = CreateTable_reningIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("rening_mellersta","reningIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Södra","reningIhopslagen")
 		Commit table reningIhopslagen
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")	
-	case 6
+	end sub
+
+declare sub doTheGemensamma sub doTheGemensamma
 		'injesera gemensamhetsanläggningar
 		call PrepareGemensamma()
 		call injectGemensamma()
 		redim tableNames(1)
 		tableNames(1) = "reningIhopslagen"
-		tempAlias = tableNames(1)
+		dim tempAlias as alias tempAlias = tableNames(1)
 		commit table reningIhopslagen
 		call UpdateIndex("reningIhopslagen")'already commits
 		call tableCloserAndCommiter(tableNames)	
-	case 7
+		end sub
+
+	declare sub doSocken sub doSocken
 		dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta")
 	 	
 	 	'creates two empty 1 column tables called sockenTabell and sockentabellX
-	 	tempstring = 
+	 	dim tempstring as string tempstring = 
 	 	createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))") 
 	 	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
 
@@ -215,7 +223,27 @@ sub populatePathTable
 		
 		if tableinfo(sockenTabell,tab_info_nrows) = 0 
 		then iProgress = -2 end if
-	
+		end sub
+
+
+sub populatePathTable
+	dim tempstring,tablenames(3) as string	,tempAlias as alias
+		
+	do case iProgress
+	case 1
+		call createPathTable
+	case 2 'grundtabeller
+		call insertInitialTables()
+	case 3'Fastighetskikt med adress	
+		call FastighetMedAdress	
+	case 4
+		call prepareTables
+	case 5''egna reningstabeller med spatial fastighet
+		call egnRenTabWspatialFas
+	case 6
+		call doTheGemensamma
+	case 7
+		call doSocken
 	case 8'egen swereftabell med spatial fastighet och index
 		redim tableNames(2)
 		tablenames(1) = "Fastigheter_swerefNoIndex"
