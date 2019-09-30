@@ -9,7 +9,7 @@ declare sub populatePathTable
 declare sub readCurrentSockenState(användaReningar() as integer)
 declare sub sockenProcessor()
 declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
-declare sub asspsoeraFnr()
+declare sub assosieraFnr()
 declare sub insertMHK()
 declare sub insertMånsBilder
 declare sub förberedAvslut()
@@ -18,64 +18,64 @@ declare sub insertMultiplaFastigheter
 declare sub insertAnteckningar
 declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
 declare sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
+declare Sub postProcesses()
 
 global workDir as string
 
 
-Sub Main()
-	'empty message
-	print Chr$(12)
-	
-	workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv"
-	
-	'to make sure the coordinationsystem is the right one
-	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))
-	
-	dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
-	
-	startTime = timer() iprogressRange = 10 iprogress = 0
-	ProgressBar "populatePathTable...." & iProgressRange & " items" Calling populatePathTable Range iProgressRange
-	
 	'+ tableinfo(antalKörningar,tab_info_nrows) *9
 	'if sockentabell is zero, this segment is completely skipped
 	'that means that the sockenprogressioncheck has laready bin done in the pathTablePopulation
-	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then				
-		redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)
 	
-		startTime = timer() iprogress = 0 ProgressBar "sockenProcessor...." & iProgressRange & " items"
-			Calling sockenProcessor
-		Range iProgressRange		
-	end if
+Sub Main()
 	
+	print Chr$(12) 'empty message	
+	workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv"
+	run command("Set " + EPSGToCoordSysString$("EPSG::3022")) 'to make sure the coordinationsystem is the right one
+	dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
-	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then				
-		redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)
+	startTime = timer() iprogressRange = 10 iprogress = 0 
+	ProgressBar "populatePathTable...." & iProgressRange & " items" Calling populatePathTable Range iProgressRange
 	
-		startTime = timer() iprogress = 0 ProgressBar "sockenProcessor...." & iProgressRange & " items"
-			Calling sockenProcessor
-		Range iProgressRange		
-	end if
-	
+	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then					redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	startTime = timer() iprogress = 0
+	ProgressBar "sockenProcessor...." & iProgressRange & " items" Calling sockenProcessor		Range iProgressRange			end if
+
 	call förberedAvslut() 
-	call insertMultiplaFastigheter 
-	call insertAnteckningar 
-	call insertFulaFastigheter() 
-	call insertMånsBilder() 
-	call insertMHK()
+			
+	iprogressRange = 10		startTime = timer() iprogress = 0 
+	ProgressBar "postProcesses...." & iProgressRange & " items"	Calling postProcesses	Range iProgressRange		
 	
-	'call klartVattenStatusEndastVidFlagga()
-	'call KlartVattenUtskicksDatumIDatumKolumn()
-	'call assosieraFnr()
-	'call slamdispFält()
-	'call assosieraGammlaFastigheterTillNyaFnr()
-	
-	
+end sub
+
+Sub postProcesses()
+		
+
 '   gerdins anläggningar är inte färdiga, not added in endressult !
 ' 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
 '	call assosieraGammlaFastigheterTillNyaFnr()
 ' 	correct fastigheter already before association
 	
-end sub
+	
+	do case iProgress
+	case 1
+		call insertMultiplaFastigheter
+	case 5
+		call insertMHK()
+	case 6
+		'call klartVattenStatusEndastVidFlagga()
+	case 7
+		'call KlartVattenUtskicksDatumIDatumKolumn()
+	case 8
+		call assosieraFnr()
+	case 9
+		'call slamdispFält()
+	case 10
+		'call assosieraGammlaFastigheterTillNyaFnr()
+	end case
+	
+	call increment(iProgress,iProgressRange,starttime)
+	
+End Sub
 
 sub populatePathTable
 	dim tempstring,tablenames(3) as string
@@ -399,7 +399,7 @@ queryError:
 	resume methodEnd
 end sub
 
-sub asspsoeraFnr()
+sub assosieraFnr()
 Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
 
 	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
