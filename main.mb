@@ -5,29 +5,39 @@ Include "tabellInsammlare.def"
 include "commonLib\commonLib1.def"
 
 declare Sub Main()
-declare sub populatePathTable
-declare sub readCurrentSockenState(användaReningar() as integer)
-declare sub sockenProcessor()
-declare sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
-declare sub assosieraFnr()
-declare sub insertMHK()
-declare sub insertMånsBilder
+
+declare sub processor_PathTable
+declare Sub processor_Post()
+declare sub processor_socken()
+
+declare sub do1_1_genPathTab 
+declare sub do1_3_FasWithAdr
+declare sub do1_4_prepTabl 
+declare sub do1_5_egnRenTabWspatFas
+declare sub do1_7_Socken 
+declare sub do1_8_egnSwfWspatFasInd 
+declare sub do1_9_egnEnskWSpatFas 
+declare sub do3_4_assosieraFnr()
+
+
+declare Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
+declare sub do2_2_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
+declare sub do2_4_saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
+
+
 declare sub förberedAvslut()
-declare sub insertFulaFastigheter()
-declare sub insertMultiplaFastigheter
-declare sub insertAnteckningar
-declare Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
-declare sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
-declare Sub postProcesses()
-declare sub fastighetMedAdress
-declare sub prepareTables 
-declare sub createPathTable 
-declare sub doSlamDisp 
-declare sub egnEnskWithSpatFas 
-declare sub egnSwerefWspatialFasInd 
-declare sub doSocken 
-declare sub doTheGemensamma
-declare sub egnRenTabWspatialFas
+
+declare sub do1_6_Gem
+declare sub do1_10_SlamDisp 
+
+declare sub do3_3_Anteckningar
+declare sub do3_6_CorVisFas()
+declare sub do3_2_MHK()
+declare sub do3_1_MultiplaFastigheter
+declare sub do3_5_MånsBilder
+
+declare sub readCurrentSockenState(användaReningar() as integer)
+
 
 global workDir as string
 
@@ -44,73 +54,65 @@ Sub Main()
 	dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
 	startTime = timer() iprogressRange = 10 iprogress = 0 
-	ProgressBar "populatePathTable...." & iProgressRange & " items" Calling populatePathTable Range iProgressRange
+	ProgressBar "processor_PathTable...." & iProgressRange & " items" Calling processor_PathTable Range iProgressRange
 	
 	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then					redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	startTime = timer() iprogress = 0
-	ProgressBar "sockenProcessor...." & iProgressRange & " items" Calling sockenProcessor		Range iProgressRange			end if
+	ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken		Range iProgressRange			end if
 
 	call förberedAvslut() 
 			
 	iprogressRange = 10		startTime = timer() iprogress = 0 
-	ProgressBar "postProcesses...." & iProgressRange & " items"	Calling postProcesses	Range iProgressRange		
+	ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange		
 	
 end sub
 
-sub populatePathTable
+sub processor_PathTable
 	dim tempstring,tablenames(3) as string	,tempAlias as alias
 		
 	do case iProgress
 	case 1
-		call createPathTable
+		call do1_1_genPathTab
 	case 2 'grundtabeller
 		call insertInitialTables()
 	case 3'Fastighetskikt med adress	
-		call FastighetMedAdress	
+		call do1_3_FasWithAdr	
 	case 4
-		call prepareTables
+		call do1_4_prepTabl
 	case 5''egna reningstabeller med spatial fastighet
-		call egnRenTabWspatialFas
+		call do1_5_egnRenTabWspatFas
 	case 6
-		call doTheGemensamma
+		
 	case 7
-		call doSocken
+		call do1_7_Socken
 	case 8'egen swereftabell med spatial fastighet och index
-		call egnSwerefWspatialFasInd	
+		call do1_8_egnSwfWspatFasInd	
 	case 9'egna EnskiltTabeller med spatial fastighet
-		call egnEnskWithSpatFas
+		call do1_9_egnEnskWSpatFas
 	case 10
-		call doSlamDisp
+		call do3_4_assosieraFnr()
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
 		
 End Sub
 
-sub sockenProcessor()
-	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
+sub processor_socken()
+	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,do2_1_newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
 
-	starttime = timer() nSocken = sockenTabell.sockenX senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1
-'	end program
-	Call newSocken(nSocken,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) runns = timer() - starttime
-	
-	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken group by kir into SorteradFastighet fetch first from SorteradFastighet integerX = iif(tableInfo(SorteradFastighet,TAB_INFO_NROWS)=0,1,tableInfo(SorteradFastighet,TAB_INFO_NROWS))
+	starttime = timer() nSocken = sockenTabell.sockenX senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program
+	Call do2_1_newSocken(nSocken,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) runns = timer() - starttime	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken group by kir into SorteradFastighet fetch first from SorteradFastighet integerX = iif(tableInfo(SorteradFastighet,TAB_INFO_NROWS)=0,1,tableInfo(SorteradFastighet,TAB_INFO_NROWS))
 
-	call increment(iProgress,iProgressRange,starttime)
-	starttime = timer()
-	do UNtil EOT(SorteradFastighet)
-		fastighetJustNu = SorteradFastighet.kir'	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if
+	call increment(iProgress,iProgressRange,starttime)	starttime = timer()	do UNtil EOT(SorteradFastighet)
+		fastighetJustNu = SorteradFastighet.kir
+		'	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if
 
-		call inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt())'reads selected row from sorteradFastighet
-
+		call do2_2_inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt())'reads selected row from sorteradFastighet 
 		fetch Next from SorteradFastighet
-	loop
-	
-	endtime = timer()-starttime	print "***************************************************************************************************************************" print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" print "***************************************************************************************************************************"
+	loop	endtime = timer()-starttime	print "***************************************************************************************************************************" print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" print "***************************************************************************************************************************"
 	
 	for x = 1 to ubound(fastighetsObjekt) call tolkning(FastighetsObjekt(x),utskriftsObjekt,användaReningar) next 
 	
-	call saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program end if
-
+	call do2_4_saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program end if
 	redim utskriftsObjekt(1) redim fastighetsObjekt(1)
 
 	fetch next from sockenTabell
@@ -129,7 +131,7 @@ sub förberedAvslut()
 	
 End Sub
 
-Sub postProcesses()
+Sub processor_Post()
 		
 
 '   gerdins anläggningar är inte färdiga, not added in endressult !
@@ -138,20 +140,22 @@ Sub postProcesses()
 ' 	correct fastigheter already before association
 	
 	
-	do case iProgress
-	case 1
-		call insertMultiplaFastigheter
-	case 5
-		call insertMHK()
-	case 6
+	do case iProgress case 1
+		call do1_6_Gem	
+	case 2
+		call do3_2_MHK()
+	case 3
+		call do3_3_Anteckningar
+	case 4
+		call do3_1_MultiplaFastigheter
 		'call klartVattenStatusEndastVidFlagga()
+		'call KlartVattenUtskicksDatumIDatumKolumn() 
+	case 5
+		call do1_10_SlamDisp
+	case 6
+		call do3_5_MånsBilder
 	case 7
-		'call KlartVattenUtskicksDatumIDatumKolumn()
-	case 8
-		call assosieraFnr()
-	case 9
-		'call slamdispFält()
-	case 10
+		call do3_6_CorVisFas
 		'call assosieraGammlaFastigheterTillNyaFnr()
 	end case
 	
@@ -159,7 +163,7 @@ Sub postProcesses()
 	
 End Sub
 
-sub fastighetMedAdress
+sub do1_3_FasWithAdr
 
 		dim tempstring as string
 		tempString = applicationDirectory$() & "fastighet_ytaAd.tab"
@@ -196,13 +200,13 @@ sub fastighetMedAdress
 
 end sub
 
-sub createPathTable
+sub do1_1_genPathTab
 	dim tempstring as string tempstring = "PathTABLE" if IsTableOpen(tempstring) then close table "pathTable" end if	
 		CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("")
 
 end sub
 
-sub prepareTables
+sub do1_4_prepTabl
 	dim tempstring as string 
 		redim tableNames(4)
 		
@@ -246,7 +250,7 @@ sub prepareTables
 
 end sub
  
-sub egnRenTabWspatialFas
+sub do1_5_egnRenTabWspatFas
 		dim tempstring as string tempstring = CreateTable_reningIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("rening_mellersta","reningIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
@@ -255,7 +259,7 @@ sub egnRenTabWspatialFas
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")	
 	end sub
 		 
-sub doTheGemensamma
+sub do1_6_Gem
 		'injesera gemensamhetsanläggningar
 		call PrepareGemensamma()
 		call injectGemensamma()
@@ -267,7 +271,7 @@ sub doTheGemensamma
 		call tableCloserAndCommiter(tableNames)	
 		end sub
 
-sub doSocken
+sub do1_7_Socken
 		dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta")
 	 	
 	 	'creates two empty 1 column tables called sockenTabell and sockentabellX
@@ -303,7 +307,7 @@ sub doSocken
 		then iProgress = -2 end if
 		end sub
 
-sub egnSwerefWspatialFasInd
+sub do1_8_egnSwfWspatFasInd
 		redim tableNames(2)
 		tablenames(1) = "Fastigheter_swerefNoIndex"
 		tablenames(2) = "fastighet_yta"
@@ -321,7 +325,7 @@ sub egnSwerefWspatialFasInd
 		call tableCloserAndCommiter(tableNames)
 		end sub
 
-sub egnEnskWithSpatFas
+sub do1_9_egnEnskWSpatFas
 		
 		redim tableNames(4)
 		tablenames(1) = "Enskilt_avlopp_SödraNoIndex"
@@ -354,7 +358,7 @@ sub egnEnskWithSpatFas
 		call tableCloser(tablenames())
 		end sub
 
-sub doSlamDisp
+sub do1_10_SlamDisp
 		dim tempstring as string tempstring = CreateTable_enskiltIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_mellersta","EnskiltIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_Norra","EnskiltIhopslagen")
@@ -401,7 +405,7 @@ sub readCurrentSockenState(användaReningar() as integer)
 	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
 end sub		
 
-sub saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
+sub do2_4_saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
 
 	dim query,värden(),påPlatts(),insertinto,fromTable,tablename,filePath, värde(),temp as string
 	,x,y,z as integer
@@ -456,8 +460,8 @@ queryError:
 	resume methodEnd
 end sub
 
-sub assosieraFnr()
-Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
+sub do3_4_assosieraFnr()
+    Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
 
 	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
 	Add Column "NoFas" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 
@@ -465,8 +469,8 @@ Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fa
 	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
 	Add Column "NoFnr" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1 
 
-Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
-Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as ursp
+	Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
+	Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as ursp
 
 	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
 	Add Column "NoFas" (fliken_Fastigheter )From Ursp Set To Beteckning Where COL2 = COL3
@@ -474,16 +478,15 @@ Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Ta
 	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
 	Add Column "NoFnr" (fliken_FastigheterFNR )From Ursp Set To FNR Where COL1 = Col4
 
-
 end sub
 
-sub insertMHK()
+sub do3_2_MHK()
 	
 	open table workdir & "\MhkToVision.TAB" as MhkToVision
 	insert into HelaSolen (path,Diarienummer) select * from MhkToVision
 end sub
 
-sub insertMånsBilder
+sub do3_5_MånsBilder
 
 	Open Table workdir & "\bilder.TAB" Interactive
 	select fastighet,path from bilder where fastighet <> "blött jan2018" into utanJan
@@ -493,7 +496,7 @@ sub insertMånsBilder
 	
 end sub
 
-sub insertFulaFastigheter()
+sub do3_6_CorVisFas()
 	Open Table workdir & "\ÄrendenMedIngenEllerFelFastighet2.TAB" as fä
 	Select Diarienummer, Fnr from fä where Fnr <> 0 into fä2
 	
@@ -501,7 +504,7 @@ sub insertFulaFastigheter()
 	
 end sub
 
-sub insertMultiplaFastigheter
+sub do3_1_MultiplaFastigheter
 
 Open Table workdir & "\Mer än en fastighet.TAB" Interactive
 
@@ -511,7 +514,7 @@ commit table helaSolen
 
 end sub
 
-sub insertAnteckningar
+sub do3_3_Anteckningar
 
 
 Open Table workdir & "\Anteckningar.TAB" Interactive
@@ -520,7 +523,7 @@ insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnumme
 
 end sub
 
-Sub NewSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
+Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
 				
 		dim sockenTable,sTbl,query,tempstring as string
 		,iLoop,x,size as integer
@@ -616,8 +619,8 @@ end sub
 'läser in forna sockenfiler, laddar listan med använda reningar.
 'rening bör inte skapas igen föräns vid datumskifte, precis som SockenUtsökning
 
-'inläsning förväntar sig att isNewSocken har genrerat tabeller 
-sub inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
+'do2_2_inläsning förväntar sig att isdo2_1_newSocken har genrerat tabeller 
+sub do2_2_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
 	
 	dim FastighetsBetInput as string
 		,reningsObjekt() as reningsobjekt
