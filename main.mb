@@ -17,26 +17,23 @@ declare sub do1_5_egnRenTabWspatFas
 declare sub do1_7_Socken 
 declare sub do1_8_egnSwfWspatFasInd 
 declare sub do1_9_egnEnskWSpatFas 
-declare sub do3_4_assosieraFnr()
-
 
 declare Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
 declare sub do2_2_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
 declare sub do2_4_saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
 
-
+declare sub do3_4_assosieraFnr()
 declare sub förberedAvslut()
 
 declare sub do1_6_Gem
 declare sub do1_10_SlamDisp 
-
 declare sub do3_3_Anteckningar
 declare sub do3_6_CorVisFas()
 declare sub do3_2_MHK()
 declare sub do3_1_MultiplaFastigheter
 declare sub do3_5_MånsBilder
 
-declare sub readCurrentSockenState(användaReningar() as integer)
+declare sub do1_7_2readCurrentState(användaReningar() as integer)
 
 
 global workDir as string
@@ -47,21 +44,25 @@ global workDir as string
 	'that means that the sockenprogressioncheck has laready bin done in the pathTablePopulation
 	
 Sub Main()
+	 'to make sure the coordinationsystem is the right one
+	 'empty message	
+	print Chr$(12) run command("Set " + EPSGToCoordSysString$("EPSG::3022")) workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv" dim tablenames(1) as string 
+	tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
-	print Chr$(12) 'empty message	
-	workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv"
-	run command("Set " + EPSGToCoordSysString$("EPSG::3022")) 'to make sure the coordinationsystem is the right one
-	dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
-	
-	startTime = timer() iprogressRange = 10 iprogress = 0 
+	iprogressRange = 8 iprogress = 0 startTime = timer() 
 	ProgressBar "processor_PathTable...." & iProgressRange & " items" Calling processor_PathTable Range iProgressRange
 	
-	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then					redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	startTime = timer() iprogress = 0
-	ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken		Range iProgressRange			end if
+	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) 
+	if iprogressRange <> 0 then	redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	startTime = timer() iprogress = 0
+	ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
+	else
+		'load ressult
+	end if
 
+	call do3_4_assosieraFnr()
 	call förberedAvslut() 
-			
-	iprogressRange = 10		startTime = timer() iprogress = 0 
+
+	iprogressRange = 10 iprogress = 0 startTime = timer() 
 	ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange		
 	
 end sub
@@ -81,15 +82,11 @@ sub processor_PathTable
 	case 5''egna reningstabeller med spatial fastighet
 		call do1_5_egnRenTabWspatFas
 	case 6
-		
-	case 7
 		call do1_7_Socken
-	case 8'egen swereftabell med spatial fastighet och index
+	case 7'egen swereftabell med spatial fastighet och index
 		call do1_8_egnSwfWspatFasInd	
-	case 9'egna EnskiltTabeller med spatial fastighet
-		call do1_9_egnEnskWSpatFas
-	case 10
-		call do3_4_assosieraFnr()
+	case 8'egna EnskiltTabeller med spatial fastighet
+		call do1_9_egnEnskWSpatFas	
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
@@ -132,14 +129,12 @@ sub förberedAvslut()
 End Sub
 
 Sub processor_Post()
-		
 
 '   gerdins anläggningar är inte färdiga, not added in endressult !
 ' 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
 '	call assosieraGammlaFastigheterTillNyaFnr()
 ' 	correct fastigheter already before association
-	
-	
+
 	do case iProgress case 1
 		call do1_6_Gem	
 	case 2
@@ -272,40 +267,21 @@ sub do1_6_Gem
 		end sub
 
 sub do1_7_Socken
-		dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta")
-	 	
-	 	'creates two empty 1 column tables called sockenTabell and sockentabellX
-	 	dim tempstring as string tempstring = 
-	 	createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))") 
-	 	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+	'creates two empty 1 column tables called sockenTabell and sockentabellX
+	dim tempBool as logical ,tempstring as string tempBool = SingletableOpenerConfirmation("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
 
-' why do we need to populate the socken ref table like this everytime rather than using a premade?
+	'why do we need to populate the socken ref table like this everytime rather than using a premade?
+	'if socken is 'then ""'then ""'then ""'else
+	'populates a single row table, if it fits the conditions, else it filters away unfit ressults
 
-		insert into sockentabelx 
-			Select 
-			Cond(
-			left$(KIR,InStr(1,KIR," ",)-1), 'if socken is 
-			"allmänt",
-			"", 'then ""
-			"outrett", 
-			"", 'then ""
-			right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" 
-			AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs",
-			"", 'then ""
-			left$(KIR,InStr(1,KIR," ",)-1)) 'else
-			from fastighet_yta 
+	insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+	
+	'dosent this always evaluate to 0, or, does the magic happen in read current state? 
+	dim användaReningar() as integer call do1_7_2readCurrentState(användaReningar)
 			
-			select * from sockenTabelx where col1 <> ""
-			group by col1 order by col1 into socknarOfiltrerade
-   
-		dim användaReningar() as integer 
-		call readCurrentSockenState(användaReningar)
-		
-		'dosent this always evaluate to 0, or, does the magic happen in read current state? 
-		
-		if tableinfo(sockenTabell,tab_info_nrows) = 0 
-		then iProgress = -2 end if
-		end sub
+	if tableinfo(sockenTabell,tab_info_nrows) = 0 
+	then iProgress = -2 end if
+end sub
 
 sub do1_8_egnSwfWspatFasInd
 		redim tableNames(2)
@@ -381,7 +357,7 @@ sub do1_10_SlamDisp
 		call tableCloserAndCommiter(tableNames)	
 		end sub
 
-sub readCurrentSockenState(användaReningar() as integer)
+sub do1_7_2readCurrentState(användaReningar() as integer)
 	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
 	
 	call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
@@ -407,50 +383,28 @@ end sub
 
 sub do2_4_saveProgress(utskriftsObjekt() as utskriftsObjekt,användaReningar() as integer)
 
-	dim query,värden(),påPlatts(),insertinto,fromTable,tablename,filePath, värde(),temp as string
-	,x,y,z as integer
-	,tempFloat as float
-
-	tableName = Socken & "ressultat"
-	filePath = ApplicationDirectory$() + tableName & ".tab"
+	dim query,värden(),påPlatts(),insertinto,fromTable,tablename,filePath, värde(),temp as string ,x,y,z as integer ,tempFloat as float tableName = Socken & "ressultat" filePath = ApplicationDirectory$() + tableName & ".tab"
 
 	call createRessultTableX(tablename,filePath)
 
 	for x=1 to ubound(utskriftsObjekt)
-		call genereraSQLVärdeArray(värde, utskriftsObjekt(x))
-		if( StringArrayAsString(värde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then
-			query = generateInsertStringWithArray(tableName, värde)
-	
-			if("Insert Into ressultat () Values ()" <> query) then 'tomt 
-				onerror goto queryError
-					run command query
-				onerror goto 0
-			else
-				goto queryError
-			end if
-		else
-			goto queryError
-		end if	
+		call genereraSQLVärdeArray(värde, utskriftsObjekt(x)) if( StringArrayAsString(värde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then query = generateInsertStringWithArray(tableName, värde) if("Insert Into ressultat () Values ()" <> query) then onerror goto queryError 
+			run command query onerror goto 0 else goto queryError end if else goto queryError end if
 	next
 	
 	commit table tableName
 	
 	'sparar AnvändaReningar
 	Create Table "ArrayTable" (Fält1 Integer) file TempFileName$("") TYPE NATIVE Charset "WindowsLatin1"
-	for x=1 to ubound(användaReningar)
-		Insert Into ArrayTable Values (användaReningar(x))
-	next
+	for x=1 to ubound(användaReningar) Insert Into ArrayTable Values (användaReningar(x)) next
 	
-	call closeIfnotClosed("AnvändaReningarsHash")
-	
-	select Anslutna_fastigheter_1,CentroidY(Obj),CentroidX(obj) from reningIhopslagen where rowIndex = any (select Col1 from ArrayTable) into AnvändaReningarsHash
+	call closeIfnotClosed("AnvändaReningarsHash") select Anslutna_fastigheter_1,CentroidY(Obj),CentroidX(obj) from reningIhopslagen where rowIndex = any (select Col1 from ArrayTable) into AnvändaReningarsHash
 	
 	'print Format$((tableInfo(AnvändaReningarsHash,tab_info_nRows)/tableInfo(ArrayTable,tab_info_nRows)), "%") & " success save använda reningar"
-			
-	commit table AnvändaReningarsHash as ApplicationDirectory$() & "AnvändaReningarsHash.tab"
-	drop table ArrayTable
-	redim utskriftsobjekt(1) 'tömmer utskriftobjekt arrayn
-	print "done!"
+	 'tömmer utskriftobjekt arrayn
+	
+	commit table AnvändaReningarsHash as ApplicationDirectory$() & "AnvändaReningarsHash.tab" drop table ArrayTable redim utskriftsobjekt(1) print "done!"
+	
 	methodEnd:
 exit sub
 queryError:
@@ -622,15 +576,9 @@ end sub
 'do2_2_inläsning förväntar sig att isdo2_1_newSocken har genrerat tabeller 
 sub do2_2_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
 	
-	dim FastighetsBetInput as string
-		,reningsObjekt() as reningsobjekt
-		,enskiltObjekt() as enskiltObjekt
-		,swerefObjekt() as swerefObjekt
-		,returnState as logical
-		,swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float
-		,antal as integer
-	
+	dim FastighetsBetInput as string,reningsObjekt() as reningsobjekt,enskiltObjekt() as enskiltObjekt,swerefObjekt() as swerefObjekt,returnState as logical,swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float,antal as integer
 	FastighetsBetInput = sorteradFastighet.kir
+	
 	if(countFasGenerateUtvald(FastighetsBetInput) <> 0) then
 		antal = 0	'	swerefStart = timer()'läser in förgenererad tabell begränsad efter socknen
 		antal = SwerefFilterByBet(tempAlias1,FastighetsBetInput,swerefObjekt)'	swerefStop = timer()'	ReningStart = timer()'läser in förgenererad tabell begränsad efter socknen
