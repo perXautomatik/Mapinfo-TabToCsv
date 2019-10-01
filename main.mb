@@ -52,20 +52,37 @@ Sub Main()
 	print Chr$(12) run command("Set " + EPSGToCoordSysString$("EPSG::3022")) workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv" dim tablenames(1) as string 
 	tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
-	iprogressRange = 8 iprogress = 0 startTime = timer() 
+	iprogressRange = 5 iprogress = 0 startTime = timer() 
 	ProgressBar "processor_PathTable...." & iProgressRange & " items" Calling processor_PathTable Range iProgressRange
 	
+	onError goto sockenError
 	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) 
 	if iprogressRange <> 0 then	redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	startTime = timer() iprogress = 0
 	ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
 	else
 		'load ressult
 	end if
+	onError goto 0
 
+	onError goto förberedAvslutError
 	call förberedAvslut() 
+	onError goto 0
 	
-	iprogressRange = 8 iprogress = 0 startTime = timer()
+	onError goto postProcessError
+	iprogressRange = 1 iprogress = 0 startTime = timer()
 	ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange		
+	onError goto 0
+
+exit sub	
+	förberedAvslutError:
+		print "Error,förberedAvslutError"
+		end program
+	postProcessError:
+		print "Error,postProcessError"
+		end program
+	sockenError:
+		print "Error,sockenError"
+		end program
 	
 end sub
 
@@ -77,20 +94,19 @@ sub processor_PathTable
 		call do1_1_genPathTab
 		call insertInitialTables()
 		call do1_3_FasWithAdr	
-	case 2 'grundtabeller
 		call do1_4_prepTabl1
-	case 3'Fastighetskikt med adress	
+	case 2 'grundtabeller
 		call do1_4_prepTabl2
-	case 4
+	case 3'Fastighetskikt med adress	
 		call do1_4_prepTabl3
-	case 5''egna reningstabeller med spatial fastighet
+	case 4
 		call do1_5_egnRenTabWspatFas
-	case 6
+	case 5''egna reningstabeller med spatial fastighet
 		call do1_7_Socken
-	case 7'egen swereftabell med spatial fastighet och index
-		call do1_8_egnSwfWspatFasInd	
-	case 8'egna EnskiltTabeller med spatial fastighet
-		call do1_9_egnEnskWSpatFas	
+		'egen swereftabell med spatial fastighet och index
+		call do1_8_egnSwfWspatFasInd
+		'egna EnskiltTabeller med spatial fastighet
+		call do1_9_egnEnskWSpatFas
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
@@ -437,22 +453,56 @@ queryError:
 end sub
 
 sub do3_4_assosieraFnr()
+    onError goto err1
+    call openSingleTable("fastighet_yta")
     Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
-
+	onError goto 0
+	
+	onError goto err2
 	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
 	Add Column "NoFas" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 
+	onError goto 0
 	
+	onError goto err3
 	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
 	Add Column "NoFnr" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1 
+	onError goto 0
 
+	onError goto err4
 	Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = "" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> "" AND fliken_FastigheterFNR  = 0) into ToFnr
 	Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as ursp
-
+	onError goto 0
+	
+	onError goto err5
 	Select * from ToFnr where fliken_Fastigheter = "" AND fliken_FastigheterFNR <> 0 into NoFas
 	Add Column "NoFas" (fliken_Fastigheter )From Ursp Set To Beteckning Where COL2 = COL3
+	onError goto 0
 	
+	onError goto err6
 	Select * from ToFnr where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into NoFnr
 	Add Column "NoFnr" (fliken_FastigheterFNR )From Ursp Set To FNR Where COL1 = Col4
+	onError goto 0
+	
+exit sub
+
+err1:
+	print 1
+	resume next
+err2:
+	print 2
+	resume next
+err3:
+	print 3
+	resume next
+err4:
+	print 4
+	resume next
+err5:
+	print 5
+	resume next
+err6:
+	print 6
+	resume next
 
 end sub
 
