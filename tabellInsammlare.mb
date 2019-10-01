@@ -1094,7 +1094,8 @@ sub insertInitialTables()
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ARDREFastigheter.TAB", "ARDREFastigheter")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEFastigheter.TAB", "FLERINGEFastigheter")
 
-		Tempstring = ApplicationDirectory$()
+		'Tempstring = ApplicationDirectory$()
+		tempstring = "\\storage01\app\EDP\EDP VISION\TempFilMapp\CRBK01"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAressultat.TAB", "ANGAressultat")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAressultat.TAB", "BARAressultat")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOressultat.TAB", "ATLINGBOressultat")
