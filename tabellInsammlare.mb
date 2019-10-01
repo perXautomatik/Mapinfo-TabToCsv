@@ -1189,7 +1189,9 @@ sub insertInitialTables()
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "LAUressultat.TAB", "LAUressultat")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ARDREressultat.TAB", "ARDREressultat")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEressultat.TAB", "FLERINGEressultat")
-
+		
+		Tempstring = ApplicationDirectory$()
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "Sockentabell.TAB", "Sockentabell")
 end sub
 
 Sub gemAnslutna(caseString as string,ressultArray() as string)

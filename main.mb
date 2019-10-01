@@ -90,7 +90,7 @@ exit sub
 end sub
 
 sub processor_PathTable
-	dim tablenames(3) as string	,tempAlias as alias
+	dim tempstring,tablenames(3) as string	,tempAlias as alias
 		
 	do case iProgress
 	case 1
@@ -112,9 +112,13 @@ sub processor_PathTable
 		
 		'egen swereftabell med spatial fastighet och index
 	case 4
-		dim tempBool as logical ,tempstring as string tempBool = SingletableOpenerConfirmation("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")	
-		insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-		redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	
+		tempstring = "sockenTabell"
+		if not(SingletableOpenerConfirmation(tempstring)) then
+			dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+		end if
+		select * from sockenTabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+			redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
