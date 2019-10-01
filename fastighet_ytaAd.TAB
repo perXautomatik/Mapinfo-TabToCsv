@@ -5,12 +5,12 @@
 Definition Table
   Type NATIVE Charset "WindowsLatin1"
   Fields 6
-    KIR Char (40) ;
+    KIR Char (40) Index 2 ;
     ADRESS Char (105) ;
     POSTNR Char (9) ;
     POSTORT Char (105) ;
     FASTIGHET Char (54) ;
-    FNR Integer ;
+    FNR Integer Index 1 ;
 begin_metadata
 "\IsReadOnly" = "FALSE"
 "\MapInfo" = ""

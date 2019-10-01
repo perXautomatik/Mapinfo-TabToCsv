@@ -1,0 +1,2717 @@
+Include "MapBasic.def"
+Include "tabellInsammlare.def"
+include "commonLib\commonLib1.def"
+
+global senastObjectID as integer
+
+sub createRessultTableX(byval tablename as string, byval filePath as string)
+	
+	dim sockenTable,sTbl,query,tempstring as string
+	,iLoop,x,size as integer
+	
+	
+	print "13" & tablename
+	For iLoop = 1 to numtables() 
+		if tableinfo(iLoop,1) = tablename then
+				print "17" & tablename
+				drop table tablename
+		end if
+		print "20" &  tableinfo(iLoop,1)
+	Next 
+	
+	onError goto creationError
+	print "25" & tablename
+	Create Table tableName (
+				Besöksadress_Adress	Char(253),
+				Besöksadress_Postnr	Char(253),
+				Besöksadress_Ort Char(253),
+				Besöksadress_Huvudfastighet	Char(34),
+				FNR integer,
+				Verksamhetsutövare_Namn	Char(253),
+				Verksamhetsutöv_Person_orgnr integer,
+				Fakturamottagare_NAMN Char(253),
+				Fakturamottagare_Faktura_ADRESS	Char(253),
+				Fakturamottagare_Faktura_POSTNR	Char(253),
+				Fakturamottagare_Faktura_POSTOR	Char(253),
+				Enhet Char(6),
+				Anteckning	Char(253),
+				Aktuell_timavgift integer,
+				Timdebitering Logical,
+				Objektnamn	Char(36),
+				flik_Avloppsänlaggni_Boendetyp	Char(15),
+				flik_Avloppsanläggn_Byggnadsår Date,
+				flik_Avloppsa_Besiktningsdatum Date,
+				flik_Avloppsanläg_Beslutsdatum Date,
+				Vatten	Char(17),
+				Recipient Char(49),
+				Inventering	Char(12),
+				Inventeringsinformation_Datum Date,
+				Inventeringsinformation_Status	Char(6),
+				Bedömning Char(15),
+				fliken_Fastigheter	Char(34),
+				fliken_FastigheterFNR integer,
+				PunkttypAB Char(16),
+				Fliken_Koordinater	Char(19),
+				fliken_Ärenden	char(13),
+				Anläggningskategori	Char(20),
+				besiktningdatum Date,
+				beslutsdatum Date,
+				Anläggningstyp	Char(15),
+				Volym_m3 float,
+				Anl_för_EftR_TöInterv_mån integer,
+				AnlF_efR_Koordinater_X_o_Y	Char(19),
+				PunkttypER	Char(20),
+				Anläggning_för_EfterföljRText Char(253),
+				Anläggningskategori	Char(19),
+				Anläggning_för_S_Anläggningstyp	Char(15),
+				Externt_Tjänsteid integer,
+				text Char(253),
+				Anläggning_för_Slamav_Volym_m3 float,
+				Anläggningskategori	Char(19),
+				AnlförEfterR_Anläggningstyp	Char(15),
+				besiktningdatum Date,
+				beslutsdatum Date,
+				Externt_Tjänsteid2 integer,
+				Volym_m32 float,
+				ObjektID integer,
+				Path Char(253),
+				Diarienummer char(13),
+				Löpnummer integer
+
+			) file filePath TYPE NATIVE Charset "WindowsLatin1"
+			Create Map For tablename CoordSys Earth Projection 1, 104
+	onError goto 0
+	
+exit sub
+	creationError:
+	print "creationError" & error$()
+	end program
+	
+end sub
+
+sub getAnslutna(anslutan() as string)'hämtar också gemensamhetsanläggningar
+	dim P as integer
+	,tempString as string
+	,anslutningsAlias as alias
+	,temptext as string
+	
+	if(not(valtRening.anslutna_fastigheter_10 = "gem,gem")) then
+		for p=1 to 10		
+			anslutningsAlias = "valtRening.Anslutna_fastigheter_" & p
+			temptext = anslutningsAlias
+			if(temptext <> "") then
+				call addStringToArrayAsifSet(anslutan(),searchReplace(temptext,"""","'"))
+			end if
+		next
+	else
+		tempString = valtRening.kommentarer 'kommentarfältet har identifieringen
+		call gemAnslutna(tempstring,anslutan())
+		call addStringToArrayAsifSet(anslutan(),"gem,gem")
+	end if
+
+end sub
+
+function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
+	
+	
+	dim y,x as integer
+	y = 1
+	
+	for x=1 to ubound(tabloid)
+	
+		if((tabloid(x).spatialFastighet = FastighetsBetInput) OR (tabloid(x).Fastighet_tillstånd = FastighetsBetInput)) then
+				Redim EnskiltObjekt(y)
+				
+				EnskiltObjekt(y).Diarienummer = 		tabloid(x).Diarienummer
+				EnskiltObjekt(y).Fastighet_tillstånd = 	tabloid(x).Fastighet_tillstånd
+				EnskiltObjekt(y).spatialShift = 		tabloid(x).spatialshift
+				EnskiltObjekt(y).spatialFastighet = 	tabloid(x).spatialFastighet
+				EnskiltObjekt(y).Typ_byggnad = 			tabloid(x).Typ_byggnad
+				EnskiltObjekt(y).Antal_hushåll_tillstånd = tabloid(x).Antal_hushåll_tillstånd
+				EnskiltObjekt(y).Fastighet_rening = 	tabloid(x).Fastighet_rening
+				EnskiltObjekt(y).Typ_Slamavskiljare = 	tabloid(x).Typ_Slamavskiljare
+				EnskiltObjekt(y).Storlek_m3 = 			tabloid(x).Storlek_m3
+				EnskiltObjekt(y).Typ_rening = 			tabloid(x).Typ_rening
+				EnskiltObjekt(y).Storlek_m2 = 			tabloid(x).Storlek_m2
+				EnskiltObjekt(y).Typ_sluten_tank = 		tabloid(x).Typ_sluten_tank
+				EnskiltObjekt(y).Storlek__m3 = 			tabloid(x).Storlek__m3
+				EnskiltObjekt(y).Beslut_datum = 		tabloid(x).Beslut_datum
+				EnskiltObjekt(y).Utförd_datum = 		tabloid(x).Utförd_datum
+				EnskiltObjekt(y).Avgift = 				tabloid(x).Avgift
+				EnskiltObjekt(y).Tillstånd_giltigt_tom = tabloid(x).Tillstånd_giltigt_tom
+				EnskiltObjekt(y).Anteckningar = 		tabloid(x).Anteckningar
+				EnskiltObjekt(y).kordinater = 			tabloid(x).kordinater
+				y = y + 1
+		end if
+		
+	next
+			
+	EnskiltFilterByBet = ubound(EnskiltObjekt)
+exit function
+	CommandError:
+		note commandString & Error$()
+		end program
+End function
+
+function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
+
+		dim x,y,size as integer
+		
+		size = ubound(tabloid)
+		y = 1
+		if size > 0 then
+			
+			for x=1 to size
+
+				if ((tabloid(x).SpatialFastighet = FastighetsBetInput) OR (tabloid(x).fastighet = FastighetsBetInput) OR (tabloid(x).Fastighet_tillstånd = FastighetsBetInput)) then			
+					
+					Redim swerefObjekt(y)
+		
+					swerefObjekt(y).FASTIGHET = tabloid(x).FASTIGHET
+					swerefObjekt(y).Fastighet_tillstånd = tabloid(x).Fastighet_tillstånd
+					swerefObjekt(y).Ärendenr = tabloid(x).Ärendenr
+					swerefObjekt(y).Beslut_datum = tabloid(x).Beslut_datum
+					swerefObjekt(y).Status = tabloid(x).Status
+					swerefObjekt(y).Utskick1_datum = tabloid(x).Utskick1_datum
+					swerefObjekt(y).Anteckning = tabloid(x).Anteckning
+					swerefObjekt(y).utförddatum = tabloid(x).utförddatum
+					swerefObjekt(y).slamhämtning = tabloid(x).slamhämtning
+					swerefObjekt(y).Antal_byggnader = tabloid(x).Antal_byggnader
+					swerefObjekt(y).kordinater = tabloid(x).kordinater
+					swerefObjekt(y).SpatialFastighet = tabloid(x).SpatialFastighet
+					
+					y = y + 1
+				end if	
+			next
+			
+		end if
+			
+		
+		swerefFilterByBet = ubound(swerefObjekt)
+exit function
+	CommandError:
+		note commandString & Error$()
+		end program
+End function
+
+function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
+
+		dim x,y,z,lenght as integer
+		,found as logical
+		
+		y = 1
+		for x=1 to ubound(ReningAlias)
+			found = false									
+				
+			if (lenght = len(ReningAlias(x).spatialFastighet) OR lenght = len(ReningAlias(x).Fastighet_rening)) then 'atempting to fasten stringcompare
+				found = (ReningAlias(x).spatialFastighet = FastighetsBetInput OR ReningAlias(x).Fastighet_rening = FastighetsBetInput)
+			end if
+			
+			if Not(found) then
+				for z=1 to ubound(ReningAlias(x).Anslutna_fastigheter())
+					if(lenght = len(ReningAlias(x).Anslutna_fastigheter(z))) then
+						if(ReningAlias(x).Anslutna_fastigheter(z) = FastighetsBetInput) then
+							found = true
+						end if
+					end if						
+				next
+			end if
+			
+			if found then
+				Redim reningsObjekt(y)
+				
+				reningsObjekt(y).spatialFastighet = ReningAlias(x).spatialFastighet reningsObjekt(y).spatialShift = ReningAlias(x).spatialShift reningsObjekt(y).Fastighet_rening = ReningAlias(x).Fastighet_rening reningsObjekt(y).Antal_hushåll_rening = ReningAlias(x).Antal_hushåll_rening
+				reningsObjekt(y).Reningstyp = ReningAlias(x).Reningstyp reningsObjekt(y).Storlek_m2 = ReningAlias(x).Storlek_m2 reningsObjekt(y).kordinater = ReningAlias(x).kordinater reningsObjekt(y).Beslut_datum = ReningAlias(x).Beslut_datum
+				reningsObjekt(y).utförd_datum = ReningAlias(x).Utförd_datum reningsObjekt(y).Kommentarer = ReningAlias(x).Kommentarer
+								
+				redim reningsObjekt(y).Anslutna_fastigheter(ubound(ReningAlias(x).Anslutna_fastigheter()))
+				
+				for z=1 to ubound(ReningAlias(x).Anslutna_fastigheter())
+					reningsObjekt(y).Anslutna_fastigheter(z) = ReningAlias(x).Anslutna_fastigheter(z)
+				next		
+	
+				reningsObjekt(y).rowIndex = ReningAlias(x).rowIndex
+				y = y + 1
+			end if
+		next
+		
+		reningsFilterByBet = ubound(reningsObjekt)
+exit function
+
+	CommandError:
+		note commandString & Error$()
+		end program
+End function
+
+function DiarieMixedToUnit(byVal text as string) as string
+	'skall bli, mhn-xxxx-xxxx
+	'kan vara mhn xxxx/xxxx
+	'eller xx/xxxx
+	'eller xxxx/xxxx
+	'eller xx-xxxx
+	'eller mhn-xx-xxxx
+	'eller mhn-xxxx-xxxx
+	If text <> "" Then
+			
+		dim sPartsArray(),sPartsArray2(),dPartsArray(),ressultString,paddedDiarieNummer,PaddedDay,tempstring as string
+		,tempInteger,nrOfSpaces,i,theYear,theMonth,theDay,nrOfslashes,nrOfdashes,firstPart,secondPart,cleanVar as integer
+		
+		nrOfslashes = SplitStringAtCharacter(text & "", "/", sPartsArray())
+		nrOfdashes = SplitStringAtCharacter(text & "", "-", dPartsArray())
+		nrOfSpaces = SplitStringAtCharacter(text & "", " ", sPartsArray2())
+		if nrOfslashes = 2 then	
+			'it has a / (spartArray()
+			'måste då ha ett numeriskt väde i 2 och text eller numeriskt i 1
+			firstPart = firstLeftMostNumber(sPartsArray(1))'endast numeric vänstra del av 1
+			secondPart = firstLeftMostNumber(sPartsArray(2))'endast numeric vänstra på sida 2
+		elseif(nrOfdashes > 1) then
+			do case nrOfdashes		
+				case 2
+					firstPart = firstLeftMostNumber(dPartsArray(1))'endast numeric på sida 1
+					secondPart = firstLeftMostNumber(dPartsArray(2))'endast numeric på sida 2
+				case 3
+						if(firstLeftMostNumber(sPartsArray2(1))>0) then
+							cleanVar = 1
+							goto cleanedNumber
+						else
+							firstPart = firstLeftMostNumber(sPartsArray2(2))'endast numeric på sida 1
+							secondPart = firstLeftMostNumber(sPartsArray2(3))'endast numeric på sida 2
+						end if
+				case else
+			end case
+		elseif(nrOfSpaces = 2) then
+			firstPart = firstLeftMostNumber(sPartsArray2(1))'endast numeric på sida 1		
+			secondPart = firstLeftMostNumber(sPartsArray2(2))'endast numeric på sida 2
+		else
+			cleanVar = 2
+			goto cleanedNumber
+		end if
+		
+		if(firstPart = 0 OR secondPart = 0) then
+			cleanVar = 3
+			goto cleanedNumber
+		else
+			
+			tempInteger = len(firstPart & "") 'if it's fournumbered it's hard to estimate how large or small it might be
+			if(tempInteger <> 4)	then 'if yearpart is not 4 letters			
+				if(firstPart > 20) then
+						firstPart = 1900 + firstPart
+				else
+						firstPart = 2000 + firstPart
+				end if
+			end if
+		
+			DiarieMixedToUnit = "MHN-" & firstPart & "-" & secondPart
+					
+		end if
+		
+	else
+		DiarieMixedToUnit = text
+	end if
+exit function
+	cleanedNumber:
+		DiarieMixedToUnit = (cleanVar) & text 'kan inte tolka nummret
+End Function
+
+function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
+
+	dim itterator as integer
+	
+	itterator = ubound(utskriftsObjekt()) +1
+	redim UtskriftsObjekt(itterator)
+	
+	expandUtskriftsObjekt = itterator
+
+end function
+
+sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
+	redim värde(55)
+
+	värde(1) =utskriftsObjekt.Besöksadress_Adress & " "
+	värde(2) =utskriftsObjekt.Besöksadress_Postnr & " "
+	värde(3) =utskriftsObjekt.Besöksadress_Ort & " "
+	värde(4) =utskriftsObjekt.Besöksadress_Huvudfastighet & " "
+	värde(5) ="" & val("" & utskriftsObjekt.FNR)
+	värde(6) =utskriftsObjekt.Verksamhetsutövare_Namn & " "
+	värde(7) ="" & val("" & utskriftsObjekt.Verksamhetsutöv_Person_orgnr)
+	värde(8) =utskriftsObjekt.Fakturamottagare_NAMN & " "
+	värde(9) =utskriftsObjekt.Fakturamottagare_Faktura_ADRESS & " "
+	värde(10) =utskriftsObjekt.Fakturamottagare_Faktura_POSTNR & " "
+	värde(11) =utskriftsObjekt.Fakturamottagare_Faktura_POSTOR & " "
+	värde(12) =utskriftsObjekt.Enhet & " "
+	värde(13) =utskriftsObjekt.Anteckning & " "
+	värde(14) ="" & val("" & utskriftsObjekt.Aktuell_timavgift)
+	värde(15) =utskriftsObjekt.Timdebitering '	Timdebitering as Logical
+	värde(16) =utskriftsObjekt.Objektnamn & " "
+	värde(17) =utskriftsObjekt.flik_Avloppsänlaggni_Boendetyp & " "
+	värde(18) ="" & NumberToDate(val("" & utskriftsObjekt.flik_Avloppsanläggn_Byggnadsår))
+	värde(19) ="" & NumberToDate(val("" & utskriftsObjekt.flik_Avloppsa_Besiktningsdatum))
+	värde(20) ="" & NumberToDate(val("" & utskriftsObjekt.flik_Avloppsanläg_Beslutsdatum))
+	värde(21) =utskriftsObjekt.Vatten & " "
+	värde(22) =utskriftsObjekt.Recipient & " "
+	värde(23) =utskriftsObjekt.Inventering & " "
+	värde(24) ="" & NumberToDate(val("" & utskriftsObjekt.Inventeringsinformation_Datum))
+	värde(25) =utskriftsObjekt.Inventeringsinformation_Status & " "
+	värde(26) =utskriftsObjekt.Bedömning & " "
+	värde(27) =utskriftsObjekt.fliken_Fastigheter & " "
+	värde(28) ="" & val("" & utskriftsObjekt.fliken_Fastigheter_FNR)
+	värde(29) =utskriftsObjekt.PunkttypAB & " "
+	värde(30) =utskriftsObjekt.Fliken_Koordinater & " "
+	värde(31) =utskriftsObjekt.fliken_Ärenden & " "
+	värde(32) =utskriftsObjekt.Anläggningskategori & " "
+	värde(33) ="" & NumberToDate(val("" & utskriftsObjekt.besiktningdatum))
+	värde(34) ="" & NumberToDate(val("" & utskriftsObjekt.beslutsdatum))
+	värde(35) =utskriftsObjekt.Anläggningstyp & " "
+	värde(36) ="" & val("" & utskriftsObjekt.Volym_m3)
+	värde(37) ="" & val("" & utskriftsObjekt.Anl_för_EftR_TöInterv_mån)
+	värde(38) =utskriftsObjekt.AnlF_efR_Koordinater_X_o_Y & " "
+	värde(39) =utskriftsObjekt.PunkttypER & " "
+	värde(40) =utskriftsObjekt.Anläggning_för_EfterföljRText & " "
+	värde(41) =utskriftsObjekt.Anläggningskategori_2 & " "
+	värde(42) =utskriftsObjekt.Anläggning_för_S_Anläggningstyp & " "
+	värde(43) =utskriftsObjekt.Externt_Tjänsteid & " "
+	värde(44) =utskriftsObjekt.text & " "
+	värde(45) ="" & val("" & utskriftsObjekt.Anläggning_för_Slamav_Volym_m3)
+	värde(46) =utskriftsObjekt.Anläggningskategori_3 & " "
+	värde(47) =utskriftsObjekt.AnlförEfterR_Anläggningstyp & " "
+	värde(48) ="" & NumberToDate(val("" & utskriftsObjekt.besiktningdatum_2))
+	värde(49) ="" & NumberToDate(val("" & utskriftsObjekt.beslutsdatum_2))
+	värde(50) =utskriftsObjekt.Externt_Tjänsteid_2 & " "
+	värde(51) ="" & val("" & utskriftsObjekt.Volym_m3_2)
+	värde(52) ="" & val("" & utskriftsObjekt.Objektid)
+	värde(53) =utskriftsObjekt.Path & " "
+	värde(54) =utskriftsObjekt.Diarienummer & " "
+	värde(55) ="" & val("" & utskriftsObjekt.Löpnummer)
+	
+'	värde(1) = "" & val("" & utskriftsObjekt.trovärdighetsIndex)
+'	värde(57) = utskriftsObjekt.sql & " "
+'	värde(58) = "" & val("" & utskriftsObjekt.reningsindex)
+
+end sub
+
+sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
+		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
+		
+		swerefTot = swerefStop-swerefStart+0.01
+		ReningTot = ReningStop-ReningStart+0.01
+		EnskiltTot = EnskiltStop-EnskiltStart+0.01
+		objektTot = objektCreationStop-objektCreationStart+0.01
+		
+		total = (swerefTot)+(EnskiltTot)+(ReningTot)+(objektTot)
+						
+		print "[total:" & Format$(total, "#.##") & 
+		"|Sw "& Format$((swerefTot/total), "%")  &
+		" |Re "& Format$ ((ReningTot/total), "%")  &
+		" |En "& Format$ ((enskiltTot/total), "%")  &
+		" |Ob "& Format$ ((objektTot/total), "%") & " ]"
+	
+End Sub
+
+sub tolkning(FastighetsObjekt as fastighetsObjekt,UtskriftsObjekt() as UtskriftsObjekt,användaReningar() as integer)
+
+	'funderinga, reningen bör inte återanvändas om det är nödvändigt, frågan är hur man håller koll på vilken rening som använts vart...
+	' reningsobjektet skapades med ett indexfält, så om vi gör en array som förvarar alla använda index.. dock behövs typ nummer av anslutna på index, gärna fastighetsbeteckningar också.....
+	' om man endast håller koll på indexfältet, och säger, om rening delats, men rening inte har men en en anslutning kan ge minus
+	' om endast en rening, en anläggning och en flagga, ignorera alla andra mätningar
+	' om anläggningar > 1, en rening, lägg till rening på båda anläggningarna som gemensam
+	' om fler flaggor... ge specialvärde.
+	'om endast 1 flagga + 1 beslut = 1/distance 'distansberäkning verkar krongligt.
+
+	'ta ut bästa ressultat för varje anläggning
+	'skall använda reningar också tolkas här?
+	'om inte kommer anläggningen läggas till, för att sedan bli reffererad igen av någon anläggning
+	' frågan är om man i efterhand skall ränsa bort fastigheter som har en rening som är delad utan att det plockats upp tidigare i koden.
+	'anslutna = FillTokenObjekts(FastighetsObjekt)
+	'	dim qz, antal as integer
+	'	
+	'	for qz=1 to ubound(fastighetsobjekt.reningsobjekt)
+	'		antal = ubound(fastighetsobjekt.reningsobjekt(qz).Anslutna_fastigheter)
+	'	
+	'		print antal & ":" & StringArrayAsString(fastighetsobjekt.reningsobjekt(qz).Anslutna_fastigheter)
+	'	next
+
+	
+	dim enskiltTokenOrObjekt(),enskiltTokenObjekt() as enskiltObjekt
+	,reningTokenOrObjekt(),reningsTokenObjekt() as reningsobjekt
+	,swerefTokenOrObjekt(),swerefTokenObjekt() as swerefobjekt
+	,trovärdighetsIndex as float 
+	,anslutna as logical
+	
+	if (ubound(FastighetsObjekt.reningsobjekt()) = 1 ) AND (ubound(FastighetsObjekt.enskiltobjekt()) = 1) AND (ubound(FastighetsObjekt.swerefobjekt()) = 1) then
+		
+		trovärdighetsIndex = 1
+		
+		call utskrivningsobjektsKonstruktor(
+			FastighetsObjekt.swerefobjekt(1),
+			FastighetsObjekt.reningsobjekt(1),
+			FastighetsObjekt.enskiltobjekt(1),
+			UtskriftsObjekt(),
+			användaReningar,
+			trovärdighetsIndex, 
+			fastighetsObjekt
+		)
+	else
+		dim trovärdighetsObjekt() as trovärdighetsObjekt
+		,tempArray(),x,temp as integer
+		
+		call skapaMutationer(fastighetsobjekt,användaReningar,UtskriftsObjekt,trovärdighetsObjekt)
+					
+		for x=1 to ubound(trovärdighetsobjekt)
+		
+			temp = FillerOrSwerefObjekt(trovärdighetsobjekt(x).fx,FastighetsObjekt.swerefobjekt(),swerefTokenOrObjekt)
+			temp = FillerOrEnskiltObjekt(trovärdighetsobjekt(x).ex,FastighetsObjekt.enskiltobjekt(),enskiltTokenOrObjekt)
+			temp = FillerOrReningObjekt(trovärdighetsobjekt(x).rx,FastighetsObjekt.reningsobjekt(),reningTokenOrObjekt)
+							
+			call utskrivningsobjektsKonstruktor(
+				swerefTokenOrObjekt(1) 
+				reningTokenOrObjekt(1)
+				enskiltTokenOrObjekt(1)
+				UtskriftsObjekt(),
+				användaReningar,
+				trovärdighetsobjekt(x).index, 
+				fastighetsObjekt
+			)
+		next
+		
+	end if	
+
+end sub
+
+sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
+
+	redim swerefTokenObjekt(1)
+	swerefTokenObjekt(1).FASTIGHET = ""
+	swerefTokenObjekt(1).Fastighet_tillstånd = ""
+	swerefTokenObjekt(1).Ärendenr = ""
+	swerefTokenObjekt(1).Beslut_datum = ""
+	swerefTokenObjekt(1).Status = ""
+	swerefTokenObjekt(1).Utskick1_datum = ""
+	swerefTokenObjekt(1).Anteckning = ""
+	swerefTokenObjekt(1).utförddatum = ""
+	swerefTokenObjekt(1).slamhämtning = ""
+	swerefTokenObjekt(1).Antal_byggnader = 0
+	
+	redim reningsTokenObjekt(1)		
+	reningsTokenObjekt(1).spatialFastighet = ""
+	reningsTokenObjekt(1).spatialShift = ""
+	reningsTokenObjekt(1).Fastighet_rening = ""
+	reningsTokenObjekt(1).Antal_hushåll_rening = 0
+	reningsTokenObjekt(1).Reningstyp = ""
+	reningsTokenObjekt(1).Storlek_m2 = 0
+	reningsTokenObjekt(1).kordinater = ""
+	reningsTokenObjekt(1).Beslut_datum = ""
+	reningsTokenObjekt(1).Utförd_datum = ""
+	reningsTokenObjekt(1).Kommentarer = ""
+	reningsTokenObjekt(1).rowIndex = 0
+	
+	redim enskiltTokenObjekt(1)
+	enskiltTokenObjekt(1).Diarienummer = ""	
+	enskiltTokenObjekt(1).Fastighet_tillstånd = ""
+	enskiltTokenObjekt(1).spatialShift = ""
+	enskiltTokenObjekt(1).Typ_byggnad = ""
+	enskiltTokenObjekt(1).Antal_hushåll_tillstånd = ""
+	enskiltTokenObjekt(1).Fastighet_rening = ""
+	enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
+	enskiltTokenObjekt(1).Storlek_m3 = 0
+	enskiltTokenObjekt(1).Typ_rening = ""
+	enskiltTokenObjekt(1).Storlek_m2 = 0
+	enskiltTokenObjekt(1).Typ_sluten_tank = ""
+	enskiltTokenObjekt(1).Storlek__m3 = 0
+	enskiltTokenObjekt(1).Beslut_datum = ""
+	enskiltTokenObjekt(1).Utförd_datum = ""
+	enskiltTokenObjekt(1).Avgift = 0
+	enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
+	enskiltTokenObjekt(1).Anteckningar = ""
+	enskiltTokenObjekt(1).kordinater = ""	
+
+end sub
+
+sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
+		dim x,q,i as integer
+
+		i = ubound(fastighetsObjekt)+1	
+		redim fastighetsObjekt(i)
+				
+		fastighetsObjekt(i).kir = fastighetsBetInput
+		select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = fastighetsBetInput into fas
+		
+		fetch first from fas
+				
+		fastighetsObjekt(i).adress = fas.adress
+		fastighetsObjekt(i).postnr = fas.postnr
+		fastighetsObjekt(i).ort = fas.postort
+		fastighetsObjekt(i).fastighet = fas.fastighet
+		fastighetsObjekt(i).fnr = fas.fnr
+		
+				
+		for x=1 to ubound(reningsobjekt)
+			redim fastighetsObjekt(i).reningsObjekt(x)
+		
+			fastighetsObjekt(i).reningsObjekt(x).Fastighet_rening = reningsobjekt(x).Fastighet_rening
+			fastighetsObjekt(i).reningsObjekt(x).Antal_hushåll_rening = reningsobjekt(x).Antal_hushåll_rening
+			fastighetsObjekt(i).reningsObjekt(x).Reningstyp = reningsobjekt(x).Reningstyp
+			fastighetsObjekt(i).reningsObjekt(x).Storlek_m2 = reningsobjekt(x).Storlek_m2
+			fastighetsObjekt(i).reningsObjekt(x).Beslut_datum = reningsobjekt(x).Beslut_datum
+			fastighetsObjekt(i).reningsObjekt(x).Utförd_datum = reningsobjekt(x).Utförd_datum
+			fastighetsObjekt(i).reningsObjekt(x).Kommentarer = reningsobjekt(x).Kommentarer
+			fastighetsObjekt(i).reningsObjekt(x).spatialFastighet = reningsobjekt(x).spatialFastighet
+			fastighetsObjekt(i).reningsObjekt(x).spatialShift = reningsobjekt(x).spatialShift
+			fastighetsObjekt(i).reningsObjekt(x).rowIndex = reningsobjekt(x).rowIndex
+			fastighetsObjekt(i).reningsObjekt(x).kordinater = reningsobjekt(x).kordinater
+			
+			for q=1 to ubound(reningsObjekt(x).Anslutna_fastigheter())
+				call addStringToArrayAsifSet(fastighetsObjekt(i).reningsObjekt(x).Anslutna_fastigheter,reningsobjekt(x).Anslutna_fastigheter(q))
+			next
+			
+			fastighetsObjekt(i).reningsObjekt(x).rowIndex = reningsobjekt(x).rowIndex
+		
+		next
+		
+'		dim antalx,testX as integer
+'		for testX=1 to ubound(fastighetsObjekt(i).reningsObjekt())
+'			antalx = ubound(fastighetsObjekt(i).reningsObjekt(testX).Anslutna_fastigheter)
+'		
+'			print antalx & ":zzzzzzzzzz" & StringArrayAsString(fastighetsObjekt(i).reningsObjekt(testX).Anslutna_fastigheter)
+'		next
+'	
+		
+		
+		for x=1 to ubound(swerefObjekt)
+			redim fastighetsObjekt(i).swerefObjekt(x)
+		
+			fastighetsObjekt(i).swerefObjekt(x).FASTIGHET = swerefObjekt(x).FASTIGHET
+			fastighetsObjekt(i).swerefObjekt(x).Fastighet_tillstånd = swerefObjekt(x).Fastighet_tillstånd
+			fastighetsObjekt(i).swerefObjekt(x).Ärendenr = swerefObjekt(x).Ärendenr
+			fastighetsObjekt(i).swerefObjekt(x).Beslut_datum = swerefObjekt(x).Beslut_datum
+			fastighetsObjekt(i).swerefObjekt(x).Status = swerefObjekt(x).Status
+			fastighetsObjekt(i).swerefObjekt(x).Utskick1_datum = swerefObjekt(x).Utskick1_datum
+			fastighetsObjekt(i).swerefObjekt(x).Anteckning = swerefObjekt(x).Anteckning
+			fastighetsObjekt(i).swerefObjekt(x).utförddatum = swerefObjekt(x).utförddatum
+			fastighetsObjekt(i).swerefObjekt(x).slamhämtning = swerefObjekt(x).slamhämtning
+			fastighetsObjekt(i).swerefObjekt(x).Antal_byggnader = swerefObjekt(x).Antal_byggnader
+			fastighetsObjekt(i).swerefObjekt(x).kordinater = swerefObjekt(x).kordinater
+		next
+		
+		for x=1 to ubound(enskiltObjekt)
+			redim fastighetsObjekt(i).enskiltObjekt(x)
+		
+			fastighetsObjekt(i).enskiltObjekt(x).Diarienummer = enskiltObjekt(x).Diarienummer
+			fastighetsObjekt(i).enskiltObjekt(x).Fastighet_tillstånd = enskiltObjekt(x).Fastighet_tillstånd
+			fastighetsObjekt(i).enskiltObjekt(x).Typ_byggnad = enskiltObjekt(x).Typ_byggnad
+			fastighetsObjekt(i).enskiltObjekt(x).Antal_hushåll_tillstånd = enskiltObjekt(x).Antal_hushåll_tillstånd
+			fastighetsObjekt(i).enskiltObjekt(x).Fastighet_rening = enskiltObjekt(x).Fastighet_rening
+			fastighetsObjekt(i).enskiltObjekt(x).Typ_Slamavskiljare = enskiltObjekt(x).Typ_Slamavskiljare
+			fastighetsObjekt(i).enskiltObjekt(x).Storlek_m3 = enskiltObjekt(x).Storlek_m3
+			fastighetsObjekt(i).enskiltObjekt(x).Typ_rening = enskiltObjekt(x).Typ_rening
+			fastighetsObjekt(i).enskiltObjekt(x).Storlek_m2 = enskiltObjekt(x).Storlek_m2
+			fastighetsObjekt(i).enskiltObjekt(x).Typ_sluten_tank = enskiltObjekt(x).Typ_sluten_tank
+			fastighetsObjekt(i).enskiltObjekt(x).Storlek__m3 = enskiltObjekt(x).Storlek__m3
+			fastighetsObjekt(i).enskiltObjekt(x).Beslut_datum = enskiltObjekt(x).Beslut_datum
+			fastighetsObjekt(i).enskiltObjekt(x).Utförd_datum = enskiltObjekt(x).Utförd_datum
+			fastighetsObjekt(i).enskiltObjekt(x).Avgift = enskiltObjekt(x).Avgift
+			fastighetsObjekt(i).enskiltObjekt(x).Tillstånd_giltigt_tom = enskiltObjekt(x).Tillstånd_giltigt_tom
+			fastighetsObjekt(i).enskiltObjekt(x).Anteckningar = enskiltObjekt(x).Anteckningar
+			fastighetsObjekt(i).enskiltObjekt(x).spatialShift = enskiltObjekt(x).spatialShift
+			fastighetsObjekt(i).enskiltObjekt(x).spatialFastighet = enskiltObjekt(x).spatialFastighet
+			fastighetsObjekt(i).enskiltObjekt(x).kordinater = enskiltObjekt(x).kordinater
+		next	
+	
+End Sub
+
+function ReningÄrInteToken(reningsTokenObjekt as reningsobjekt) as logical
+	
+	dim tempboolean as logical
+		
+	tempBoolean = (",,,0,,0,,,,,0" <> ReningAsString(reningsTokenObjekt))
+	
+	ReningÄrInteToken = tempBoolean
+	
+end function
+
+function EnskiltÄrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
+	
+	dim tempbolean as logical
+	,tempstring as string
+	tempstring = enskiltAsString(enskiltTokenObjekt)
+	tempbolean = tempstring <> ",,,0,,,0,,0,,0,,,0,,,,," AND tempstring <> ",,,,,,,,,0"
+	EnskiltÄrInteToken = tempbolean
+	
+end function
+
+function ReningAsString(reningsObjekt as reningsobjekt) as String
+
+dim tempString,TempArray() as string
+,loopvar as integer
+	
+	tempString = reningsObjekt.spatialFastighet
+	& "," & reningsObjekt.spatialShift
+	& "," & reningsObjekt.Fastighet_rening
+	& "," & reningsObjekt.Antal_hushåll_rening
+	& "," & reningsObjekt.Reningstyp
+	& "," & reningsObjekt.Storlek_m2
+	& "," & reningsObjekt.kordinater
+	& "," & reningsObjekt.Beslut_datum
+	& "," & reningsObjekt.Utförd_datum
+	& "," & reningsObjekt.Kommentarer
+	& "," & reningsObjekt.rowIndex
+	
+	for loopvar=1 to ubound(reningsObjekt.Anslutna_fastigheter)
+		call addStringToArrayAsifSet(TempArray,reningsObjekt.Anslutna_fastigheter(loopVar))' reference index
+	next
+		
+	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",StringArrayAsString(TempArray))
+
+end function
+
+sub messageEveryString(StringArray() as String)
+	
+	Dim	i As Integer
+		
+		for i = 1 To Ubound(StringArray)
+			print "*" & StringArray(i) & "*"
+		Next
+	
+end sub
+
+function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
+
+	dim tempstring as string
+	
+	tempstring = enskiltObjekt.Diarienummer
+	& "," & enskiltObjekt.Fastighet_tillstånd 
+	& "," & enskiltObjekt.Typ_byggnad 
+	& "," & (enskiltObjekt.Antal_hushåll_tillstånd )
+	& "," & enskiltObjekt.Fastighet_rening 
+	& "," & enskiltObjekt.Typ_Slamavskiljare 
+	& "," & enskiltObjekt.Storlek_m3
+	& "," & enskiltObjekt.Typ_rening 
+	& "," & enskiltObjekt.Storlek_m2
+	& "," & enskiltObjekt.Typ_sluten_tank 
+	& "," & enskiltObjekt.Storlek__m3
+	& "," & enskiltObjekt.Beslut_datum 
+	& "," & enskiltObjekt.Utförd_datum 
+	& "," & enskiltObjekt.Avgift
+	& "," & enskiltObjekt.Tillstånd_giltigt_tom 
+	& "," & enskiltObjekt.Anteckningar 
+	& "," & enskiltObjekt.spatialFastighet 
+	& "," & enskiltObjekt.spatialShift 
+	& "," & enskiltObjekt.kordinater
+
+enskiltAsString = tempstring
+
+end function
+
+function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
+
+	dim tempString as string
+	
+	tempString = swerefTokenObjekt.FASTIGHET
+	& "," & swerefTokenObjekt.Fastighet_tillstånd
+	& "," & swerefTokenObjekt.Ärendenr
+	& "," & swerefTokenObjekt.Beslut_datum
+	& "," & swerefTokenObjekt.Status
+	& "," & swerefTokenObjekt.Utskick1_datum
+	& "," & swerefTokenObjekt.Anteckning
+	& "," & swerefTokenObjekt.utförddatum
+	& "," & swerefTokenObjekt.slamhämtning
+	& "," & swerefTokenObjekt.Antal_byggnader
+
+	swerefAsString = tempstring
+end function
+
+function swerefÄrInteToken(swerefTokenObjekt as swerefObjekt) as logical
+		
+	dim tempboolean as logical
+	
+	tempBoolean = (",,,0,,0,,,,,0" <> swerefAsString(swerefTokenObjekt) AND ",,,,,,,,,0" <> swerefAsString(swerefTokenObjekt))
+	
+	swerefÄrInteToken = tempBoolean
+
+end function
+
+function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+	
+	dim storlek as integer
+	storlek = ubound(swerefobjekt)
+	
+	redim swerefTokenObjekt(1)
+	
+	if(storlek = 0 OR intx = 0) then
+		swerefTokenObjekt(1).FASTIGHET = ""
+		swerefTokenObjekt(1).Fastighet_tillstånd = ""
+		swerefTokenObjekt(1).Ärendenr = ""
+		swerefTokenObjekt(1).Beslut_datum = ""
+		swerefTokenObjekt(1).Status = ""
+		swerefTokenObjekt(1).Utskick1_datum = ""
+		swerefTokenObjekt(1).Anteckning = ""
+		swerefTokenObjekt(1).utförddatum = ""
+		swerefTokenObjekt(1).slamhämtning = ""
+		swerefTokenObjekt(1).Antal_byggnader = 0
+		FillerOrSwerefObjekt = 0
+	else
+		swerefTokenObjekt(1).FASTIGHET = swerefobjekt(intx).FASTIGHET
+		swerefTokenObjekt(1).Fastighet_tillstånd = swerefobjekt(intx).Fastighet_tillstånd
+		swerefTokenObjekt(1).Ärendenr = swerefobjekt(intx).Ärendenr
+		swerefTokenObjekt(1).Beslut_datum = swerefobjekt(intx).Beslut_datum
+		swerefTokenObjekt(1).Status = swerefobjekt(intx).Status
+		swerefTokenObjekt(1).Utskick1_datum = swerefobjekt(intx).Utskick1_datum
+		swerefTokenObjekt(1).Anteckning = swerefobjekt(intx).Anteckning
+		swerefTokenObjekt(1).utförddatum = swerefobjekt(intx).utförddatum
+		swerefTokenObjekt(1).slamhämtning = swerefobjekt(intx).slamhämtning
+		swerefTokenObjekt(1).Antal_byggnader = swerefobjekt(intx).Antal_byggnader
+		swerefTokenObjekt(1).kordinater = swerefobjekt(intx).kordinater
+		FillerOrSwerefObjekt = intx
+	end if
+end function
+
+function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(enskiltobjekt)
+	redim enskiltTokenObjekt(1)
+	
+	if(storlek = 0 OR intx = 0) then
+		enskiltTokenObjekt(1).Diarienummer = ""	
+		enskiltTokenObjekt(1).Fastighet_tillstånd = ""
+		enskiltTokenObjekt(1).spatialShift = ""
+		enskiltTokenObjekt(1).Typ_byggnad = ""
+		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = 0
+		enskiltTokenObjekt(1).Fastighet_rening = ""
+		enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
+		enskiltTokenObjekt(1).Storlek_m3 = 0
+		enskiltTokenObjekt(1).Typ_rening = ""
+		enskiltTokenObjekt(1).Storlek_m2 = 0
+		enskiltTokenObjekt(1).Typ_sluten_tank = ""
+		enskiltTokenObjekt(1).Storlek__m3 = 0
+		enskiltTokenObjekt(1).Beslut_datum = ""
+		enskiltTokenObjekt(1).Utförd_datum = ""
+		enskiltTokenObjekt(1).Avgift = ""
+		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
+		enskiltTokenObjekt(1).Anteckningar = ""
+		enskiltTokenObjekt(1).kordinater = ""	
+		FillerOrEnskiltObjekt = 0
+	else
+		enskiltTokenObjekt(1).Diarienummer = enskiltobjekt(intx).Diarienummer
+		enskiltTokenObjekt(1).Fastighet_tillstånd = enskiltobjekt(intx).Fastighet_tillstånd
+		enskiltTokenObjekt(1).spatialShift = enskiltobjekt(intx).spatialShift
+		enskiltTokenObjekt(1).Typ_byggnad = enskiltobjekt(intx).Typ_byggnad
+		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = enskiltobjekt(intx).Antal_hushåll_tillstånd
+		enskiltTokenObjekt(1).Fastighet_rening = enskiltobjekt(intx).Fastighet_rening
+		enskiltTokenObjekt(1).Typ_Slamavskiljare = enskiltobjekt(intx).Typ_Slamavskiljare 
+		enskiltTokenObjekt(1).Storlek_m3 = enskiltobjekt(intx).Storlek_m3
+		enskiltTokenObjekt(1).Typ_rening = enskiltobjekt(intx).Typ_rening
+		enskiltTokenObjekt(1).Storlek_m2 = enskiltobjekt(intx).Storlek_m2
+		enskiltTokenObjekt(1).Typ_sluten_tank = enskiltobjekt(intx).Typ_sluten_tank
+		enskiltTokenObjekt(1).Storlek__m3 = enskiltobjekt(intx).Storlek__m3
+		enskiltTokenObjekt(1).Beslut_datum = enskiltobjekt(intx).Beslut_datum
+		enskiltTokenObjekt(1).Utförd_datum = enskiltobjekt(intx).Utförd_datum
+		enskiltTokenObjekt(1).Avgift = enskiltobjekt(intx).Avgift
+		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = enskiltobjekt(intx).Tillstånd_giltigt_tom
+		enskiltTokenObjekt(1).Anteckningar = enskiltobjekt(intx).Anteckningar
+		enskiltTokenObjekt(1).kordinater = enskiltobjekt(intx).kordinater	
+		FillerOrEnskiltObjekt = intx
+	end if
+end function
+
+function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(reningsobjekt)
+	
+	redim reningsTokenObjekt(1)	
+	
+	if(storlek = 0 OR intx = 0) then
+		reningsTokenObjekt(1).spatialFastighet = ""
+		reningsTokenObjekt(1).spatialShift = ""
+		reningsTokenObjekt(1).Fastighet_rening = ""
+		reningsTokenObjekt(1).Antal_hushåll_rening = 0
+		reningsTokenObjekt(1).Reningstyp = ""
+		reningsTokenObjekt(1).Storlek_m2 = 0
+		reningsTokenObjekt(1).kordinater = ""
+		reningsTokenObjekt(1).Beslut_datum = ""
+		reningsTokenObjekt(1).Utförd_datum = ""
+		reningsTokenObjekt(1).Kommentarer = ""
+		reningsTokenObjekt(1).rowIndex = 0
+		FillerOrReningObjekt = 0
+	else
+		reningsTokenObjekt(1).spatialFastighet = reningsobjekt(intx).spatialFastighet
+		reningsTokenObjekt(1).spatialShift = reningsobjekt(intx).spatialShift
+		reningsTokenObjekt(1).Fastighet_rening = reningsobjekt(intx).Fastighet_rening
+		reningsTokenObjekt(1).Antal_hushåll_rening = reningsobjekt(intx).Antal_hushåll_rening
+		reningsTokenObjekt(1).Reningstyp = reningsobjekt(intx).Reningstyp
+		reningsTokenObjekt(1).Storlek_m2 = reningsobjekt(intx).Storlek_m2
+		reningsTokenObjekt(1).kordinater = reningsobjekt(intx).kordinater
+		reningsTokenObjekt(1).Beslut_datum = reningsobjekt(intx).Beslut_datum
+		reningsTokenObjekt(1).Utförd_datum = reningsobjekt(intx).Utförd_datum
+		reningsTokenObjekt(1).Kommentarer = reningsobjekt(intx).Kommentarer
+		reningsTokenObjekt(1).rowIndex = reningsobjekt(intx).rowIndex
+		
+		redim reningsTokenObjekt(1).anslutna_fastigheter(ubound(reningsobjekt(intx).anslutna_fastigheter))
+		for storlek=1 to ubound(reningsobjekt(intx).anslutna_fastigheter)
+			reningsTokenObjekt(1).anslutna_fastigheter(storlek) = reningsobjekt(intx).anslutna_fastigheter(storlek)
+		next
+		FillerOrReningObjekt = intx
+	end if
+end function
+
+sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
+	onError goto underskriptsFel	
+	dim antal,x,nt as integer
+	,allaFastigheter() as string
+	
+	
+	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",enskiltObjekt.Fastighet_rening)))
+	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",enskiltObjekt.spatialFastighet)))
+	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",enskiltObjekt.Fastighet_tillstånd)))
+	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",fastighetsobjekt.kir)))
+	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",SwerefObjekt.FASTIGHET)))
+	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",reningsobjekt.spatialFastighet)))
+	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",reningsobjekt.Fastighet_rening)))
+	
+	
+	for x=1 to ubound(reningsobjekt.Anslutna_fastigheter)
+		call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",reningsobjekt.Anslutna_fastigheter(x))))
+	next
+	
+	antal = ubound(allaFastigheter)
+	
+	if antal <> 0 then
+		for x=1 to antal
+			nt = itterator+x-1
+			If allaFastigheter(x) <> "" Then
+				redim utskriftsobjekt(nt)
+				utskriftsobjekt(nt).fliken_Fastigheter = allaFastigheter(x)
+				utskriftsobjekt(nt).objektId = objektid
+			End If
+		next
+	end if
+
+	onError goto 0
+exit sub
+underskriptsFel:
+	note error$()
+	end program
+end sub
+
+function countFasGenerateUtvald(FastighetB as string) as integer
+	dim tempcountz as integer
+	
+	select * from Fastighet_yta where kir = fastighetB into utvaldFastighet
+	
+	countFasGenerateUtvald = countRows(utvaldFastighet)
+end function
+
+function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
+	
+	dim tempAlias as alias
+	tempAlias = ColumnName
+	dim tempInteger as integer
+	
+	select * from urval where not(tempAlias = "") into objUrval
+	tempInteger = tableInfo(objUrval,8)
+		
+	if tempInteger > 0 then
+		onError goto noCordError	
+		fetch first from objUrval
+		getCOrd =  ObjectGeography(objUrval.obj,1) & "," & ObjectGeography(objUrval.obj,2)
+	end if
+
+exit function
+noCordError:
+	print tempInteger & " :rader, " & error$()
+end function
+
+function kollaBredd(values() as string) as logical
+
+	kollaBredd = true
+	dim x as integer
+
+	for x = 1 to ubound(values)
+		select col2 from referenceTable where col1 = x into bucketSize
+			fetch first from bucketSize
+		if(bucketSize.col1 < len(values(x))) then
+			kollaBredd = false
+		end if
+	next
+
+end function
+
+function countDupes(byVal fastighetsBet as string) as integer
+
+dim hasDupes,x as integer
+
+		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
+		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
+     		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
+     			hasDupes = hasDupes + 1
+     		end if
+		Next
+
+countDupes = hasDupes
+end function
+
+function countOccurences(byVal colummn as string) as integer
+	
+	Dim query As String
+	dim tempAlias as alias
+	tempAlias = "urval." & colummn
+	
+	onError goto QueryError
+	
+	select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
+	
+	fetch first from tempcolumnFiltered
+	countOccurences = tableInfo(tempcolumnFiltered,8)	
+exit function
+	QueryError:
+		print query & "]countOccurences[" & Error$()
+		countOccurences = 0
+end function
+
+sub insertInitialTables()
+
+		dim tempstring,tempstringx as string
+		
+		tempstringx = "K:\KARTOR"
+		Tempstring = tempstringx & "\SOLEN_PUNKTER\"
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "Adresspunkter.TAB", "Adresspunkter")
+		insert into Pathtable (tablePath,TableName) values (tempstringx + "\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.tab", "fastighet_ytaORg")
+		
+		tempstringx = tempstringx & "\GOTLANDS KOMMUN\VA\AVLOPP\"
+		Tempstring = tempstringx & "Enskilt_avlopp_"
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Enskilt_avlopp_SödraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Enskilt_avlopp_NorraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Enskilt_avlopp_MellerstaNoIndex")
+	
+		Tempstring = tempstringx & "Rening_"
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Rening_SödraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Rening_NorraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Rening_MellerstaNoIndex")
+
+		Tempstring = tempstringx & "SLAM\"
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "Lokalt_omhändertagande_slam.TAB", "Lokalt_omhändertagande_slam")
+		
+		insert into Pathtable (tablePath,TableName) values (ApplicationDirectory$() & "AnvändaReningarsHash.tab", "AnvändaReningarsHash")
+	
+		tempstringx = "G:\sbf\LivsMiljö\"
+		Tempstring = tempstringx & "Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\"
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
+	
+		Tempstring = tempstringx & "Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler"
+	
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "\distriktsindelning.TAB", "distriktsindelning")
+		
+		Tempstring = Tempstring & "\FastighetsytaUpdeladIsocken\"
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAFastigheter.TAB", "ANGAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAFastigheter.TAB", "BARAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOFastigheter.TAB", "ATLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "KÄLLUNGEFastigheter.TAB", "KÄLLUNGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALVAFastigheter.TAB", "ALVAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "AKEBÄCKFastigheter.TAB", "AKEBÄCKFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLFastigheter.TAB", "VALLFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ETELHEMFastigheter.TAB", "ETELHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HOGRÄNFastigheter.TAB", "HOGRÄNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLEFastigheter.TAB", "FOLEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LYEFastigheter.TAB", "LYEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ESKELHEMFastigheter.TAB", "ESKELHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "MÄSTERBYFastigheter.TAB", "MÄSTERBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAVDHEMFastigheter.TAB", "HAVDHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BOGEFastigheter.TAB", "BOGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VIKLAUFastigheter.TAB", "VIKLAUFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BJÖRKEFastigheter.TAB", "BJÖRKEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJNUMFastigheter.TAB", "HEJNUMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LINDEFastigheter.TAB", "LINDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "STÅNGAFastigheter.TAB", "STÅNGAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEBYFastigheter.TAB", "HEJDEBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ENDREFastigheter.TAB", "ENDREFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERGARNFastigheter.TAB", "VÄSTERGARNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ROMAFastigheter.TAB", "ROMAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEBYFastigheter.TAB", "EKEBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKYRKAFastigheter.TAB", "STENKYRKAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUNGEFastigheter.TAB", "BUNGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FIDEFastigheter.TAB", "FIDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GRÖTLINGBOFastigheter.TAB", "GRÖTLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GAMMELGARNFastigheter.TAB", "GAMMELGARNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAMRAFastigheter.TAB", "HAMRAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖSTERGARNFastigheter.TAB", "ÖSTERGARNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄRFastigheter.TAB", "NÄRFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "OTHEMFastigheter.TAB", "OTHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "RONEFastigheter.TAB", "RONEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BURSFastigheter.TAB", "BURSFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "TINGSTÄDEFastigheter.TAB", "TINGSTÄDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HELLVIFastigheter.TAB", "HELLVIFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HÖRSNEFastigheter.TAB", "HÖRSNEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GULDRUPEFastigheter.TAB", "GULDRUPEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄTEFastigheter.TAB", "VÄTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GOTHEMFastigheter.TAB", "GOTHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FÅRÖFastigheter.TAB", "FÅRÖFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HABLINGBOFastigheter.TAB", "HABLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSKINDEFastigheter.TAB", "VÄSKINDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOKRUMEFastigheter.TAB", "LOKRUMEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "MARTEBOFastigheter.TAB", "MARTEBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BROFastigheter.TAB", "BROFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LUMMELUNDAFastigheter.TAB", "LUMMELUNDAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LEVIDEFastigheter.TAB", "LEVIDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FRÖJELFastigheter.TAB", "FRÖJELFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SILTEFastigheter.TAB", "SILTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VISBYFastigheter.TAB", "VISBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLLINGBOFastigheter.TAB", "FOLLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEMSEFastigheter.TAB", "HEMSEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SPROGEFastigheter.TAB", "SPROGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERHEJDEFastigheter.TAB", "VÄSTERHEJDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "TOFTAFastigheter.TAB", "TOFTAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LÄRBROFastigheter.TAB", "LÄRBROFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKUMLAFastigheter.TAB", "STENKUMLAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "TRÄKUMLAFastigheter.TAB", "TRÄKUMLAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖJAFastigheter.TAB", "ÖJAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLSTENAFastigheter.TAB", "VALLSTENAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BÄLFastigheter.TAB", "BÄLFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "NORRLANDAFastigheter.TAB", "NORRLANDAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLFastigheter.TAB", "HALLFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SJONHEMFastigheter.TAB", "SJONHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GANTHEMFastigheter.TAB", "GANTHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLAFastigheter.TAB", "HALLAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "KRÄKLINGBOFastigheter.TAB", "KRÄKLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "KLINTEFastigheter.TAB", "KLINTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SUNDREFastigheter.TAB", "SUNDREFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEFastigheter.TAB", "HEJDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VAMLINGBOFastigheter.TAB", "VAMLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEFastigheter.TAB", "EKEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKSTAFastigheter.TAB", "EKSTAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HANGVARFastigheter.TAB", "HANGVARFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARLINGBOFastigheter.TAB", "BARLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "DALHEMFastigheter.TAB", "DALHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄNGEFastigheter.TAB", "VÄNGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALAFastigheter.TAB", "ALAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUTTLEFastigheter.TAB", "BUTTLEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALSKOGFastigheter.TAB", "ALSKOGFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GARDEFastigheter.TAB", "GARDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GERUMFastigheter.TAB", "GERUMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOJSTAFastigheter.TAB", "LOJSTAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FARDHEMFastigheter.TAB", "FARDHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SANDAFastigheter.TAB", "SANDAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "RUTEFastigheter.TAB", "RUTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄSFastigheter.TAB", "NÄSFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LAUFastigheter.TAB", "LAUFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ARDREFastigheter.TAB", "ARDREFastigheter")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEFastigheter.TAB", "FLERINGEFastigheter")
+
+		Tempstring = ApplicationDirectory$()
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAressultat.TAB", "ANGAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAressultat.TAB", "BARAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOressultat.TAB", "ATLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "KÄLLUNGEressultat.TAB", "KÄLLUNGEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALVAressultat.TAB", "ALVAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "AKEBÄCKressultat.TAB", "AKEBÄCKressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLressultat.TAB", "VALLressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ETELHEMressultat.TAB", "ETELHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HOGRÄNressultat.TAB", "HOGRÄNressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLEressultat.TAB", "FOLEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LYEressultat.TAB", "LYEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ESKELHEMressultat.TAB", "ESKELHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "MÄSTERBYressultat.TAB", "MÄSTERBYressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAVDHEMressultat.TAB", "HAVDHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BOGEressultat.TAB", "BOGEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VIKLAUressultat.TAB", "VIKLAUressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BJÖRKEressultat.TAB", "BJÖRKEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJNUMressultat.TAB", "HEJNUMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LINDEressultat.TAB", "LINDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "STÅNGAressultat.TAB", "STÅNGAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEBYressultat.TAB", "HEJDEBYressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ENDREressultat.TAB", "ENDREressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERGARNressultat.TAB", "VÄSTERGARNressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ROMAressultat.TAB", "ROMAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEBYressultat.TAB", "EKEBYressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKYRKAressultat.TAB", "STENKYRKAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUNGEressultat.TAB", "BUNGEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FIDEressultat.TAB", "FIDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GRÖTLINGBOressultat.TAB", "GRÖTLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GAMMELGARNressultat.TAB", "GAMMELGARNressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAMRAressultat.TAB", "HAMRAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖSTERGARNressultat.TAB", "ÖSTERGARNressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄRressultat.TAB", "NÄRressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "OTHEMressultat.TAB", "OTHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "RONEressultat.TAB", "RONEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BURSressultat.TAB", "BURSressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "TINGSTÄDEressultat.TAB", "TINGSTÄDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HELLVIressultat.TAB", "HELLVIressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HÖRSNEressultat.TAB", "HÖRSNEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GULDRUPEressultat.TAB", "GULDRUPEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄTEressultat.TAB", "VÄTEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GOTHEMressultat.TAB", "GOTHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FÅRÖressultat.TAB", "FÅRÖressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HABLINGBOressultat.TAB", "HABLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSKINDEressultat.TAB", "VÄSKINDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOKRUMEressultat.TAB", "LOKRUMEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "MARTEBOressultat.TAB", "MARTEBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BROressultat.TAB", "BROressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LUMMELUNDAressultat.TAB", "LUMMELUNDAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LEVIDEressultat.TAB", "LEVIDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FRÖJELressultat.TAB", "FRÖJELressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SILTEressultat.TAB", "SILTEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VISBYressultat.TAB", "VISBYressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLLINGBOressultat.TAB", "FOLLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEMSEressultat.TAB", "HEMSEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SPROGEressultat.TAB", "SPROGEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERHEJDEressultat.TAB", "VÄSTERHEJDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "TOFTAressultat.TAB", "TOFTAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LÄRBROressultat.TAB", "LÄRBROressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKUMLAressultat.TAB", "STENKUMLAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "TRÄKUMLAressultat.TAB", "TRÄKUMLAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖJAressultat.TAB", "ÖJAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLSTENAressultat.TAB", "VALLSTENAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BÄLressultat.TAB", "BÄLressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "NORRLANDAressultat.TAB", "NORRLANDAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLressultat.TAB", "HALLressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SJONHEMressultat.TAB", "SJONHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GANTHEMressultat.TAB", "GANTHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLAressultat.TAB", "HALLAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "KRÄKLINGBOressultat.TAB", "KRÄKLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "KLINTEressultat.TAB", "KLINTEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SUNDREressultat.TAB", "SUNDREressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEressultat.TAB", "HEJDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VAMLINGBOressultat.TAB", "VAMLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEressultat.TAB", "EKEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKSTAressultat.TAB", "EKSTAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "HANGVARressultat.TAB", "HANGVARressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARLINGBOressultat.TAB", "BARLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "DALHEMressultat.TAB", "DALHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄNGEressultat.TAB", "VÄNGEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALAressultat.TAB", "ALAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUTTLEressultat.TAB", "BUTTLEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALSKOGressultat.TAB", "ALSKOGressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GARDEressultat.TAB", "GARDEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "GERUMressultat.TAB", "GERUMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOJSTAressultat.TAB", "LOJSTAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FARDHEMressultat.TAB", "FARDHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "SANDAressultat.TAB", "SANDAressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "RUTEressultat.TAB", "RUTEressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄSressultat.TAB", "NÄSressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "LAUressultat.TAB", "LAUressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "ARDREressultat.TAB", "ARDREressultat")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEressultat.TAB", "FLERINGEressultat")
+
+end sub
+
+Sub gemAnslutna(caseString as string,ressultArray() as string)
+	dim caseInt as integer
+	caseInt = val(caseString)
+	
+	do case caseInt
+		case 508885
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 3:1")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:81")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:82")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:83")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:84")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:85")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:108")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:109")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:110")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:111")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:112")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:113")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Alsarve 1:114")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:10")
+		case 508383
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:1")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:2")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:3")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:4")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:5")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:6")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:7")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:8")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:9")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:39")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:48")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:66")
+		case 506296
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 6:1")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:69")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:70")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:71")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:72")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:73")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:74")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:75")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:76")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:77")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:78")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:79")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:80")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:81")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:82")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:83")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:84")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Kaupungs 1:85")
+		case 500026
+		call addStringToArrayAsifSet(ressultArray(),"Boge Friggars 5:1")
+		call addStringToArrayAsifSet(ressultArray(),"Boge friggars 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"Boge friggars 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"Boge friggars 1:34")
+		call addStringToArrayAsifSet(ressultArray(),"Boge friggars 5:1")
+		case 500968
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:58")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:60")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:61")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:62")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:63")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:64")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:65")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:66")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:67")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:68")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:69")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:70")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:71")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:72")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:73")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:74")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:75")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:76")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:77")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:78")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:79")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:80")
+		case 501153
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:84")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:85")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:86")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:87")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:88")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:89")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:90")
+		call addStringToArrayAsifSet(ressultArray(),"Boge Tjälder 1:91")
+		case 500894
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:22")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Annex 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Duss 1:10")
+		case 501033
+		call addStringToArrayAsifSet(ressultArray(),"Bro Duss 2:2")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Duss 2:2")
+		case 508806
+		call addStringToArrayAsifSet(ressultArray(),"Bro S:34")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:22")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:29")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:30")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:31")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:32")
+		call addStringToArrayAsifSet(ressultArray(),"bro eriks 1:33")
+		case 500900
+		call addStringToArrayAsifSet(ressultArray(),"Bro Tors 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Bro Tors 1:18")
+		case 500950
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Biskops 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:22")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:50")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"Bunge Audungs 1:29")
+		case 501052
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem S:14")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Busarve 1:4")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Busarve 1:22")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"Dalhem Björkhage 1:20")
+		case 501055
+		call addStringToArrayAsifSet(ressultArray(),"Eke Bölske 3:2")
+		call addStringToArrayAsifSet(ressultArray(),"Eke Bölske 3:2")
+		case 500958
+		call addStringToArrayAsifSet(ressultArray(),"Eksta Grymlings 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Eksta Prästgården 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Eksta Kvie 1:5")
+		case 501009
+		call addStringToArrayAsifSet(ressultArray(),"Eksta Prästgården 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Eksta Prästgården 1:18")
+		case 101544
+		call addStringToArrayAsifSet(ressultArray(),"Eksta S:83")
+		case 500878
+		call addStringToArrayAsifSet(ressultArray(),"ENDRE BURGÅKER 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Burgåker 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Gabrielsänge 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Gabrielsänge 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Endre S:T Göransskog 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"Endre S:T Göransskog 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Glasmakaränge 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Glasmakaränge 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Glasmakaränge 1:4")
+		case 500006
+		call addStringToArrayAsifSet(ressultArray(),"Endre Endrebacke 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Endrebacke 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Endrebacke 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"Endre lilla Fjälls 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"Endre lilla Fjälls 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Kyrkogården 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Bjärs 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Prästgården 1:10")
+		case 500804
+		call addStringToArrayAsifSet(ressultArray(),"Endre S:3")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Allkvie 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Allkvie 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Allkvie 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Allkvie 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Allkvie 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Endre Allkvie 1:14")
+		case 500981
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:37")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:94")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:95")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:96")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:97")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:98")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:99")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:100")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Unghanse 1:101")
+		case 506987
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:59")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:31")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:41")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:52")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:59")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:78")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:79")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:81")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broa 1:97")
+		case 507314
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Friggars 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Friggars 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Friggars 1:63")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Friggars 1:65")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Friggars 1:66")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Broskogs 1:13")
+		case 507072
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:79")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:81")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:105")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:108")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:124")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:148")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:149")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:150")
+		case 500963
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:139")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Lauter 1:139")
+		case 506703
+		call addStringToArrayAsifSet(ressultArray(),"Fårö S:12")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö S:12")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Sudergards 1:50")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Verkegards 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Verkegards 1:59")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Vinor 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Ödehuburga 1:64")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Ödehuburga 1:65")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Sudergards 1:51")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Sudergards 1:52")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Tällehau 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Tällehau 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Vinor 1:78")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Vinor 1:79")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Vinor 1:38")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Vinor 1:39")
+		call addStringToArrayAsifSet(ressultArray(),"Fårö Vinor 1:40")
+		case 101062
+		call addStringToArrayAsifSet(ressultArray(),"Fleringe Skymnings 1:45")
+		call addStringToArrayAsifSet(ressultArray(),"Fleringe Skymnings 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"Fleringe Skymnings 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"Fleringe Skymnings 1:36")
+		call addStringToArrayAsifSet(ressultArray(),"Fleringe Skymnings 1:38")
+		call addStringToArrayAsifSet(ressultArray(),"Fleringe Skymnings 1:45")
+		call addStringToArrayAsifSet(ressultArray(),"Fleringe Utoje 1:9")
+		case 500909
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Stora Ryftes 1:19")
+		case 505715
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:6")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Kyrkogården 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:1")
+		case 500920
+		call addStringToArrayAsifSet(ressultArray(),"Fole S:13")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Lilla Ryftes 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Fole S:13")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Prästgården 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Lilla Ryftes 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Lilla Ryftes 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Lilla Ryftes 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Lilla Ryftes 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Lilla Ryftes 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Fole Lilla Ryftes 1:19")
+		case 500987
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Gerete 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:10")
+		case 501030
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:53")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:54")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:55")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:56")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:57")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:58")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:59")
+		call addStringToArrayAsifSet(ressultArray(),"Follingbo Norrbys 1:60")
+		case 505153
+		call addStringToArrayAsifSet(ressultArray(),"Fröjel Bockes 4:1")
+		call addStringToArrayAsifSet(ressultArray(),"Fröjel Bockes 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Fröjel Bockes 4:1")
+		case 503734
+		call addStringToArrayAsifSet(ressultArray(),"Fröjel Gannarve 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Fröjel Gannarve 2:1")
+		case 500870
+		call addStringToArrayAsifSet(ressultArray(),"Fröjel Mulde 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Fröjel Mulde 1:12")
+		case 503381
+		call addStringToArrayAsifSet(ressultArray(),"Lau Anderse 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Lau Sunnkyrke 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Lau Sunnkyrke 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"Lau Sunnkyrke 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Lau Bjärges 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Lau Anderse 1:14")
+		case 503383
+		call addStringToArrayAsifSet(ressultArray(),"Levide Pejnarve 1:68")
+		call addStringToArrayAsifSet(ressultArray(),"Levide Pejnarve 1:68")
+		call addStringToArrayAsifSet(ressultArray(),"Levide Pejnarve 1:72")
+		case 503386
+		call addStringToArrayAsifSet(ressultArray(),"Lokrume Tomase 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Lokrume Lauks 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Lokrume Grausne 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Lokrume Grausne 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Lokrume Grausne 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Lokrume Grausne 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Lokrume Grausne 1:13")
+		case 503388
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:80")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:81")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:82")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:83")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:84")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:85")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:86")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:87")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:88")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Burge 1:89")
+		case 503389
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Nygranne 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Nygranne 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Nygranne 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Nygranne 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Nygranne 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Nygranne 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Nygranne 1:21")
+		case 503391
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Överstekvarn 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Överstekvarn 1:51")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Överstekvarn 1:82")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Överstekvarn 1:83")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Överstekvarn 1:84")
+		case 503390
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:29")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:30")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:31")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:32")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:43")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:44")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:45")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:46")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:47")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:48")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:56")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:57")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:58")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:59")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:60")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:61")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:62")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:63")
+		case 505956
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:63")
+		case 505622
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:52")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:53")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:54")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:56")
+		call addStringToArrayAsifSet(ressultArray(),"Lummelunda Tjauls 1:65")
+		case 503400
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:32")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:4")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:6")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:22")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:29")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:45")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:46")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:47")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:48")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:49")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:50")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:51")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:52")
+		call addStringToArrayAsifSet(ressultArray(),"När Hamngården 1:53")
+		call addStringToArrayAsifSet(ressultArray(),"När Öndarve 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"När Öndarve 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"När Öndarve 1:30")
+		call addStringToArrayAsifSet(ressultArray(),"När Öndarve 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"När Öndarve 1:34")
+		case 503401
+		call addStringToArrayAsifSet(ressultArray(),"När Hemmor 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"När Hemmor 1:35")
+		case 503402
+		call addStringToArrayAsifSet(ressultArray(),"När Mattise 1:4")
+		call addStringToArrayAsifSet(ressultArray(),"När Smiss 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"När Maldes 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"När Maldes 1:26")
+		case 508738
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"När Allmunds 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"När Allmunds 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"När Folka 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:6")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"När Öndarve 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"När Pilgårds 2:2")
+		call addStringToArrayAsifSet(ressultArray(),"När Öndarve 2:1")
+		case 508762
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:4")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:6")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 2:1")
+		case 504167
+		call addStringToArrayAsifSet(ressultArray(),"När Tiricker 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:62")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:63")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:64")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:65")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:66")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:67")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:68")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:69")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:70")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:71")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:72")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:73")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:74")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:75")
+		call addStringToArrayAsifSet(ressultArray(),"När Siglajvs 1:76")
+		case 506486
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:8")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:9")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:10")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:11")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:12")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:13")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:14")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:15")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:16")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:17")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Rodarve 2:18")
+		case 505716
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Sande 1:38")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Sande 1:49")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Sande 1:52")
+		case 506751
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Sande 1:62")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:47")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:22")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:29")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:30")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:31")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:32")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:34")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:36")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:37")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:38")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:39")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:40")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:41")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:42")
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:43")
+		case 503344
+		call addStringToArrayAsifSet(ressultArray(),"Östergarn Skags 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn bengts 1:29")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Tomase 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Guteviks 1:46")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Hallgårds 1:31")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Hallgårds 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn bengts 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn bengts 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Guteviks 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn bengts 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn bengts 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn bengts 1:31")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hallgårds 1:32")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hallgårds 1:42")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hallgårds 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hallgårds 1:34")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hallgårds 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hässle 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hässle 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hässle 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn sandhem 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Hässle 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn hässle 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:34")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn rodarve 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn sigdes 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Häsle 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 2:4")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 2:3")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Hässle 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Kaupungs 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Kaupungs 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:2")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:41")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:42")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:43")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:44")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:45")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:31")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Sigdes 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:32")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:34")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:45")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:43")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:46")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:48")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:50")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:42")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 4:1")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 4:2")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Rodarve 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Bengts 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Sande 1:44")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Djupvike 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Djupvike 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Djupvike 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Sigdes 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Sigdes 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Hallgårds 3:1")
+		call addStringToArrayAsifSet(ressultArray(),"östergarn Sande 1:21")
+		case 503406
+		call addStringToArrayAsifSet(ressultArray(),"Othem Prästgården 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Othem Kviende 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Othem Kviende 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"Othem Kviende 1:24")
+		case 503412
+		call addStringToArrayAsifSet(ressultArray(),"Roma Larsarve 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Roma Larsarve 1:54")
+		call addStringToArrayAsifSet(ressultArray(),"Roma Larsarve 5:1")
+		call addStringToArrayAsifSet(ressultArray(),"Roma Larsarve 1:14")
+		case 503418
+		call addStringToArrayAsifSet(ressultArray(),"Rone Roes 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Rone Roes 1:13")
+		case 503419
+		call addStringToArrayAsifSet(ressultArray(),"Rone Roes 1:42")
+		call addStringToArrayAsifSet(ressultArray(),"Rone Autsarve 2:1")
+		case 503421
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:4")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:15")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:18")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:22")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:23")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:36")
+		case 506329
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:24")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Furilden 1:29")
+		case 506481
+		call addStringToArrayAsifSet(ressultArray(),"Rute Lilla Valle 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Lilla Valle 1:34")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Lilla Valle 1:36")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Lilla Valle 1:37")
+		call addStringToArrayAsifSet(ressultArray(),"Rute Lilla Valle 1:38")
+		case 504750
+		call addStringToArrayAsifSet(ressultArray(),"Stenkumla Lilla Home 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Stenkumla Lilla Home 1:21")
+		call addStringToArrayAsifSet(ressultArray(),"Stenkumla Lilla Home 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Stenkumla Lilla Home 1:33")
+		call addStringToArrayAsifSet(ressultArray(),"Stenkumla Lilla Home 1:34")
+		call addStringToArrayAsifSet(ressultArray(),"Stenkumla Lilla Home 1:35")
+		case 503437
+		call addStringToArrayAsifSet(ressultArray(),"Sundre Västergårde 1:14")
+		call addStringToArrayAsifSet(ressultArray(),"Sundre Majstre 1:19")
+		call addStringToArrayAsifSet(ressultArray(),"Sundre Västergårde 1:14")
+		case 503441
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla Ingvards 1:37")
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla S:8")
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla Ingvards 1:37")
+		case 506480
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla Tjängdarve 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla Tjängdarve 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla Tjängdarve 1:122")
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla Tjängdarve 1:123")
+		call addStringToArrayAsifSet(ressultArray(),"Träkumla Tjängdarve 1:126")
+		case 503445
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Allkvie 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Allkvie 1:5")
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Allkvie 1:26")
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Bjärs 2:2")
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Allkvie 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Allkvie 1:25")
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Allkvie 1:17")
+		case 503446
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Bjärs 1:20")
+		call addStringToArrayAsifSet(ressultArray(),"Vallstena Bjärs 1:20")
+		case 503449
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Ängvards 1:4")
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Ängvards 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Bonsarve 1:19")
+		case 503448
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Austre 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Austre 3:1")
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Austre 3:1")
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Austre 2:1")
+		case 505540
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Prästgården 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Prästgården 1:6")
+		call addStringToArrayAsifSet(ressultArray(),"Vamlingbo Kyrkogården 1:1")
+		case 100280
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Hägvalds 1:57")
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Kyrkjuves 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Kyrkjuves 1:39")
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Hägvalds 1:47")
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Hägvalds 1:46")
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Hägvalds 1:17")
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Kyrkjuves 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"Vänge Hägvalds 1:57")
+		case 507242
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Skäggs 2:1")
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Skäggs 2:1")
+		case 507168
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Bjärs 1:3")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Bjärs 1:3")
+		case 503497
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:40")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:43")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:91")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:110")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:111")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:112")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:113")
+		call addStringToArrayAsifSet(ressultArray(),"Västerhejde Botmunds 1:114")
+		case 503499
+		call addStringToArrayAsifSet(ressultArray(),"Väte Bäcks 1:1")
+		call addStringToArrayAsifSet(ressultArray(),"Väte Annex 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"Väte Annex 1:6")
+		call addStringToArrayAsifSet(ressultArray(),"Väte Folkes 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"Väte Folkes 1:16")
+		call addStringToArrayAsifSet(ressultArray(),"Väte Kyrkogården 1:1")
+		case 503450
+		call addStringToArrayAsifSet(ressultArray(),"Viklau Sigsarve 1:54")
+		call addStringToArrayAsifSet(ressultArray(),"Viklau Sigsarve 1:54")
+		case 503472
+		call addStringToArrayAsifSet(ressultArray(),"Visby Lilla Hästnäs 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"Visby Lilla Hästnäs 1:65")
+		call addStringToArrayAsifSet(ressultArray(),"Visby Lilla Hästnäs 1:13")
+		case 506347
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Halsgårde 1:35")
+		call addStringToArrayAsifSet(ressultArray(),"Ardre Halsgårde 1:57")
+		case 508520
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO BJÖRKHAGE 1:6")
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO BJÖRKHAGE 1:7")
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO BJÖRKHAGE 1:8")
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO BJÖRKHAGE 1:10")
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO BJÖRKHAGE 1:11")
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO BJÖRKHAGE 1:12")
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO BJÖRKHAGE 1:13")
+		call addStringToArrayAsifSet(ressultArray(),"BARLINGBO STORA RÖSTÄDE 1:2")
+		case 506551
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Simonarve 1:9")
+		call addStringToArrayAsifSet(ressultArray(),"Eskelhem Simonarve 1:11")
+		case 503826
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Stora Mickelgårds 1:27")
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Stora Mickelgårds 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Stora Mickelgårds 1:29")
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Stora Bläsnungs 1:28")
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Stora Bläsnungs 1:140")
+		call addStringToArrayAsifSet(ressultArray(),"Väskinde Stora Bläsnungs 1:141")
+		case else
+	end case
+End Sub
+
+sub injectGemensamma()
+	insert into reningIhopslagen select * from gemensamma
+End Sub
+
+sub PrepareGemensamma()
+	
+	select * from reningIhopslagen where rowid=1 into gemensamma
+	call görTillBastabell("gemensamma")
+	delete from gemensamma
+		
+	Insert Into reningIhopslagen (kommentarer,Col17,storlek_m2) values ("100390","gem,gem",48)
+	Insert Into reningIhopslagen (kommentarer,Col17,storlek_m2) values ("101075","gem,gem",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,storlek_m2) values ("503494","gem,gem",180)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100208","gem,gem","15 pe",64)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100214","gem,gem","25 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100217","gem,gem","22 pe",126)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100238","gem,gem","25 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100259","gem,gem","14 pe",112)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100383","gem,gem","25 pe",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100386","gem,gem","25 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100393","gem,gem","25 pe",80)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100398","gem,gem","24 pe",72)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("100937","gem,gem","20 pe",72)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("101173","gem,gem","25 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("101272","gem,gem","25 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("101273","gem,gem","15 pe",60)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("500875","gem,gem","100 pe",360)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening,storlek_m2) values ("505787","gem,gem","25 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening) values ("100248","gem,gem","25 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening) values ("100387","gem,gem","25 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,antal_hushåll_rening) values ("500847","gem,gem","250 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,antal_hushåll_rening,storlek_m2) values ("506551","Eskelhem Simonarve 1:9","gem,gem","30 pe",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008650","gem,gem","Annat",20)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("100166","gem,gem","Dammar")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("101249","gem,gem","Dammar")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("507777","gem,gem","Dammar")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500881","gem,gem","Dammar","600 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("501006","gem,gem","Dammar","300 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("501159","gem,gem","Dammar","2100 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503411","gem,gem","Dammar","2500 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503434","gem,gem","Dammar","5400 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503443","gem,gem","Dammar","120 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503491","gem,gem","Dammar","250 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503492","gem,gem","Dammar","600 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506480","Träkumla Tjändarve 2:1","gem,gem","Dammar","50 pe",140)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("503477","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("504694","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("507097","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("508390","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("508414","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("508426","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("508737","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008652","gem,gem","Infitration",20)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008653","gem,gem","Infitration",40)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008654","gem,gem","Infitration",40)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008655","gem,gem","Infitration",40)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008656","gem,gem","Infitration",40)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008658","gem,gem","Infitration",40)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008660","gem,gem","Infitration",40)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("5008662","gem,gem","Infitration",20)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("508200","gem,gem","Reningsverk",108)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500830","gem,gem","Reningsverk","34 pe",131)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503433","gem,gem","Reningsverk","200 pe",600)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506479","gem,gem","Reningsverk","35 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506488","gem,gem","Reningsverk","65 pe",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506740","gem,gem","Reningsverk","25 pe",60)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("508819","gem,gem","Reningsverk","30 pe",90)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500790","gem,gem","Reningsverk","8000 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500813","gem,gem","Reningsverk","500 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500861","gem,gem","Reningsverk","250 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500891","gem,gem","Reningsverk","133 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500952","gem,gem","Reningsverk","2000 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500990","gem,gem","Reningsverk","60 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("501012","gem,gem","Reningsverk","2000 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503369","gem,gem","Reningsverk","102 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503374","gem,gem","Reningsverk","9000 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503379","gem,gem","Reningsverk","60 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503392","gem,gem","Reningsverk","250 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503393","gem,gem","Reningsverk","800 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503399","gem,gem","Reningsverk","200 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503413","gem,gem","Reningsverk","200 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503417","gem,gem","Reningsverk","325 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503420","gem,gem","Reningsverk","200 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503425","gem,gem","Reningsverk","1000 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503430","gem,gem","Reningsverk","45 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503439","gem,gem","Reningsverk","600 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503501","gem,gem","Reningsverk","1000 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503507","gem,gem","Reningsverk","700 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503729","gem,gem","Reningsverk","267 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503735","gem,gem","Reningsverk","600 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("505719","gem,gem","Reningsverk","250 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("506307","gem,gem","Reningsverk","25 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("506446","gem,gem","Reningsverk","45 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("506566","gem,gem","Reningsverk","20 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("506578","gem,gem","Reningsverk","25 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("507142","gem,gem","Reningsverk","150 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("507348","gem,gem","Reningsverk","200 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("508006","gem,gem","Reningsverk","1000 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("508541","gem,gem","Reningsverk","70 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp) values ("508738","När Pilgårds 2:1","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp) values ("508762","När Siglajvs 1:5","gem,gem","Reningsverk")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,storlek_m2) values ("503418","Rone Roes 1:13","gem,gem","Reningsverk",100)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503449","Vamlingbo Ängvards 1:4","gem,gem","Reningsverk","45 pe",200)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("505153","Fröjel Bockes 4:1","gem,gem","Reningsverk","28 pe",72)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506486","Östergarn Rodarve 2:1","gem,gem","Reningsverk","35 pe",70)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506703","Fårö S:12","gem,gem","Reningsverk","350 pe",525)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506987","Fårö Broa 1:59","gem,gem","Reningsverk","68 pe",150)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("507072","Fårö Lauter 1:10","gem,gem","Reningsverk","80 pe",160)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("507168","Västerhejde Bjärs 1:3","gem,gem","Reningsverk","40 pe",40)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("508383","Ardre Kaupungs 6:1","gem,gem","Reningsverk","36 pe",80)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("508806","Bro S:34","gem,gem","Reningsverk","64 pe",160)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("508885","Ardre Alsarve 3:1","gem,gem","Reningsverk","36 pe",80)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("501030","Follingbo Norrbys 1:13","gem,gem","Reningsverk","240 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("501033","Bro Duss 2:2","gem,gem","Reningsverk","80 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("505956","Lummelunda Tjauls 1:3","gem,gem","Reningsverk","70 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("506329","Rute Furilden 1:24","gem,gem","Reningsverk","300 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("506347","Ardre Halsgårde 1:35","gem,gem","Reningsverk","30 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("506751","Östergarn Sande 1:62","gem,gem","Reningsverk","18 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("100174","gem,gem","slam. & mb.")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("500992","gem,gem","slam. & mb.",650)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("503505","gem,gem","slam. & mb.",75)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("100389","gem,gem","slam. & mb.","9 pe",80)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500824","gem,gem","slam. & mb.","50 pe",250)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500827","gem,gem","slam. & mb.","110 pe",500)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500938","gem,gem","slam. & mb.","30 pe",90)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("501018","gem,gem","slam. & mb.","30 pe",180)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("502193","gem,gem","slam. & mb.","50 pe",217)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503368","gem,gem","slam. & mb.","35 pe",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503396","gem,gem","slam. & mb.","40 pe",240)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503440","gem,gem","slam. & mb.","35 pe",90)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503504","gem,gem","slam. & mb.","36 pe",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("505199","gem,gem","slam. & mb.","30 pe",75)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506780","gem,gem","slam. & mb.","25 pe",48)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500807","gem,gem","slam. & mb.","100 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500995","gem,gem","slam. & mb.","30 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,storlek_m2) values ("500006","Endre Endrebacke 1:2","gem,gem","slam. & mb.",305)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,storlek_m2) values ("503499","Väte Bäcks 1:1","gem,gem","slam. & mb.",360)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("100280","Vänge Hägvalds 1:57","gem,gem","slam. & mb.","30 pe",120)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500804","Endre S3","gem,gem","slam. & mb.","30 pe",120)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500878","ENDRE BURGÅKER 1:1","gem,gem","slam. & mb.","40 pe",160)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500894","Bro Annex 1:1","gem,gem","slam. & mb.","90 pe",400)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("501052","Dalhem S:14","gem,gem","slam. & mb.","30 pe",180)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503402","När Mattise 1:4","gem,gem","slam. & mb.","50 pe",300)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503441","Träkumla Ingvards 1:37","gem,gem","slam. & mb.","30 pe",100)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503450","Viklau Sigsarve 1:54","gem,gem","slam. & mb.","50 pe",250)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("502191","gem,gem","slam. & inf.")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("503403","gem,gem","slam. & inf.")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("506579","gem,gem","slam. & inf.")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp) values ("506699","gem,gem","slam. & inf.")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("502089","gem,gem","slam. & inf.",30)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("503422","gem,gem","slam. & inf.",260)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("503490","gem,gem","slam. & inf.",108)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("506098","gem,gem","slam. & inf.",160)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,storlek_m2) values ("506225","gem,gem","slam. & inf.",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("100391","gem,gem","slam. & inf.","20 pe",75)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500821","gem,gem","slam. & inf.","60 pe",210)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500872","gem,gem","slam. & inf.","130 pe",600)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500903","gem,gem","slam. & inf.","167 pe",700)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500926","gem,gem","slam. & inf.","50 pe",200)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500961","gem,gem","slam. & inf.","30 pe",194)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("501001","gem,gem","slam. & inf.","40 pe",75)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("501027","gem,gem","slam. & inf.","60 pe",100)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503380","gem,gem","slam. & inf.","29 pe",140)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503382","gem,gem","slam. & inf.","30 pe",130)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503431","gem,gem","slam. & inf.","40 pe",150)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503432","gem,gem","slam. & inf.","55 pe",114)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503495","gem,gem","slam. & inf.","40 pe",200)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503502","gem,gem","slam. & inf.","48 pe",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503503","gem,gem","slam. & inf.","30 pe",150)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503736","gem,gem","slam. & inf.","330 pe",750)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("504695","gem,gem","slam. & inf.","20 pe",240)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("505192","gem,gem","slam. & inf.","150 pe",520)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506478","gem,gem","slam. & inf.","30 pe",86)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506739","gem,gem","slam. & inf.","35 pe",122)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("507179","gem,gem","slam. & inf.","60 pe",240)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("507243","gem,gem","slam. & inf.","80 pe",480)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("507327","gem,gem","slam. & inf.","35 pe",140)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("507896","gem,gem","slam. & inf.","35 pe",120)
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("100268","gem,gem","slam. & inf.","35 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("100899","gem,gem","slam. & inf.","100 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500020","gem,gem","slam. & inf.","400 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500819","gem,gem","slam. & inf.","100 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("500935","gem,gem","slam. & inf.","40 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("501004","gem,gem","slam. & inf.","106 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503474","gem,gem","slam. & inf.","40 pe")
+	Insert Into reningIhopslagen (kommentarer,Col17,reningstyp,antal_hushåll_rening) values ("503498","gem,gem","slam. & inf.","35 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,storlek_m2) values ("503344","Östergarn Skags 1:3","gem,gem","slam. & inf.",240)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,storlek_m2) values ("503401","När Hemmor 1:35","gem,gem","slam. & inf.",60)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,storlek_m2) values ("507314","Fårö Friggars 1:17","gem,gem","slam. & inf.",240)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("101062","Fleringe Skymnings 1:45","gem,gem","slam. & inf.","40 pe",120)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("101544","Eksta S:83","gem,gem","slam. & inf.","60 pe",240)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500870","Fröjel Mulde 1:12","gem,gem","slam. & inf.","56 pe",270)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500900","Bro Tors 1:18","gem,gem","slam. & inf.","60 pe",260)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500909","Fole Prästgården 1:1","gem,gem","slam. & inf.","60 pe",164)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500920","Fole S:13","gem,gem","slam. & inf.","40 pe",160)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500958","Eksta Grymlings 1:8","gem,gem","slam. & inf.","45 pe",260)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500981","Eskelhem Unghanse 1:37","gem,gem","slam. & inf.","40 pe",135)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("500987","Follingbo Gerete 1:11","gem,gem","slam. & inf.","15 pe",80)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("501009","Eksta Prästgården 1:18","gem,gem","slam. & inf.","50 pe",225)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("501055","Eke Bölske 3:2","gem,gem","slam. & inf.","30 pe",120)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("501153","Boge Tjälder 1:7","gem,gem","slam. & inf.","40 pe",160)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503381","Lau Anderse 1:14","gem,gem","slam. & inf.","48 pe",360)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503383","Levide Pejnarve 1:68","gem,gem","slam. & inf.","55 pe",350)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503386","Lokrume Tomase 2:1","gem,gem","slam. & inf.","30 pe",180)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503388","Lummelunda Burge 2:1","gem,gem","slam. & inf.","56 pe",226)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503389","Lummelunda Nygranne 1:8","gem,gem","slam. & inf.","30 pe",72)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503390","Lummelunda Tjauls 1:19","gem,gem","slam. & inf.","150 pe",749)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503400","När Hamngården 1:33","gem,gem","slam. & inf.","172 pe",800)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503406","Othem Prästgården 1:1","gem,gem","slam. & inf.","80 pe",450)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503412","Roma Larsarve 1:14","gem,gem","slam. & inf.","39 pe",208)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503421","Rute Furilden 1:1","gem,gem","slam. & inf.","125 pe",600)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503437","Sundre Västergårde 1:14","gem,gem","slam. & inf.","50 pe",90)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503445","Vallstena Allkvie 1:5","gem,gem","slam. & inf.","30 pe",120)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503448","Vamlingbo Austre 2:1","gem,gem","slam. & inf.","36 pe",300)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503472","Visby Lilla Hästnäs 1:13","gem,gem","slam. & inf.","35 pe",360)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503497","Västerhejde Botmunds 1:40","gem,gem","slam. & inf.","40 pe",240)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503734","Fröjel Gannarve 2:1","gem,gem","slam. & inf.","35 pe",120)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("503826","Väskinde Stora Mickelgårds 1:27","gem,gem","slam. & inf.","30 pe",120)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("504167","När Tiricker 1:3","gem,gem","slam. & inf.","60 pe",230)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("504750","Stenkumla Lilla Home 2:1","gem,gem","slam. & inf.","45 pe",180)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("505540","Vamlingbo Prästgården 1:1","gem,gem","slam. & inf.","27 pe",135)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("505622","Lummelunda Tjauls 2:1","gem,gem","slam. & inf.","25 pe",240)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("505715","Fole Prästgården 1:1","gem,gem","slam. & inf.","35 pe",140)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("505716","Östergarn Sande 1:38","gem,gem","slam. & inf.","36 pe",220)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506481","Rute Lilla Valle 1:10","gem,gem","slam. & inf.","35 pe",140)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("507242","Väskinde Skäggs 2:1","gem,gem","slam. & inf.","50 pe",160)
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("500026","Boge Friggars 5:1","gem,gem","slam. & inf.","26 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("500950","Bunge Biskops 1:23","gem,gem","slam. & inf.","50 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("500963","Fårö Lauter 1:139","gem,gem","slam. & inf.","40 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("500968","Boge Tjälder 1:58","gem,gem","slam. & inf.","90 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("503391","Lummelunda Överstekvarn 1:21","gem,gem","slam. & inf.","200 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("503419","Rone Roes 1:42","gem,gem","slam. & inf.","50 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("503446","Vallstena Bjärs 1:20","gem,gem","slam. & inf.","40 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening) values ("508520","BARLINGBO BJÖRKHAGE 1:6","gem,gem","slam. & inf.","45 pe")
+	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushåll_rening,storlek_m2) values ("506296","Ardre Kaupungs 6:1","gem,gem","slam. & inf.","36 pe",642)						
+
+end sub
+
+function CreateTable_reningIhopslagen as string
+	dim pathVar as string
+	dim temp as string temp= TempFileName$("") 
+	pathVar = left$(temp,len(temp)-4) & ".tab"
+	Create Table "reningIhopslagen" (
+	
+	Fastighet_rening Char(50),
+	Antal_hushåll_rening Char(17),
+	Reningstyp Char(15),
+	Storlek_m2 Float,
+	Beslut_datum Char(10),
+	Utförd_datum Char(10),
+	Kommentarer Char(254),
+	Anslutna_fastigheter_1 Char(50),
+	Anslutna_fastigheter_2 Char(50),
+	Anslutna_fastigheter_3 Char(50),
+	Anslutna_fastigheter_4 Char(50),
+	Anslutna_fastigheter_5 Char(50),
+	Anslutna_fastigheter_6 Char(50),
+	Anslutna_fastigheter_7 Char(50),
+	Anslutna_fastigheter_8 Char(50),
+	Anslutna_fastigheter_9 Char(50),
+	Anslutna_fastigheter_10 Char(50),
+	SpatialFastighet Char(40),
+	SpatialShift Char(40)
+		
+	)
+	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
+	CreateTable_reningIhopslagen = pathVar
+end function
+
+function CreateTable_EnskiltIhopslagen as string
+	dim pathVar as string
+	dim temp as string temp= TempFileName$("") 
+	pathVar = left$(temp,len(temp)-4) & ".tab"
+	Create Table "EnskiltIhopslagen" (
+	
+	Diarienummer Char(30),
+	Fastighet_tillstånd Char(40),
+	Typ_byggnad Char(15),
+	Antal_hushåll_tillstånd Char(17),
+	Fastighet_rening Char(33),
+	Typ_Slamavskiljare Char(15),
+	Storlek_m3 Float,
+	Typ_rening Char(15),
+	Storlek_m2 Float,
+	Typ_sluten_tank Char(8),
+	Storlek__m3 Float,
+	Beslut_datum Date,
+	Utförd_datum Date,
+	Avgift Char(10),
+	Tillstånd_giltigt_tom Date,
+	Anteckningar Char(254),
+	SpatialFastighet Char(40),
+	SpatialShift Char(40)
+
+		
+	)
+	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
+	CreateTable_EnskiltIhopslagen = pathVar
+end function
+
+sub diarienummerForUtskriftsObjekt(
+	utskriftsObjekt() as utskriftsobjekt,
+	itterator as integer,
+	enskiltObjekt as enskiltobjekt,
+	swerefObjekt as swerefobjekt, 
+	objektid as integer
+	)
+	dim ärendennr() as string
+	if (enskiltObjekt.Diarienummer<>"MHN") then
+		call addStringToArrayAsifSet(ärendennr(),enskiltObjekt.Diarienummer)
+		utskriftsObjekt(itterator).Externt_Tjänsteid = iif(EnskiltÄrInteToken(enskiltObjekt),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
+		utskriftsObjekt(itterator).Externt_Tjänsteid_2 = iif(EnskiltÄrInteToken(enskiltObjekt) AND (enskiltObjekt.Typ_sluten_tank <> "0" and enskiltObjekt.Typ_sluten_tank <> "" and enskiltObjekt.Typ_sluten_tank <> "-"),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
+	end if
+	if (swerefObjekt.Ärendenr<>"MHN") then
+		call addStringToArrayAsifSet(ärendennr(),swerefObjekt.Ärendenr) 
+	end if
+
+	'redan standardiserat call StandardiseraDiarie(swerefObjekt.Ärendenr,EnskiltObjekt.Diarienummer, ärendennr)
+	if(ubound(ärendennr)>0) then
+		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(1)
+	end if
+
+	'skapa en ny rad, med itterator+1 men objektide det samma.
+	'ärendenr(2) har då ett värde 
+	if(ubound(ärendennr)=2) then
+		itterator = itterator + 1
+		redim utskriftsobjekt(itterator)
+		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(2)
+		utskriftsobjekt(itterator).Objektid = objektid	
+	end if
+end sub
+
+function trovärdighetsIndexer(
+	användaReningar() as integer,
+	swerefobjekt as swerefobjekt,
+	reningsobjekt as reningsobjekt,
+	enskiltobjekt as enskiltobjekt
+	) as float
+
+	dim trovärdighetsIndex,tempFloat,xplan,yplan,hypoten,distans as float
+	,swerefKord(),enskiltKord() as string
+	,Et,St,Rt as logical
+	,p as integer
+	
+	Et = EnskiltÄrInteToken(enskiltObjekt)
+	St = swerefÄrInteToken(swerefObjekt)
+	Rt = ReningÄrInteToken(reningsobjekt)
+	
+	if(Et AND St) then			
+		if(SplitStringAtCharacter(swerefobjekt.kordinater,",",swerefKord)+SplitStringAtCharacter(enskiltobjekt.kordinater,",",enskiltKord) = 4) then
+			xplan = val(swerefKord(1)) - val(enskiltKord(1))
+			yplan = val(swerefKord(2)) - val(enskiltKord(2))
+			
+			hypoten = sqr(xplan*xplan+yplan*yplan)'hypotenusan mellan enskilt och sweref
+			distans = sqr(hypoten*hypoten)
+			
+			trovärdighetsIndex = 1/iif(distans<>0,distans,0.1)
+		else
+			print "errorX:" & enskiltAsString(enskiltObjekt)
+			print "errorY:" & SwerefAsString(swerefObjekt)
+		end if
+		
+		trovärdighetsindex = trovärdighetsindex 
+		+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Ärendenr,EnskiltObjekt.Diarienummer)'om diarie nummer stämmer mellan flagga och enskilt 1
+		+ iif(len(swerefobjekt.Ärendenr)>13 OR len(EnskiltObjekt.Diarienummer)>13,-0.3,0)'om diarie är längre än 13 bokstäver -1
+	end if
+	
+	if(Rt) then
+		tempFloat = 0
+		
+		if(Et) then			
+			if XOR(ubound(ReningsObjekt.Anslutna_fastigheter()) = 0,enskiltobjekt.Fastighet_rening = "") then  'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
+				tempFloat = 0.5
+			else
+				for p=1 to ubound(ReningsObjekt.Anslutna_fastigheter())
+					if(enskiltobjekt.Fastighet_rening = ReningsObjekt.Anslutna_fastigheter(p)) then 'om någon av anslutna fastigheter = fastighet rening
+						tempFloat = 1
+					end if
+				next
+				
+				dim a,b,c as logical
+				
+				a = tempFloat=0
+				b = findInINTArray(reningsobjekt.rowIndex,användaReningar)
+				c = ubound(ReningsObjekt.Anslutna_fastigheter)>1
+				
+				if(a) then
+					tempFloat = tempFloat + iif(b,-9.4,iif(c,1,0))'om rening redan är uptagen.. och gemensamt != true = -1
+				end if
+			end if
+			
+			trovärdighetsIndex = trovärdighetsIndex
+			+ tempFloat			
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Fastighet_rening,ReningsObjekt.SpatialFastighet)' om det finns en rening på fastighet_rening
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Typ_rening,ReningsObjekt.Reningstyp)'om rening på fastighet med rening har typ rening = fastighet 1
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Storlek_m2,ReningsObjekt.storlek_m2)'om rening på fastighet med rening har typ storlekrening = fastighet 1
+			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Utförd_datum,ReningsObjekt.Utförd_datum)'om rening på fastighet med rening har typ Utförandedatum	 
+		end if
+		
+		if(St) then
+			trovärdighetsIndex = trovärdighetsIndex
+			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)	'1 extra poäng om sweref också matchar
+			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)'om rening på fastighet med rening har typ beslutdatum
+		end if
+	end if
+	
+	trovärdighetsIndexer = (trovärdighetsIndex)/9 'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
+end function
+
+sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,användaReningar as integer,UtskriftsObjekt() as utskriftsobjekt,tolkningsobjekt() as trovärdighetsobjekt)
+
+	dim enskiltItterator,i,mestTrov,enskiltEjTagna(),reningEjTagna(),swerefEjTagna(),temparray(),temp as integer
+	,enskiltTokenOrObjekt(),enskiltTokenObjekt() as enskiltObjekt
+	,reningTokenOrObjekt(),reningsTokenObjekt() as reningsobjekt
+	,swerefTokenOrObjekt(),swerefTokenObjekt() as swerefobjekt
+	,trovärdighetsobjekt() as trovärdighetsobjekt
+	,objektKvarAttKonstruera,debugg as logical
+	,högstaIn,trovärdighetsIndex as float 
+
+	for i=1 to ubound(FastighetsObjekt.reningsobjekt)
+		call addIntToArrayAsifSet(reningEjTagna,i)' reference index
+	next
+		
+	for i=1 to ubound(FastighetsObjekt.enskiltObjekt)
+		call addIntToArrayAsifSet(enskiltEjTagna,i)
+	next
+		
+	for i=1 to ubound(FastighetsObjekt.swerefobjekt)
+		call addIntToArrayAsifSet(swerefEjTagna,i)
+	next
+	
+	debugg = (fastighetsobjekt.kir = "ALA OLLAJVS 1:17")
+	
+if(debugg) then
+	dim Dbx as integer
+	print "|R" & ubound(FastighetsObjekt.reningsobjekt) & "|E" & ubound(FastighetsObjekt.enskiltObjekt) & "|S" & ubound(FastighetsObjekt.swerefobjekt)
+	
+	print "-------------------rening"
+	for Dbx=1 to ubound(FastighetsObjekt.reningsobjekt)
+		print Dbx & " " & ReningAsString(FastighetsObjekt.reningsobjekt(Dbx))
+	next
+	print "-------------------enskilt"
+	for Dbx=1 to ubound(FastighetsObjekt.enskiltObjekt)
+		print Dbx & " " & EnskiltAsString(FastighetsObjekt.enskiltObjekt(Dbx))
+	next
+	print "-------------------sweref"
+	for Dbx=1 to ubound(FastighetsObjekt.swerefobjekt)
+		print Dbx & " " & SwerefAsString(FastighetsObjekt.swerefobjekt(Dbx))
+	next
+	
+end if
+	
+	do	'denna sektion skapar alla möjliga förslag på kominationer.
+		dim EnsObjInx, fx, rx,tx,antalTrovärdsObjekt,antalAnläggningar,NrEejtagna,NrSejtagna,sfv,env,rnv,St,Et,Rt as integer
+		
+		NrEejtagna = ubound(enskiltEjTagna)
+		NrSejtagna = ubound(swerefEjTagna)
+		
+		tx = 0	EnsObjInx=1	fx=1 rx=1
+		
+		do
+			do
+				do
+					St = ubound(swerefEjTagna)
+					Et = ubound(enskiltEjTagna)
+					Rt = ubound(reningEjTagna)
+					tx = tx +1
+					
+					redim trovärdighetsobjekt(tx)
+					
+					if(st<>0 AND not(st<fx)) then
+						sfv = swerefEjTagna(fx)
+					else
+						sfv = st
+					end if
+										
+					if(not(Et<ensObjInx) AND (Et<>0)) then
+						env = enskiltEjTagna(ensObjInx)
+					else
+						env = Et
+					end if
+					
+					if(Rt<>0) AND not(Rt<rx) then
+						rnv = reningEjTagna(rx)
+					else
+						rnv = Rt					
+					end if
+					
+					trovärdighetsobjekt(tx).fx = FillerOrSwerefObjekt(sfV,FastighetsObjekt.swerefobjekt(),swerefTokenOrObjekt)
+					trovärdighetsobjekt(tx).ex = FillerOrEnskiltObjekt(enV,FastighetsObjekt.enskiltobjekt(),enskiltTokenOrObjekt)
+					trovärdighetsobjekt(tx).rx = FillerOrReningObjekt(rnv,FastighetsObjekt.reningsobjekt(),reningTokenOrObjekt)
+
+					trovärdighetsobjekt(tx).index = trovärdighetsIndexer(användaReningar,swerefTokenOrObjekt(1),reningTokenOrObjekt(1),enskiltTokenOrObjekt(1))
+					rx=rx+1
+					
+if(debugg) then
+	print trovärdighetsobjekt(tx).fx & ";" & trovärdighetsobjekt(tx).ex & ";" & trovärdighetsobjekt(tx).rx
+end if
+					
+				loop while rx < Rt
+				fx=fx+1
+			loop while fx < NrSejtagna
+			EnsObjInx=EnsObjInx+1
+		loop while EnsObjInx < NrEejtagna
+
+if(debugg) then
+	print fastighetsobjekt.kir & "|totalt" & ubound(trovärdighetsobjekt)
+end if
+	
+		'Denna sektions syfte är att välja ut ett objekt som har högst trovärdighet
+		for i=1 to ubound(trovärdighetsobjekt)
+			if((i = 1) OR trovärdighetsobjekt(i).index > högstaIn) then
+				mestTrov = i
+				högstaIn = trovärdighetsobjekt(i).index
+			end if	
+		next
+		
+		print fas.postort 'to halt eternal loops
+if(debugg) then			
+	print "|taget" & högstaIn & "|nr" & mestTrov
+	print "|R" & ReningAsString(FastighetsObjekt.reningsobjekt(trovärdighetsobjekt(mestTrov).rx)) & "|E" & enskiltAsString(FastighetsObjekt.enskiltObjekt(trovärdighetsobjekt(mestTrov).ex)) & "|S" & swerefAsString(FastighetsObjekt.swerefobjekt(trovärdighetsobjekt(mestTrov).fx))
+end if
+
+		'denna sektion stoppar det mest trovärdiga objektet i returnarrayn
+		'om varken enskilt eller sweref finns, görs inget returnobjekt
+		if(NrEejtagna + nrSejTagna <> 0) then 
+			temp = ubound(tolkningsobjekt)+1
+			redim tolkningsobjekt(temp)
+			tolkningsobjekt(temp).rx = trovärdighetsobjekt(mestTrov).rx
+			tolkningsobjekt(temp).ex = trovärdighetsobjekt(mestTrov).ex
+			tolkningsobjekt(temp).fx = trovärdighetsobjekt(mestTrov).fx
+			tolkningsobjekt(temp).index = trovärdighetsobjekt(mestTrov).index
+		end if
+
+if(debugg) then
+	print trovärdighetsobjekt(mestTrov).rx & " Rremoving from"
+	print DebuggStringEveryInt(reningEjTagna)
+end if
+		
+		'denna sektion tar bort de delar som använts i övre delen
+		if(trovärdighetsobjekt(mestTrov).rx <> 0) then
+			call removeFromIntArray(reningEjTagna(),trovärdighetsobjekt(mestTrov).rx)
+		end if
+
+if(debugg) then
+	print DebuggStringEveryInt(reningEjTagna)
+	print trovärdighetsobjekt(mestTrov).ex & " Eremoving from"
+	print DebuggStringEveryInt(enskiltEjTagna)
+end if
+		
+		if(trovärdighetsobjekt(mestTrov).ex <> 0) then
+			call removeFromIntArray(enskiltEjTagna(),trovärdighetsobjekt(mestTrov).ex)
+		end if
+
+if(debugg) then
+	print DebuggStringEveryInt(enskiltEjTagna)
+	print trovärdighetsobjekt(mestTrov).fx & " Sremoving from"
+	print DebuggStringEveryInt(swerefEjTagna)
+end if
+		
+		if(trovärdighetsobjekt(mestTrov).fx <> 0) then
+			call removeFromIntArray(swerefEjTagna(),trovärdighetsobjekt(mestTrov).fx)
+		end if
+
+if(debugg) then
+	print DebuggStringEveryInt(swerefEjTagna)
+end if
+		
+		NrEejtagna = ubound(enskiltEjTagna)
+		NrSejtagna = ubound(swerefEjTagna)
+		redim trovärdighetsobjekt()'töm trovärdighetsobjekten så de kan återskapas.
+	loop while ((NrSejtagna+NrEejtagna) <> 0)
+
+end sub
+
+function DebuggStringEveryInt(IntArray() as integer) as string
+	
+	Dim	i As Integer
+		
+		for i = 1 To Ubound(IntArray)
+			print "[" & IntArray(i) & "]"
+		Next
+	
+end function
+
+sub utskrivningsobjektsKonstruktor(
+		sO as swerefobjekt,
+		rO as reningsObjekt,
+		eO as enskiltobjekt,
+		Uo() as utskriftsobjekt,
+		användaReningar() as integer,
+		trovärdighetsIndex as float,
+		fastighetsObjekt as fastighetsObjekt
+	)
+
+	dim ittr, objektid as integer
+	,reningsTokenObjekt() as reningsObjekt
+	,enskiltTokenObjekt() as enskiltobjekt
+	,swerefTokenObjekt() as swerefobjekt
+	,tableName as string
+	
+	ittr = expandutskriftsobjekt(Uo)
+	tableName = "LatestObjectID"
+	
+	if IsTableOpen(tableName) then 
+		select col1 from LatestObjectID
+		fetch first from latestObjectID
+		senastObjectID = iif(senastObjectID < latestObjectID.col1,latestObjectID.col1,senastObjectID)
+	end if
+	
+	objektid = iif(senastObjectID <> 0,senastObjectID + 1,1)
+	
+	senastObjectID = objektid
+	Uo(ittr).Objektid = objektid
+	
+	Uo(ittr).trovärdighetsIndex = trovärdighetsIndex
+	Uo(ittr).Path = ""
+	Uo(ittr).Diarienummer = ""
+	Uo(ittr).Löpnummer = ""
+	Uo(ittr).Enhet = "VATTEN"
+	Uo(ittr).Timdebitering = TRUE
+	Uo(ittr).Aktuell_timavgift = 925
+
+	Uo(ittr).Verksamhetsutövare_Namn = "" 'fastighetsObjekt.namn
+	Uo(ittr).Verksamhetsutöv_Person_orgnr = "" ' fastighetsObjekt.personnr
+
+	Uo(ittr).Fakturamottagare_NAMN = "" ' fastighetsObjekt.namn
+	Uo(ittr).Fakturamottagare_Faktura_ADRESS = "" ' fastighetsObjekt.adressNamn
+	Uo(ittr).Fakturamottagare_Faktura_POSTNR = "" ' fastighetsObjekt.PostNrNamn
+	Uo(ittr).Fakturamottagare_Faktura_POSTOR = "" ' fastighetsObjekt.PostortNamn
+
+	Uo(ittr).Besöksadress_Adress = fastighetsObjekt.adress
+	Uo(ittr).Besöksadress_Postnr = fastighetsObjekt.postnr
+	Uo(ittr).Besöksadress_Ort = fastighetsObjekt.ort
+	Uo(ittr).Besöksadress_Huvudfastighet = fastighetsObjekt.kir
+	Uo(ittr).FNR = fastighetsObjekt.fnr
+
+	'har sweref
+	if(swerefÄrInteToken(sO)) then
+		Uo(ittr).Inventering = "klart Vatten"
+		Uo(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
+		Uo(ittr).Inventeringsinformation_Status = sO.Status
+		Uo(ittr).Bedömning = sO.Ärendenr
+		Uo(ittr).Anteckning = sO.Anteckning
+	end if
+
+	if(EnskiltÄrInteToken(eO)) then	
+				
+		Uo(ittr).flik_Avloppsänlaggni_Boendetyp = eO.Typ_byggnad
+		Uo(ittr).flik_Avloppsanläggn_Byggnadsår = eO.Tillstånd_giltigt_tom
+		Uo(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utförd_datum
+		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = eO.Beslut_datum
+		Uo(ittr).Vatten = eO.Antal_hushåll_tillstånd
+		
+		Uo(ittr).Objektnamn = iif (eO.spatialShift <> "",eO.spatialShift,fastighetsObjekt.namn & " Återställed enskilt")
+				
+		Uo(ittr).PunkttypAB = "Ansluten byggnad"
+		Uo(ittr).Anläggningskategori_2 = "Slamavskiljare"
+		Uo(ittr).Anläggning_för_S_Anläggningstyp = eO.Typ_Slamavskiljare
+		Uo(ittr).text = eO.Anteckningar
+		Uo(ittr).Anläggning_för_Slamav_Volym_m3 = eO.Storlek_m3
+		Uo(ittr).Fliken_Koordinater = eO.kordinater
+		
+		'har tank
+		if((eO.Typ_sluten_tank <> "0" and eO.Typ_sluten_tank <> "" and eO.Typ_sluten_tank <> "-")) then
+			Uo(ittr).Anläggningskategori_3 = "Tank"
+			Uo(ittr).AnlförEfterR_Anläggningstyp = eO.Typ_sluten_tank
+			Uo(ittr).besiktningdatum_2 = eO.Utförd_datum
+			Uo(ittr).beslutsdatum_2 = eO.Beslut_datum
+	
+			Uo(ittr).Volym_m3_2 = eO.Storlek__m3
+		end if
+
+	else'not(EnskiltÄrInteToken(eO)) then	
+		Uo(ittr).Objektnamn = iif(sO.fastighet_tillstånd <> "",sO.fastighet_tillstånd,fastighetsObjekt.fastighet) & " " & sO.Status
+		Uo(ittr).Fliken_Koordinater = sO.kordinater
+		Uo(ittr).text = sO.Anteckning
+		Uo(ittr).flik_Avloppsa_Besiktningsdatum = sO.utförddatum
+		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = sO.Beslut_datum
+	end if
+	
+	call generateTokenObjekts(reningsTokenObjekt, enskiltTokenObjekt, swerefTokenObjekt)
+	
+	if(ReningÄrInteToken(rO)) then
+		'gemensam är också true om antal fastighet rening är mer än 1
+		if not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) then 'ickeGemensam
+			
+			Uo(ittr).Recipient = iif(rO.spatialShift <> "",rO.spatialShift,eO.fastighet_rening)
+			Uo(ittr).Anläggningskategori = "Efterföljande rening"
+			Uo(ittr).besiktningdatum = rO.Utförd_datum
+			Uo(ittr).beslutsdatum = rO.Beslut_datum
+			Uo(ittr).Anläggningstyp = rO.Reningstyp
+			Uo(ittr).Volym_m3 = rO.Storlek_m2
+			Uo(ittr).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
+			Uo(ittr).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
+			Uo(ittr).PunkttypER = "Efterföljande rening"
+						
+			call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
+			call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,rO,eO, objektid)	
+		else'((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) gemensam
+			 Uo(ittr).Recipient =  "gem. på " & iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))		
+		
+			if (not(findInINTArray(rO.rowIndex,användaReningar))) then 'om den inte redan skapats					
+				dim rInd,rI as integer
+				rI = ittr
+				
+				if((findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then ' om gemensamhetsanläggn, avsluta fastighet, itteratorn ökas, objectidet ändras, men annars behandla det som vanlig rening.
+					call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
+					call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)'onödigt att regga fastigherna flera gånger
+					
+					objektId = val(rO.Kommentarer)
+					rI = ittr+1
+					
+					Uo(ittr).Objektid = objektId
+					Uo(ittr).Vatten = rO.Antal_hushåll_rening
+				end if
+								
+				rInd = ubound(användaReningar())+1
+				redim användaReningar(rInd)
+				användaReningar(rInd) = rO.rowIndex
+		
+				Uo(rI).Anläggning_för_EfterföljRText = rO.Kommentarer
+				Uo(rI).Anläggningskategori = "Efterföljande rening"
+				Uo(rI).besiktningdatum = rO.Utförd_datum
+				Uo(rI).beslutsdatum = rO.Beslut_datum
+				Uo(rI).Anläggningstyp = rO.Reningstyp
+				Uo(rI).Volym_m3 = rO.Storlek_m2
+				
+				Uo(rI).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
+				Uo(rI).PunkttypER = "Efterföljande rening"
+				
+				if(not(findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then
+					Uo(rI).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
+					call diarienummerForutskriftsobjekt(Uo,rI,eO,sO, objektid)
+					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
+				else'(ettTillsynsObjekt)
+					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
+				end if'(not(ettTillsynsObjekt))
+			else
+				call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
+			end if'(not(findInINTArray(rO.rowIndex,användaReningar)))
+			
+		end if'not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar))
+		
+	else'(not(ReningÄrInteToken(rO))
+		Uo(ittr).Recipient = eO.fastighet_rening
+		call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
+		call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
+	end if
+
+End Sub

@@ -12,7 +12,10 @@ declare sub processor_socken()
 
 declare sub do1_1_genPathTab 
 declare sub do1_3_FasWithAdr
-declare sub do1_4_prepTabl 
+declare sub do1_4_prepTabl1
+declare sub do1_4_prepTabl2
+declare sub do1_4_prepTabl3
+
 declare sub do1_5_egnRenTabWspatFas
 declare sub do1_7_Socken 
 declare sub do1_8_egnSwfWspatFasInd 
@@ -59,10 +62,9 @@ Sub Main()
 		'load ressult
 	end if
 
-	call do3_4_assosieraFnr()
 	call förberedAvslut() 
-
-	iprogressRange = 10 iprogress = 0 startTime = timer() 
+	
+	iprogressRange = 8 iprogress = 0 startTime = timer()
 	ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange		
 	
 end sub
@@ -73,12 +75,14 @@ sub processor_PathTable
 	do case iProgress
 	case 1
 		call do1_1_genPathTab
-	case 2 'grundtabeller
 		call insertInitialTables()
-	case 3'Fastighetskikt med adress	
 		call do1_3_FasWithAdr	
+	case 2 'grundtabeller
+		call do1_4_prepTabl1
+	case 3'Fastighetskikt med adress	
+		call do1_4_prepTabl2
 	case 4
-		call do1_4_prepTabl
+		call do1_4_prepTabl3
 	case 5''egna reningstabeller med spatial fastighet
 		call do1_5_egnRenTabWspatFas
 	case 6
@@ -136,7 +140,7 @@ Sub processor_Post()
 ' 	correct fastigheter already before association
 
 	do case iProgress case 1
-		call do1_6_Gem	
+		call do3_4_assosieraFnr()
 	case 2
 		call do3_2_MHK()
 	case 3
@@ -146,11 +150,13 @@ Sub processor_Post()
 		'call klartVattenStatusEndastVidFlagga()
 		'call KlartVattenUtskicksDatumIDatumKolumn() 
 	case 5
-		call do1_10_SlamDisp
+		call do1_6_Gem	
 	case 6
 		call do3_5_MånsBilder
 	case 7
 		call do3_6_CorVisFas
+	case 8	
+		call do1_10_SlamDisp
 		'call assosieraGammlaFastigheterTillNyaFnr()
 	end case
 	
@@ -201,40 +207,54 @@ sub do1_1_genPathTab
 
 end sub
 
-sub do1_4_prepTabl
-	dim tempstring as string 
+sub do1_4_prepTabl1
+		dim tempstring as string 
 		redim tableNames(4)
 		
-		tablenames(1) = "Rening_SödraNoIndex"
-		tablenames(2) = "Rening_NorraNoIndex"
-		tablenames(3) = "Rening_MellerstaNoIndex"
 		tablenames(4) = "fastighet_yta"
-						
-		call tableOpener(tablenames)
-		
+		tablenames(1) = "Rening_SödraNoIndex"		
+		call tableOpener(tablenames)	
+
 		select * from tablenames(1) into "Rening_Södra"
-		select * from tablenames(2) into "Rening_Norra"
-		select * from tablenames(3) into "Rening_Mellersta"
-				
 		tempstring = görTillBasTabellReturneraPath("Rening_Södra")
 			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Södra")
-		tempstring = görTillBasTabellReturneraPath("Rening_Norra")
-			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Norra")
-		tempstring = görTillBasTabellReturneraPath("Rening_Mellersta")
-			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Mellersta")
 			
 		Alter Table Rening_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
 		Add Column "Rening_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 		Add Column "Rening_Södra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
 		commit table Rening_Södra
 		Alter Table "Rening_Södra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+		call tableCloser(tablenames())
+end sub
+sub do1_4_prepTabl2	
+		dim tempstring as string 
+		redim tableNames(4)
+		
+		tablenames(4) = "fastighet_yta"		
+		tablenames(2) = "Rening_NorraNoIndex"
+		call tableOpener(tablenames)	
+		select * from tablenames(2) into "Rening_Norra"
+		tempstring = görTillBasTabellReturneraPath("Rening_Norra")
+			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Norra")
 		
 		Alter Table Rening_Norra (add SpatialFastighet Char(40), SpatialShift Char(40)  )
 		Add Column "Rening_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 		Add Column "Rening_Norra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
 		commit table Rening_Norra
 		Alter Table "Rening_Norra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+		call tableCloser(tablenames())
+end sub
+sub do1_4_prepTabl3
+		dim tempstring as string 
+		redim tableNames(4)
 		
+		tablenames(4) = "fastighet_yta"		
+		tablenames(3) = "Rening_MellerstaNoIndex"
+						
+		call tableOpener(tablenames)	
+		select * from tablenames(3) into "Rening_Mellersta"		
+		tempstring = görTillBasTabellReturneraPath("Rening_Mellersta")
+			insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Mellersta")	
 		Alter Table Rening_Mellersta ( add SpatialFastighet Char(40), SpatialShift Char(40) )
 		Add Column "Rening_Mellersta" (SpatialFastighet)From fastighet_yta Set To kir Where contains
 		Add Column "Rening_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
@@ -256,6 +276,7 @@ sub do1_5_egnRenTabWspatFas
 		 
 sub do1_6_Gem
 		'injesera gemensamhetsanläggningar
+		call openSingleTable("reningIhopslagen")
 		call PrepareGemensamma()
 		call injectGemensamma()
 		redim tableNames(1)
@@ -360,7 +381,8 @@ sub do1_10_SlamDisp
 sub do1_7_2readCurrentState(användaReningar() as integer)
 	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
 	
-	call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
+	'call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
+	'SqlGenWhereColIsNotAny("objektid", gerdinsID) & 
 	
 	fetch first from socknarOfiltrerade
 	
@@ -369,7 +391,7 @@ sub do1_7_2readCurrentState(användaReningar() as integer)
 	
 		if SingletableOpenerConfirmation(tempstring) then onError goto exitProg 
 			
-			query = "select max(objektid) " & " from " & tempstring & " " & SqlGenWhereColIsNotAny("objektid", gerdinsID) & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
+			query = "select max(objektid) " & " from " & tempstring & " " & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
 			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then	
 				call closeIfnotClosed("LatestObjectID")	
 				select * from LatestObjectX into LatestObjectID	call görTillBastabell("LatestObjectID")	else

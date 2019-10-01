@@ -1,7 +1,4 @@
-Dim tablenames(5),distrikt,FastighetsBetInput,qm as string
-,iProgress,iProgressRange,jProgress,jProgressRange,starttime as integer
-,reningDistrikt,enskiltDistrikt as alias
-dim socken as string
+Dim tablenames(5),distrikt,FastighetsBetInput,qm,socken as string,iProgress,iProgressRange,jProgress,jProgressRange,starttime as integer,reningDistrikt,enskiltDistrikt as alias
 
 Type ReningsObjekt
 
