@@ -221,8 +221,10 @@ function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as
 				Redim reningsObjekt(y)
 				
 				reningsObjekt(y).spatialFastighet = ReningAlias(x).spatialFastighet reningsObjekt(y).spatialShift = ReningAlias(x).spatialShift reningsObjekt(y).Fastighet_rening = ReningAlias(x).Fastighet_rening reningsObjekt(y).Antal_hushåll_rening = ReningAlias(x).Antal_hushåll_rening
-				reningsObjekt(y).Reningstyp = ReningAlias(x).Reningstyp reningsObjekt(y).Storlek_m2 = ReningAlias(x).Storlek_m2 reningsObjekt(y).kordinater = ReningAlias(x).kordinater reningsObjekt(y).Beslut_datum = ReningAlias(x).Beslut_datum
-				reningsObjekt(y).utförd_datum = ReningAlias(x).Utförd_datum reningsObjekt(y).Kommentarer = ReningAlias(x).Kommentarer
+				reningsObjekt(y).Reningstyp = ReningAlias(x).Reningstyp reningsObjekt(y).Storlek_m2 = ReningAlias(x).Storlek_m2 reningsObjekt(y).kordinater = ReningAlias(x).kordinater reningsObjekt(y).Kommentarer = ReningAlias(x).Kommentarer
+				'Todo: why does this field end empty?
+				reningsObjekt(y).Beslut_datum = ReningAlias(x).Beslut_datum
+				reningsObjekt(y).utförd_datum = ReningAlias(x).Utförd_datum
 								
 				redim reningsObjekt(y).Anslutna_fastigheter(ubound(ReningAlias(x).Anslutna_fastigheter()))
 				
@@ -839,8 +841,10 @@ function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,r
 		reningsTokenObjekt(1).Reningstyp = reningsobjekt(intx).Reningstyp
 		reningsTokenObjekt(1).Storlek_m2 = reningsobjekt(intx).Storlek_m2
 		reningsTokenObjekt(1).kordinater = reningsobjekt(intx).kordinater
+		'Todo: why does this field end empty?
 		reningsTokenObjekt(1).Beslut_datum = reningsobjekt(intx).Beslut_datum
 		reningsTokenObjekt(1).Utförd_datum = reningsobjekt(intx).Utförd_datum
+		
 		reningsTokenObjekt(1).Kommentarer = reningsobjekt(intx).Kommentarer
 		reningsTokenObjekt(1).rowIndex = reningsobjekt(intx).rowIndex
 		
@@ -2656,8 +2660,11 @@ sub utskrivningsobjektsKonstruktor(
 			
 			Uo(ittr).Recipient = iif(rO.spatialShift <> "",rO.spatialShift,eO.fastighet_rening)
 			Uo(ittr).Anläggningskategori = "Efterföljande rening"
+			
+			'Todo: why does this field end empty?
 			Uo(ittr).besiktningdatum = rO.Utförd_datum
 			Uo(ittr).beslutsdatum = rO.Beslut_datum
+			
 			Uo(ittr).Anläggningstyp = rO.Reningstyp
 			Uo(ittr).Volym_m3 = rO.Storlek_m2
 			Uo(ittr).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
@@ -2690,8 +2697,10 @@ sub utskrivningsobjektsKonstruktor(
 		
 				Uo(rI).Anläggning_för_EfterföljRText = rO.Kommentarer
 				Uo(rI).Anläggningskategori = "Efterföljande rening"
+				'Todo: why does this field end empty?
 				Uo(rI).besiktningdatum = rO.Utförd_datum
 				Uo(rI).beslutsdatum = rO.Beslut_datum
+				
 				Uo(rI).Anläggningstyp = rO.Reningstyp
 				Uo(rI).Volym_m3 = rO.Storlek_m2
 				

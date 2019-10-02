@@ -597,9 +597,24 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 				reningsObjekt(x).Antal_hushåll_rening = iif(val(valtRening.Antal_hushåll_rening & "") <> 0,val(valtRening.Antal_hushåll_rening & ""),1)
 				reningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
 				reningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
-				reningsObjekt(x).kordinater = valtRening.koor tempstring = "" & 
-				valtRening.Beslut_datum if mixedDateToUnion(tempstring) <> "0" then reningsObjekt(x).Beslut_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if		tempstring = "" & 
-				valtRening.Utförd_datum	if mixedDateToUnion(tempstring) <> "0" then	reningsObjekt(x).utförd_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if
+				reningsObjekt(x).kordinater = valtRening.koor 
+				
+				'Todo: why does this field end empty?
+				tempstring = "" & valtRening.Beslut_datum
+				if mixedDateToUnion(tempstring) <> "0" then
+					reningsObjekt(x).Beslut_datum = StringToDate(mixedDateToUnion(tempstring)) 
+				else
+					reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") 
+				end if
+				
+				'Todo: why does this field end empty?
+				tempstring = "" & valtRening.Utförd_datum	
+				if mixedDateToUnion(tempstring) <> "0" then
+					reningsObjekt(x).utförd_datum = StringToDate(mixedDateToUnion(tempstring)) 
+				else	
+					reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") 
+				end if
+				
 				reningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & reningsObjekt(x).Kommentarer,"""","'")
 				call getAnslutna(reningsObjekt(x).Anslutna_fastigheter) 
 				reningsObjekt(x).rowIndex = valtRening.rowIndex
