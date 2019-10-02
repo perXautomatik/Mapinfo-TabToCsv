@@ -217,10 +217,19 @@ Sub processor_Post()
 	case 8	
 		call do3_8_SlamDisp
 		'call assosieraGammlaFastigheterTillNyaFnr()
+	case 9
+		call byggnads≈rTillFyraTecken
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
 	
+End Sub
+
+declare sub byggnads≈rTillFyraTecken
+
+sub byggnads≈rTillFyraTecken
+	commit table helaSolen
+	Alter Table "HelaSolen" ( modify flik_Avloppsanl‰ggn_ByggnadsÂr Char(4) ) Interactive
 End Sub
 
 sub do1_1_genPathTab
