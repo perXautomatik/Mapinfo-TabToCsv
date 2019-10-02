@@ -6,20 +6,22 @@ include "commonLib\commonLib1.def"
 
 declare Sub Main()
 
-declare sub processor_PathTable
+declare sub processor_Pre
 declare Sub processor_Post()
 declare sub processor_socken()
 
 declare sub do1_1_genPathTab 
 declare sub do1_3_FasWithAdr
-declare sub do1_4_prepTabl1
-declare sub do1_4_prepTabl2
-declare sub do1_4_prepTabl3
+declare sub do1_4_prepRenSöd
+declare sub do1_4_prepRenNor
+declare sub do1_4_prepRenMel
 
 declare sub do1_5_egnRenTabWspatFas
 declare sub processor_SockenRead 
 declare sub do1_8_egnSwfWspatFasInd 
 declare sub do1_9_egnEnskWSpatFas 
+declare sub do1_10_enskiltIhopslagen
+declare sub do1_11_prepareSocken
 
 declare Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
 declare sub do2_2_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
@@ -39,7 +41,7 @@ declare sub do3_5_MånsBilder
 declare sub do1_7_2readCurrentState(användaReningar() as integer)
 
 
-global workDir as string,användaReningar() as integer 
+global workDir as string,användaReningar() as integer ,rebuild as logical
 
 	'+ tableinfo(antalKörningar,tab_info_nrows) *9
 	'if sockentabell is zero, this segment is completely skipped
@@ -48,19 +50,23 @@ global workDir as string,användaReningar() as integer
 Sub Main()
 	 'to make sure the coordinationsystem is the right one
 	 'empty message	
+	'todo: let github keep track of which version we have of each table instead of rebuilding our things all the time
+	'question is how to know something need to be rebuilt, maybe by altering our local copy, and overwriting...
+	'no not good idea as github keeps it synced...
+	'we could simply manually update, with a swithch
+	
+	rebuild = false
 	print Chr$(12) run command("Set " + EPSGToCoordSysString$("EPSG::3022")) workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv" dim tablenames(1) as string 
 	tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
-	iprogressRange = 4 iprogress = 0 startTime = timer() 
-	ProgressBar "processor_PathTable...." & iProgressRange & " items" Calling processor_PathTable Range iProgressRange
+	iprogressRange = 8 iprogress = 0 startTime = timer() 
+	ProgressBar "processor_Pre...." & iProgressRange & " items" Calling processor_Pre Range iProgressRange
 	
 	fetch first from socknarOfiltrerade
 	iprogressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) iprogress = 0 startTime = timer()
 		ProgressBar "processor_SockenRead...." & iProgressRange & " items"	calling processor_SockenRead	Range iProgressRange		
 	
-	onError goto sockenError
-		iprogressRange = tableinfo(sockenTabell,tab_info_nRows) 
-		if iprogressRange <> 0 then	startTime = timer() iprogress = 0
+	onError goto sockenError	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then	startTime = timer() iprogress = 0
 		ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
 		else
 			'load ressult
@@ -68,13 +74,10 @@ Sub Main()
 	onError goto 0
 
 	onError goto förberedAvslutError
-		call förberedAvslut() 
-	onError goto 0
+		call förberedAvslut() 	onError goto 0
 	
-	onError goto postProcessError
-		iprogressRange = 1 iprogress = 0 startTime = timer()
-		ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange		
-	onError goto 0
+	onError goto postProcessError iprogressRange = 1 iprogress = 0 startTime = timer()
+		ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange onError goto 0
 
 exit sub	
 	förberedAvslutError:
@@ -89,41 +92,53 @@ exit sub
 	
 end sub
 
-sub processor_PathTable
-	dim tempstring,tablenames(3) as string	,tempAlias as alias
+sub processor_Pre
 		
+	'grundtabeller
+	'Fastighetskikt med adress	
+	''egna reningstabeller med spatial fastighet
+			'egna EnskiltTabeller med spatial fastighet
+					'egen swereftabell med spatial fastighet och index
 	do case iProgress
 	case 1
 		call do1_1_genPathTab
 		call insertInitialTables()
 		call do1_3_FasWithAdr	
-		call do1_4_prepTabl1
-	case 2 'grundtabeller
-		
-		call do1_4_prepTabl2
-		
-	case 3'Fastighetskikt med adress	
-	''egna reningstabeller med spatial fastighet
-		call do1_4_prepTabl3
-		call do1_5_egnRenTabWspatFas
-		call do1_8_egnSwfWspatFasInd
-		'egna EnskiltTabeller med spatial fastighet
-		call do1_9_egnEnskWSpatFas
-		
-		'egen swereftabell med spatial fastighet och index
+		call do1_4_prepRenSöd
+	case 2 
+		call do1_4_prepRenNor
+	case 3
+		call do1_4_prepRenMel
 	case 4
-		tempstring = "sockenTabell"
-		if not(SingletableOpenerConfirmation(tempstring)) then
-			dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
-			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-		end if
-		select * from sockenTabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-			redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	
+		call do1_5_egnRenTabWspatFas
+	case 5
+		call do1_8_egnSwfWspatFasInd
+	case 6
+		call do1_9_egnEnskWSpatFas
+	case 7
+		call do1_10_enskiltIhopslagen
+	case 8
+		call do1_11_prepareSocken
 	end case
 	
 	call increment(iProgress,iProgressRange,starttime)
 		
 End Sub
+
+
+sub do1_11_prepareSocken
+dim tempstring,tablenames(3) as string	,tempAlias as alias
+	
+tempstring = "Sockentabell"
+		if not(SingletableOpenerConfirmation(tempstring)) then
+		print "rebuilding sockenTabell"
+			dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+		end if
+		select * from sockenTabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+			redim tablenames(2) tablenames(1) = "enskiltIhopslaget" tablenames(2) = "reningIhopslaget" call tableOpener(tablenames)	
+
+end sub
 
 sub processor_socken()
 	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,do2_1_newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
@@ -235,7 +250,7 @@ sub do1_1_genPathTab
 
 end sub
 
-sub do1_4_prepTabl1
+sub do1_4_prepRenSöd
 		dim tempstring as string 
 		redim tableNames(4)
 		
@@ -254,7 +269,8 @@ sub do1_4_prepTabl1
 		Alter Table "Rening_Södra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 		call tableCloser(tablenames())
 end sub
-sub do1_4_prepTabl2	
+
+sub do1_4_prepRenNor	
 		dim tempstring as string 
 		redim tableNames(4)
 		
@@ -272,7 +288,8 @@ sub do1_4_prepTabl2
 		Alter Table "Rening_Norra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 		call tableCloser(tablenames())
 end sub
-sub do1_4_prepTabl3
+
+sub do1_4_prepRenMel
 		dim tempstring as string 
 		redim tableNames(4)
 		
@@ -290,7 +307,6 @@ sub do1_4_prepTabl3
 		Alter Table "Rening_Mellersta" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 		
 		call tableCloser(tablenames())
-
 end sub
  
 sub do1_5_egnRenTabWspatFas
@@ -376,8 +392,11 @@ sub do1_9_egnEnskWSpatFas
 		Add Column "Enskilt_avlopp_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
 				
 		call tableCloser(tablenames())
-		
-		tempstring = CreateTable_enskiltIhopslagen()
+		end sub
+
+sub do1_10_enskiltIhopslagen
+
+		dim tempstring as string tempstring = CreateTable_enskiltIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_mellersta","EnskiltIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_Norra","EnskiltIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_Södra","EnskiltIhopslagen")
@@ -386,8 +405,7 @@ sub do1_9_egnEnskWSpatFas
 		call UpdateIndex("EnskiltIhopslagen")'already commits
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "EnskiltIhopslagen")
 		call tableCloserAndCommiter(tableNames)
-
-		end sub
+end sub
 
 sub do1_10_SlamDisp	
 		redim tableNames(2)
