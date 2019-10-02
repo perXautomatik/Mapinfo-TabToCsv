@@ -37,6 +37,7 @@ declare sub do3_7_CorW3Fas()
 declare sub do3_2_MHK()
 declare sub do3_4_MultiplaFastigheter
 declare sub do3_5_MÂnsBilder
+declare sub byggnads≈rTillFyraTecken
 
 declare sub do1_7_2readCurrentState(anv‰ndaReningar() as integer)
 
@@ -225,7 +226,7 @@ Sub processor_Post()
 	
 End Sub
 
-declare sub byggnads≈rTillFyraTecken
+
 
 sub byggnads≈rTillFyraTecken
 	commit table helaSolen
