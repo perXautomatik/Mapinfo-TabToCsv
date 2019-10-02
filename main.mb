@@ -55,7 +55,7 @@ Sub Main()
 	'no not good idea as github keeps it synced...
 	'we could simply manually update, with a swithch
 	
-	rebuild = false
+	rebuild = true
 	print Chr$(12) run command("Set " + EPSGToCoordSysString$("EPSG::3022")) workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv" dim tablenames(1) as string 
 	tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
@@ -264,7 +264,8 @@ sub do1_4_prepRenSöd
 	
 			select * from tablenames(1) into "Rening_Södra"
 			commit table Rening_Södra  As tempstring TYPE NATIVE Charset "WindowsLatin1" Interactive
- 				
+ 			close table Rening_Södra
+ 			open table tempstring
 			Alter Table Rening_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
 			Add Column "Rening_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Rening_Södra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
@@ -287,7 +288,9 @@ sub do1_4_prepRenNor
 			tablenames(2) = "Rening_NorraNoIndex"
 			call tableOpener(tablenames)	
 			select * from tablenames(2) into "Rening_Norra"
-			commit table Rening_Södra  As tempstring TYPE NATIVE Charset "WindowsLatin1" Interactive
+			commit table Rening_Norra  As tempstring TYPE NATIVE Charset "WindowsLatin1" Interactive
+			close table Rening_Norra
+ 			open table tempstring
 			Alter Table Rening_Norra (add SpatialFastighet Char(40), SpatialShift Char(40)  )
 			Add Column "Rening_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Rening_Norra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
@@ -308,6 +311,11 @@ sub do1_4_prepRenMel
 			tablenames(3) = "Rening_MellerstaNoIndex"							
 			call tableOpener(tablenames)	
 			select * from tablenames(3) into "Rening_Mellersta"		
+			
+			commit table Rening_Mellersta  As tempstring TYPE NATIVE Charset "WindowsLatin1" Interactive
+			close table Rening_Mellersta
+ 			open table tempstring
+
 			Alter Table Rening_Mellersta ( add SpatialFastighet Char(40), SpatialShift Char(40) )
 			Add Column "Rening_Mellersta" (SpatialFastighet)From fastighet_yta Set To kir Where contains
 			Add Column "Rening_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
@@ -399,7 +407,13 @@ sub do1_9_egnEnskWSpatFas
 			commit table Enskilt_avlopp_Södra  As tempstring1 TYPE NATIVE Charset "WindowsLatin1" Interactive
 			commit table Enskilt_avlopp_Norra  As tempstring2 TYPE NATIVE Charset "WindowsLatin1" Interactive
 			commit table Enskilt_avlopp_Mellersta  As tempstring3 TYPE NATIVE Charset "WindowsLatin1" Interactive
-		
+			
+			call tableCloser(tablenames())
+			
+			open table tempstring1
+			open table tempstring2
+			open table tempstring3
+			
 			Alter Table Enskilt_avlopp_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40) )
 			Add Column "Enskilt_avlopp_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Enskilt_avlopp_Södra" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
@@ -412,7 +426,7 @@ sub do1_9_egnEnskWSpatFas
 			Add Column "Enskilt_avlopp_Mellersta" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Enskilt_avlopp_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
 					
-			call tableCloser(tablenames())
+			
 		end if
 		
 		insert into Pathtable (tablePath,TableName) values (Tempstring1, "Enskilt_avlopp_Södra")
