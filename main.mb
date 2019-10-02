@@ -398,7 +398,7 @@ sub do1_8_prepareSweref
 			
 			Add Column "Fastigheter_sweref" (SpatialFastighet)From fastighet_yta Set To kir Where contains
 			Add Column "Fastigheter_sweref" (SpatialShift)From fastighet_yta Set To fastighet Where contains
-			
+			Commit table Fastigheter_sweref
 		end if
 		insert into Pathtable (tablePath,TableName) values (tempstring, "Fastigheter_sweref")
 
@@ -440,15 +440,17 @@ sub do1_9_egnEnskWSpatFas
 			Alter Table Enskilt_avlopp_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40) )
 			Add Column "Enskilt_avlopp_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Enskilt_avlopp_Södra" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
+			Commit table Enskilt_avlopp_Södra	
 			
 			Alter Table Enskilt_avlopp_Norra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
 			Add Column "Enskilt_avlopp_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Enskilt_avlopp_Norra" (SpatialShift) From fastighet_yta Set To Fastighet Where contains
+			Commit table Enskilt_avlopp_Norra	
 			
 			Alter Table Enskilt_avlopp_Mellersta (add SpatialFastighet Char(40), SpatialShift Char(40) )
 			Add Column "Enskilt_avlopp_Mellersta" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Enskilt_avlopp_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-					
+			Commit table Enskilt_avlopp_Mellersta	
 			
 		end if
 		

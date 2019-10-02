@@ -999,10 +999,11 @@ sub insertInitialTables()
 	
 		Tempstring = tempstringx & "Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler"
 	
+		Tempstring ="G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "\distriktsindelning.TAB", "distriktsindelning")
 		
 		
-		Tempstring = Tempstring & "\FastighetsytaUpdeladIsocken\"
+		Tempstring = "\FastighetsytaUpdeladIsocken\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAFastigheter.TAB", "ANGAFastigheter")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAFastigheter.TAB", "BARAFastigheter")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOFastigheter.TAB", "ATLINGBOFastigheter")
