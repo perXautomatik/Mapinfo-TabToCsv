@@ -55,7 +55,7 @@ Sub Main()
 	'no not good idea as github keeps it synced...
 	'we could simply manually update, with a swithch
 	
-	rebuild = true
+	rebuild = false
 	print Chr$(12) run command("Set " + EPSGToCoordSysString$("EPSG::3022")) workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv" dim tablenames(1) as string 
 	tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
@@ -125,14 +125,13 @@ sub processor_Pre
 		
 End Sub
 
-
 sub do1_11_prepareSocken
 dim tempstring,tablenames(3) as string	,tempAlias as alias
 	
 tempstring = "Sockentabell"
-		if not(SingletableOpenerConfirmation(tempstring)) then
+		if not(openTableAndConfirm(tempstring)) then
 		print "rebuilding sockenTabell"
-			dim tempBool as logical tempBool = SingletableOpenerConfirmation("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+			dim tempBool as logical tempBool = openTableAndConfirm("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
 			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
 		end if
 		select * from sockenTabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
@@ -144,13 +143,29 @@ sub processor_socken()
 	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,do2_1_newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
 
 	starttime = timer() nSocken = sockenTabell.sockenX senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program
-	Call do2_1_newSocken(nSocken,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) runns = timer() - starttime	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken group by kir into SorteradFastighet fetch first from SorteradFastighet integerX = iif(tableInfo(SorteradFastighet,TAB_INFO_NROWS)=0,1,tableInfo(SorteradFastighet,TAB_INFO_NROWS))
+	call opensingletable("fastighet_yta")
+
+	Call do2_1_newSocken(nSocken,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) 
+
+	runns = timer() - starttime	
+	if not(openTableAndConfirm("SorteradFastighet")) then
+		Select * from fastighet_yta 
+		where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
+		tempstring = ApplicationDirectory$() & "SorteradFastighet.tab"
+		commit table SorteradFastighet  As tempstring TYPE NATIVE Charset "WindowsLatin1" Interactive
+		
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet")
+	end if
+	fetch first from SorteradFastighet 
+	
+	integerX = iif(tableInfo(SorteradFastighet,TAB_INFO_NROWS)=0,1,tableInfo(SorteradFastighet,TAB_INFO_NROWS))
 
 	call increment(iProgress,iProgressRange,starttime)	starttime = timer()	do UNtil EOT(SorteradFastighet)
 		fastighetJustNu = SorteradFastighet.kir
 		'	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if
-
-		call do2_2_inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt())'reads selected row from sorteradFastighet 
+		if fastighetJustNu <> "" then 
+			call do2_2_inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt())'reads selected row from sorteradFastighet 
+		end if
 		fetch Next from SorteradFastighet
 	loop	endtime = timer()-starttime	print "***************************************************************************************************************************" print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" print "***************************************************************************************************************************"
 	
@@ -255,7 +270,7 @@ sub do1_4_prepRenSöd
 		dim tempstring as string 
 		redim tableNames(2)
 		
-		tempstring = ApplicationDirectory$() & "\Rening_Södra.TAB"
+		tempstring = ApplicationDirectory$() & "Rening_Södra.TAB"
 		
 		if rebuild then
 			tablenames(2) = "fastighet_yta"
@@ -281,7 +296,7 @@ end sub
 sub do1_4_prepRenNor	
 		dim tempstring as string 
 		redim tableNames(2)
-			tempstring = ApplicationDirectory$() & "\Rening_Norra.TAB"
+			tempstring = ApplicationDirectory$() & "Rening_Norra.TAB"
 		
 		if rebuild then
 			tablenames(1) = "fastighet_yta"		
@@ -304,7 +319,7 @@ end sub
 sub do1_4_prepRenMel
 		dim tempstring as string 
 		redim tableNames(4)
-		tempstring = ApplicationDirectory$() & "\Rening_Mellersta.TAB"
+		tempstring = ApplicationDirectory$() & "Rening_Mellersta.TAB"
 		
 		if rebuild then
 			tablenames(4) = "fastighet_yta"		
@@ -328,6 +343,12 @@ sub do1_4_prepRenMel
 end sub
  
 sub do1_5_reningIhopslagen
+dim tablenames(3) as string
+
+tablenames(1) = "Rening_Mellersta"
+tablenames(2) = "rening_Norra"
+tablenames(3) = "rening_Södra"
+		call tableOpener(tablenames)	
 		dim tempstring as string tempstring = CreateTable_reningIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("rening_mellersta","reningIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
@@ -363,7 +384,7 @@ end sub
 
 sub do1_8_prepareSweref
 		redim tableNames(2)
-		dim tempstring as string tempstring = ApplicationDirectory$() & "\Fastigheter_sweref.TAB"
+		dim tempstring as string tempstring = ApplicationDirectory$() & "Fastigheter_sweref.TAB"
 		
 		if rebuild then		
 			tablenames(1) = "Fastigheter_swerefNoIndex"
@@ -371,12 +392,15 @@ sub do1_8_prepareSweref
 			call tableOpener(tablenames)
 			select * from tablenames(1) into "Fastigheter_sweref"
 			commit table Fastigheter_sweref  As tempstring TYPE NATIVE Charset "WindowsLatin1" Interactive
+			close table Fastigheter_sweref
+ 			open table tempstring
 			call UpdateIndex("Fastigheter_sweref")
 			Alter Table Fastigheter_sweref (add SpatialFastighet Char(40), SpatialShift Char(40))
 			Commit table Fastigheter_sweref
+			
 			Add Column "Fastigheter_sweref" (SpatialFastighet)From fastighet_yta Set To kir Where contains
 			Add Column "Fastigheter_sweref" (SpatialShift)From fastighet_yta Set To fastighet Where contains
-			call tableCloserAndCommiter(tableNames)
+			
 		end if
 		insert into Pathtable (tablePath,TableName) values (tempstring, "Fastigheter_sweref")
 
@@ -387,9 +411,9 @@ sub do1_9_egnEnskWSpatFas
 		redim tableNames(4)
 				
 		dim tempstring1,tempstring2,tempstring3 as string 
-			tempstring1 = ApplicationDirectory$() & "\Enskilt_avlopp_Södra.TAB"
-			tempstring2 = ApplicationDirectory$() & "\Enskilt_avlopp_Norra.TAB"
-			tempstring3 = ApplicationDirectory$() & "\Enskilt_avlopp_Mellersta.TAB"
+			tempstring1 = ApplicationDirectory$() & "Enskilt_avlopp_Södra.TAB"
+			tempstring2 = ApplicationDirectory$() & "Enskilt_avlopp_Norra.TAB"
+			tempstring3 = ApplicationDirectory$() & "Enskilt_avlopp_Mellersta.TAB"
 		
 		
 		if rebuild then
@@ -413,6 +437,7 @@ sub do1_9_egnEnskWSpatFas
 			open table tempstring1
 			open table tempstring2
 			open table tempstring3
+			call openSingleTable("fastighet_yta")
 			
 			Alter Table Enskilt_avlopp_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40) )
 			Add Column "Enskilt_avlopp_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
@@ -436,6 +461,15 @@ sub do1_9_egnEnskWSpatFas
 end sub
 
 sub do1_10_enskiltIhopslagen
+		
+		redim tableNames(3)
+	
+			tablenames(1) = "Enskilt_avlopp_Södra"
+			tablenames(2) = "Enskilt_avlopp_Norra"
+			tablenames(3) = "Enskilt_avlopp_Mellersta"
+			
+			call tableOpener(tablenames)
+
 
 		dim tempstring as string tempstring = CreateTable_enskiltIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("Enskilt_avlopp_mellersta","EnskiltIhopslagen")
@@ -475,8 +509,8 @@ sub do1_7_2readCurrentState(användaReningar() as integer)
 	'populates a single row table, if it fits the conditions, else it filters away unfit ressults
 
 		tempstring = socknarOfiltrerade.SockenX & "ressultat"  'if sockenNamnRessultat exsists, then true, else false
-	
-		if SingletableOpenerConfirmation(tempstring) then onError goto exitProg 
+	if tempstring <> "ressultat" then
+		if openTableAndConfirm(tempstring) then onError goto exitProg 
 			
 			query = "select max(objektid) " & " from " & tempstring & " " & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
 			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then	
@@ -484,8 +518,13 @@ sub do1_7_2readCurrentState(användaReningar() as integer)
 				select * from LatestObjectX into LatestObjectID	call görTillBastabell("LatestObjectID")	else
 				call closeIfnotClosed("LatestObjectX") end if onError goto 0
 		else
-			tempstring = socknarOfiltrerade.SockenX Insert Into sockenTabell (COL1) values (tempstring) end if fetch next from socknarOfiltrerade
-
+			tempstring = socknarOfiltrerade.SockenX
+			if tempstring <> "" then
+				Insert Into sockenTabell (COL1) values (tempstring) 
+			end if
+		end if
+		fetch next from socknarOfiltrerade
+	end if
 
 	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
 end sub		
@@ -634,82 +673,92 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 '			end case
 '		Next 
 							
-		print "change " & socken & " to " & nSocken socken = nSocken
-		redim tablenames(3) tablenames(1) = nSocken & "Fastigheter" tablenames(2) = "EnskiltIhopslagen" tablenames(3) = "reningIhopslagen" call tableOpener(tablenames) sockenTable = Socken & "Fastigheter"
-	
-		query = "select " & getColumnsOfTable_asString(tableNames(2)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+		redim tablenames(3) 
+		if nSocken <> "" then
 		
-		fetch first from Valtenskilt
-		print socken & " " & size & "valtEnskilt"
-			for x=1 to size Redim EnskiltObjekt(x)		
-				if (Valtenskilt.Diarienummer<>"MHN") then EnskiltObjekt(x).Diarienummer = DiarieMixedToUnit(Valtenskilt.Diarienummer) end if					
-				EnskiltObjekt(x).Fastighet_tillstånd = searchReplace(Valtenskilt.Fastighet_tillstånd,"""","'")
-				EnskiltObjekt(x).spatialShift = searchReplace(Valtenskilt.spatialshift,"""","'")
-				EnskiltObjekt(x).spatialFastighet = searchReplace(Valtenskilt.spatialFastighet,"""","'")
-				EnskiltObjekt(x).Typ_byggnad = searchReplace(Valtenskilt.Typ_byggnad,"""","'")
-				EnskiltObjekt(x).Antal_hushåll_tillstånd = searchReplace(Valtenskilt.Antal_hushåll_tillstånd,"""","'")
-				EnskiltObjekt(x).Fastighet_rening = searchReplace(Valtenskilt.Fastighet_rening,"""","'")
-				EnskiltObjekt(x).Typ_Slamavskiljare = searchReplace(Valtenskilt.Typ_Slamavskiljare,"""","'")
-				EnskiltObjekt(x).Storlek_m3 = Valtenskilt.Storlek_m3
-				EnskiltObjekt(x).Typ_rening = searchReplace(Valtenskilt.Typ_rening,"""","'")
-				EnskiltObjekt(x).Storlek_m2 = Valtenskilt.Storlek_m2
-				EnskiltObjekt(x).Typ_sluten_tank = searchReplace(Valtenskilt.Typ_sluten_tank,"""","'")
-				EnskiltObjekt(x).Storlek__m3 = Valtenskilt.Storlek__m3
-				EnskiltObjekt(x).Beslut_datum = Valtenskilt.Beslut_datum
-				EnskiltObjekt(x).Utförd_datum = Valtenskilt.Utförd_datum
-				EnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
-				EnskiltObjekt(x).Tillstånd_giltigt_tom = Valtenskilt.Tillstånd_giltigt_tom
-				EnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
-				EnskiltObjekt(x).kordinater = Valtenskilt.koor
-				
-				'EnskiltObjekt(x).slamDispDat = 
-			fetch next from ValtEnskilt
-		next
-			
-		query = "select " & getColumnsOfTable_asString(tableNames(3)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into ValtRening NoSelect" run command query size = tableInfo(valtRening,tab_info_nrows) fetch first from ValtRening
-		print socken & " " & size & "reningsObjekt"
-		for x=1 to size
-			
-			Redim reningsObjekt(x)
-			reningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
-			reningsObjekt(x).spatialShift = valtRening.spatialShift
-			reningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
-			reningsObjekt(x).Antal_hushåll_rening = iif(val(valtRening.Antal_hushåll_rening & "") <> 0,val(valtRening.Antal_hushåll_rening & ""),1)
-			reningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
-			reningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
-			reningsObjekt(x).kordinater = valtRening.koor tempstring = "" & 
-			valtRening.Beslut_datum if mixedDateToUnion(tempstring) <> "0" then reningsObjekt(x).Beslut_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if		tempstring = "" & 
-			valtRening.Utförd_datum	if mixedDateToUnion(tempstring) <> "0" then	reningsObjekt(x).utförd_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if
-			reningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & reningsObjekt(x).Kommentarer,"""","'")
-			call getAnslutna(reningsObjekt(x).Anslutna_fastigheter) 
-			reningsObjekt(x).rowIndex = valtRening.rowIndex
-			
-			fetch next from ValtRening
-		next
+			print "change " & socken & " to " & nSocken socken = nSocken
+			sockenTable = nSocken & "Fastigheter"
+			tablenames(1) = sockenTable
 		
-		query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+			tablenames(2) = "EnskiltIhopslagen"
+			tablenames(3) = "reningIhopslagen" 
+			call tableOpener(tablenames) 
+			
 		
-		if size > 0 then fetch first from Valtsweref
-			print socken & " " & size & "Valtsweref"
-			for x=1 to size
-				Redim swerefObjekt(x) 
-				swerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
-				swerefObjekt(x).Fastighet_tillstånd = searchReplace(Valtsweref.Fastighet_tillstånd,"""","'")
-				if (Valtsweref.Ärendenr<>"MHN") then swerefObjekt(x).Ärendenr = DiarieMixedToUnit(Valtsweref.Ärendenr) end if
-				swerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
-				swerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
-				swerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
-				swerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
-				swerefObjekt(x).utförddatum = Valtsweref.utförddatum
-				swerefObjekt(x).slamhämtning = searchReplace(Valtsweref.slamhämtning,"""","'")
-				swerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
-				swerefObjekt(x).kordinater = Valtsweref.koor
-				swerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
-	
-				fetch next from Valtsweref
+			query = "select " & getColumnsOfTable_asString(tableNames(2)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+			
+			fetch first from Valtenskilt
+			print socken & " " & size & "valtEnskilt"
+				for x=1 to size Redim EnskiltObjekt(x)		
+					if (Valtenskilt.Diarienummer<>"MHN") then EnskiltObjekt(x).Diarienummer = DiarieMixedToUnit(Valtenskilt.Diarienummer) end if					
+					EnskiltObjekt(x).Fastighet_tillstånd = searchReplace(Valtenskilt.Fastighet_tillstånd,"""","'")
+					EnskiltObjekt(x).spatialShift = searchReplace(Valtenskilt.spatialshift,"""","'")
+					EnskiltObjekt(x).spatialFastighet = searchReplace(Valtenskilt.spatialFastighet,"""","'")
+					EnskiltObjekt(x).Typ_byggnad = searchReplace(Valtenskilt.Typ_byggnad,"""","'")
+					EnskiltObjekt(x).Antal_hushåll_tillstånd = searchReplace(Valtenskilt.Antal_hushåll_tillstånd,"""","'")
+					EnskiltObjekt(x).Fastighet_rening = searchReplace(Valtenskilt.Fastighet_rening,"""","'")
+					EnskiltObjekt(x).Typ_Slamavskiljare = searchReplace(Valtenskilt.Typ_Slamavskiljare,"""","'")
+					EnskiltObjekt(x).Storlek_m3 = Valtenskilt.Storlek_m3
+					EnskiltObjekt(x).Typ_rening = searchReplace(Valtenskilt.Typ_rening,"""","'")
+					EnskiltObjekt(x).Storlek_m2 = Valtenskilt.Storlek_m2
+					EnskiltObjekt(x).Typ_sluten_tank = searchReplace(Valtenskilt.Typ_sluten_tank,"""","'")
+					EnskiltObjekt(x).Storlek__m3 = Valtenskilt.Storlek__m3
+					EnskiltObjekt(x).Beslut_datum = Valtenskilt.Beslut_datum
+					EnskiltObjekt(x).Utförd_datum = Valtenskilt.Utförd_datum
+					EnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
+					EnskiltObjekt(x).Tillstånd_giltigt_tom = Valtenskilt.Tillstånd_giltigt_tom
+					EnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
+					EnskiltObjekt(x).kordinater = Valtenskilt.koor
+					
+					'EnskiltObjekt(x).slamDispDat = 
+				fetch next from ValtEnskilt
 			next
-		end if
+				
+			query = "select " & getColumnsOfTable_asString(tableNames(3)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into ValtRening NoSelect" run command query size = tableInfo(valtRening,tab_info_nrows) fetch first from ValtRening
+			print socken & " " & size & "reningsObjekt"
+			for x=1 to size
+				
+				Redim reningsObjekt(x)
+				reningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
+				reningsObjekt(x).spatialShift = valtRening.spatialShift
+				reningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
+				reningsObjekt(x).Antal_hushåll_rening = iif(val(valtRening.Antal_hushåll_rening & "") <> 0,val(valtRening.Antal_hushåll_rening & ""),1)
+				reningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
+				reningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
+				reningsObjekt(x).kordinater = valtRening.koor tempstring = "" & 
+				valtRening.Beslut_datum if mixedDateToUnion(tempstring) <> "0" then reningsObjekt(x).Beslut_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if		tempstring = "" & 
+				valtRening.Utförd_datum	if mixedDateToUnion(tempstring) <> "0" then	reningsObjekt(x).utförd_datum = StringToDate(mixedDateToUnion(tempstring)) else	reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") end if
+				reningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & reningsObjekt(x).Kommentarer,"""","'")
+				call getAnslutna(reningsObjekt(x).Anslutna_fastigheter) 
+				reningsObjekt(x).rowIndex = valtRening.rowIndex
+				
+				fetch next from ValtRening
+			next
+			
+			query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+			
+			if size > 0 then fetch first from Valtsweref
+				print socken & " " & size & "Valtsweref"
+				for x=1 to size
+					Redim swerefObjekt(x) 
+					swerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
+					swerefObjekt(x).Fastighet_tillstånd = searchReplace(Valtsweref.Fastighet_tillstånd,"""","'")
+					if (Valtsweref.Ärendenr<>"MHN") then swerefObjekt(x).Ärendenr = DiarieMixedToUnit(Valtsweref.Ärendenr) end if
+					swerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
+					swerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
+					swerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
+					swerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
+					swerefObjekt(x).utförddatum = Valtsweref.utförddatum
+					swerefObjekt(x).slamhämtning = searchReplace(Valtsweref.slamhämtning,"""","'")
+					swerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
+					swerefObjekt(x).kordinater = Valtsweref.koor
+					swerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
 		
+					fetch next from Valtsweref
+				next
+			end if
+			
+	end if
 	call increment(iProgress,iProgressRange,starttime)		
 end sub
 

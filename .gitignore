@@ -13,3 +13,7 @@ AVLOPP_RENING_ENSKILT/
 Adress/
 Tab-Bygg_Fastigheter/
 Tab-sweref/
+*.DAT
+*.ID
+*.IND
+*.MAP
