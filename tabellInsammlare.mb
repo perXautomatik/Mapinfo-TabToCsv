@@ -1003,7 +1003,7 @@ sub insertInitialTables()
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "\distriktsindelning.TAB", "distriktsindelning")
 		
 		
-		Tempstring = "\FastighetsytaUpdeladIsocken\"
+		Tempstring = Tempstring & "\FastighetsytaUpdeladIsocken\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAFastigheter.TAB", "ANGAFastigheter")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAFastigheter.TAB", "BARAFastigheter")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOFastigheter.TAB", "ATLINGBOFastigheter")
