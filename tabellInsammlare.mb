@@ -972,10 +972,10 @@ sub insertInitialTables()
 		
 		tempstringx = "K:\KARTOR"
 		Tempstring = tempstringx & "\SOLEN_PUNKTER\"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "Adresspunkter.TAB", "Adresspunkter")
-		insert into Pathtable (tablePath,TableName) values (tempstringx + "\LANTMÄTERIET\FASTIGHETSKARTAN\Fastighet_yta.tab", "fastighet_ytaORg")
+		insert into Pathtable (tablePath,TableName) values ("C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Adress\Adresspunkter.TAB", "Adresspunkter")
+		insert into Pathtable (tablePath,TableName) values ("C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Tab-Bygg_Fastigheter\Fastighet_yta.tab", "fastighet_ytaORg")
 		
-		tempstringx = tempstringx & "\GOTLANDS KOMMUN\VA\AVLOPP\"
+		tempstringx = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\AVLOPP_RENING_ENSKILT\"
 		Tempstring = tempstringx & "Enskilt_avlopp_"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Enskilt_avlopp_SödraNoIndex")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Enskilt_avlopp_NorraNoIndex")
@@ -991,13 +991,16 @@ sub insertInitialTables()
 		
 		insert into Pathtable (tablePath,TableName) values (ApplicationDirectory$() & "AnvändaReningarsHash.tab", "AnvändaReningarsHash")
 	
-		tempstringx = "G:\sbf\LivsMiljö\"
-		Tempstring = tempstringx & "Miljö- och hälsoskydd\Vatten\Avlopp\Klart Vatten\Fastigheter\GIS\"
+		Tempstring = ApplicationDirectory$()
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "Sockentabell.TAB", "Sockentabell")
+
+		Tempstring = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Tab-sweref\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
 	
 		Tempstring = tempstringx & "Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler"
 	
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "\distriktsindelning.TAB", "distriktsindelning")
+		
 		
 		Tempstring = Tempstring & "\FastighetsytaUpdeladIsocken\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAFastigheter.TAB", "ANGAFastigheter")
@@ -1095,7 +1098,7 @@ sub insertInitialTables()
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEFastigheter.TAB", "FLERINGEFastigheter")
 
 		'Tempstring = ApplicationDirectory$()
-		tempstring = "\\storage01\app\EDP\EDP VISION\TempFilMapp\CRBK01"
+		tempstring = "\\storage01\app\EDP\EDP VISION\TempFilMapp\CRBK01\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAressultat.TAB", "ANGAressultat")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAressultat.TAB", "BARAressultat")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOressultat.TAB", "ATLINGBOressultat")
@@ -1190,8 +1193,6 @@ sub insertInitialTables()
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "ARDREressultat.TAB", "ARDREressultat")
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEressultat.TAB", "FLERINGEressultat")
 		
-		Tempstring = ApplicationDirectory$()
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "Sockentabell.TAB", "Sockentabell")
 end sub
 
 Sub gemAnslutna(caseString as string,ressultArray() as string)
