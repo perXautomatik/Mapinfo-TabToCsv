@@ -186,18 +186,23 @@ sub do1_11_prepareSocken
 		'sockenTabell måste skapas, men denna skall vara tom
 		'varför behöver sockenX, och 
 		'varför behöver vi änns skapa socknarOfiltrerade?
+		'verkar som att processor_sockenRead behöver socknarOfiltrerade,
+		'döper om den så att det förhoppningsvis inte sprider sig vidare
 
 		dim tempstring,tablenames(3) as string	,tempAlias as alias
 '	
-'		tempstring = "Sockentabell"
-'		if not(openTableAndConfirm(tempstring)) then
-'			print "rebuilding sockenTabell"
-'			dim tempBool as logical call openSingleTable("fastighet_yta") 
-'
-'			tempstring = createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
-'			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta
-'			select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-'		end if
+		tempstring = "socknarOfiltrerade"
+		if not(openTableAndConfirm(tempstring)) then
+			print "rebuilding socknarOfiltrerade"
+			dim tempBool as logical call openSingleTable("fastighet_yta") 
+
+			tempstring = createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta
+			select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+			commit table socknarOfiltrerade as ApplicationDirectory$() & "socknarOfiltrerade.tab"
+			close table sockenTabelx
+			call openSingleTable("socknarOfiltrerade")
+		end if
 '		
 '		
 '		select * from Sockentabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade

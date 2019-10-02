@@ -992,7 +992,7 @@ sub insertInitialTables()
 		insert into Pathtable (tablePath,TableName) values (ApplicationDirectory$() & "AnvändaReningarsHash.tab", "AnvändaReningarsHash")
 	
 		Tempstring = ApplicationDirectory$()
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "Sockentabell.TAB", "Sockentabell")
+		insert into Pathtable (tablePath,TableName) values (Tempstring + "socknarOfiltrerade.TAB", "socknarOfiltrerade")
 
 		Tempstring = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Tab-sweref\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
