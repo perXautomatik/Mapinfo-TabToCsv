@@ -153,7 +153,6 @@ sub processor_socken()
 		Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
 		'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet")
 		
-		
 		Call do2_1_newSocken(nSocken,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) 
 	
 		runns = timer() - starttime	
@@ -192,7 +191,7 @@ sub do1_11_prepareSocken
 		dim tempstring,tablenames(3) as string	,tempAlias as alias
 '	
 		tempstring = "socknarOfiltrerade"
-		if not(openTableAndConfirm(tempstring)) then
+		if rebuild then
 			print "rebuilding socknarOfiltrerade"
 			dim tempBool as logical call openSingleTable("fastighet_yta") 
 
@@ -209,7 +208,6 @@ sub do1_11_prepareSocken
 '		redim tablenames(2) tablenames(1) = "EnskiltIhopslagen" tablenames(2) = "reningIhopslagen" call tableOpener(tablenames)	
 		tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")
 end sub
-
 
 sub do1_7_2readCurrentState(användaReningar() as integer)
 	'call columnAsStringArray("gemensamma","kommentarer",gerdinsID)

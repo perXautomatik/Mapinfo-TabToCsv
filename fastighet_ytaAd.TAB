@@ -11,7 +11,7 @@ Definition Table
     POSTNR Char (9) ;
     POSTORT Char (105) ;
     FASTIGHET Char (54) ;
-    FNR Integer ;
+    FNR Integer Index 2 ;
 begin_metadata
 "\IsReadOnly" = "FALSE"
 "\MapInfo" = ""

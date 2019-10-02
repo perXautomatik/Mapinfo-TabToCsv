@@ -997,8 +997,6 @@ sub insertInitialTables()
 		Tempstring = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Tab-sweref\"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
 	
-		Tempstring = tempstringx & "Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler"
-	
 		Tempstring ="G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler"
 		insert into Pathtable (tablePath,TableName) values (Tempstring + "\distriktsindelning.TAB", "distriktsindelning")
 		
