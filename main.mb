@@ -125,21 +125,6 @@ sub processor_Pre
 		
 End Sub
 
-sub do1_11_prepareSocken
-		dim tempstring,tablenames(3) as string	,tempAlias as alias
-	
-		tempstring = "Sockentabell"
-		if not(openTableAndConfirm(tempstring)) then
-			print "rebuilding sockenTabell"
-			dim tempBool as logical call openSingleTable("fastighet_yta") tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")	& createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
-			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-		end if
-		
-		select * from sockenTabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-		redim tablenames(2) tablenames(1) = "EnskiltIhopslagen" tablenames(2) = "reningIhopslagen" call tableOpener(tablenames)	
-
-end sub
-
 
 sub processor_SockenRead
 	'creates two empty 1 column tables called sockenTabell and sockentabellX
@@ -156,8 +141,13 @@ end sub
 sub processor_socken()
 	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu, tempstring as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,do2_1_newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
 
-	starttime = timer() nSocken = sockenTabell.sockenX senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program
-	if nSocken <> "" then
+	starttime = timer() 
+	
+	if (tableInfo("sockenTabell",TAB_INFO_NROWS)) <> 0 then
+		print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
+		nSocken = sockenTabell.sockenX
+		
+		senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program
 		
 		call opensingletable("fastighet_yta")
 		Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
@@ -187,18 +177,46 @@ sub processor_socken()
 		redim utskriftsObjekt(1) redim fastighetsObjekt(1)
 	end if
 	fetch next from sockenTabell
+	
 end sub
 
+sub do1_11_prepareSocken
+		'figure out what wee need to do whit this function 
+		'lets say we generate a necessary table for processor_sockenRead
+		'sockenTabell måste skapas, men denna skall vara tom
+		'varför behöver sockenX, och 
+		'varför behöver vi änns skapa socknarOfiltrerade?
+
+		dim tempstring,tablenames(3) as string	,tempAlias as alias
+'	
+'		tempstring = "Sockentabell"
+'		if not(openTableAndConfirm(tempstring)) then
+'			print "rebuilding sockenTabell"
+'			dim tempBool as logical call openSingleTable("fastighet_yta") 
+'
+'			tempstring = createTemporaryTableAndOpen("""sockenTabelx"" (sockenX Char(254))")
+'			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta
+'			select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+'		end if
+'		
+'		
+'		select * from Sockentabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+'		redim tablenames(2) tablenames(1) = "EnskiltIhopslagen" tablenames(2) = "reningIhopslagen" call tableOpener(tablenames)	
+		tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")
+end sub
+
+
 sub do1_7_2readCurrentState(användaReningar() as integer)
-	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
-	
 	'call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
 	'SqlGenWhereColIsNotAny("objektid", gerdinsID) & 
-
 	'why do we need to populate the socken ref table like this everytime rather than using a premade?
 	'if socken is 'then ""'then ""'then ""'else
 	'populates a single row table, if it fits the conditions, else it filters away unfit ressults
-
+	'Todo: should open table, else, add to list of sockenTabell, that table should then be read in next step
+	
+	
+	dim filePath,tempsTring,gerdinsID(1),query as string ,i,x,returnInt as integer	,debugg as logical debugg = false	x = timer() returnInt = 0 if debugg then print "---------------------------boutToReadReningar-----" end if
+	
 	tempstring = socknarOfiltrerade.SockenX & "ressultat"  'if sockenNamnRessultat exsists, then true, else false
 	if tempstring <> "ressultat" then
 		if openTableAndConfirm(tempstring) then onError goto exitProg 
@@ -218,6 +236,8 @@ sub do1_7_2readCurrentState(användaReningar() as integer)
 	end if
 
 	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
+
+	call görTillBasTabell("sockenTabell")
 end sub	
 
 sub förberedAvslut()
