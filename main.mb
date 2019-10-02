@@ -226,8 +226,6 @@ Sub processor_Post()
 	
 End Sub
 
-
-
 sub byggnadsÅrTillFyraTecken
 	commit table helaSolen
 	Alter Table "HelaSolen" ( modify flik_Avloppsanläggn_Byggnadsår Char(4) ) Interactive
