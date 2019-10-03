@@ -17,3 +17,8 @@ Tab-sweref/
 *.ID
 *.IND
 *.MAP
+*.DAT
+*.TDA
+*.TIN
+*.TMA
+*.TAB
