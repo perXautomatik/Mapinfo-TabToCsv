@@ -600,6 +600,7 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 				reningsObjekt(x).kordinater = valtRening.koor 
 				
 				'Todo: why does this field end empty?
+				'seems like it always fails and send this date to the anteckningsfält
 				tempstring = "" & valtRening.Beslut_datum
 				if mixedDateToUnion(tempstring) <> "0" then
 					reningsObjekt(x).Beslut_datum = StringToDate(mixedDateToUnion(tempstring)) 
@@ -608,6 +609,7 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 				end if
 				
 				'Todo: why does this field end empty?
+				'seems like it always fails and send this date to the anteckningsfält
 				tempstring = "" & valtRening.Utförd_datum	
 				if mixedDateToUnion(tempstring) <> "0" then
 					reningsObjekt(x).utförd_datum = StringToDate(mixedDateToUnion(tempstring)) 
