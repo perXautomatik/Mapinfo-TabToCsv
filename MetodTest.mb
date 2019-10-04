@@ -12,8 +12,11 @@ Sub Main()
 	open table "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Old Mapbasic files\ReningIhopslagenBaraDatum.TAB"
 	
 	select col1,col2,col3,col4 from ReningIhopslagenBaraDatum where col2 <> "" into selection
-	Update selection Set COL4 = mixedDateToUnionx(COL2)	
+	onError goto x
+		Update selection Set COL4 = mixedDateToUnionx(COL2)	
+	onError goto 0
 	browse * from selection
+x:
 End Sub
 'Anläggningskategori,punkttypER "Efterföljande rening","Efterföljande rening"
 sub insertGemensamehetsanläggningar
@@ -1007,69 +1010,46 @@ End Sub
 
 
 function mixedDateToUnionx(byVal datumString as string) as string
-	dim tempInteger,i,theYear,theMonth,theDay as integer,sPartsArray(),sPartsArray2(),cleanedNumber,ressultString,PaddedMonth,PaddedDay,tempstring as string
-	
+	dim tempInteger,i,theYear,theMonth,theDay as integer,sPartsArray(),sPartsArray2(),cleanedNumber,ressultString,PaddedMonth,PaddedDay,tempstring as string,ThreePartText, allNumbers, lenghtIsSixOrEight as logical
 	'3 eller 1 vanligast, 3 för xxx-xxx-xxxx och 1 för xxxxxxxxx
+	,SplittingByScore,SplittingByDash as string
+	
 	
 	tempInteger = SplitStringAtCharacter(datumString & "", "-", sPartsArray2())
-	
-	
-	dim ThreePartText, allNumbers, lenghtIsSixOrEight as logical
+
+	if tempInteger = 1 then
+			'if splitting by - failed, splitt by /
+			'content in the array is then overwritten
+			tempInteger = SplitStringAtCharacter(datumString & "", "/", sPartsArray2())
+			
+			if tempInteger = 1 then
+				'if this failed aswell, then attempt to split by ' ' 
+				tempInteger = SplitStringAtCharacter(datumString & "", " ", sPartsArray2())
+				
+					if(tempinteger = 1) then
+						redim sPartsArray2(3)
+						'assuming we're dealing with the format XXXX'XX'XX without breakes
+						sPartsArray2(1) = left$(datumstring,4)
+						sPartsArray2(2) = left$(right$(datumstring,4),2)
+						sPartsArray2(3) = right$(datumString,2)
+						tempInteger = 3
+					end if
+			end if
+	end if
 		
 		ThreePartText = (tempInteger = 3)
-		allNumbers = ("" & val("" & datumstring) = datumstring)
-		lenghtIsSixOrEight = (len(datumstring) = 8 OR len(datumstring) = 6)
 		
-	if threepartText Or (allNumbers And lenghtIsSixOrEight) then
-			
-		if tempInteger = 1 then
-		print len(sPartsArray2())
-			tempInteger = SplitStringAtCharacter(datumString & "", "/", sPartsArray2())
-		print len(sPartsArray2())
-		end if
-		
-		
-		if tempInteger = 1 then
-			tempInteger = SplitStringAtCharacter(datumString & "", " ", sPartsArray2())
-		end if
-		
-		if(tempinteger = 1) then
-			call addStringToArrayAsifSet(sPartsArray2(),left$(datumstring,len(datumstring)-4))
-			call addStringToArrayAsifSet(sPartsArray2(),left$(right$(datumstring,4),2))
-			call addStringToArrayAsifSet(sPartsArray2(),right$(datumString,2)) 
-		end if
-		
-		for i = 1 to ubound(sPartsArray2)
-			if sPartsArray2(i) <> datumString then
-				call addStringToArrayAsifSet(sPartsArray(),sPartsArray2(i))
-			end if
-		next
-		
-		ressultString = "0"
-		
-		for i = 1 to ubound(sPartsArray)
-			do case i
-			case 1
-				TheYear = val("" & spartsArray(i))'MapInfo Pro uses the current century
-				TheYear = TheYear + iif(theYear > 100,0,iif(theYear > 20,1900,2000))
-				tempinteger = iif(theYear > 0 AND theYear < 3000,tempinteger,1)
-			case 2
-				theMonth = val(spartsArray(i))
-				theMonth = iif(val("" & theMonth) < 10,"0" & theMonth,theMonth)
-				tempinteger = iif(val("" & theMonth) > 0 AND val("" & theMonth) < 12,tempinteger,1)
-			case 3
-				theDay = val("" & spartsArray(i))
-				PaddedDay = iif(theDay < 10,"0" & theDay,theDay & "")
-				tempinteger = iif(val("" & theDay) > 0 AND val("" & theDay) < 31,tempinteger,1)
-				ressultString = iif(tempInteger = 0,theYear & theMonth & PaddedDay,ressultString)
-			end case
-		next
-		
-		mixedDateToUnionx = ressultString
+	if threepartText then
+				TheYear = val("" & spartsArray2(1))'MapInfo Pro uses the current century
+				theMonth = val("" & spartsArray2(2))
+				theDay = val("" & spartsArray2(3))
+				
+				ressultString = theYear & "-" & theMonth & "-" & theDay
+		onError goto x
+			mixedDateToUnionx = StringToDate(ressultString)
+		onError goto 0
 	else
 		mixedDateToUnionx = "0"
 	end if
-	
-	
-	
+x:
 End function

@@ -63,6 +63,7 @@ Sub Main()
 	iprogressRange = 8 iprogress = 0 startTime = timer() 
 	ProgressBar "processor_Pre...." & iProgressRange & " items" Calling processor_Pre Range iProgressRange
 	
+	call openSingletable("socknarOfiltrerade")
 	fetch first from socknarOfiltrerade
 	iprogressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) iprogress = 0 startTime = timer()
 		ProgressBar "processor_SockenRead...." & iProgressRange & " items"	calling processor_SockenRead	Range iProgressRange		
@@ -363,7 +364,10 @@ tablenames(3) = "rening_Södra"
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Södra","reningIhopslagen")
 		Commit table reningIhopslagen
+		
+		call UpdateIndex("reningIhopslagen")'already commits
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "reningIhopslagen")	
+		call tableCloserAndCommiter(tableNames)
 	end sub
 
 sub do1_7_2readCurrentState(användaReningar() as integer)
