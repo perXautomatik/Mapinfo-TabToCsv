@@ -538,7 +538,7 @@ end sub
 
 Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
 				
-		dim sockenTable,sTbl,query,tempstring as string
+		dim CurrentSocken,sTbl,query,tempstring as string
 		,iLoop,x,size as integer
 		
 '		For iLoop = 1 to numtables() 
@@ -554,14 +554,14 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 		if nSocken <> "" then
 		
 			print "change " & socken & " to " & nSocken socken = nSocken
-			sockenTable = nSocken & "Fastigheter"
-			tablenames(1) = sockenTable
+			CurrentSocken = nSocken & "Fastigheter"
+			tablenames(1) = CurrentSocken
 			tablenames(2) = "EnskiltIhopslagen"
 			tablenames(3) = "reningIhopslagen" 
 			call tableOpener(tablenames) 
 			
 		
-			query = "select " & getColumnsOfTable_asString(tableNames(2)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+			query = "select " & getColumnsOfTable_asString(tableNames(2)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen where spatialFastighet = any (select kir From " & CurrentSocken & ") group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
 			
 			fetch first from Valtenskilt
 			print socken & " " & size & "valtEnskilt"
@@ -590,7 +590,7 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 				fetch next from ValtEnskilt
 			next
 				
-			query = "select " & getColumnsOfTable_asString(tableNames(3)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen where obj within any (select Obj From " & SockenTable & ") group by rowindex into ValtRening NoSelect" run command query size = tableInfo(valtRening,tab_info_nrows) fetch first from ValtRening
+			query = "select " & getColumnsOfTable_asString(tableNames(3)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen where spatialFastighet = any (select kir From " & CurrentSocken & ") group by rowindex into ValtRening NoSelect" run command query size = tableInfo(valtRening,tab_info_nrows) fetch first from ValtRening
 			print socken & " " & size & "reningsObjekt"
 			for x=1 to size
 				
@@ -631,7 +631,7 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 			next
 			call openSingleTable("Fastigheter_sweref")
 			
-			query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+			query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref where spatialFastighet = any (select kir From " & CurrentSocken & ") group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
 			
 			if size > 0 then fetch first from Valtsweref
 				print socken & " " & size & "Valtsweref"
