@@ -443,9 +443,9 @@ sub do1_9_egnEnskWSpatFas
 			tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
 			tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
 			tablenames(4) = "fastighet_yta"
-			
+		end program			
 			call tableOpener(tablenames)
-			
+		end program	
 			select * from tablenames(1) into "Enskilt_avlopp_Södra"
 			select * from tablenames(2) into "Enskilt_avlopp_Norra"
 			select * from tablenames(3) into "Enskilt_avlopp_Mellersta"
@@ -455,7 +455,7 @@ sub do1_9_egnEnskWSpatFas
 			commit table Enskilt_avlopp_Mellersta  As tempstring3 TYPE NATIVE Charset "WindowsLatin1" Interactive
 			
 			call tableCloser(tablenames())
-			
+		end program	
 			open table tempstring1
 			open table tempstring2
 			open table tempstring3
