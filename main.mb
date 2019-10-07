@@ -438,7 +438,7 @@ sub do1_9_egnEnskWSpatFas
 			tempstring3 = ApplicationDirectory$() & "Enskilt_avlopp_Mellersta.TAB"
 		
 		
-		if rebuild then
+		if true then
 			tablenames(1) = "Enskilt_avlopp_SödraNoIndex"
 			tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
 			tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
@@ -589,6 +589,8 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 					'EnskiltObjekt(x).slamDispDat = 
 				fetch next from ValtEnskilt
 			next
+			
+			end program
 				
 			query = "select " & getColumnsOfTable_asString(tableNames(3)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & CurrentSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query size = tableInfo(valtRening,tab_info_nrows) fetch first from ValtRening
 			print socken & " " & size & "reningsObjekt"
