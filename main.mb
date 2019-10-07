@@ -603,30 +603,33 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 				reningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
 				reningsObjekt(x).kordinater = valtRening.koor 
 				
-				'Todo: why does this field end empty?
+				'resolved: no longer resoloves to zero always
 				'seems like it always fails and send this date to the anteckningsfält
-				tempstring = "" & valtRening.Beslut_datum
-				if mixedDateToUnion(tempstring) <> "0" then
-					reningsObjekt(x).Beslut_datum = StringToDate(mixedDateToUnion(tempstring)) 
+				tempstring = "" & mixedDateToUnion("" & valtRening.Beslut_datum)
+				if tempstring <> "0" then
+					reningsObjekt(x).Beslut_datum = tempstring 
 				else
 					reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") 
 				end if
 				
-				'Todo: why does this field end empty?
+				'resolved: no longer resoloves to zero always
 				'seems like it always fails and send this date to the anteckningsfält
-				tempstring = "" & valtRening.Utförd_datum	
-				if mixedDateToUnion(tempstring) <> "0" then
-					reningsObjekt(x).utförd_datum = StringToDate(mixedDateToUnion(tempstring)) 
+				tempstring = "" & mixedDateToUnion("" & valtRening.Utförd_datum)
+				if tempstring <> "0" then
+					reningsObjekt(x).utförd_datum = tempstring 
 				else	
 					reningsObjekt(x).Kommentarer = searchReplace(tempString & " " & reningsObjekt(x).Kommentarer,"""","'") 
 				end if
 				
+				'assume this line removes double entries in 
 				reningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & reningsObjekt(x).Kommentarer,"""","'")
-				call getAnslutna(reningsObjekt(x).Anslutna_fastigheter) 
+				
+				call getAnslutna(reningsObjekt(x).Anslutna_fastigheter)
 				reningsObjekt(x).rowIndex = valtRening.rowIndex
 				
 				fetch next from ValtRening
 			next
+			call openSingleTable("Fastigheter_sweref")
 			
 			query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref where obj within any (select Obj From " & SockenTable & ") group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
 			
