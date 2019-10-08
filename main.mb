@@ -38,6 +38,13 @@ declare sub do3_2_MHK()
 declare sub do3_4_MultiplaFastigheter
 declare sub do3_5_MånsBilder
 declare sub byggnadsÅrTillFyraTecken
+declare sub doMutations(fastighetsObjekt() as fastighetsobjekt, utskriftsObjekt() as utskriftsObjekt)
+
+declare sub prepareMutations(EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt,fastighetsObjekt() as fastighetsobjekt ,utskriftsObjekt() as utskriftsObjekt)
+
+declare sub do2_1_newSockenSweref(byVal nSocken as string,swerefObjekt() as swerefObjekt)
+declare sub do2_1_newSockenRening(byVal nSocken as string,reningsObjekt() as reningsObjekt)
+declare sub do2_1_newSockenEnskilt(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt)
 
 declare sub do1_7_2readCurrentState(användaReningar() as integer)
 
@@ -68,12 +75,19 @@ Sub Main()
 	iprogressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) iprogress = 0 startTime = timer()
 		ProgressBar "processor_SockenRead...." & iProgressRange & " items"	calling processor_SockenRead	Range iProgressRange		
 	
-	onError goto sockenError	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) if iprogressRange <> 0 then	startTime = timer() iprogress = 0
+	onError goto sockenError	
+	
+	call opensingletable("fastighet_yta")
+	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
+	
+	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) + tableInfo(SorteradFastighet,TAB_INFO_NROWS)
+	if tableinfo(sockenTabell,tab_info_nRows) <> 0 then	startTime = timer() iprogress = 0
 		ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
 		else
 			'load ressult
 		end if
 	onError goto 0
+	
 
 	onError goto förberedAvslutError
 		call förberedAvslut() 	onError goto 0
@@ -140,45 +154,75 @@ sub processor_SockenRead
 end sub
 
 sub processor_socken()
-	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu, tempstring as string ,x,runns,användaReningar() as integer ,currentObjectid,endtime,integerX as float ,do2_1_newSocken as logical ,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
+	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu, tempstring as string 
+	,x,runns,användaReningar() as integer 
+	,currentObjectid,endtime,integerX as float 
+	,do2_1_newSocken as logical
+	,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
 
 	starttime = timer() 
 	
-	if (tableInfo("sockenTabell",TAB_INFO_NROWS)) <> 0 then
-		print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
-		nSocken = sockenTabell.sockenX
-		
-		senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program
-		
-		call opensingletable("fastighet_yta")
-		Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
-		'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet")
-		
-		Call do2_1_newSocken(nSocken,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) 
-		
-		print "doneWithDo2_1_newSocken"
-		runns = timer() - starttime	
-		
-		if(tableInfo(SorteradFastighet,TAB_INFO_NROWS)) <> 0 then
-			fetch first from SorteradFastighet 
-			
-			call increment(iProgress,iProgressRange,starttime)	starttime = timer()	do UNtil EOT(SorteradFastighet)
-				fastighetJustNu = SorteradFastighet.kir
-				'	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if
-				if fastighetJustNu <> "" then 
-					call do2_2_inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt())'reads selected row from sorteradFastighet 
-				end if
-				fetch Next from SorteradFastighet
-			loop	endtime = timer()-starttime	print "***************************************************************************************************************************" print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" print "***************************************************************************************************************************"
-			
-			for x = 1 to ubound(fastighetsObjekt) call tolkning(FastighetsObjekt(x),utskriftsObjekt,användaReningar) next 
-			
-			call do2_4_saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program 
-		end if
-		redim utskriftsObjekt(1) redim fastighetsObjekt(1)
-	end if
+	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
+	nSocken = sockenTabell.sockenX
+	
+	'initializing global vars?
+	senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program
+	
+	call opensingletable("fastighet_yta")
+	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
+	'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet")
+	
+	Call do2_1_newSockenRening(nSocken,reningsObjekt()) 
+	call increment(iProgress,iProgressRange,starttime)	
+	Call do2_1_newSockenEnskilt(nSocken,EnskiltObjekt()) 
+	call increment(iProgress,iProgressRange,starttime)	
+	Call do2_1_newSockenSweref(nSocken,swerefObjekt()) 
+	call increment(iProgress,iProgressRange,starttime)	
+	print "doneWithDo2_1_newSocken"
+	runns = timer() - starttime	
+
+	fetch first from SorteradFastighet 
+	
+	starttime = timer()
+	
+	do UNtil EOT(SorteradFastighet)
+		call prepareMutations(EnskiltObjekt,reningsObjekt,swerefObjekt,fastighetsobjekt,utskriftsObjekt)
+		call increment(iProgress,iProgressRange,starttime)	
+		fetch Next from SorteradFastighet		
+	loop
+	endtime = timer()-starttime
+	
+	print "***************************************************************************************************************************"
+	print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" 
+	print "***************************************************************************************************************************"
+	
+	call doMutations(fastighetsobjekt, utskriftsObjekt)
+
 	fetch next from sockenTabell
 	
+end sub
+
+sub prepareMutations(EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt,fastighetsObjekt() as fastighetsobjekt ,utskriftsObjekt() as utskriftsObjekt)
+	dim fastighetJustNu as string 
+	,endtime,integerX as float 
+	
+	if(tableInfo(SorteradFastighet,TAB_INFO_NROWS)) <> 0 then
+		fastighetJustNu = SorteradFastighet.kir
+		'	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if
+		if fastighetJustNu <> "" then 
+			call do2_2_inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt())'reads selected row from sorteradFastighet 
+		end if
+	end if
+end sub
+
+sub doMutations(fastighetsObjekt() as fastighetsobjekt, utskriftsObjekt() as utskriftsObjekt)
+		dim x as integer
+		for x = 1 to ubound(fastighetsObjekt) 
+			call tolkning(FastighetsObjekt(x),utskriftsObjekt,användaReningar)
+		next
+		
+		call do2_4_saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program 
+
 end sub
 
 sub förberedAvslut()
@@ -537,21 +581,60 @@ sub do1_11_prepareSocken
 		tempstring = createTemporaryTableAndOpen("""sockenTabell"" (sockenX Char(254))")
 end sub
 
-
-Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt)
-				
+Sub do2_1_newSockenSweref(byVal nSocken as string,swerefObjekt() as swerefObjekt)
+'rewrite so that progressbar can be visualized in this method,
+'was thinking that maybe a case division, 
+'does case work with variables?	it seems like it does in fact work
+' but maybe not neccessary		
 		dim CurrentSocken,sTbl,query,tempstring as string
 		,iLoop,x,size as integer
+	
+		redim tablenames(3) 
+		if nSocken <> "" then
 		
-'		For iLoop = 1 to numtables() 
-'			do case tableinfo(iLoop,1)
-'				case "enskiltSocken" drop table enskiltSocken
-'				case "SockenSweref"	drop table SockenSweref
-'				case "ReningSocken"	drop table ReningSocken
-'				case else
-'			end case
-'		Next 
-							
+			print "change " & socken & " to " & nSocken socken = nSocken
+			CurrentSocken = nSocken & "Fastigheter"
+			tablenames(1) = CurrentSocken
+			tablenames(2) = "EnskiltIhopslagen"
+			tablenames(3) = "reningIhopslagen" 
+			call tableOpener(tablenames) 
+			call openSingleTable("Fastigheter_sweref")
+			
+			query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref," & CurrentSocken & " where spatialFastighet = kir  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+			
+			if size > 0 then fetch first from Valtsweref
+				print socken & " " & size & "Valtsweref"
+				for x=1 to size
+					Redim swerefObjekt(x) 
+					swerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
+					swerefObjekt(x).Fastighet_tillstånd = searchReplace(Valtsweref.Fastighet_tillstånd,"""","'")
+					if (Valtsweref.Ärendenr<>"MHN") then swerefObjekt(x).Ärendenr = DiarieMixedToUnit(Valtsweref.Ärendenr) end if
+					swerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
+					swerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
+					swerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
+					swerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
+					swerefObjekt(x).utförddatum = Valtsweref.utförddatum
+					swerefObjekt(x).slamhämtning = searchReplace(Valtsweref.slamhämtning,"""","'")
+					swerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
+					swerefObjekt(x).kordinater = Valtsweref.koor
+					swerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
+					
+					fetch next from Valtsweref
+				next
+			end if
+			call increment(iProgress,iProgressRange,starttime)	
+	end if
+	
+end sub
+
+Sub do2_1_newSockenEnskilt(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt)
+'rewrite so that progressbar can be visualized in this method,
+'was thinking that maybe a case division, 
+'does case work with variables?	it seems like it does in fact work
+' but maybe not neccessary		
+		dim CurrentSocken,sTbl,query,tempstring as string
+		,iLoop,x,size as integer
+	
 		redim tablenames(3) 
 		if nSocken <> "" then
 		
@@ -562,7 +645,6 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 			tablenames(3) = "reningIhopslagen" 
 			call tableOpener(tablenames) 
 			
-		
 			query = "select " & getColumnsOfTable_asString(tableNames(2)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen," & CurrentSocken & " where spatialFastighet = kir  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
 			
 			fetch first from Valtenskilt
@@ -591,9 +673,29 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 					'EnskiltObjekt(x).slamDispDat = 
 				fetch next from ValtEnskilt
 			next
-			
 			'end program
-				
+	end if
+	
+end sub
+
+Sub do2_1_newSockenRening(byVal nSocken as string,reningsObjekt() as reningsObjekt)
+'rewrite so that progressbar can be visualized in this method,
+'was thinking that maybe a case division, 
+'does case work with variables?	it seems like it does in fact work
+' but maybe not neccessary		
+		dim CurrentSocken,sTbl,query,tempstring as string
+		,iLoop,x,size as integer
+	
+		redim tablenames(3) 
+		if nSocken <> "" then
+		
+			print "change " & socken & " to " & nSocken socken = nSocken
+			CurrentSocken = nSocken & "Fastigheter"
+			tablenames(1) = CurrentSocken
+			tablenames(2) = "EnskiltIhopslagen"
+			tablenames(3) = "reningIhopslagen" 
+			call tableOpener(tablenames) 
+							
 			query = "select " & getColumnsOfTable_asString(tableNames(3)) & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & CurrentSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query size = tableInfo(valtRening,tab_info_nrows) fetch first from ValtRening
 			print socken & " " & size & "reningsObjekt"
 			for x=1 to size
@@ -623,32 +725,8 @@ Sub do2_1_newSocken(byVal nSocken as string,EnskiltObjekt() as enskiltObjekt,ren
 				
 				fetch next from ValtRening
 			next
-			call openSingleTable("Fastigheter_sweref")
-			
-			query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref," & CurrentSocken & " where spatialFastighet = kir  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
-			
-			if size > 0 then fetch first from Valtsweref
-				print socken & " " & size & "Valtsweref"
-				for x=1 to size
-					Redim swerefObjekt(x) 
-					swerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
-					swerefObjekt(x).Fastighet_tillstånd = searchReplace(Valtsweref.Fastighet_tillstånd,"""","'")
-					if (Valtsweref.Ärendenr<>"MHN") then swerefObjekt(x).Ärendenr = DiarieMixedToUnit(Valtsweref.Ärendenr) end if
-					swerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
-					swerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
-					swerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
-					swerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
-					swerefObjekt(x).utförddatum = Valtsweref.utförddatum
-					swerefObjekt(x).slamhämtning = searchReplace(Valtsweref.slamhämtning,"""","'")
-					swerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
-					swerefObjekt(x).kordinater = Valtsweref.koor
-					swerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
-					
-					fetch next from Valtsweref
-				next
-			end if
 	end if
-	call increment(iProgress,iProgressRange,starttime)		
+	
 end sub
 
 'läser in forna sockenfiler, laddar listan med använda reningar.
