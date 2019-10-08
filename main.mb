@@ -441,7 +441,8 @@ sub do1_9_egnEnskWSpatFas
 			tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
 			tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
 			tablenames(4) = "fastighet_yta"
-
+			
+			call closeAllbut(tablenames)
 			call tableOpener(tablenames)
 
 			select * from tablenames(1) into "Enskilt_avlopp_Södra"
