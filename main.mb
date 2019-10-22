@@ -50,7 +50,7 @@ declare sub do1_7_2readCurrentState(användaReningar() as integer)
 
 
 global workDir as string,användaReningar() as integer ,rebuild as logical
-
+	,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
 	'+ tableinfo(antalKörningar,tab_info_nrows) *9
 	'if sockentabell is zero, this segment is completely skipped
 	'that means that the sockenprogressioncheck has laready bin done in the pathTablePopulation
@@ -64,7 +64,8 @@ Sub Main()
 	'we could simply manually update, with a swithch
 	
 	rebuild = false
-	print Chr$(12) run command("Set " + EPSGToCoordSysString$("EPSG::3022")) workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv" dim tablenames(1) as string 
+	print Chr$(12) 'emptyScreen
+	run command("Set " + EPSGToCoordSysString$("EPSG::3022")) workdir = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv" dim tablenames(1) as string
 	tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	
 	iprogressRange = 8 iprogress = 0 startTime = timer() 
@@ -78,14 +79,29 @@ Sub Main()
 	fetch first from sockentabell
 	Do Until EOT(sockentabell)
 		dim nSocken as string
-		nSocken = sockentabell.sockenx
 		onError goto SelectionError	
+		
+			print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
+			nSocken = sockenTabell.sockenX
+
 		
 			call opensingletable("fastighet_yta")
 			
-			dim tempQuery as string tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & nSocken & " where kir <> """" group by kir into SorteradFastighet"
+			dim tempQuery as string 
+			tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & nSocken & Chr$(34) & " AND kir <> """" group by kir into SorteradFastighet"
 			run command tempQuery
-			
+		onError goto 0
+		
+		OnError goto LoadSockenError
+				
+			Call do2_1_newSockenRening(nSocken,reningsObjekt()) 
+
+			Call do2_1_newSockenEnskilt(nSocken,EnskiltObjekt()) 
+
+			Call do2_1_newSockenSweref(nSocken,swerefObjekt()) 
+
+			print "doneWithDo2_1_newSocken"
+		
 		onError goto 0
 		
 	
@@ -95,6 +111,8 @@ Sub Main()
 				ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
 			end if
 		onError goto 0
+		
+		fetch next from sockentabell
 	
 	loop
 
@@ -106,6 +124,11 @@ Sub Main()
 		ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange onError goto 0
 
 exit sub	
+	LoadSockenError:
+		print "Error,LoadSockenError "
+		print error$()		
+	    end program
+	    
 	selectionError:
 		print "Error,selectionError " & tempQuery
 		print error$()
@@ -174,29 +197,16 @@ sub processor_socken()
 	,x,runns,användaReningar() as integer 
 	,currentObjectid,endtime,integerX as float 
 	,do2_1_newSocken as logical
-	,fastighetsObjekt() as fastighetsobjekt ,swerefObjekt() as swerefObjekt,reningsObjekt() as reningsObjekt ,EnskiltObjekt() as enskiltObjekt ,utskriftsObjekt() as utskriftsObjekt
+
 
 	starttime = timer() 
-	
-	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
 	nSocken = sockenTabell.sockenX
 	
 	'initializing global vars?
 	senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program
 	
-	call opensingletable("fastighet_yta")
-	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
 	'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet")
 	
-	Call do2_1_newSockenRening(nSocken,reningsObjekt()) 
-	call increment(iProgress,iProgressRange,starttime)	
-	Call do2_1_newSockenEnskilt(nSocken,EnskiltObjekt()) 
-	call increment(iProgress,iProgressRange,starttime)	
-	Call do2_1_newSockenSweref(nSocken,swerefObjekt()) 
-	call increment(iProgress,iProgressRange,starttime)	
-	print "doneWithDo2_1_newSocken"
-	runns = timer() - starttime	
-
 	fetch first from SorteradFastighet 
 	
 	starttime = timer()
