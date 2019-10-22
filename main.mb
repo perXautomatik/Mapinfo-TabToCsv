@@ -74,20 +74,30 @@ Sub Main()
 	fetch first from socknarOfiltrerade
 	iprogressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) iprogress = 0 startTime = timer()
 		ProgressBar "processor_SockenRead...." & iProgressRange & " items"	calling processor_SockenRead	Range iProgressRange		
+
+	fetch first from sockentabell
+	Do Until EOT(sockentabell)
+		dim nSocken as string
+		nSocken = sockentabell.sockenx
+		onError goto SelectionError	
+		
+			call opensingletable("fastighet_yta")
+			
+			dim tempQuery as string tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & nSocken & " where kir <> """" group by kir into SorteradFastighet"
+			run command tempQuery
+			
+		onError goto 0
+		
 	
-	onError goto sockenError	
+		iprogressRange = tableinfo(sockenTabell,tab_info_nRows) + tableInfo(SorteradFastighet,TAB_INFO_NROWS)
+		onError goto sockenError	
+			if tableinfo(sockenTabell,tab_info_nRows) <> 0 then	startTime = timer() iprogress = 0
+				ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
+			end if
+		onError goto 0
 	
-	call opensingletable("fastighet_yta")
-	Select * from fastighet_yta where left$(KIR,InStr(1,KIR," ",)-1) = nSocken where kir <> "" group by kir into SorteradFastighet 
-	
-	iprogressRange = tableinfo(sockenTabell,tab_info_nRows) + tableInfo(SorteradFastighet,TAB_INFO_NROWS)
-	if tableinfo(sockenTabell,tab_info_nRows) <> 0 then	startTime = timer() iprogress = 0
-		ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
-		else
-			'load ressult
-		end if
-	onError goto 0
-	
+	loop
+
 
 	onError goto förberedAvslutError
 		call förberedAvslut() 	onError goto 0
@@ -96,6 +106,12 @@ Sub Main()
 		ProgressBar "processor_Post...." & iProgressRange & " items"	Calling processor_Post	Range iProgressRange onError goto 0
 
 exit sub	
+	selectionError:
+		print "Error,selectionError " & tempQuery
+		print error$()
+		
+		end program
+	
 	förberedAvslutError:
 		print "Error,förberedAvslutError"
 		end program
