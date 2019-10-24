@@ -8,7 +8,7 @@ declare Sub Main()
 
 declare sub processor_Pre
 declare Sub processor_Post()
-declare sub processor_socken()
+declare sub processor_PrepMutate()
 
 declare sub do1_1_genPathTab 
 declare sub do1_3_GenFasWithAdr
@@ -103,17 +103,23 @@ Sub Main()
 			print "doneWithDo2_1_newSocken"
 		
 		onError goto 0
-		
-	
-		iprogressRange = tableinfo(sockenTabell,tab_info_nRows) + tableInfo(SorteradFastighet,TAB_INFO_NROWS)
+				
+		iprogressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS)
 		onError goto sockenError	
-			if tableinfo(sockenTabell,tab_info_nRows) <> 0 then	startTime = timer() iprogress = 0
-				ProgressBar "processor_socken...." & iProgressRange & " items" Calling processor_socken Range iProgressRange	
+			if iprogressRange <> 0 then	
+				startTime = timer() iprogress = 0
+				fetch first from SorteradFastighet 
+				ProgressBar "processor_PrepMutate...." & iProgressRange & " items" Calling processor_PrepMutate Range iProgressRange	
 			end if
 		onError goto 0
 		
-		fetch next from sockentabell
-	
+		print "***************************************************************************************************************************"
+		print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" 
+		print "***************************************************************************************************************************"
+		
+		call doMutations(fastighetsobjekt, utskriftsObjekt)
+		
+		fetch next from sockentabell		
 	loop
 
 
@@ -192,12 +198,11 @@ sub processor_SockenRead
 	'then iProgress = -2 end if
 end sub
 
-sub processor_socken()
+sub processor_PrepMutate()
 	dim senasteFastighet,förraSocken,FastighetsBetInput,temp,nSocken,fastighetJustNu, tempstring as string 
 	,x,runns,användaReningar() as integer 
 	,currentObjectid,endtime,integerX as float 
 	,do2_1_newSocken as logical
-
 
 	starttime = timer() 
 	nSocken = sockenTabell.sockenX
@@ -207,25 +212,13 @@ sub processor_socken()
 	
 	'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet")
 	
-	fetch first from SorteradFastighet 
-	
 	starttime = timer()
 	
-	do UNtil EOT(SorteradFastighet)
-		call prepareMutations(EnskiltObjekt,reningsObjekt,swerefObjekt,fastighetsobjekt,utskriftsObjekt)
-		call increment(iProgress,iProgressRange,starttime)	
-		fetch Next from SorteradFastighet		
-	loop
+	call prepareMutations(EnskiltObjekt,reningsObjekt,swerefObjekt,fastighetsobjekt,utskriftsObjekt)
+	call increment(iProgress,iProgressRange,starttime)	
+	fetch Next from SorteradFastighet		
 	endtime = timer()-starttime
-	
-	print "***************************************************************************************************************************"
-	print (timer()-starttime)/integerX & " tidsenheter| " & endtime & " Totala körningens| "  & runns & " sockengenerering" 
-	print "***************************************************************************************************************************"
-	
-	call doMutations(fastighetsobjekt, utskriftsObjekt)
 
-	fetch next from sockenTabell
-	
 end sub
 
 sub prepareMutations(EnskiltObjekt() as enskiltObjekt,reningsObjekt() as reningsObjekt,swerefObjekt() as swerefObjekt,fastighetsObjekt() as fastighetsobjekt ,utskriftsObjekt() as utskriftsObjekt)
