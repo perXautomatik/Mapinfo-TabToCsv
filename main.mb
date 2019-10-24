@@ -73,7 +73,7 @@ Sub Main()
 		onError goto SelectionError	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS) nSocken = sockenTabell.sockenX call opensingletable("fastighet_yta") dim tempQuery as string tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & nSocken & Chr$(34) & " AND kir <> """" group by kir into SorteradFastighet"	run command tempQuery onError goto 0
 		OnError goto LoadSockenError call loadSocken(nSocken) onError goto 0		
 		onError goto processor_3PrepMutateError iprogressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if iprogressRange <> 0 then	startTime = timer() iprogress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & iProgressRange & " items" Calling processor_3PrepMutate Range iProgressRange	call SilenttidsSummering(iProgress,iProgressRange,starttime,"processor_1PreMutate") end if onError goto 0	
-		onError goto processor_4MutateError iprogressRange = ubound(FastighetsObjekt) if iprogressRange <> 0 then	startTime = timer() iprogress = 0 ProgressBar "processor_4Mutate...." & iProgressRange & " items" Calling processor_4Mutate Range iProgressRange	call SilenttidsSummering(iProgress,iProgressRange,starttime,"processor_4Mutate") end if onError goto 0
+		onError goto processor_4MutateError iprogressRange = ubound(FastighetsObjekt) if iprogressRange <> 0 then	startTime = timer() iprogress = 1 ProgressBar "processor_4Mutate...." & iProgressRange & " items" Calling processor_4Mutate Range iProgressRange	call SilenttidsSummering(iProgress,iProgressRange,starttime,"processor_4Mutate") end if onError goto 0
 		
 		call do2_4_saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program 
 
@@ -148,7 +148,8 @@ end sub
 
 sub processor_4Mutate()
 	onError goto intervallet
-	if (iprogress < ubound(fastighetsobjekt)) then
+	if (iprogress <= ubound(fastighetsobjekt)) then
+
 		call tolkning(FastighetsObjekt(iprogress),utskriftsObjekt,användaReningar)
 	end if
 	onError goto 0
@@ -160,7 +161,6 @@ exit sub
 	print error$()
 	print iprogress
 	print ubound(fastighetsobjekt)
-	
 	
 end sub
 

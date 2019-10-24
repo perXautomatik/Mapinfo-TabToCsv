@@ -2491,7 +2491,7 @@ end if
 			end if	
 		next
 		
-		print fas.postort 'to halt eternal loops
+		print fastighetsobjekt.ort 'to halt eternal loops
 if(debugg) then			
 	print "|taget" & högstaIn & "|nr" & mestTrov
 	print "|R" & ReningAsString(FastighetsObjekt.reningsobjekt(trovärdighetsobjekt(mestTrov).rx)) & "|E" & enskiltAsString(FastighetsObjekt.enskiltObjekt(trovärdighetsobjekt(mestTrov).ex)) & "|S" & swerefAsString(FastighetsObjekt.swerefobjekt(trovärdighetsobjekt(mestTrov).fx))
