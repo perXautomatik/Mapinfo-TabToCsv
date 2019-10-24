@@ -73,8 +73,10 @@ Sub Main()
 		onError goto SelectionError	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS) nSocken = sockenTabell.sockenX call opensingletable("fastighet_yta") dim tempQuery as string tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & nSocken & Chr$(34) & " AND kir <> """" group by kir into SorteradFastighet"	run command tempQuery onError goto 0
 		OnError goto LoadSockenError call loadSocken(nSocken) onError goto 0		
 		onError goto processor_3PrepMutateError iprogressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if iprogressRange <> 0 then	startTime = timer() iprogress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & iProgressRange & " items" Calling processor_3PrepMutate Range iProgressRange	call SilenttidsSummering(iProgress,iProgressRange,starttime,"processor_1PreMutate") end if onError goto 0	
-		onError goto processor_4MutateError iprogressRange = ubound(FastighetsObjekt) if iprogressRange <> 0 then	startTime = timer() iprogress = 0 fetch first from SorteradFastighet ProgressBar "processor_4Mutate...." & iProgressRange & " items" Calling processor_4Mutate Range iProgressRange	call SilenttidsSummering(iProgress,iProgressRange,starttime,"processor_4Mutate") end if onError goto 0
-				
+		onError goto processor_4MutateError iprogressRange = ubound(FastighetsObjekt) if iprogressRange <> 0 then	startTime = timer() iprogress = 0 ProgressBar "processor_4Mutate...." & iProgressRange & " items" Calling processor_4Mutate Range iProgressRange	call SilenttidsSummering(iProgress,iProgressRange,starttime,"processor_4Mutate") end if onError goto 0
+		
+		call do2_4_saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program 
+
 		fetch next from sockentabell		
 	loop
 
@@ -92,12 +94,6 @@ exit sub
 	postProcessError:	print "postProcessError"	end program
 	sockenError:	print "sockenError"	end program
 
-end sub
-
-sub processor_4Mutate()
-
-	call do4_Mutations(fastighetsobjekt, utskriftsObjekt)
-	call increment(iProgress,iProgressRange,starttime)	
 end sub
 
 sub processor_1Pre
@@ -150,6 +146,13 @@ sub processor_3PrepMutate()
 	fastighetJustNu = SorteradFastighet.kir if fastighetJustNu <> "" then 	call do3_inläsning(FastighetsObjekt,EnskiltObjekt(),reningsObjekt(),swerefObjekt()) end if fetch Next from SorteradFastighet	call increment(iProgress,iProgressRange,starttime)	
 end sub
 
+sub processor_4Mutate()
+
+	call tolkning(FastighetsObjekt(iprogress),utskriftsObjekt,användaReningar)
+	call increment(iProgress,iProgressRange,starttime)	
+end sub
+
+
 sub do3_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskiltObjekt,tempAlias2() as reningsobjekt,tempAlias1() as swerefObjekt)
 	'läser in forna sockenfiler, laddar listan med använda reningar.'rening bör inte skapas igen föräns vid datumskifte, precis som SockenUtsökning 'do3_inläsning förväntar sig att isdo2_1_newSocken har genrerat tabeller 
 	
@@ -172,16 +175,6 @@ sub do3_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskilt
 	'call increment(iProgress,iProgressRange,starttime)
 
 End sub
-
-sub do4_Mutations(fastighetsObjekt() as fastighetsobjekt, utskriftsObjekt() as utskriftsObjekt)
-		dim x as integer
-		for x = 1 to ubound(fastighetsObjekt) 
-			call tolkning(FastighetsObjekt(x),utskriftsObjekt,användaReningar)
-		next
-		
-		call do2_4_saveProgress(utskriftsObjekt,användaReningar) 'Runns = Runns+1 if(runns = 2) then '	end program 
-
-end sub
 
 sub förberedAvslut()
 	Create table "HelaSolen" (Besöksadress_Adress Char(253),Besöksadress_Postnr Char(253),Besöksadress_Ort Char(253),Besöksadress_Huvudfastighet Char(34),FNR Integer,Verksamhetsutövare_Namn Char(253),Verksamhetsutöv_Person_orgnr Integer,Fakturamottagare_NAMN Char(253),Fakturamottagare_Faktura_ADRESS Char(253),Fakturamottagare_Faktura_POSTNR Char(253),Fakturamottagare_Faktura_POSTOR Char(253),Enhet Char(6),Anteckning Char(253),Aktuell_timavgift Integer,Timdebitering Logical,Objektnamn Char(36),flik_Avloppsänlaggni_Boendetyp Char(15),flik_Avloppsanläggn_Byggnadsår Date,flik_Avloppsa_Besiktningsdatum Date,flik_Avloppsanläg_Beslutsdatum Date,Vatten Char(17),Recipient Char(49),Inventering Char(12),Inventeringsinformation_Datum Date,Inventeringsinformation_Status Char(6),Bedömning Char(15),fliken_Fastigheter Char(34),fliken_FastigheterFNR Integer,PunkttypAB Char(16),Fliken_Koordinater Char(19),fliken_Ärenden Char(13),Anläggningskategori Char(20),besiktningdatum Date,beslutsdatum Date,Anläggningstyp Char(15),Volym_m3 Float,Anl_för_EftR_TöInterv_mån Integer,AnlF_efR_Koordinater_X_o_Y Char(19),PunkttypER Char(20),Anläggning_för_EfterföljRText Char(253),Anläggningskategori_2 Char(19),Anläggning_för_S_Anläggningstyp Char(15),Externt_Tjänsteid Integer,text Char(253),Anläggning_för_Slamav_Volym_m3 Float,Anläggningskategori_3 Char(19),AnlförEfterR_Anläggningstyp Char(15),besiktningdatum_2 Date,beslutsdatum_2 Date,Externt_Tjänsteid2 Integer,Volym_m32 Float,ObjektID Integer,Path Char(253),Diarienummer Char(13),Löpnummer Integer) file workdir & "\HelaSolen.TAB" TYPE NATIVE Charset "WindowsLatin1"
@@ -552,17 +545,12 @@ sub loadSocken(nSocken as string)
 	if nSocken <> "" then
 	
 	print "change " & socken & " to " & nSocken socken = nSocken
-	CurrentSocken = nSocken & "Fastigheter"
-	tablenames(1) = CurrentSocken
-	tablenames(2) = "EnskiltIhopslagen"
-	tablenames(3) = "reningIhopslagen" 
-	tablenames(4) = "Fastigheter_sweref"
-	call tableOpener(tablenames) 
-			
-	dim tempinterger as integer startTime = timer() iprogress = 0
-	Call do2_1_newSockenRening(nSocken,reningsObjekt(),currentSocken) tempinterger = UBound(reningsObjekt()) call SilenttidsSummering(tempinterger,tempinterger,starttime,"do2_1_newSockenRening") startTime = timer() iprogress = 0 tempinterger = ubound(EnskiltObjekt)
-	Call do2_1_newSockenEnskilt(nSocken,EnskiltObjekt(),currentSocken) call SilenttidsSummering(tempinterger,tempinterger,starttime,"do2_1_newSockenEnskilt") startTime = timer() iprogress = 0
-	Call do2_1_newSockenSweref(nSocken,swerefObjekt(),currentSocken) tempinterger = ubound(swerefObjekt) call SilenttidsSummering(tempinterger,tempinterger,starttime,"do2_1_newSockenSweref") 
+	CurrentSocken = nSocken & "Fastigheter" tablenames(1) = CurrentSocken tablenames(2) = "EnskiltIhopslagen" tablenames(3) = "reningIhopslagen"  tablenames(4) = "Fastigheter_sweref" call tableOpener(tablenames) 
+			iprogress = 0 
+	dim tempinterger as integer startTime = timer() 
+	Call do2_1_newSockenRening(nSocken,reningsObjekt(),currentSocken) 'tempinterger = UBound(reningsObjekt()) call SilenttidsSummering(tempinterger,tempinterger,starttime,"do2_1_newSockenRening") startTime = timer() 
+	Call do2_1_newSockenEnskilt(nSocken,EnskiltObjekt(),currentSocken) 'tempinterger = ubound(EnskiltObjekt) call SilenttidsSummering(tempinterger,tempinterger,starttime,"do2_1_newSockenEnskilt") startTime = timer()
+	Call do2_1_newSockenSweref(nSocken,swerefObjekt(),currentSocken) 'tempinterger = ubound(swerefObjekt) call SilenttidsSummering(tempinterger,tempinterger,starttime,"do2_1_newSockenSweref")
 	end if
 end sub
 
