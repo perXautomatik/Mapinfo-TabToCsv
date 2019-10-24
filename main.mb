@@ -161,7 +161,7 @@ sub do3_inläsning(fastighetsobjekt() as FastighetsObjekt,tempAlias3() as enskilt
 		antal = antal + ReningsFilterByBet(tempAlias2,FastighetsBetInput,reningsObjekt)'	ReningStop = timer()'	EnskiltStart = timer()'läser in förgenererad tabell begränsad efter socknen
 		antal = antal + EnskiltFilterByBet(tempAlias3,FastighetsBetInput,enskiltObjekt)'	EnskiltStop = timer()
 		
-		if(antal > 0) then
+		if(antal > 0) then 'todo: check the mutation filtering, check what's exculded, does it properly delete used objects?
 			call FastighetsObjCreation(fastighetsBetInput,reningsobjekt,fastighetsObjekt,swerefObjekt,enskiltObjekt)
 		end if
 	else

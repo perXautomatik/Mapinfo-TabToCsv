@@ -529,13 +529,13 @@ sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObje
 end sub
 
 sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
-		dim x,q,i as integer
-
-		i = ubound(fastighetsObjekt)+1	
-		redim fastighetsObjekt(i)
+		dim x,q,i as integer i = ubound(fastighetsObjekt)+1	redim fastighetsObjekt(i)
 				
 		fastighetsObjekt(i).kir = fastighetsBetInput
-		select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = fastighetsBetInput into fas
+		
+		onError goto fasSelectError
+		run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = fastighetsBetInput into fas"
+		onerror goto 0
 		
 		fetch first from fas
 				
@@ -577,7 +577,6 @@ sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as rening
 '		next
 '	
 		
-		
 		for x=1 to ubound(swerefObjekt)
 			redim fastighetsObjekt(i).swerefObjekt(x)
 		
@@ -616,7 +615,11 @@ sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as rening
 			fastighetsObjekt(i).enskiltObjekt(x).spatialShift = enskiltObjekt(x).spatialShift
 			fastighetsObjekt(i).enskiltObjekt(x).spatialFastighet = enskiltObjekt(x).spatialFastighet
 			fastighetsObjekt(i).enskiltObjekt(x).kordinater = enskiltObjekt(x).kordinater
-		next	
+		next
+		
+exit sub
+
+fasSelectError:
 	
 End Sub
 
