@@ -147,9 +147,21 @@ sub processor_3PrepMutate()
 end sub
 
 sub processor_4Mutate()
-
-	call tolkning(FastighetsObjekt(iprogress),utskriftsObjekt,användaReningar)
-	call increment(iProgress,iProgressRange,starttime)	
+	onError goto intervallet
+	if (iprogress < ubound(fastighetsobjekt)) then
+		call tolkning(FastighetsObjekt(iprogress),utskriftsObjekt,användaReningar)
+	end if
+	onError goto 0
+	
+	call increment(iProgress,iProgressRange,starttime)
+	
+exit sub
+	intervallet:
+	print error$()
+	print iprogress
+	print ubound(fastighetsobjekt)
+	
+	
 end sub
 
 
