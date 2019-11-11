@@ -56,7 +56,7 @@ G_EnskiltObjekt() as EnskiltObjekt
 Sub Main()
 
 	G_debugg = true
-	G_rebuild = false
+	G_rebuild = true
 	print Chr$(12) 'emptyScreen
 	G_senastTid = 0
 	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
