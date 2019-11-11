@@ -1,8 +1,0 @@
-declare Sub postProcesses()
-declare Sub postProcessor()
-declare sub assosieraFnr()
-declare sub insertAnteckningar
-declare sub insertFulaFastigheter()
-declare sub insertMultiplaFastigheter
-declare sub insertMånsBilder
-declare sub insertMHK()
