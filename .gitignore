@@ -22,5 +22,6 @@ Tab-sweref/
 *.TIN
 *.TMA
 *.TAB
-HelaSolen.DAT
 HelaSolen.TAB
+*.DAT
+Komponent/MHK PathReferenser.csv

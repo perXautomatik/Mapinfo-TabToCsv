@@ -1,6 +1,6 @@
 Include "MapBasic.def"
 include "commonLib\commonLib1.def"
-
+ 
 Declare Sub Main
 
 declare sub insertGemensamehetsanläggningar

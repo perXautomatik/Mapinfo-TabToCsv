@@ -1,62 +1,3 @@
-Dim tablenames(5),distrikt,FastighetsBetInput,qm,socken as string,iProgress,iProgressRange,jProgress,jProgressRange,starttime as integer,reningDistrikt,enskiltDistrikt as alias
-
-Type ReningsObjekt
-
-	Fastighet_rening as string
-	Antal_hushåll_rening as integer
-	Reningstyp as string
-	Storlek_m2 as float
-	Beslut_datum as date
-	Utförd_datum as date
-	Kommentarer as string
-	spatialFastighet as string
-	spatialShift as string
-	rowIndex as integer
-	kordinater as string
-	Anslutna_fastigheter() as string
-
-end Type
-
-Type SwerefObjekt
-
-	FASTIGHET as string
-	Fastighet_tillstånd as string
-	Ärendenr as string
-	Beslut_datum as date
-	Status as string
-	Utskick1_datum as date
-	Anteckning as string
-	utförddatum as date
-	slamhämtning as string
-	Antal_byggnader as integer	
-	kordinater as string
-	SpatialFastighet as string
-
-end Type
-
-Type EnskiltObjekt
-
-	Diarienummer as string
-	Fastighet_tillstånd as string
-	Typ_byggnad as string
-	Antal_hushåll_tillstånd as string
-	Fastighet_rening as string
-	Typ_Slamavskiljare as string
-	Storlek_m3 as float
-	Typ_rening as string
-	Storlek_m2 as float
-	Typ_sluten_tank as string
-	Storlek__m3 as float
-	Beslut_datum as date
-	Utförd_datum as date
-	Avgift as integer
-	Tillstånd_giltigt_tom as date
-	Anteckningar as string
-	spatialShift as string
-	spatialFastighet as string
-	kordinater as string
-	
-end Type
 
 Type UtskriftsObjekt
 	
@@ -131,10 +72,69 @@ Type UtskriftsObjekt
 	Diarienummer as String
 	Löpnummer as integer
 
-
-
 	sql as string
 	reningsindex as integer
+	
+end Type
+
+
+Type ReningsObjekt
+
+	Fastighet_rening as string
+	Antal_hushåll_rening as integer
+	Reningstyp as string
+	Storlek_m2 as float
+	Beslut_datum as date
+	Utförd_datum as date
+	Kommentarer as string
+	spatialFastighet as string
+	spatialShift as string
+	rowIndex as integer
+	kordinater as string
+	Anslutna_fastigheter() as string
+
+end Type
+
+Type SwerefObjekt
+
+	FASTIGHET as string
+	Fastighet_tillstånd as string
+	Ärendenr as string
+	Beslut_datum as date
+	Status as string
+	Utskick1_datum as date
+	Anteckning as string
+	utförddatum as date
+	slamhämtning as string
+	Antal_byggnader as integer	
+	kordinater as string
+	SpatialFastighet as string
+	rowIndex as integer
+	
+end Type
+
+Type EnskiltObjekt
+
+	Diarienummer as string
+	Fastighet_tillstånd as string
+	Typ_byggnad as string
+	Antal_hushåll_tillstånd as string
+	Fastighet_rening as string
+	Typ_Slamavskiljare as string
+	Storlek_m3 as float
+	Typ_rening as string
+	Storlek_m2 as float
+	Typ_sluten_tank as string
+	Storlek__m3 as float
+	Beslut_datum as date
+	Utförd_datum as date
+	Avgift as integer
+	Tillstånd_giltigt_tom as date
+	Anteckningar as string
+	spatialShift as string
+	spatialFastighet as string
+	kordinater as string
+	rowIndex as integer
 	
 end Type
 
@@ -143,9 +143,14 @@ Type FastighetsObjekt
 	fastighet as string
 	fnr as integer
 	
-	swerefobjekt() as SwerefObjekt
-	reningsobjekt() as reningsObjekt
-	enskiltobjekt() as enskiltObjekt
+	HuvudSweref as integer
+	HuvudRening as integer
+	HuvudEnskilt as integer
+	
+	swerefObjekt as String
+	ReningsObjekt as String
+	EnskiltObjekt as String
+	
 	
 	adress as string
 	postnr as string
@@ -168,77 +173,59 @@ Type TrovärdighetsObjekt
 	rx as integer
 End Type
 
-	' hur vet vi att en gemensam rening redan refferats till?
-	' skapar att objekt enligt rutin för gemensamhetanläggningar, samt att vi lägger till det radindex
-	' när vi sedan är påväg att skapa ett gemensamhetsobjekt i ressultattabellen, skippar vi att skapaom rOet
-	' om index redan finns där.
-declare sub utskrivningsobjektsKonstruktor(
-		swerefobjekt as swerefobjekt,
-		reningsobjekt as reningsobjekt,
-		enskiltobjekt as enskiltobjekt,
-		UtskriftsObjekt() as UtskriftsObjekt,
-		användaReningar() as integer,
-		trovärdighetsIndex as float,
-		fastighetsObjekt as fastighetsObjekt
-	)
-	
+
+Type AnläggningsObjekt
+
+		Anläggningskategori as string '",: "Char(29)",: "Efterföljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
+		Kartpunkt as string '",: "Char(20)",:PunkttypER "Efterföljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
+		
+		besiktningdatum as date ',: "datum(ÅÅ-MM-DD)",: "utförandedatum  (rening/beslut/tank)"
+		beslutsdatum as date '",: "datum(ÅÅ-MM-DD)",: "beslutsdatum (rening/beslut/tank)"
+		
+		Anläggningstyp as string '",: "Char(15)",: "Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) \"Klart Vatten"
+		
+		Volym_m3 as float '",: "float",: "Storlek_m2 (rening)/Storlek_m3  (Beslut)"
+		
+		Antal_hushåll_rening as integer '",: "integer",: "Anl_för_EftR_TöInterv_mån (rening)"
+		
+		Koordinater as string '",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (där infiltration/markbädd är belägen)/(där ansluten)/(där EXTRA inventeringsinformation är belägen)"
+				
+		Kommentarer as string '",: "Char(253)(fältmaxlängd)",: "Anläggning_för_EfterföljRText (rening/sweref/beslut)"
+		
+		ärendenr as string '",: "integer",: " Externt Tjänsteid (beslut/tank/sweref)"
+		
+		Typ_byggnad as string '",: "Char(15)",: "Anläggning_för_S_Anläggningstyp (beslut)"
+		
+		Status as string '",: "Char(6)",: " text (sweref)"
+		
+		Slamdispense as date '",: "datum(ÅÅ-MM-DD)",:AnlförEfterR_Anläggningstyp ""
+		
+		Utskick1_datum as date '",: "datum(ÅÅ-MM-DD)",: "Anläggning_för_Slamav_Volym_m3  (sweref)"
+		
+		radNummer as integer
+
+end type
+
 declare function trovärdighetsIndexer(
-	användaReningar() as integer,
 	swerefobjekt as swerefobjekt,
 	reningsobjekt as reningsobjekt,
 	enskiltobjekt as enskiltobjekt
 	) as float
 
-		
-	'är det för krävande att hämta poster enligt index?
-	'FastighetsBetInput = columnAtIndexAsString(temp,tempString,iprogress)
+declare sub createRessultTable(byVal tableName as string,byVal pathX as string)
 
-	'gissar vilket distrikt som fastighet hör till som skall öppnas
-	'nödvändigt för att spara tid?'''ja det är nödvändigt, fundera på att skära ner i ännu mindre delar.
-	'bit nedskärning gjorde väldigt liten tidskillnad gemnförelse att förindexera alla sökvariabler.
+declare sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
 
-declare sub tolkning(FastighetsObjekt as FastighetsObjekt, UtskriftsObjekt() as UtskriftsObjekt,användaReningar() as integer)
-
-'även ifall man "pregenerating area" tar hela processen fortfarande väldigt lång tid, frågan är om skulle kunna förindexera alla fastigheter
-'ty varjer within+within+within tar längretid än en tre gånger så stor within.
-'ääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääääää
-'när en matchning gjorts, ta bort delarna från ittarationen
-'gör ny matchning på resterande.
-'önskade mutationer är ihopparade ressultat, samt de ej assosicerade bitarna för sig
-'önskade mutationer är ihopparade ressultat, samt de ej assosicerade bitarna för sig
-' tex om en enskilt som inte har en rening att matcha denne
-' tex en sweref som inte har en enskilt att matcha med
-' dock inga reningar då dessa får tas fram senare.
-'	print FastighetsObjekt.fastighet & ":" & ubound(FastighetsObjekt.enskiltobjekt()) & ":" & ubound(FastighetsObjekt.swerefobjekt()) & ":" & ubound(FastighetsObjekt.reningsobjekt())
-'
-'	if(ubound(fastighetsobjekt.swerefobjekt)>ubound(fastighetsobjekt.enskiltobjekt)) then
-'		'make regular mutations
-'		'for each beslut pick most accurat
-'		'if the is one that's not
-'		'make a mutation where only sweref left
-'		'the mutation with the swerefobjekt who have the highest match get picked
-'	end if
-'	
-'	if(ubound(fastighetsobjekt.reningsobjekt)>ubound(fastighetsobjekt.enskiltobjekt)) then
-'		'the mutation with the rening who have the highest match get picked
-'	end if
-			'när högst trovärdighet valts ut, skapas ett utskriftsobjekt			
-			'			print ubound(FastighetsObjekt.swerefobjekt) & "fx" '& trovärdighetsobjekt(mestTrov).fx
-			'			print ubound(FastighetsObjekt.reningsobjekt) & "rx" '& trovärdighetsobjekt(mestTrov).rx
-			'			print ubound(FastighetsObjekt.enskiltobjekt) & "ex" '& trovärdighetsobjekt(mestTrov).ex
-			'			print ubound(trovärdighetsobjekt) & "tro " & mestTrov & " tra"
-declare sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,användaReningar as integer,UtskriftsObjekt() as utskriftsobjekt, tolkningsobjekt() as TrovärdighetsObjekt)
-
-declare function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
-declare function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
-declare function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+declare function InitializeSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+declare function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+declare function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
 
 declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
 declare function ReningÄrInteToken(x as reningsobjekt) as logical
 declare function EnskiltÄrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
-declare sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
 
-declare function countFasGenerateUtvald(FastighetB as string) as integer
+
+declare function countShiftenGenUtvald(FastighetB as string) as integer
 declare function CreateTable_reningIhopslagen as string
 declare function CreateTable_EnskiltIhopslagen as string
 declare function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
@@ -251,20 +238,10 @@ declare function countOccurences(byVal colummn as string) as integer
 declare sub injectGemensamma()
 declare sub insertInitialTables()
 
-declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
-
-declare sub diarienummerForUtskriftsObjekt(
-	utskriftsObjekt() as utskriftsobjekt,
-	itterator as integer,
-	enskiltObjekt as enskiltobjekt,
-	swerefObjekt as swerefobjekt, 
-	objektid as integer
-	)
-
 
 declare sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 declare sub createRessultTableX(byval tablename as string, byval filePath as string)
-declare sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
+declare sub UtskriftsObjToInsertStringArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
 
 declare sub doTheDateStandardisation(värde() as string,påPlatts() as string,byVal DatumSträngTagIsammanfogad as string)
 
@@ -286,9 +263,102 @@ Declare Sub gemAnslutna(caseString as string,ressultArray() as string)
 declare sub messageEveryString(StringArray() as String)
 declare function DebuggStringEveryInt(IntArray() as integer) as string
 
-declare function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
-declare function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
-declare function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
+
 declare sub PrepareGemensamma()
 
+declare sub do6_1_assosieraFnr
+declare sub do6_2_MHK
+declare sub do6_3_Anteckningar
+declare sub do6_4_MultiplaFastigheter
+declare sub do6_5_MånsBilder
+declare sub do6_6_Gem
+declare sub do6_7_CorW3Fas
+declare sub do6_8_SlamDisp 
+declare sub do6_9_byggnadsÅrTillFyraTecken
 
+declare sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
+declare sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
+declare sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
+
+declare sub TabToObjEnskilt(byVal nSocken as string,output() as EnskiltObjekt)
+declare sub TabToObjRening(byVal nSocken as string,output() as ReningsObjekt)
+declare Sub TabToObSweref(byVal SockenFastigheter as string,output() as swerefObjekt)
+
+declare sub createFastighetsTable(byval tablename as string, byval filePath as string)
+declare sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+declare sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
+declare sub FastighetsObjToInsertStringArray(output() as string, inputx as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+
+declare sub fetchReningByIndex(stringArray() as string,output() as reningsObjekt)
+declare sub fetchEnskiltByIndex(stringArray() as string,output() as enskiltObjekt)
+declare sub fetchSwerefByIndex(stringArray() as string,output() as swerefObjekt)
+
+declare function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
+declare function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
+declare function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
+
+declare sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
+declare sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
+declare sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
+
+
+declare function getMain(inputString as string, output() as string) as integer
+
+declare function findWhereInStringArray(byVal värde as string, array() as string) as integer 
+
+declare sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as integer)
+
+declare sub saveSockenProgress(socken as string)
+
+declare sub saveUtskriftsProgress(G_utskriftsObjekt() as utskriftsObjekt)
+
+Declare Sub insertAt(
+				trodvädighet as trovärdighetsobjekt, 'which rows in each table that should be moved
+				enskiltTokenObjekt() as enskiltObjekt,
+				reningsTokenObjekt() as reningsObjekt,
+				swerefTokenObjekt() as swerefObjekt,
+				toInsertAt as integer) ' to which place in the table
+
+Declare Sub genTrovärdighet(trodvädighet() as trovärdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
+Declare sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltsTokenObjekt() as enskiltObjekt,swerefsTokenObjekt() as swerefobjekt)
+
+Declare Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt, byVal minimumDebt as integer)
+
+Declare sub Avloppsanläggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
+Declare sub huvudObjekt(uObj() as UtskriftsObjekt, it as integer)
+Declare sub samlingsobjekt(uObj() as UtskriftsObjekt,ittr as integer)
+Declare sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swerefobjekt)
+
+Declare sub ärenden(uObj() as UtskriftsObjekt,ittr as integer)
+Declare sub koordinater(uObj() as UtskriftsObjekt,ittr as integer)
+Declare sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
+Declare sub Anläggning(uObj() as anläggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
+
+declare sub utskrivningsobjektsKonstruktor(
+		sO() as swerefobjekt,
+		rO() as reningsObjekt,
+		eO() as enskiltobjekt
+	)
+	
+Declare function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
+ 
+Declare function anläggningsobjektToUtskifts(anl() as AnläggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
+
+declare function diarienummerForUtskriftsObjekt(
+	utskriftsObjekt() as utskriftsobjekt,
+	itterator as integer,
+	enskiltObjekt() as enskiltobjekt,
+	swerefObjekt() as swerefobjekt, 
+	objektid as integer
+	) as integer
+
+
+declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,swerefObjekt() as swerefobjekt,reningsobjekt() as reningsobjekt,enskiltObjekt() as enskiltobjekt, objektid as integer)
+
+declare sub anteckningKordinat(sweref as swerefobjekt,ensk as enskiltobjekt,rening as reningsobjekt ,uObj() as utskriftsobjekt, ittr as integer)
+Declare function resTabPos(byVal colName as string) as integer
+
+declare function enforceFormat(byVal inputx as string,byVal format as string,byVal lenght as integer) as string
+declare function enforceFormTa(byVal inputx as string,byVal col as string) as string
+
+declare function textAppend(byVal initial as string,byVal prefix as string,byVal  appendant as string) as string
