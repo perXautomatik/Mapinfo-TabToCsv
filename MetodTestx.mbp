@@ -1,0 +1,5 @@
+[Link]
+Application = MetodTest.mbx
+
+Module = MetodTest
+Module = commonLib\commonLib1

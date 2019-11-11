@@ -17,6 +17,17 @@ Tab-sweref/
 *.ID
 *.IND
 *.MAP
+<<<<<<< HEAD
 HelaSolen.TDA
 HelaSolen.TIN
 HelaSolen.DAT
+=======
+*.DAT
+*.TDA
+*.TIN
+*.TMA
+*.TAB
+HelaSolen.TAB
+*.DAT
+Komponent/MHK PathReferenser.csv
+>>>>>>> master

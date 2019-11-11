@@ -1,1197 +1,251 @@
+
+
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
 include "commonLib\commonLib1.def"
 
-global senastObjectID as integer
 
-sub createRessultTableX(byval tablename as string, byval filePath as string)
+function resTabPos(byVal colName as string) as integer
 	
-	dim sockenTable,sTbl,query,tempstring as string
-	,iLoop,x,size as integer
-	
-	
-	print "13" & tablename
-	For iLoop = 1 to numtables() 
-		if tableinfo(iLoop,1) = tablename then
-				print "17" & tablename
-				drop table tablename
-		end if
-		print "20" &  tableinfo(iLoop,1)
-	Next 
-	
-	onError goto creationError
-	print "25" & tablename
-	Create Table tableName (
-				Besöksadress_Adress	Char(253),
-				Besöksadress_Postnr	Char(253),
-				Besöksadress_Ort Char(253),
-				Besöksadress_Huvudfastighet	Char(34),
-				FNR integer,
-				Verksamhetsutövare_Namn	Char(253),
-				Verksamhetsutöv_Person_orgnr integer,
-				Fakturamottagare_NAMN Char(253),
-				Fakturamottagare_Faktura_ADRESS	Char(253),
-				Fakturamottagare_Faktura_POSTNR	Char(253),
-				Fakturamottagare_Faktura_POSTOR	Char(253),
-				Enhet Char(6),
-				Anteckning	Char(253),
-				Aktuell_timavgift integer,
-				Timdebitering Logical,
-				Objektnamn	Char(36),
-				flik_Avloppsänlaggni_Boendetyp	Char(15),
-				flik_Avloppsanläggn_Byggnadsår Date,
-				flik_Avloppsa_Besiktningsdatum Date,
-				flik_Avloppsanläg_Beslutsdatum Date,
-				Vatten	Char(17),
-				Recipient Char(49),
-				Inventering	Char(12),
-				Inventeringsinformation_Datum Date,
-				Inventeringsinformation_Status	Char(6),
-				Bedömning Char(15),
-				fliken_Fastigheter	Char(34),
-				fliken_FastigheterFNR integer,
-				PunkttypAB Char(16),
-				Fliken_Koordinater	Char(19),
-				fliken_Ärenden	char(13),
-				Anläggningskategori	Char(20),
-				besiktningdatum Date,
-				beslutsdatum Date,
-				Anläggningstyp	Char(15),
-				Volym_m3 float,
-				Anl_för_EftR_TöInterv_mån integer,
-				AnlF_efR_Koordinater_X_o_Y	Char(19),
-				PunkttypER	Char(20),
-				Anläggning_för_EfterföljRText Char(253),
-				Anläggningskategori	Char(19),
-				Anläggning_för_S_Anläggningstyp	Char(15),
-				Externt_Tjänsteid integer,
-				text Char(253),
-				Anläggning_för_Slamav_Volym_m3 float,
-				Anläggningskategori	Char(19),
-				AnlförEfterR_Anläggningstyp	Char(15),
-				besiktningdatum Date,
-				beslutsdatum Date,
-				Externt_Tjänsteid2 integer,
-				Volym_m32 float,
-				ObjektID integer,
-				Path Char(253),
-				Diarienummer char(13),
-				Löpnummer integer
-
-			) file filePath TYPE NATIVE Charset "WindowsLatin1"
-			Create Map For tablename CoordSys Earth Projection 1, 104
+	onError goto killProgram
+		resTabPos = Columninfo("sockenRessultat",colName,Col_info_num)
 	onError goto 0
 	
-exit sub
-	creationError:
-	print "creationError" & error$()
-	end program
-	
-end sub
-
-sub getAnslutna(anslutan() as string)'hämtar också gemensamhetsanläggningar
-	dim P as integer
-	,tempString as string
-	,anslutningsAlias as alias
-	,temptext as string
-	
-	if(not(valtRening.anslutna_fastigheter_10 = "gem,gem")) then
-		for p=1 to 10		
-			anslutningsAlias = "valtRening.Anslutna_fastigheter_" & p
-			temptext = anslutningsAlias
-			if(temptext <> "") then
-				call addStringToArrayAsifSet(anslutan(),searchReplace(temptext,"""","'"))
-			end if
-		next
-	else
-		tempString = valtRening.kommentarer 'kommentarfältet har identifieringen
-		call gemAnslutna(tempstring,anslutan())
-		call addStringToArrayAsifSet(anslutan(),"gem,gem")
-	end if
-
-end sub
-
-function EnskiltFilterByBet(tabloid() as EnskiltObjekt,FastighetsBetInput as String,enskiltObjekt() as EnskiltObjekt) as integer
-	
-	
-	dim y,x as integer
-	y = 1
-	
-	for x=1 to ubound(tabloid)
-	
-		if((tabloid(x).spatialFastighet = FastighetsBetInput) OR (tabloid(x).Fastighet_tillstånd = FastighetsBetInput)) then
-				Redim EnskiltObjekt(y)
-				
-				EnskiltObjekt(y).Diarienummer = 		tabloid(x).Diarienummer
-				EnskiltObjekt(y).Fastighet_tillstånd = 	tabloid(x).Fastighet_tillstånd
-				EnskiltObjekt(y).spatialShift = 		tabloid(x).spatialshift
-				EnskiltObjekt(y).spatialFastighet = 	tabloid(x).spatialFastighet
-				EnskiltObjekt(y).Typ_byggnad = 			tabloid(x).Typ_byggnad
-				EnskiltObjekt(y).Antal_hushåll_tillstånd = tabloid(x).Antal_hushåll_tillstånd
-				EnskiltObjekt(y).Fastighet_rening = 	tabloid(x).Fastighet_rening
-				EnskiltObjekt(y).Typ_Slamavskiljare = 	tabloid(x).Typ_Slamavskiljare
-				EnskiltObjekt(y).Storlek_m3 = 			tabloid(x).Storlek_m3
-				EnskiltObjekt(y).Typ_rening = 			tabloid(x).Typ_rening
-				EnskiltObjekt(y).Storlek_m2 = 			tabloid(x).Storlek_m2
-				EnskiltObjekt(y).Typ_sluten_tank = 		tabloid(x).Typ_sluten_tank
-				EnskiltObjekt(y).Storlek__m3 = 			tabloid(x).Storlek__m3
-				EnskiltObjekt(y).Beslut_datum = 		tabloid(x).Beslut_datum
-				EnskiltObjekt(y).Utförd_datum = 		tabloid(x).Utförd_datum
-				EnskiltObjekt(y).Avgift = 				tabloid(x).Avgift
-				EnskiltObjekt(y).Tillstånd_giltigt_tom = tabloid(x).Tillstånd_giltigt_tom
-				EnskiltObjekt(y).Anteckningar = 		tabloid(x).Anteckningar
-				EnskiltObjekt(y).kordinater = 			tabloid(x).kordinater
-				y = y + 1
-		end if
-		
-	next
-			
-	EnskiltFilterByBet = ubound(EnskiltObjekt)
 exit function
-	CommandError:
-		note commandString & Error$()
-		end program
-End function
-
-function swerefFilterByBet(tabloid() as swerefObjekt,FastighetsBetInput as String,swerefObjekt() as swerefObjekt) as integer
-
-		dim x,y,size as integer
-		
-		size = ubound(tabloid)
-		y = 1
-		if size > 0 then
-			
-			for x=1 to size
-
-				if ((tabloid(x).SpatialFastighet = FastighetsBetInput) OR (tabloid(x).fastighet = FastighetsBetInput) OR (tabloid(x).Fastighet_tillstånd = FastighetsBetInput)) then			
-					
-					Redim swerefObjekt(y)
-		
-					swerefObjekt(y).FASTIGHET = tabloid(x).FASTIGHET
-					swerefObjekt(y).Fastighet_tillstånd = tabloid(x).Fastighet_tillstånd
-					swerefObjekt(y).Ärendenr = tabloid(x).Ärendenr
-					swerefObjekt(y).Beslut_datum = tabloid(x).Beslut_datum
-					swerefObjekt(y).Status = tabloid(x).Status
-					swerefObjekt(y).Utskick1_datum = tabloid(x).Utskick1_datum
-					swerefObjekt(y).Anteckning = tabloid(x).Anteckning
-					swerefObjekt(y).utförddatum = tabloid(x).utförddatum
-					swerefObjekt(y).slamhämtning = tabloid(x).slamhämtning
-					swerefObjekt(y).Antal_byggnader = tabloid(x).Antal_byggnader
-					swerefObjekt(y).kordinater = tabloid(x).kordinater
-					swerefObjekt(y).SpatialFastighet = tabloid(x).SpatialFastighet
-					
-					y = y + 1
-				end if	
-			next
-			
-		end if
-			
-		
-		swerefFilterByBet = ubound(swerefObjekt)
-exit function
-	CommandError:
-		note commandString & Error$()
-		end program
-End function
-
-function reningsFilterByBet(ReningAlias() as ReningsObjekt,FastighetsBetInput as String,reningsObjekt() as ReningsObjekt) as integer
-
-		dim x,y,z,lenght as integer
-		,found as logical
-		
-		y = 1
-		for x=1 to ubound(ReningAlias)
-			found = false									
-				
-			if (lenght = len(ReningAlias(x).spatialFastighet) OR lenght = len(ReningAlias(x).Fastighet_rening)) then 'atempting to fasten stringcompare
-				found = (ReningAlias(x).spatialFastighet = FastighetsBetInput OR ReningAlias(x).Fastighet_rening = FastighetsBetInput)
-			end if
-			
-			if Not(found) then
-				for z=1 to ubound(ReningAlias(x).Anslutna_fastigheter())
-					if(lenght = len(ReningAlias(x).Anslutna_fastigheter(z))) then
-						if(ReningAlias(x).Anslutna_fastigheter(z) = FastighetsBetInput) then
-							found = true
-						end if
-					end if						
-				next
-			end if
-			
-			if found then
-				Redim reningsObjekt(y)
-				
-				reningsObjekt(y).spatialFastighet = ReningAlias(x).spatialFastighet reningsObjekt(y).spatialShift = ReningAlias(x).spatialShift reningsObjekt(y).Fastighet_rening = ReningAlias(x).Fastighet_rening reningsObjekt(y).Antal_hushåll_rening = ReningAlias(x).Antal_hushåll_rening
-				reningsObjekt(y).Reningstyp = ReningAlias(x).Reningstyp reningsObjekt(y).Storlek_m2 = ReningAlias(x).Storlek_m2 reningsObjekt(y).kordinater = ReningAlias(x).kordinater reningsObjekt(y).Beslut_datum = ReningAlias(x).Beslut_datum
-				reningsObjekt(y).utförd_datum = ReningAlias(x).Utförd_datum reningsObjekt(y).Kommentarer = ReningAlias(x).Kommentarer
-								
-				redim reningsObjekt(y).Anslutna_fastigheter(ubound(ReningAlias(x).Anslutna_fastigheter()))
-				
-				for z=1 to ubound(ReningAlias(x).Anslutna_fastigheter())
-					reningsObjekt(y).Anslutna_fastigheter(z) = ReningAlias(x).Anslutna_fastigheter(z)
-				next		
-	
-				reningsObjekt(y).rowIndex = ReningAlias(x).rowIndex
-				y = y + 1
-			end if
-		next
-		
-		reningsFilterByBet = ubound(reningsObjekt)
-exit function
-
-	CommandError:
-		note commandString & Error$()
-		end program
-End function
-
-function DiarieMixedToUnit(byVal text as string) as string
-	'skall bli, mhn-xxxx-xxxx
-	'kan vara mhn xxxx/xxxx
-	'eller xx/xxxx
-	'eller xxxx/xxxx
-	'eller xx-xxxx
-	'eller mhn-xx-xxxx
-	'eller mhn-xxxx-xxxx
-	If text <> "" Then
-			
-		dim sPartsArray(),sPartsArray2(),dPartsArray(),ressultString,paddedDiarieNummer,PaddedDay,tempstring as string
-		,tempInteger,nrOfSpaces,i,theYear,theMonth,theDay,nrOfslashes,nrOfdashes,firstPart,secondPart,cleanVar as integer
-		
-		nrOfslashes = SplitStringAtCharacter(text & "", "/", sPartsArray())
-		nrOfdashes = SplitStringAtCharacter(text & "", "-", dPartsArray())
-		nrOfSpaces = SplitStringAtCharacter(text & "", " ", sPartsArray2())
-		if nrOfslashes = 2 then	
-			'it has a / (spartArray()
-			'måste då ha ett numeriskt väde i 2 och text eller numeriskt i 1
-			firstPart = firstLeftMostNumber(sPartsArray(1))'endast numeric vänstra del av 1
-			secondPart = firstLeftMostNumber(sPartsArray(2))'endast numeric vänstra på sida 2
-		elseif(nrOfdashes > 1) then
-			do case nrOfdashes		
-				case 2
-					firstPart = firstLeftMostNumber(dPartsArray(1))'endast numeric på sida 1
-					secondPart = firstLeftMostNumber(dPartsArray(2))'endast numeric på sida 2
-				case 3
-						if(firstLeftMostNumber(sPartsArray2(1))>0) then
-							cleanVar = 1
-							goto cleanedNumber
-						else
-							firstPart = firstLeftMostNumber(sPartsArray2(2))'endast numeric på sida 1
-							secondPart = firstLeftMostNumber(sPartsArray2(3))'endast numeric på sida 2
-						end if
-				case else
-			end case
-		elseif(nrOfSpaces = 2) then
-			firstPart = firstLeftMostNumber(sPartsArray2(1))'endast numeric på sida 1		
-			secondPart = firstLeftMostNumber(sPartsArray2(2))'endast numeric på sida 2
-		else
-			cleanVar = 2
-			goto cleanedNumber
-		end if
-		
-		if(firstPart = 0 OR secondPart = 0) then
-			cleanVar = 3
-			goto cleanedNumber
-		else
-			
-			tempInteger = len(firstPart & "") 'if it's fournumbered it's hard to estimate how large or small it might be
-			if(tempInteger <> 4)	then 'if yearpart is not 4 letters			
-				if(firstPart > 20) then
-						firstPart = 1900 + firstPart
-				else
-						firstPart = 2000 + firstPart
-				end if
-			end if
-		
-			DiarieMixedToUnit = "MHN-" & firstPart & "-" & secondPart
-					
-		end if
-		
-	else
-		DiarieMixedToUnit = text
-	end if
-exit function
-	cleanedNumber:
-		DiarieMixedToUnit = (cleanVar) & text 'kan inte tolka nummret
+	killProgram:
+	print "[CRITICAL resTabPos]" & error$()
 End Function
-
-function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
-
-	dim itterator as integer
-	
-	itterator = ubound(utskriftsObjekt()) +1
-	redim UtskriftsObjekt(itterator)
-	
-	expandUtskriftsObjekt = itterator
-
-end function
-
-sub genereraSQLVärdeArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
-	redim värde(55)
-
-	värde(1) =utskriftsObjekt.Besöksadress_Adress & " "
-	värde(2) =utskriftsObjekt.Besöksadress_Postnr & " "
-	värde(3) =utskriftsObjekt.Besöksadress_Ort & " "
-	värde(4) =utskriftsObjekt.Besöksadress_Huvudfastighet & " "
-	värde(5) ="" & val("" & utskriftsObjekt.FNR)
-	värde(6) =utskriftsObjekt.Verksamhetsutövare_Namn & " "
-	värde(7) ="" & val("" & utskriftsObjekt.Verksamhetsutöv_Person_orgnr)
-	värde(8) =utskriftsObjekt.Fakturamottagare_NAMN & " "
-	värde(9) =utskriftsObjekt.Fakturamottagare_Faktura_ADRESS & " "
-	värde(10) =utskriftsObjekt.Fakturamottagare_Faktura_POSTNR & " "
-	värde(11) =utskriftsObjekt.Fakturamottagare_Faktura_POSTOR & " "
-	värde(12) =utskriftsObjekt.Enhet & " "
-	värde(13) =utskriftsObjekt.Anteckning & " "
-	värde(14) ="" & val("" & utskriftsObjekt.Aktuell_timavgift)
-	värde(15) =utskriftsObjekt.Timdebitering '	Timdebitering as Logical
-	värde(16) =utskriftsObjekt.Objektnamn & " "
-	värde(17) =utskriftsObjekt.flik_Avloppsänlaggni_Boendetyp & " "
-	värde(18) ="" & NumberToDate(val("" & utskriftsObjekt.flik_Avloppsanläggn_Byggnadsår))
-	värde(19) ="" & NumberToDate(val("" & utskriftsObjekt.flik_Avloppsa_Besiktningsdatum))
-	värde(20) ="" & NumberToDate(val("" & utskriftsObjekt.flik_Avloppsanläg_Beslutsdatum))
-	värde(21) =utskriftsObjekt.Vatten & " "
-	värde(22) =utskriftsObjekt.Recipient & " "
-	värde(23) =utskriftsObjekt.Inventering & " "
-	värde(24) ="" & NumberToDate(val("" & utskriftsObjekt.Inventeringsinformation_Datum))
-	värde(25) =utskriftsObjekt.Inventeringsinformation_Status & " "
-	värde(26) =utskriftsObjekt.Bedömning & " "
-	värde(27) =utskriftsObjekt.fliken_Fastigheter & " "
-	värde(28) ="" & val("" & utskriftsObjekt.fliken_Fastigheter_FNR)
-	värde(29) =utskriftsObjekt.PunkttypAB & " "
-	värde(30) =utskriftsObjekt.Fliken_Koordinater & " "
-	värde(31) =utskriftsObjekt.fliken_Ärenden & " "
-	värde(32) =utskriftsObjekt.Anläggningskategori & " "
-	värde(33) ="" & NumberToDate(val("" & utskriftsObjekt.besiktningdatum))
-	värde(34) ="" & NumberToDate(val("" & utskriftsObjekt.beslutsdatum))
-	värde(35) =utskriftsObjekt.Anläggningstyp & " "
-	värde(36) ="" & val("" & utskriftsObjekt.Volym_m3)
-	värde(37) ="" & val("" & utskriftsObjekt.Anl_för_EftR_TöInterv_mån)
-	värde(38) =utskriftsObjekt.AnlF_efR_Koordinater_X_o_Y & " "
-	värde(39) =utskriftsObjekt.PunkttypER & " "
-	värde(40) =utskriftsObjekt.Anläggning_för_EfterföljRText & " "
-	värde(41) =utskriftsObjekt.Anläggningskategori_2 & " "
-	värde(42) =utskriftsObjekt.Anläggning_för_S_Anläggningstyp & " "
-	värde(43) =utskriftsObjekt.Externt_Tjänsteid & " "
-	värde(44) =utskriftsObjekt.text & " "
-	värde(45) ="" & val("" & utskriftsObjekt.Anläggning_för_Slamav_Volym_m3)
-	värde(46) =utskriftsObjekt.Anläggningskategori_3 & " "
-	värde(47) =utskriftsObjekt.AnlförEfterR_Anläggningstyp & " "
-	värde(48) ="" & NumberToDate(val("" & utskriftsObjekt.besiktningdatum_2))
-	värde(49) ="" & NumberToDate(val("" & utskriftsObjekt.beslutsdatum_2))
-	värde(50) =utskriftsObjekt.Externt_Tjänsteid_2 & " "
-	värde(51) ="" & val("" & utskriftsObjekt.Volym_m3_2)
-	värde(52) ="" & val("" & utskriftsObjekt.Objektid)
-	värde(53) =utskriftsObjekt.Path & " "
-	värde(54) =utskriftsObjekt.Diarienummer & " "
-	värde(55) ="" & val("" & utskriftsObjekt.Löpnummer)
-	
-'	värde(1) = "" & val("" & utskriftsObjekt.trovärdighetsIndex)
-'	värde(57) = utskriftsObjekt.sql & " "
-'	värde(58) = "" & val("" & utskriftsObjekt.reningsindex)
-
-end sub
-
-sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
-		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
-		
-		swerefTot = swerefStop-swerefStart+0.01
-		ReningTot = ReningStop-ReningStart+0.01
-		EnskiltTot = EnskiltStop-EnskiltStart+0.01
-		objektTot = objektCreationStop-objektCreationStart+0.01
-		
-		total = (swerefTot)+(EnskiltTot)+(ReningTot)+(objektTot)
-						
-		print "[total:" & Format$(total, "#.##") & 
-		"|Sw "& Format$((swerefTot/total), "%")  &
-		" |Re "& Format$ ((ReningTot/total), "%")  &
-		" |En "& Format$ ((enskiltTot/total), "%")  &
-		" |Ob "& Format$ ((objektTot/total), "%") & " ]"
-	
-End Sub
-
-sub tolkning(FastighetsObjekt as fastighetsObjekt,UtskriftsObjekt() as UtskriftsObjekt,användaReningar() as integer)
-
-	'funderinga, reningen bör inte återanvändas om det är nödvändigt, frågan är hur man håller koll på vilken rening som använts vart...
-	' reningsobjektet skapades med ett indexfält, så om vi gör en array som förvarar alla använda index.. dock behövs typ nummer av anslutna på index, gärna fastighetsbeteckningar också.....
-	' om man endast håller koll på indexfältet, och säger, om rening delats, men rening inte har men en en anslutning kan ge minus
-	' om endast en rening, en anläggning och en flagga, ignorera alla andra mätningar
-	' om anläggningar > 1, en rening, lägg till rening på båda anläggningarna som gemensam
-	' om fler flaggor... ge specialvärde.
-	'om endast 1 flagga + 1 beslut = 1/distance 'distansberäkning verkar krongligt.
-
-	'ta ut bästa ressultat för varje anläggning
-	'skall använda reningar också tolkas här?
-	'om inte kommer anläggningen läggas till, för att sedan bli reffererad igen av någon anläggning
-	' frågan är om man i efterhand skall ränsa bort fastigheter som har en rening som är delad utan att det plockats upp tidigare i koden.
-	'anslutna = FillTokenObjekts(FastighetsObjekt)
-	'	dim qz, antal as integer
-	'	
-	'	for qz=1 to ubound(fastighetsobjekt.reningsobjekt)
-	'		antal = ubound(fastighetsobjekt.reningsobjekt(qz).Anslutna_fastigheter)
-	'	
-	'		print antal & ":" & StringArrayAsString(fastighetsobjekt.reningsobjekt(qz).Anslutna_fastigheter)
-	'	next
-
-	
-	dim enskiltTokenOrObjekt(),enskiltTokenObjekt() as enskiltObjekt
-	,reningTokenOrObjekt(),reningsTokenObjekt() as reningsobjekt
-	,swerefTokenOrObjekt(),swerefTokenObjekt() as swerefobjekt
-	,trovärdighetsIndex as float 
-	,anslutna as logical
-	
-	if (ubound(FastighetsObjekt.reningsobjekt()) = 1 ) AND (ubound(FastighetsObjekt.enskiltobjekt()) = 1) AND (ubound(FastighetsObjekt.swerefobjekt()) = 1) then
-		
-		trovärdighetsIndex = 1
-		
-		call utskrivningsobjektsKonstruktor(
-			FastighetsObjekt.swerefobjekt(1),
-			FastighetsObjekt.reningsobjekt(1),
-			FastighetsObjekt.enskiltobjekt(1),
-			UtskriftsObjekt(),
-			användaReningar,
-			trovärdighetsIndex, 
-			fastighetsObjekt
-		)
-	else
-		dim trovärdighetsObjekt() as trovärdighetsObjekt
-		,tempArray(),x,temp as integer
-		
-		call skapaMutationer(fastighetsobjekt,användaReningar,UtskriftsObjekt,trovärdighetsObjekt)
-					
-		for x=1 to ubound(trovärdighetsobjekt)
-		
-			temp = FillerOrSwerefObjekt(trovärdighetsobjekt(x).fx,FastighetsObjekt.swerefobjekt(),swerefTokenOrObjekt)
-			temp = FillerOrEnskiltObjekt(trovärdighetsobjekt(x).ex,FastighetsObjekt.enskiltobjekt(),enskiltTokenOrObjekt)
-			temp = FillerOrReningObjekt(trovärdighetsobjekt(x).rx,FastighetsObjekt.reningsobjekt(),reningTokenOrObjekt)
-							
-			call utskrivningsobjektsKonstruktor(
-				swerefTokenOrObjekt(1) 
-				reningTokenOrObjekt(1)
-				enskiltTokenOrObjekt(1)
-				UtskriftsObjekt(),
-				användaReningar,
-				trovärdighetsobjekt(x).index, 
-				fastighetsObjekt
-			)
-		next
-		
-	end if	
-
-end sub
-
-sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
-
-	redim swerefTokenObjekt(1)
-	swerefTokenObjekt(1).FASTIGHET = ""
-	swerefTokenObjekt(1).Fastighet_tillstånd = ""
-	swerefTokenObjekt(1).Ärendenr = ""
-	swerefTokenObjekt(1).Beslut_datum = ""
-	swerefTokenObjekt(1).Status = ""
-	swerefTokenObjekt(1).Utskick1_datum = ""
-	swerefTokenObjekt(1).Anteckning = ""
-	swerefTokenObjekt(1).utförddatum = ""
-	swerefTokenObjekt(1).slamhämtning = ""
-	swerefTokenObjekt(1).Antal_byggnader = 0
-	
-	redim reningsTokenObjekt(1)		
-	reningsTokenObjekt(1).spatialFastighet = ""
-	reningsTokenObjekt(1).spatialShift = ""
-	reningsTokenObjekt(1).Fastighet_rening = ""
-	reningsTokenObjekt(1).Antal_hushåll_rening = 0
-	reningsTokenObjekt(1).Reningstyp = ""
-	reningsTokenObjekt(1).Storlek_m2 = 0
-	reningsTokenObjekt(1).kordinater = ""
-	reningsTokenObjekt(1).Beslut_datum = ""
-	reningsTokenObjekt(1).Utförd_datum = ""
-	reningsTokenObjekt(1).Kommentarer = ""
-	reningsTokenObjekt(1).rowIndex = 0
-	
-	redim enskiltTokenObjekt(1)
-	enskiltTokenObjekt(1).Diarienummer = ""	
-	enskiltTokenObjekt(1).Fastighet_tillstånd = ""
-	enskiltTokenObjekt(1).spatialShift = ""
-	enskiltTokenObjekt(1).Typ_byggnad = ""
-	enskiltTokenObjekt(1).Antal_hushåll_tillstånd = ""
-	enskiltTokenObjekt(1).Fastighet_rening = ""
-	enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
-	enskiltTokenObjekt(1).Storlek_m3 = 0
-	enskiltTokenObjekt(1).Typ_rening = ""
-	enskiltTokenObjekt(1).Storlek_m2 = 0
-	enskiltTokenObjekt(1).Typ_sluten_tank = ""
-	enskiltTokenObjekt(1).Storlek__m3 = 0
-	enskiltTokenObjekt(1).Beslut_datum = ""
-	enskiltTokenObjekt(1).Utförd_datum = ""
-	enskiltTokenObjekt(1).Avgift = 0
-	enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
-	enskiltTokenObjekt(1).Anteckningar = ""
-	enskiltTokenObjekt(1).kordinater = ""	
-
-end sub
-
-sub FastighetsObjCreation(fastighetsBetInput as string,reningsobjekt() as reningsobjekt,fastighetsObjekt() as fastighetsObjekt,swerefObjekt() as swerefObjekt,enskiltObjekt() as enskiltObjekt)
-		dim x,q,i as integer
-
-		i = ubound(fastighetsObjekt)+1	
-		redim fastighetsObjekt(i)
-				
-		fastighetsObjekt(i).kir = fastighetsBetInput
-		select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = fastighetsBetInput into fas
-		
-		fetch first from fas
-				
-		fastighetsObjekt(i).adress = fas.adress
-		fastighetsObjekt(i).postnr = fas.postnr
-		fastighetsObjekt(i).ort = fas.postort
-		fastighetsObjekt(i).fastighet = fas.fastighet
-		fastighetsObjekt(i).fnr = fas.fnr
-		
-				
-		for x=1 to ubound(reningsobjekt)
-			redim fastighetsObjekt(i).reningsObjekt(x)
-		
-			fastighetsObjekt(i).reningsObjekt(x).Fastighet_rening = reningsobjekt(x).Fastighet_rening
-			fastighetsObjekt(i).reningsObjekt(x).Antal_hushåll_rening = reningsobjekt(x).Antal_hushåll_rening
-			fastighetsObjekt(i).reningsObjekt(x).Reningstyp = reningsobjekt(x).Reningstyp
-			fastighetsObjekt(i).reningsObjekt(x).Storlek_m2 = reningsobjekt(x).Storlek_m2
-			fastighetsObjekt(i).reningsObjekt(x).Beslut_datum = reningsobjekt(x).Beslut_datum
-			fastighetsObjekt(i).reningsObjekt(x).Utförd_datum = reningsobjekt(x).Utförd_datum
-			fastighetsObjekt(i).reningsObjekt(x).Kommentarer = reningsobjekt(x).Kommentarer
-			fastighetsObjekt(i).reningsObjekt(x).spatialFastighet = reningsobjekt(x).spatialFastighet
-			fastighetsObjekt(i).reningsObjekt(x).spatialShift = reningsobjekt(x).spatialShift
-			fastighetsObjekt(i).reningsObjekt(x).rowIndex = reningsobjekt(x).rowIndex
-			fastighetsObjekt(i).reningsObjekt(x).kordinater = reningsobjekt(x).kordinater
-			
-			for q=1 to ubound(reningsObjekt(x).Anslutna_fastigheter())
-				call addStringToArrayAsifSet(fastighetsObjekt(i).reningsObjekt(x).Anslutna_fastigheter,reningsobjekt(x).Anslutna_fastigheter(q))
-			next
-			
-			fastighetsObjekt(i).reningsObjekt(x).rowIndex = reningsobjekt(x).rowIndex
-		
-		next
-		
-'		dim antalx,testX as integer
-'		for testX=1 to ubound(fastighetsObjekt(i).reningsObjekt())
-'			antalx = ubound(fastighetsObjekt(i).reningsObjekt(testX).Anslutna_fastigheter)
-'		
-'			print antalx & ":zzzzzzzzzz" & StringArrayAsString(fastighetsObjekt(i).reningsObjekt(testX).Anslutna_fastigheter)
-'		next
-'	
-		
-		
-		for x=1 to ubound(swerefObjekt)
-			redim fastighetsObjekt(i).swerefObjekt(x)
-		
-			fastighetsObjekt(i).swerefObjekt(x).FASTIGHET = swerefObjekt(x).FASTIGHET
-			fastighetsObjekt(i).swerefObjekt(x).Fastighet_tillstånd = swerefObjekt(x).Fastighet_tillstånd
-			fastighetsObjekt(i).swerefObjekt(x).Ärendenr = swerefObjekt(x).Ärendenr
-			fastighetsObjekt(i).swerefObjekt(x).Beslut_datum = swerefObjekt(x).Beslut_datum
-			fastighetsObjekt(i).swerefObjekt(x).Status = swerefObjekt(x).Status
-			fastighetsObjekt(i).swerefObjekt(x).Utskick1_datum = swerefObjekt(x).Utskick1_datum
-			fastighetsObjekt(i).swerefObjekt(x).Anteckning = swerefObjekt(x).Anteckning
-			fastighetsObjekt(i).swerefObjekt(x).utförddatum = swerefObjekt(x).utförddatum
-			fastighetsObjekt(i).swerefObjekt(x).slamhämtning = swerefObjekt(x).slamhämtning
-			fastighetsObjekt(i).swerefObjekt(x).Antal_byggnader = swerefObjekt(x).Antal_byggnader
-			fastighetsObjekt(i).swerefObjekt(x).kordinater = swerefObjekt(x).kordinater
-		next
-		
-		for x=1 to ubound(enskiltObjekt)
-			redim fastighetsObjekt(i).enskiltObjekt(x)
-		
-			fastighetsObjekt(i).enskiltObjekt(x).Diarienummer = enskiltObjekt(x).Diarienummer
-			fastighetsObjekt(i).enskiltObjekt(x).Fastighet_tillstånd = enskiltObjekt(x).Fastighet_tillstånd
-			fastighetsObjekt(i).enskiltObjekt(x).Typ_byggnad = enskiltObjekt(x).Typ_byggnad
-			fastighetsObjekt(i).enskiltObjekt(x).Antal_hushåll_tillstånd = enskiltObjekt(x).Antal_hushåll_tillstånd
-			fastighetsObjekt(i).enskiltObjekt(x).Fastighet_rening = enskiltObjekt(x).Fastighet_rening
-			fastighetsObjekt(i).enskiltObjekt(x).Typ_Slamavskiljare = enskiltObjekt(x).Typ_Slamavskiljare
-			fastighetsObjekt(i).enskiltObjekt(x).Storlek_m3 = enskiltObjekt(x).Storlek_m3
-			fastighetsObjekt(i).enskiltObjekt(x).Typ_rening = enskiltObjekt(x).Typ_rening
-			fastighetsObjekt(i).enskiltObjekt(x).Storlek_m2 = enskiltObjekt(x).Storlek_m2
-			fastighetsObjekt(i).enskiltObjekt(x).Typ_sluten_tank = enskiltObjekt(x).Typ_sluten_tank
-			fastighetsObjekt(i).enskiltObjekt(x).Storlek__m3 = enskiltObjekt(x).Storlek__m3
-			fastighetsObjekt(i).enskiltObjekt(x).Beslut_datum = enskiltObjekt(x).Beslut_datum
-			fastighetsObjekt(i).enskiltObjekt(x).Utförd_datum = enskiltObjekt(x).Utförd_datum
-			fastighetsObjekt(i).enskiltObjekt(x).Avgift = enskiltObjekt(x).Avgift
-			fastighetsObjekt(i).enskiltObjekt(x).Tillstånd_giltigt_tom = enskiltObjekt(x).Tillstånd_giltigt_tom
-			fastighetsObjekt(i).enskiltObjekt(x).Anteckningar = enskiltObjekt(x).Anteckningar
-			fastighetsObjekt(i).enskiltObjekt(x).spatialShift = enskiltObjekt(x).spatialShift
-			fastighetsObjekt(i).enskiltObjekt(x).spatialFastighet = enskiltObjekt(x).spatialFastighet
-			fastighetsObjekt(i).enskiltObjekt(x).kordinater = enskiltObjekt(x).kordinater
-		next	
-	
-End Sub
-
-function ReningÄrInteToken(reningsTokenObjekt as reningsobjekt) as logical
-	
-	dim tempboolean as logical
-		
-	tempBoolean = (",,,0,,0,,,,,0" <> ReningAsString(reningsTokenObjekt))
-	
-	ReningÄrInteToken = tempBoolean
-	
-end function
-
-function EnskiltÄrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
-	
-	dim tempbolean as logical
-	,tempstring as string
-	tempstring = enskiltAsString(enskiltTokenObjekt)
-	tempbolean = tempstring <> ",,,0,,,0,,0,,0,,,0,,,,," AND tempstring <> ",,,,,,,,,0"
-	EnskiltÄrInteToken = tempbolean
-	
-end function
-
-function ReningAsString(reningsObjekt as reningsobjekt) as String
-
-dim tempString,TempArray() as string
-,loopvar as integer
-	
-	tempString = reningsObjekt.spatialFastighet
-	& "," & reningsObjekt.spatialShift
-	& "," & reningsObjekt.Fastighet_rening
-	& "," & reningsObjekt.Antal_hushåll_rening
-	& "," & reningsObjekt.Reningstyp
-	& "," & reningsObjekt.Storlek_m2
-	& "," & reningsObjekt.kordinater
-	& "," & reningsObjekt.Beslut_datum
-	& "," & reningsObjekt.Utförd_datum
-	& "," & reningsObjekt.Kommentarer
-	& "," & reningsObjekt.rowIndex
-	
-	for loopvar=1 to ubound(reningsObjekt.Anslutna_fastigheter)
-		call addStringToArrayAsifSet(TempArray,reningsObjekt.Anslutna_fastigheter(loopVar))' reference index
-	next
-		
-	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",StringArrayAsString(TempArray))
-
-end function
-
-sub messageEveryString(StringArray() as String)
-	
-	Dim	i As Integer
-		
-		for i = 1 To Ubound(StringArray)
-			print "*" & StringArray(i) & "*"
-		Next
-	
-end sub
-
-function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
-
-	dim tempstring as string
-	
-	tempstring = enskiltObjekt.Diarienummer
-	& "," & enskiltObjekt.Fastighet_tillstånd 
-	& "," & enskiltObjekt.Typ_byggnad 
-	& "," & (enskiltObjekt.Antal_hushåll_tillstånd )
-	& "," & enskiltObjekt.Fastighet_rening 
-	& "," & enskiltObjekt.Typ_Slamavskiljare 
-	& "," & enskiltObjekt.Storlek_m3
-	& "," & enskiltObjekt.Typ_rening 
-	& "," & enskiltObjekt.Storlek_m2
-	& "," & enskiltObjekt.Typ_sluten_tank 
-	& "," & enskiltObjekt.Storlek__m3
-	& "," & enskiltObjekt.Beslut_datum 
-	& "," & enskiltObjekt.Utförd_datum 
-	& "," & enskiltObjekt.Avgift
-	& "," & enskiltObjekt.Tillstånd_giltigt_tom 
-	& "," & enskiltObjekt.Anteckningar 
-	& "," & enskiltObjekt.spatialFastighet 
-	& "," & enskiltObjekt.spatialShift 
-	& "," & enskiltObjekt.kordinater
-
-enskiltAsString = tempstring
-
-end function
-
-function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
-
-	dim tempString as string
-	
-	tempString = swerefTokenObjekt.FASTIGHET
-	& "," & swerefTokenObjekt.Fastighet_tillstånd
-	& "," & swerefTokenObjekt.Ärendenr
-	& "," & swerefTokenObjekt.Beslut_datum
-	& "," & swerefTokenObjekt.Status
-	& "," & swerefTokenObjekt.Utskick1_datum
-	& "," & swerefTokenObjekt.Anteckning
-	& "," & swerefTokenObjekt.utförddatum
-	& "," & swerefTokenObjekt.slamhämtning
-	& "," & swerefTokenObjekt.Antal_byggnader
-
-	swerefAsString = tempstring
-end function
-
-function swerefÄrInteToken(swerefTokenObjekt as swerefObjekt) as logical
-		
-	dim tempboolean as logical
-	
-	tempBoolean = (",,,0,,0,,,,,0" <> swerefAsString(swerefTokenObjekt) AND ",,,,,,,,,0" <> swerefAsString(swerefTokenObjekt))
-	
-	swerefÄrInteToken = tempBoolean
-
-end function
-
-function FillerOrSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
-	
-	dim storlek as integer
-	storlek = ubound(swerefobjekt)
-	
-	redim swerefTokenObjekt(1)
-	
-	if(storlek = 0 OR intx = 0) then
-		swerefTokenObjekt(1).FASTIGHET = ""
-		swerefTokenObjekt(1).Fastighet_tillstånd = ""
-		swerefTokenObjekt(1).Ärendenr = ""
-		swerefTokenObjekt(1).Beslut_datum = ""
-		swerefTokenObjekt(1).Status = ""
-		swerefTokenObjekt(1).Utskick1_datum = ""
-		swerefTokenObjekt(1).Anteckning = ""
-		swerefTokenObjekt(1).utförddatum = ""
-		swerefTokenObjekt(1).slamhämtning = ""
-		swerefTokenObjekt(1).Antal_byggnader = 0
-		FillerOrSwerefObjekt = 0
-	else
-		swerefTokenObjekt(1).FASTIGHET = swerefobjekt(intx).FASTIGHET
-		swerefTokenObjekt(1).Fastighet_tillstånd = swerefobjekt(intx).Fastighet_tillstånd
-		swerefTokenObjekt(1).Ärendenr = swerefobjekt(intx).Ärendenr
-		swerefTokenObjekt(1).Beslut_datum = swerefobjekt(intx).Beslut_datum
-		swerefTokenObjekt(1).Status = swerefobjekt(intx).Status
-		swerefTokenObjekt(1).Utskick1_datum = swerefobjekt(intx).Utskick1_datum
-		swerefTokenObjekt(1).Anteckning = swerefobjekt(intx).Anteckning
-		swerefTokenObjekt(1).utförddatum = swerefobjekt(intx).utförddatum
-		swerefTokenObjekt(1).slamhämtning = swerefobjekt(intx).slamhämtning
-		swerefTokenObjekt(1).Antal_byggnader = swerefobjekt(intx).Antal_byggnader
-		swerefTokenObjekt(1).kordinater = swerefobjekt(intx).kordinater
-		FillerOrSwerefObjekt = intx
-	end if
-end function
-
-function FillerOrEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
-	dim storlek as integer
-	storlek = ubound(enskiltobjekt)
-	redim enskiltTokenObjekt(1)
-	
-	if(storlek = 0 OR intx = 0) then
-		enskiltTokenObjekt(1).Diarienummer = ""	
-		enskiltTokenObjekt(1).Fastighet_tillstånd = ""
-		enskiltTokenObjekt(1).spatialShift = ""
-		enskiltTokenObjekt(1).Typ_byggnad = ""
-		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = 0
-		enskiltTokenObjekt(1).Fastighet_rening = ""
-		enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
-		enskiltTokenObjekt(1).Storlek_m3 = 0
-		enskiltTokenObjekt(1).Typ_rening = ""
-		enskiltTokenObjekt(1).Storlek_m2 = 0
-		enskiltTokenObjekt(1).Typ_sluten_tank = ""
-		enskiltTokenObjekt(1).Storlek__m3 = 0
-		enskiltTokenObjekt(1).Beslut_datum = ""
-		enskiltTokenObjekt(1).Utförd_datum = ""
-		enskiltTokenObjekt(1).Avgift = ""
-		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
-		enskiltTokenObjekt(1).Anteckningar = ""
-		enskiltTokenObjekt(1).kordinater = ""	
-		FillerOrEnskiltObjekt = 0
-	else
-		enskiltTokenObjekt(1).Diarienummer = enskiltobjekt(intx).Diarienummer
-		enskiltTokenObjekt(1).Fastighet_tillstånd = enskiltobjekt(intx).Fastighet_tillstånd
-		enskiltTokenObjekt(1).spatialShift = enskiltobjekt(intx).spatialShift
-		enskiltTokenObjekt(1).Typ_byggnad = enskiltobjekt(intx).Typ_byggnad
-		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = enskiltobjekt(intx).Antal_hushåll_tillstånd
-		enskiltTokenObjekt(1).Fastighet_rening = enskiltobjekt(intx).Fastighet_rening
-		enskiltTokenObjekt(1).Typ_Slamavskiljare = enskiltobjekt(intx).Typ_Slamavskiljare 
-		enskiltTokenObjekt(1).Storlek_m3 = enskiltobjekt(intx).Storlek_m3
-		enskiltTokenObjekt(1).Typ_rening = enskiltobjekt(intx).Typ_rening
-		enskiltTokenObjekt(1).Storlek_m2 = enskiltobjekt(intx).Storlek_m2
-		enskiltTokenObjekt(1).Typ_sluten_tank = enskiltobjekt(intx).Typ_sluten_tank
-		enskiltTokenObjekt(1).Storlek__m3 = enskiltobjekt(intx).Storlek__m3
-		enskiltTokenObjekt(1).Beslut_datum = enskiltobjekt(intx).Beslut_datum
-		enskiltTokenObjekt(1).Utförd_datum = enskiltobjekt(intx).Utförd_datum
-		enskiltTokenObjekt(1).Avgift = enskiltobjekt(intx).Avgift
-		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = enskiltobjekt(intx).Tillstånd_giltigt_tom
-		enskiltTokenObjekt(1).Anteckningar = enskiltobjekt(intx).Anteckningar
-		enskiltTokenObjekt(1).kordinater = enskiltobjekt(intx).kordinater	
-		FillerOrEnskiltObjekt = intx
-	end if
-end function
-
-function FillerOrReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
-	dim storlek as integer
-	storlek = ubound(reningsobjekt)
-	
-	redim reningsTokenObjekt(1)	
-	
-	if(storlek = 0 OR intx = 0) then
-		reningsTokenObjekt(1).spatialFastighet = ""
-		reningsTokenObjekt(1).spatialShift = ""
-		reningsTokenObjekt(1).Fastighet_rening = ""
-		reningsTokenObjekt(1).Antal_hushåll_rening = 0
-		reningsTokenObjekt(1).Reningstyp = ""
-		reningsTokenObjekt(1).Storlek_m2 = 0
-		reningsTokenObjekt(1).kordinater = ""
-		reningsTokenObjekt(1).Beslut_datum = ""
-		reningsTokenObjekt(1).Utförd_datum = ""
-		reningsTokenObjekt(1).Kommentarer = ""
-		reningsTokenObjekt(1).rowIndex = 0
-		FillerOrReningObjekt = 0
-	else
-		reningsTokenObjekt(1).spatialFastighet = reningsobjekt(intx).spatialFastighet
-		reningsTokenObjekt(1).spatialShift = reningsobjekt(intx).spatialShift
-		reningsTokenObjekt(1).Fastighet_rening = reningsobjekt(intx).Fastighet_rening
-		reningsTokenObjekt(1).Antal_hushåll_rening = reningsobjekt(intx).Antal_hushåll_rening
-		reningsTokenObjekt(1).Reningstyp = reningsobjekt(intx).Reningstyp
-		reningsTokenObjekt(1).Storlek_m2 = reningsobjekt(intx).Storlek_m2
-		reningsTokenObjekt(1).kordinater = reningsobjekt(intx).kordinater
-		reningsTokenObjekt(1).Beslut_datum = reningsobjekt(intx).Beslut_datum
-		reningsTokenObjekt(1).Utförd_datum = reningsobjekt(intx).Utförd_datum
-		reningsTokenObjekt(1).Kommentarer = reningsobjekt(intx).Kommentarer
-		reningsTokenObjekt(1).rowIndex = reningsobjekt(intx).rowIndex
-		
-		redim reningsTokenObjekt(1).anslutna_fastigheter(ubound(reningsobjekt(intx).anslutna_fastigheter))
-		for storlek=1 to ubound(reningsobjekt(intx).anslutna_fastigheter)
-			reningsTokenObjekt(1).anslutna_fastigheter(storlek) = reningsobjekt(intx).anslutna_fastigheter(storlek)
-		next
-		FillerOrReningObjekt = intx
-	end if
-end function
-
-sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,fastighetsobjekt as fastighetsobjekt,swerefObjekt as swerefobjekt,reningsobjekt as reningsobjekt,enskiltObjekt as enskiltobjekt, objektid as integer)
-	onError goto underskriptsFel	
-	dim antal,x,nt as integer
-	,allaFastigheter() as string
-	
-	
-	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",enskiltObjekt.Fastighet_rening)))
-	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",enskiltObjekt.spatialFastighet)))
-	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",enskiltObjekt.Fastighet_tillstånd)))
-	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",fastighetsobjekt.kir)))
-	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",SwerefObjekt.FASTIGHET)))
-	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",reningsobjekt.spatialFastighet)))
-	call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",reningsobjekt.Fastighet_rening)))
-	
-	
-	for x=1 to ubound(reningsobjekt.Anslutna_fastigheter)
-		call addStringToArrayAsifSet(allaFastigheter, FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",reningsobjekt.Anslutna_fastigheter(x))))
-	next
-	
-	antal = ubound(allaFastigheter)
-	
-	if antal <> 0 then
-		for x=1 to antal
-			nt = itterator+x-1
-			If allaFastigheter(x) <> "" Then
-				redim utskriftsobjekt(nt)
-				utskriftsobjekt(nt).fliken_Fastigheter = allaFastigheter(x)
-				utskriftsobjekt(nt).objektId = objektid
-			End If
-		next
-	end if
-
-	onError goto 0
-exit sub
-underskriptsFel:
-	note error$()
-	end program
-end sub
-
-function countFasGenerateUtvald(FastighetB as string) as integer
-	dim tempcountz as integer
-	
-	select * from Fastighet_yta where kir = fastighetB into utvaldFastighet
-	
-	countFasGenerateUtvald = countRows(utvaldFastighet)
-end function
-
-function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
-	
-	dim tempAlias as alias
-	tempAlias = ColumnName
-	dim tempInteger as integer
-	
-	select * from urval where not(tempAlias = "") into objUrval
-	tempInteger = tableInfo(objUrval,8)
-		
-	if tempInteger > 0 then
-		onError goto noCordError	
-		fetch first from objUrval
-		getCOrd =  ObjectGeography(objUrval.obj,1) & "," & ObjectGeography(objUrval.obj,2)
-	end if
-
-exit function
-noCordError:
-	print tempInteger & " :rader, " & error$()
-end function
-
-function kollaBredd(values() as string) as logical
-
-	kollaBredd = true
-	dim x as integer
-
-	for x = 1 to ubound(values)
-		select col2 from referenceTable where col1 = x into bucketSize
-			fetch first from bucketSize
-		if(bucketSize.col1 < len(values(x))) then
-			kollaBredd = false
-		end if
-	next
-
-end function
-
-function countDupes(byVal fastighetsBet as string) as integer
-
-dim hasDupes,x as integer
-
-		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
-		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
-     		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
-     			hasDupes = hasDupes + 1
-     		end if
-		Next
-
-countDupes = hasDupes
-end function
-
-function countOccurences(byVal colummn as string) as integer
-	
-	Dim query As String
-	dim tempAlias as alias
-	tempAlias = "urval." & colummn
-	
-	onError goto QueryError
-	
-	select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
-	
-	fetch first from tempcolumnFiltered
-	countOccurences = tableInfo(tempcolumnFiltered,8)	
-exit function
-	QueryError:
-		print query & "]countOccurences[" & Error$()
-		countOccurences = 0
-end function
 
 sub insertInitialTables()
 
-		dim tempstring,tempstringx as string
+		dim P_KvSkikt,C_ParrentFolder,ReningsPath,P_slamMap,P_faYtdBySoc,EnskiltPath,P_SwSkikt,P_OfflineTabFolder,P_Ress,P_komponent as string
+				
+		C_ParrentFolder = "C:\Users\crbk01\Desktop\OnGithub\"
 		
-		tempstringx = "K:\KARTOR"
-		Tempstring = tempstringx & "\SOLEN_PUNKTER\"
-		insert into Pathtable (tablePath,TableName) values ("C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Adress\Adresspunkter.TAB", "Adresspunkter")
-		insert into Pathtable (tablePath,TableName) values ("C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Tab-Bygg_Fastigheter\Fastighet_yta.tab", "fastighet_ytaORg")
+		P_OfflineTabFolder = C_ParrentFolder & "MapinfoSkikt\"
 		
-		tempstringx = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\AVLOPP_RENING_ENSKILT\"
-		Tempstring = tempstringx & "Enskilt_avlopp_"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Enskilt_avlopp_SödraNoIndex")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Enskilt_avlopp_NorraNoIndex")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Enskilt_avlopp_MellerstaNoIndex")
+		P_faYtdBySoc = P_OfflineTabFolder & "FastighetsytaUpdeladIsocken\"
+		P_SwSkikt = P_OfflineTabFolder & "Tab-sweref\"
+		P_KvSkikt = P_OfflineTabFolder & "AVLOPP_RENING_ENSKILT\"
+		P_Ress = P_OfflineTabFolder & "ressultat\"
+		P_komponent = applicationDirectory$() & "Komponent\"
+		EnskiltPath = P_KvSkikt & "Enskilt_avlopp_"
+		ReningsPath = P_KvSkikt & "Rening_"
+		P_slamMap 	= P_KvSkikt & "\SLAM\"	
+		
+		insert into Pathtable (tablePath,TableName) values (P_komponent + "socknarOfiltrerade.TAB", "socknarOfiltrerade")
+		insert into Pathtable (tablePath,TableName) values (P_komponent + "AnvändaReningarsHash.tab", "AnvändaReningarsHash")
+		insert into Pathtable (tablePath,TableName) values (P_komponent & "ÄrendenMedIngenEllerFelFastighet2.TAB", "ÄrendenMedIngenEllerFelFastighet2")
+		insert into Pathtable (tablePath,TableName) values (P_OfflineTabFolder & "UrsprungsFastigheterMedSockenOc.TAB", "UrsprungsFastigheterMedSockenOc")
+		insert into Pathtable (tablePath,TableName) values (P_komponent & "MhkToVision.TAB", "MhkToVision")
+		insert into Pathtable (tablePath,TableName) values (P_komponent & "Mer_än_en_fastighet.TAB", "Mer_än_en_fastighet")
+		insert into Pathtable (tablePath,TableName) values (P_komponent & "bilder.TAB", "bilder")
+		insert into Pathtable (tablePath,TableName) values (P_komponent & "Anteckningar.TAB", "Anteckningar")
 	
-		Tempstring = tempstringx & "Rening_"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "södra.tab", "Rening_SödraNoIndex")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "norra.tab", "Rening_NorraNoIndex")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "mellersta.tab", "Rening_MellerstaNoIndex")
+		insert into Pathtable (tablePath,TableName) values (P_OfflineTabFolder + "Tab-Bygg_Fastigheter\Fastighet_yta.tab", "fastighet_ytaORg")
+		insert into Pathtable (tablePath,TableName) values (P_OfflineTabFolder + "Adress\Adresspunkter.TAB", "Adresspunkter")
+		
+		insert into Pathtable (tablePath,TableName) values (EnskiltPath + "södra.tab", "Enskilt_avlopp_SödraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (EnskiltPath + "norra.tab", "Enskilt_avlopp_NorraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (EnskiltPath + "mellersta.tab", "Enskilt_avlopp_MellerstaNoIndex")
+		
+		insert into Pathtable (tablePath,TableName) values (ReningsPath + "södra.tab", "Rening_SödraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (ReningsPath + "norra.tab", "Rening_NorraNoIndex")
+		insert into Pathtable (tablePath,TableName) values (ReningsPath + "mellersta.tab", "Rening_MellerstaNoIndex")
+		
+		insert into Pathtable (tablePath,TableName) values (P_SwSkikt + "Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
+		
+		insert into Pathtable (tablePath,TableName) values (P_slamMap + "Lokalt_omhändertagande_slam.TAB", "Lokalt_omhändertagande_slam")
+		
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ÖSTERGARNressultat.TAB", "ÖSTERGARNressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ÖJAressultat.TAB", "ÖJAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VÄTEressultat.TAB", "VÄTEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VÄSTERHEJDEressultat.TAB", "VÄSTERHEJDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VÄSTERGARNressultat.TAB", "VÄSTERGARNressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VÄSKINDEressultat.TAB", "VÄSKINDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VÄNGEressultat.TAB", "VÄNGEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VISBYressultat.TAB", "VISBYressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VIKLAUressultat.TAB", "VIKLAUressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VAMLINGBOressultat.TAB", "VAMLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VALLSTENAressultat.TAB", "VALLSTENAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "VALLressultat.TAB", "VALLressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "TRÄKUMLAressultat.TAB", "TRÄKUMLAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "TOFTAressultat.TAB", "TOFTAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "TINGSTÄDEressultat.TAB", "TINGSTÄDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "SUNDREressultat.TAB", "SUNDREressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "STÅNGAressultat.TAB", "STÅNGAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "STENKYRKAressultat.TAB", "STENKYRKAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "STENKUMLAressultat.TAB", "STENKUMLAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "SPROGEressultat.TAB", "SPROGEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "SJONHEMressultat.TAB", "SJONHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "SILTEressultat.TAB", "SILTEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "SANDAressultat.TAB", "SANDAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "RUTEressultat.TAB", "RUTEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "RONEressultat.TAB", "RONEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ROMAressultat.TAB", "ROMAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "OTHEMressultat.TAB", "OTHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "NÄSressultat.TAB", "NÄSressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "NÄRressultat.TAB", "NÄRressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "NORRLANDAressultat.TAB", "NORRLANDAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "MÄSTERBYressultat.TAB", "MÄSTERBYressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "MARTEBOressultat.TAB", "MARTEBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LÄRBROressultat.TAB", "LÄRBROressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LYEressultat.TAB", "LYEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LUMMELUNDAressultat.TAB", "LUMMELUNDAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LOKRUMEressultat.TAB", "LOKRUMEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LOJSTAressultat.TAB", "LOJSTAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LINDEressultat.TAB", "LINDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LEVIDEressultat.TAB", "LEVIDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "LAUressultat.TAB", "LAUressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "KÄLLUNGEressultat.TAB", "KÄLLUNGEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "KRÄKLINGBOressultat.TAB", "KRÄKLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "KLINTEressultat.TAB", "KLINTEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HÖRSNEressultat.TAB", "HÖRSNEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HOGRÄNressultat.TAB", "HOGRÄNressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HEMSEressultat.TAB", "HEMSEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HELLVIressultat.TAB", "HELLVIressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HEJNUMressultat.TAB", "HEJNUMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HEJDEressultat.TAB", "HEJDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HEJDEBYressultat.TAB", "HEJDEBYressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HAVDHEMressultat.TAB", "HAVDHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HANGVARressultat.TAB", "HANGVARressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HAMRAressultat.TAB", "HAMRAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HALLressultat.TAB", "HALLressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HALLAressultat.TAB", "HALLAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "HABLINGBOressultat.TAB", "HABLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "GULDRUPEressultat.TAB", "GULDRUPEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "GRÖTLINGBOressultat.TAB", "GRÖTLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "GOTHEMressultat.TAB", "GOTHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "GERUMressultat.TAB", "GERUMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "GARDEressultat.TAB", "GARDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "GANTHEMressultat.TAB", "GANTHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "GAMMELGARNressultat.TAB", "GAMMELGARNressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "FÅRÖressultat.TAB", "FÅRÖressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "FRÖJELressultat.TAB", "FRÖJELressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "FOLLINGBOressultat.TAB", "FOLLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "FOLEressultat.TAB", "FOLEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "FLERINGEressultat.TAB", "FLERINGEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "FIDEressultat.TAB", "FIDEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "FARDHEMressultat.TAB", "FARDHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ETELHEMressultat.TAB", "ETELHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ESKELHEMressultat.TAB", "ESKELHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ENDREressultat.TAB", "ENDREressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "EKSTAressultat.TAB", "EKSTAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "EKEressultat.TAB", "EKEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "EKEBYressultat.TAB", "EKEBYressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "distriktsindelning.TAB", "distriktsindelning")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "DALHEMressultat.TAB", "DALHEMressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BÄLressultat.TAB", "BÄLressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BUTTLEressultat.TAB", "BUTTLEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BURSressultat.TAB", "BURSressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BUNGEressultat.TAB", "BUNGEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BROressultat.TAB", "BROressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BOGEressultat.TAB", "BOGEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BJÖRKEressultat.TAB", "BJÖRKEressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BARLINGBOressultat.TAB", "BARLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "BARAressultat.TAB", "BARAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ATLINGBOressultat.TAB", "ATLINGBOressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ARDREressultat.TAB", "ARDREressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ANGAressultat.TAB", "ANGAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ALVAressultat.TAB", "ALVAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ALSKOGressultat.TAB", "ALSKOGressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "ALAressultat.TAB", "ALAressultat")
+		insert into Pathtable (tablePath,TableName) values (P_Ress + "AKEBÄCKressultat.TAB", "AKEBÄCKressultat")
+		
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ÖSTERGARNFastigheter.TAB", "ÖSTERGARNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ÖJAFastigheter.TAB", "ÖJAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VÄTEFastigheter.TAB", "VÄTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VÄSTERHEJDEFastigheter.TAB", "VÄSTERHEJDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VÄSTERGARNFastigheter.TAB", "VÄSTERGARNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VÄSKINDEFastigheter.TAB", "VÄSKINDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VÄNGEFastigheter.TAB", "VÄNGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VISBYFastigheter.TAB", "VISBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VIKLAUFastigheter.TAB", "VIKLAUFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VAMLINGBOFastigheter.TAB", "VAMLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VALLSTENAFastigheter.TAB", "VALLSTENAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "VALLFastigheter.TAB", "VALLFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "TRÄKUMLAFastigheter.TAB", "TRÄKUMLAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "TOFTAFastigheter.TAB", "TOFTAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "TINGSTÄDEFastigheter.TAB", "TINGSTÄDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "SUNDREFastigheter.TAB", "SUNDREFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "STÅNGAFastigheter.TAB", "STÅNGAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "STENKYRKAFastigheter.TAB", "STENKYRKAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "STENKUMLAFastigheter.TAB", "STENKUMLAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "SPROGEFastigheter.TAB", "SPROGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "SJONHEMFastigheter.TAB", "SJONHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "SILTEFastigheter.TAB", "SILTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "SANDAFastigheter.TAB", "SANDAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "RUTEFastigheter.TAB", "RUTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "RONEFastigheter.TAB", "RONEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ROMAFastigheter.TAB", "ROMAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "OTHEMFastigheter.TAB", "OTHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "NÄSFastigheter.TAB", "NÄSFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "NÄRFastigheter.TAB", "NÄRFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "NORRLANDAFastigheter.TAB", "NORRLANDAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "MÄSTERBYFastigheter.TAB", "MÄSTERBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "MARTEBOFastigheter.TAB", "MARTEBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LÄRBROFastigheter.TAB", "LÄRBROFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LYEFastigheter.TAB", "LYEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LUMMELUNDAFastigheter.TAB", "LUMMELUNDAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LOKRUMEFastigheter.TAB", "LOKRUMEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LOJSTAFastigheter.TAB", "LOJSTAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LINDEFastigheter.TAB", "LINDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LEVIDEFastigheter.TAB", "LEVIDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "LAUFastigheter.TAB", "LAUFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "KÄLLUNGEFastigheter.TAB", "KÄLLUNGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "KRÄKLINGBOFastigheter.TAB", "KRÄKLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "KLINTEFastigheter.TAB", "KLINTEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HÖRSNEFastigheter.TAB", "HÖRSNEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HOGRÄNFastigheter.TAB", "HOGRÄNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HEMSEFastigheter.TAB", "HEMSEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HELLVIFastigheter.TAB", "HELLVIFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HEJNUMFastigheter.TAB", "HEJNUMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HEJDEFastigheter.TAB", "HEJDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HEJDEBYFastigheter.TAB", "HEJDEBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HAVDHEMFastigheter.TAB", "HAVDHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HANGVARFastigheter.TAB", "HANGVARFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HAMRAFastigheter.TAB", "HAMRAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HALLFastigheter.TAB", "HALLFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HALLAFastigheter.TAB", "HALLAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "HABLINGBOFastigheter.TAB", "HABLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "GULDRUPEFastigheter.TAB", "GULDRUPEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "GRÖTLINGBOFastigheter.TAB", "GRÖTLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "GOTHEMFastigheter.TAB", "GOTHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "GERUMFastigheter.TAB", "GERUMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "GARDEFastigheter.TAB", "GARDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "GANTHEMFastigheter.TAB", "GANTHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "GAMMELGARNFastigheter.TAB", "GAMMELGARNFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "FÅRÖFastigheter.TAB", "FÅRÖFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "FRÖJELFastigheter.TAB", "FRÖJELFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "FOLLINGBOFastigheter.TAB", "FOLLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "FOLEFastigheter.TAB", "FOLEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "FLERINGEFastigheter.TAB", "FLERINGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "FIDEFastigheter.TAB", "FIDEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "FARDHEMFastigheter.TAB", "FARDHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ETELHEMFastigheter.TAB", "ETELHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ESKELHEMFastigheter.TAB", "ESKELHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ENDREFastigheter.TAB", "ENDREFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "EKSTAFastigheter.TAB", "EKSTAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "EKEFastigheter.TAB", "EKEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "EKEBYFastigheter.TAB", "EKEBYFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "DALHEMFastigheter.TAB", "DALHEMFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BÄLFastigheter.TAB", "BÄLFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BUTTLEFastigheter.TAB", "BUTTLEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BURSFastigheter.TAB", "BURSFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BUNGEFastigheter.TAB", "BUNGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BROFastigheter.TAB", "BROFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BOGEFastigheter.TAB", "BOGEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BJÖRKEFastigheter.TAB", "BJÖRKEFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BARLINGBOFastigheter.TAB", "BARLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "BARAFastigheter.TAB", "BARAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ATLINGBOFastigheter.TAB", "ATLINGBOFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ARDREFastigheter.TAB", "ARDREFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ANGAFastigheter.TAB", "ANGAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ALVAFastigheter.TAB", "ALVAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ALSKOGFastigheter.TAB", "ALSKOGFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "ALAFastigheter.TAB", "ALAFastigheter")
+		insert into Pathtable (tablePath,TableName) values (P_faYtdBySoc + "AKEBÄCKFastigheter.TAB", "AKEBÄCKFastigheter")
 
-		Tempstring = tempstringx & "SLAM\"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "Lokalt_omhändertagande_slam.TAB", "Lokalt_omhändertagande_slam")
-		
-		insert into Pathtable (tablePath,TableName) values (ApplicationDirectory$() & "AnvändaReningarsHash.tab", "AnvändaReningarsHash")
-	
-		Tempstring = ApplicationDirectory$()
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "socknarOfiltrerade.TAB", "socknarOfiltrerade")
-
-		Tempstring = "C:\Users\crbk01\OneDrive - Region Gotland\Till Github\Mapinfo\MapInfoTabToCsv\Tab-sweref\"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
-	
-		Tempstring ="G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "\distriktsindelning.TAB", "distriktsindelning")
-		
-		
-		Tempstring = Tempstring & "\FastighetsytaUpdeladIsocken\"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAFastigheter.TAB", "ANGAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAFastigheter.TAB", "BARAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOFastigheter.TAB", "ATLINGBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "KÄLLUNGEFastigheter.TAB", "KÄLLUNGEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALVAFastigheter.TAB", "ALVAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "AKEBÄCKFastigheter.TAB", "AKEBÄCKFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLFastigheter.TAB", "VALLFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ETELHEMFastigheter.TAB", "ETELHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HOGRÄNFastigheter.TAB", "HOGRÄNFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLEFastigheter.TAB", "FOLEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LYEFastigheter.TAB", "LYEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ESKELHEMFastigheter.TAB", "ESKELHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "MÄSTERBYFastigheter.TAB", "MÄSTERBYFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAVDHEMFastigheter.TAB", "HAVDHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BOGEFastigheter.TAB", "BOGEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VIKLAUFastigheter.TAB", "VIKLAUFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BJÖRKEFastigheter.TAB", "BJÖRKEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJNUMFastigheter.TAB", "HEJNUMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LINDEFastigheter.TAB", "LINDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "STÅNGAFastigheter.TAB", "STÅNGAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEBYFastigheter.TAB", "HEJDEBYFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ENDREFastigheter.TAB", "ENDREFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERGARNFastigheter.TAB", "VÄSTERGARNFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ROMAFastigheter.TAB", "ROMAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEBYFastigheter.TAB", "EKEBYFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKYRKAFastigheter.TAB", "STENKYRKAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUNGEFastigheter.TAB", "BUNGEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FIDEFastigheter.TAB", "FIDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GRÖTLINGBOFastigheter.TAB", "GRÖTLINGBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GAMMELGARNFastigheter.TAB", "GAMMELGARNFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAMRAFastigheter.TAB", "HAMRAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖSTERGARNFastigheter.TAB", "ÖSTERGARNFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄRFastigheter.TAB", "NÄRFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "OTHEMFastigheter.TAB", "OTHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "RONEFastigheter.TAB", "RONEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BURSFastigheter.TAB", "BURSFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "TINGSTÄDEFastigheter.TAB", "TINGSTÄDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HELLVIFastigheter.TAB", "HELLVIFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HÖRSNEFastigheter.TAB", "HÖRSNEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GULDRUPEFastigheter.TAB", "GULDRUPEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄTEFastigheter.TAB", "VÄTEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GOTHEMFastigheter.TAB", "GOTHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FÅRÖFastigheter.TAB", "FÅRÖFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HABLINGBOFastigheter.TAB", "HABLINGBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSKINDEFastigheter.TAB", "VÄSKINDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOKRUMEFastigheter.TAB", "LOKRUMEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "MARTEBOFastigheter.TAB", "MARTEBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BROFastigheter.TAB", "BROFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LUMMELUNDAFastigheter.TAB", "LUMMELUNDAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LEVIDEFastigheter.TAB", "LEVIDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FRÖJELFastigheter.TAB", "FRÖJELFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SILTEFastigheter.TAB", "SILTEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VISBYFastigheter.TAB", "VISBYFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLLINGBOFastigheter.TAB", "FOLLINGBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEMSEFastigheter.TAB", "HEMSEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SPROGEFastigheter.TAB", "SPROGEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERHEJDEFastigheter.TAB", "VÄSTERHEJDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "TOFTAFastigheter.TAB", "TOFTAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LÄRBROFastigheter.TAB", "LÄRBROFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKUMLAFastigheter.TAB", "STENKUMLAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "TRÄKUMLAFastigheter.TAB", "TRÄKUMLAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖJAFastigheter.TAB", "ÖJAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLSTENAFastigheter.TAB", "VALLSTENAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BÄLFastigheter.TAB", "BÄLFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "NORRLANDAFastigheter.TAB", "NORRLANDAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLFastigheter.TAB", "HALLFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SJONHEMFastigheter.TAB", "SJONHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GANTHEMFastigheter.TAB", "GANTHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLAFastigheter.TAB", "HALLAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "KRÄKLINGBOFastigheter.TAB", "KRÄKLINGBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "KLINTEFastigheter.TAB", "KLINTEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SUNDREFastigheter.TAB", "SUNDREFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEFastigheter.TAB", "HEJDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VAMLINGBOFastigheter.TAB", "VAMLINGBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEFastigheter.TAB", "EKEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKSTAFastigheter.TAB", "EKSTAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HANGVARFastigheter.TAB", "HANGVARFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARLINGBOFastigheter.TAB", "BARLINGBOFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "DALHEMFastigheter.TAB", "DALHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄNGEFastigheter.TAB", "VÄNGEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALAFastigheter.TAB", "ALAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUTTLEFastigheter.TAB", "BUTTLEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALSKOGFastigheter.TAB", "ALSKOGFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GARDEFastigheter.TAB", "GARDEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GERUMFastigheter.TAB", "GERUMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOJSTAFastigheter.TAB", "LOJSTAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FARDHEMFastigheter.TAB", "FARDHEMFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SANDAFastigheter.TAB", "SANDAFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "RUTEFastigheter.TAB", "RUTEFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄSFastigheter.TAB", "NÄSFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LAUFastigheter.TAB", "LAUFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ARDREFastigheter.TAB", "ARDREFastigheter")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEFastigheter.TAB", "FLERINGEFastigheter")
-
-		'Tempstring = ApplicationDirectory$()
-		tempstring = "\\storage01\app\EDP\EDP VISION\TempFilMapp\CRBK01\"
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ANGAressultat.TAB", "ANGAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARAressultat.TAB", "BARAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ATLINGBOressultat.TAB", "ATLINGBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "KÄLLUNGEressultat.TAB", "KÄLLUNGEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALVAressultat.TAB", "ALVAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "AKEBÄCKressultat.TAB", "AKEBÄCKressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLressultat.TAB", "VALLressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ETELHEMressultat.TAB", "ETELHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HOGRÄNressultat.TAB", "HOGRÄNressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLEressultat.TAB", "FOLEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LYEressultat.TAB", "LYEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ESKELHEMressultat.TAB", "ESKELHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "MÄSTERBYressultat.TAB", "MÄSTERBYressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAVDHEMressultat.TAB", "HAVDHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BOGEressultat.TAB", "BOGEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VIKLAUressultat.TAB", "VIKLAUressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BJÖRKEressultat.TAB", "BJÖRKEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJNUMressultat.TAB", "HEJNUMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LINDEressultat.TAB", "LINDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "STÅNGAressultat.TAB", "STÅNGAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEBYressultat.TAB", "HEJDEBYressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ENDREressultat.TAB", "ENDREressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERGARNressultat.TAB", "VÄSTERGARNressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ROMAressultat.TAB", "ROMAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEBYressultat.TAB", "EKEBYressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKYRKAressultat.TAB", "STENKYRKAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUNGEressultat.TAB", "BUNGEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FIDEressultat.TAB", "FIDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GRÖTLINGBOressultat.TAB", "GRÖTLINGBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GAMMELGARNressultat.TAB", "GAMMELGARNressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HAMRAressultat.TAB", "HAMRAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖSTERGARNressultat.TAB", "ÖSTERGARNressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄRressultat.TAB", "NÄRressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "OTHEMressultat.TAB", "OTHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "RONEressultat.TAB", "RONEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BURSressultat.TAB", "BURSressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "TINGSTÄDEressultat.TAB", "TINGSTÄDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HELLVIressultat.TAB", "HELLVIressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HÖRSNEressultat.TAB", "HÖRSNEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GULDRUPEressultat.TAB", "GULDRUPEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄTEressultat.TAB", "VÄTEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GOTHEMressultat.TAB", "GOTHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FÅRÖressultat.TAB", "FÅRÖressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HABLINGBOressultat.TAB", "HABLINGBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSKINDEressultat.TAB", "VÄSKINDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOKRUMEressultat.TAB", "LOKRUMEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "MARTEBOressultat.TAB", "MARTEBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BROressultat.TAB", "BROressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LUMMELUNDAressultat.TAB", "LUMMELUNDAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LEVIDEressultat.TAB", "LEVIDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FRÖJELressultat.TAB", "FRÖJELressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SILTEressultat.TAB", "SILTEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VISBYressultat.TAB", "VISBYressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FOLLINGBOressultat.TAB", "FOLLINGBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEMSEressultat.TAB", "HEMSEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SPROGEressultat.TAB", "SPROGEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄSTERHEJDEressultat.TAB", "VÄSTERHEJDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "TOFTAressultat.TAB", "TOFTAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LÄRBROressultat.TAB", "LÄRBROressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "STENKUMLAressultat.TAB", "STENKUMLAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "TRÄKUMLAressultat.TAB", "TRÄKUMLAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ÖJAressultat.TAB", "ÖJAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VALLSTENAressultat.TAB", "VALLSTENAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BÄLressultat.TAB", "BÄLressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "NORRLANDAressultat.TAB", "NORRLANDAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLressultat.TAB", "HALLressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SJONHEMressultat.TAB", "SJONHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GANTHEMressultat.TAB", "GANTHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HALLAressultat.TAB", "HALLAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "KRÄKLINGBOressultat.TAB", "KRÄKLINGBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "KLINTEressultat.TAB", "KLINTEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SUNDREressultat.TAB", "SUNDREressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HEJDEressultat.TAB", "HEJDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VAMLINGBOressultat.TAB", "VAMLINGBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKEressultat.TAB", "EKEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "EKSTAressultat.TAB", "EKSTAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "HANGVARressultat.TAB", "HANGVARressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BARLINGBOressultat.TAB", "BARLINGBOressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "DALHEMressultat.TAB", "DALHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "VÄNGEressultat.TAB", "VÄNGEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALAressultat.TAB", "ALAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "BUTTLEressultat.TAB", "BUTTLEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ALSKOGressultat.TAB", "ALSKOGressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GARDEressultat.TAB", "GARDEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "GERUMressultat.TAB", "GERUMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LOJSTAressultat.TAB", "LOJSTAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FARDHEMressultat.TAB", "FARDHEMressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "SANDAressultat.TAB", "SANDAressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "RUTEressultat.TAB", "RUTEressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "NÄSressultat.TAB", "NÄSressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "LAUressultat.TAB", "LAUressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "ARDREressultat.TAB", "ARDREressultat")
-		insert into Pathtable (tablePath,TableName) values (Tempstring + "FLERINGEressultat.TAB", "FLERINGEressultat")
-		
 end sub
 
 Sub gemAnslutna(caseString as string,ressultArray() as string)
@@ -1965,10 +1019,6 @@ Sub gemAnslutna(caseString as string,ressultArray() as string)
 	end case
 End Sub
 
-sub injectGemensamma()
-	insert into reningIhopslagen select * from gemensamma
-End Sub
-
 sub PrepareGemensamma()
 	
 	select * from reningIhopslagen where rowid=1 into gemensamma
@@ -2203,6 +1253,551 @@ sub PrepareGemensamma()
 
 end sub
 
+sub createRessultTableX(byval tablename as string, byval filePath as string)
+	
+	onError goto noTable close table tablename onError goto 0
+	
+	onError goto creationError
+
+	Create Table tableName (
+				Besöksadress_Adress	Char(253),								'Fastighetens adress	->	Adress	Char(253)(fältmaxlängd)	Besöksadress_Adress
+				Besöksadress_Postnr	Char(253),								'Postnr	->	Postnr	Char(253)(fältmaxlängd)	Besöksadress_Postnr
+				Besöksadress_Ort Char(253),									'Ort	->	Ort	Char(253)(fältmaxlängd)	Besöksadress_Ort
+				Besöksadress_Huvudfastighet	Char(34),						'Fastighet_tillstånd	->	Huvudfastighet	Char(34)	Besöksadress_Huvudfastighet
+				FNR integer,												'Fastighet_tillstånd	->	Huvudfastighet(FNR)	integer	FNR
+				ignore	Char(253),											'Lagfaren ägare	->	Namn	Char(253)(fältmaxlängd)	Verksamhetsutövare_Namn
+				ignore integer,												'Person- /Orgnr	->	Person- /Orgnr	integer	Verksamhetsutöv_Person_orgnr
+				ignore Char(253),											'Namn (kund)	->	Namn (kund)	Char(253)(fältmaxlängd)	Fakturamottagare_NAMN
+				ignore	Char(253),											'Adress (kund)	->	Adress (kund)	Char(253)(fältmaxlängd)	Fakturamottagare_Faktura_ADRESS
+				ignore	Char(253),											'Postnr (kund)	->	Postnr (kund)	Char(253)(fältmaxlängd)	Fakturamottagare_Faktura_POSTNR
+				ignore	Char(253),											'Ort (kund)	->	Ort (kund)	Char(253)(fältmaxlängd)	Fakturamottagare_Faktura_POSTOR
+				Enhet Char(6),												'"VATTEN"	->	Enhet	Char(6)	Enhet
+				Anteckning	Char(253),										'Anteckning (sweref/anläggning/rening)	->	Anteckning	Char(253)	Anteckning
+				Aktuell_timavgift integer,									'925	->	Aktuell timavgift	integer	Aktuell timavgift
+				Timdebitering Logical,										'TRUE	->	Timdebitering	Boolean	Timdebitering
+				Objektnamn	Char(36),										'Huvudfastighet	->	Objektnamn	Char(36)	Objektnamn
+				flik_Avloppsänlaggni_Boendetyp	Char(15),					'Typ_byggnad (beslut)	->	Boendetyp	Char(15)	flik_Avloppsänlaggni_Boendetyp
+				flik_Avloppsanläggn_Byggnadsår Char(4),						'Tillstånd_giltigt_tom (beslut)	->	Byggnadsår	Char(4)	flik_Avloppsanläggn_Byggnadsår
+				flik_Avloppsa_Besiktningsdatum Date,						'utförandedatum  (beslut)	->	Besiktningsdatum	datum(ÅÅ-MM-DD)	flik_Avloppsa_Besiktningsdatum
+				flik_Avloppsanläg_Beslutsdatum Date,						'beslutsdatum (beslut)	->	Beslutsdatum	datum(ÅÅ-MM-DD)	flik_Avloppsanläg_Beslutsdatum
+				Vatten	Char(17),											'Antal_hushåll_tillstånd (beslut)	->	Vatten	Char(17)	Vatten
+				Recipient Char(49),											'Fastighet Rening (rening)	->	Recipient	Char(49)	Recipient
+				Inventering	Char(12),										'(om sweref) "Klart Vatten"	->	Inventering	Char(12)	Inventering
+				Inventeringsinformation_Datum Date,							'Utskick1_datum (sweref)	->	Datum 	datum(ÅÅ-MM-DD)	Inventeringsinformation_Datum
+				Inventeringsinformation_Status	Char(6),					'Status (sweref)	->	Status	Char(6)	Inventeringsinformation_Status
+				Bedömning Char(15),											'Ärendenr (sweref)	->	Bedömning	Char(15)	Bedömning
+				fliken_Fastigheter	Char(34),								'Anslutna_fastigheter	->	fliken Fastigheter	Char(34)	fliken_Fastigheter
+				fliken_FastigheterFNR integer,								'Anslutna_fastigheter	->	fliken Fastigheter(FNR)	integer	fliken Fastigheter(FNR)
+				PunkttypAB Char(16),										'Punkttyp	->	Ansluten byggnad	Char(16)	PunkttypAB
+				Fliken_Koordinater	Char(19),								'Koordinater (beslut/rening/sweref)	->	X o Y	Char(19)	Fliken_Koordinater
+				fliken_Ärenden	char(13),									'Diarienummer(Flagg,Beslut)	->	fliken Ärenden	char(13)	fliken Ärenden
+				Anläggningskategori	Char(29),								'"Efterföljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Anläggningskategori	Char(29)	Anläggningskategori
+				besiktningdatum Date,										'utförandedatum  (rening/beslut/tank)	->	besiktningdatum	datum(ÅÅ-MM-DD)	besiktningdatum
+				beslutsdatum Date,											'beslutsdatum (rening/beslut/tank)	->	beslutsdatum	datum(ÅÅ-MM-DD)	beslutsdatum
+				Anläggningstyp	Char(15),									'Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) "Klart Vatten"	->	Anläggningstyp	Char(15)	Anläggningstyp
+				Volym_m3 float,												'Storlek_m2 (rening)/Storlek_m3  (Beslut)	->	Volym m3	float	Volym m3
+				Anl_för_EftR_TöInterv_mån integer,							'Antal_hushåll_rening (rening)	->	Tömningssintervall	integer	Anl_för_EftR_TöInterv_mån
+				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (där infiltration/markbädd är belägen)/(där ansluten)/(där EXTRA inventeringsinformation är belägen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
+				PunkttypER	Char(20),										'"Efterföljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Punkttyp Koordinater	Char(20)	PunkttypER
+				Anläggning_för_EfterföljRText Char(253),					'Kommentarer (rening/sweref/beslut)	->	Text	Char(253)(fältmaxlängd)	Anläggning_för_EfterföljRText
+				ignore	Char(19),											''
+				Anläggning_för_S_Anläggningstyp	Char(15),					'Typ_byggnad (beslut)	->	Certifieringstyp (Typ av boende)	Char(15)	Anläggning_för_S_Anläggningstyp
+				Externt_Tjänsteid integer,									'ärendenr  (beslut/tank/sweref)	->	Externt Tjänsteid	integer	Externt Tjänsteid
+				text Char(6),												'Status  (sweref)	->	Status	Char(6)	text
+				Anläggning_för_Slamav_Volym_m3 date,						'Utskick1_datum (sweref)	->	Datum	datum(ÅÅ-MM-DD)	Anläggning_för_Slamav_Volym_m3
+				ignore	Char(19),											''
+				AnlförEfterR_Anläggningstyp	date,							'Slamdispense	->	Tömningsdispens fr.o.m	datum(ÅÅ-MM-DD)	AnlförEfterR_Anläggningstyp
+				ignore	 Date,												''
+				ignore	Date,												''
+				ignorex	integer,											''objektIndex
+				ignore	char(1),												''
+				ObjektID integer,											'ObjektItterator	->	ObjektID	integer	ObjektID
+				Path Char(253),												'Path (för filer som skall föras in, kopplas till objekt)	->	Path	Char(253)	Path
+				Diarienummer char(13),										'Diarienummer (för ärenden som skall knytas)	->	Diarienummer	char(13)	Diarienummer
+				Löpnummer integer											'Löpnummer (för ärenden som skall knytas)	->	Löpnummer	integer	Löpnummer
+
+
+			) file filePath TYPE NATIVE Charset "WindowsLatin1"
+			Create Map For tablename CoordSys Earth Projection 1, 104
+	onError goto 0
+	
+exit sub
+	creationError:
+	print "creationError" & error$()
+	end program
+	
+	noTable:
+	resume next 
+end sub
+
+function enforceFormat(byVal inputx as string,byVal format as string,byVal lenght as integer) as string
+	
+	dim return as string
+	
+	do case format
+		case "Char"
+			return = left$(inuptx,lenght)
+		case "Date"		
+			return = "" & NumberToDate(val(DeformatNumber$(inuptx)))
+			if return = "" then
+				return = "0"
+			end if
+		case "float"
+			return = "" & DeformatNumber$(inuptx)		
+		case "integer"
+			return = "" & val(DeformatNumber$(inuptx))
+		case "Logical"
+			do case inuptx
+			case "1","0","F","T"
+				return = inputx
+			case else
+				return = "" & val(inuptx)	
+			end case
+		case else
+			goto unrecognized		
+	End Case
+	
+		if( return <> inuptx ) then
+			goto overflow
+		end if
+			
+		enforceFormat = return
+	
+exit function
+	unrecognized:
+		print "unrecognized format " & format & "lenght:" & lenght
+	end program
+		overflow:
+		print "Warning overflow, " & inputx & " = " & return
+		resume next
+End Function
+
+function enforceFormTa(byVal inputx as string,byVal col as string) as string
+
+	dim return as string
+	
+	do case ColumnInfo(sockenRessultat,col,COL_INFO_TYPE)
+		case 1 '"Char"
+			return = left$(inputx,ColumnInfo( sockenRessultat,col,COL_INFO_WIDTH))
+		case 5,38 '"Date"
+			return = "" & NumberToDate(val(DeformatNumber$(inputx)))
+		case 8 '"float"
+			return = "" & DeformatNumber$(inputx)		
+		case 3,4,39 '"integer"
+			return = "" & val(DeformatNumber$(inputx))
+		case 6 '"Logical"
+			do case inputx
+			case "1","0","F","T"
+				return = inputx
+			case else
+				return = "" & val(inputx)	
+			end case
+		case else
+			goto unrecognized		
+	End Case
+	
+		if( len(return) >= len(inputx)+2) then
+			print "Warning overflow, " & inputx & " <> " & return
+		end if
+			
+		enforceFormTa = return
+	
+exit function
+	unrecognized:
+		print "unrecognized format " & ColumnInfo( sockenRessultat,col,COL_INFO_TYPE)
+	end program
+		overflow:
+		
+		resume next
+
+end function
+
+sub UtskriftsObjToInsertStringArray(värde() as string, utskriftsobjekt as utskriftsobjekt)
+	redim värde(tableInfo(sockenRessultat,TAB_INFO_NCOLS))
+
+	värde(resTabPos("Besöksadress_Adress")) = enforceFormTa(utskriftsObjekt.Besöksadress_Adress & " ","Besöksadress_Adress")
+	värde(resTabPos("Besöksadress_Postnr")) = enforceFormTa(utskriftsObjekt.Besöksadress_Postnr & " ","Besöksadress_Postnr")
+	värde(resTabPos("Besöksadress_Ort")) = enforceFormTa(utskriftsObjekt.Besöksadress_Ort & " ","Besöksadress_Ort")
+	värde(resTabPos("Besöksadress_Huvudfastighet")) = enforceFormTa(utskriftsObjekt.Besöksadress_Huvudfastighet & " ","Besöksadress_Huvudfastighet")
+	värde(resTabPos("FNR")) = enforceFormTa("" & utskriftsObjekt.FNR, "FNR")
+
+	värde(resTabPos("Enhet")) = enforceFormTa(utskriftsObjekt.Enhet & " ","Enhet")
+	värde(resTabPos("Anteckning")) = enforceFormTa(utskriftsObjekt.Anteckning & " ","Anteckning")
+	värde(resTabPos("Aktuell_timavgift")) = enforceFormTa("" & utskriftsObjekt.Aktuell_timavgift, "Aktuell_timavgift")
+	värde(resTabPos("Timdebitering")) = enforceFormTa(utskriftsObjekt.Timdebitering, "Timdebitering")
+	värde(resTabPos("Objektnamn")) = enforceFormTa(utskriftsObjekt.Objektnamn & " ","Objektnamn")
+	värde(resTabPos("flik_Avloppsänlaggni_Boendetyp")) = enforceFormTa(utskriftsObjekt.flik_Avloppsänlaggni_Boendetyp & " ","flik_Avloppsänlaggni_Boendetyp")
+	värde(resTabPos("flik_Avloppsanläggn_Byggnadsår")) = enforceFormTa("" & utskriftsObjekt.flik_Avloppsanläggn_Byggnadsår,"flik_Avloppsanläggn_Byggnadsår")
+	värde(resTabPos("flik_Avloppsa_Besiktningsdatum")) = enforceFormTa("" & utskriftsObjekt.flik_Avloppsa_Besiktningsdatum, "flik_Avloppsa_Besiktningsdatum")
+	värde(resTabPos("flik_Avloppsanläg_Beslutsdatum")) = enforceFormTa("" & utskriftsObjekt.flik_Avloppsanläg_Beslutsdatum, "flik_Avloppsanläg_Beslutsdatum")
+	värde(resTabPos("Vatten")) = enforceFormTa(utskriftsObjekt.Vatten & " ","Vatten")
+	värde(resTabPos("Recipient")) = enforceFormTa(utskriftsObjekt.Recipient & " ","Recipient")
+	värde(resTabPos("Inventering")) = enforceFormTa(utskriftsObjekt.Inventering & " ","Inventering")
+	värde(resTabPos("Inventeringsinformation_Datum")) = enforceFormTa("" & utskriftsObjekt.Inventeringsinformation_Datum, "Inventeringsinformation_Datum")
+	värde(resTabPos("Inventeringsinformation_Status")) = enforceFormTa(utskriftsObjekt.Inventeringsinformation_Status & " ","Inventeringsinformation_Status")
+	värde(resTabPos("Bedömning")) = enforceFormTa(utskriftsObjekt.Bedömning & " ","Bedömning")
+	värde(resTabPos("fliken_Fastigheter")) = enforceFormTa(utskriftsObjekt.fliken_Fastigheter & " ","fliken_Fastigheter")
+	värde(resTabPos("fliken_FastigheterFNR")) = enforceFormTa("" & utskriftsObjekt.fliken_Fastigheter_FNR, "fliken_FastigheterFNR")
+	värde(resTabPos("PunkttypAB")) = enforceFormTa(utskriftsObjekt.PunkttypAB & " ","PunkttypAB")
+	värde(resTabPos("Fliken_Koordinater")) = enforceFormTa(utskriftsObjekt.Fliken_Koordinater & " ","Fliken_Koordinater")
+	värde(resTabPos("fliken_Ärenden")) = enforceFormTa(utskriftsObjekt.fliken_Ärenden & " ","fliken_Ärenden")
+	värde(resTabPos("Anläggningskategori")) = enforceFormTa(utskriftsObjekt.Anläggningskategori & " ","Anläggningskategori")
+	värde(resTabPos("besiktningdatum")) = enforceFormTa("" & utskriftsObjekt.besiktningdatum, "besiktningdatum")
+	värde(resTabPos("beslutsdatum")) = enforceFormTa("" & utskriftsObjekt.beslutsdatum, "beslutsdatum")
+	värde(resTabPos("Anläggningstyp")) = enforceFormTa(utskriftsObjekt.Anläggningstyp & " ","Anläggningstyp")
+	värde(resTabPos("Volym_m3")) = enforceFormTa("" & utskriftsObjekt.Volym_m3, "Volym_m3")
+	värde(resTabPos("Anl_för_EftR_TöInterv_mån")) = enforceFormTa("" & utskriftsObjekt.Anl_för_EftR_TöInterv_mån, "Anl_för_EftR_TöInterv_mån")
+	värde(resTabPos("AnlF_efR_Koordinater_X_o_Y")) = enforceFormTa(utskriftsObjekt.AnlF_efR_Koordinater_X_o_Y & " ","AnlF_efR_Koordinater_X_o_Y")
+	värde(resTabPos("PunkttypER")) = enforceFormTa(utskriftsObjekt.PunkttypER & " ","PunkttypER")
+	värde(resTabPos("Anläggning_för_EfterföljRText")) = enforceFormTa(utskriftsObjekt.Anläggning_för_EfterföljRText & " ","Anläggning_för_EfterföljRText")
+
+	värde(resTabPos("Anläggning_för_S_Anläggningstyp")) = enforceFormTa(utskriftsObjekt.Anläggning_för_S_Anläggningstyp & " ","Anläggning_för_S_Anläggningstyp")
+	värde(resTabPos("Externt_Tjänsteid")) = enforceFormTa(utskriftsObjekt.Externt_Tjänsteid & " ", "Externt_Tjänsteid")
+	värde(resTabPos("text")) = enforceFormTa(utskriftsObjekt.text & " ","text")
+	värde(resTabPos("Anläggning_för_Slamav_Volym_m3")) = enforceFormTa("" & utskriftsObjekt.Anläggning_för_Slamav_Volym_m3, "Anläggning_för_Slamav_Volym_m3")
+
+	värde(resTabPos("AnlförEfterR_Anläggningstyp")) = enforceFormTa(utskriftsObjekt.AnlförEfterR_Anläggningstyp & " ", "AnlförEfterR_Anläggningstyp")
+	
+	'värde(resTabPos("Externt_Tjänsteid2")) = enforceFormTa(utskriftsObjekt.Externt_Tjänsteid_2 & " ", "Externt_Tjänsteid2")
+
+	värde(resTabPos("ObjektID")) = enforceFormTa("" & utskriftsObjekt.Objektid, "ObjektID")
+	värde(resTabPos("Path")) = enforceFormTa(utskriftsObjekt.Path & " ","Path")
+	värde(resTabPos("Diarienummer")) = enforceFormTa(utskriftsObjekt.Diarienummer & " ","Diarienummer")
+	värde(resTabPos("Löpnummer")) = enforceFormTa("" & utskriftsObjekt.Löpnummer, "Löpnummer")
+	värde(resTabPos("ignorex")) = "" & utskriftsObjekt.reningsindex
+	
+end sub
+
+sub getAnslutna(anslutan() as string)'hämtar också gemensamhetsanläggningar
+	dim P as integer
+	,tempString as string
+	,anslutningsAlias as alias
+	,temptext as string
+	
+	if(not(valtRening.anslutna_fastigheter_10 = "gem,gem")) then
+		for p=1 to 10		
+			anslutningsAlias = "valtRening.Anslutna_fastigheter_" & p
+			temptext = anslutningsAlias
+			if(temptext <> "") then
+				call addStringToArrayAsifSet(anslutan(),searchReplace(temptext,"""","'"))
+			end if
+		next
+	else
+		tempString = valtRening.kommentarer 'kommentarfältet har identifieringen
+		call gemAnslutna(tempstring,anslutan())
+		call addStringToArrayAsifSet(anslutan(),"gem,gem")
+	end if
+
+end sub
+
+function DiarieMixedToUnit(byVal text as string) as string
+	'skall bli, mhn-xxxx-xxxx
+	'kan vara mhn xxxx/xxxx
+	'eller xx/xxxx
+	'eller xxxx/xxxx
+	'eller xx-xxxx
+	'eller mhn-xx-xxxx
+	'eller mhn-xxxx-xxxx
+	If text <> "" Then
+			
+		dim sPartsArray(),sPartsArray2(),dPartsArray(),ressultString,paddedDiarieNummer,PaddedDay,tempstring as string
+		,tempInteger,nrOfSpaces,i,theYear,theMonth,theDay,nrOfslashes,nrOfdashes,firstPart,secondPart,cleanVar as integer
+		
+		nrOfslashes = SplitStringAtCharacter(text & "", "/", sPartsArray())
+		nrOfdashes = SplitStringAtCharacter(text & "", "-", dPartsArray())
+		nrOfSpaces = SplitStringAtCharacter(text & "", " ", sPartsArray2())
+		if nrOfslashes = 2 then	
+			'it has a / (spartArray()
+			'måste då ha ett numeriskt väde i 2 och text eller numeriskt i 1
+			firstPart = firstLeftMostNumber(sPartsArray(1))'endast numeric vänstra del av 1
+			secondPart = firstLeftMostNumber(sPartsArray(2))'endast numeric vänstra på sida 2
+		elseif(nrOfdashes > 1) then
+			do case nrOfdashes		
+				case 2
+					firstPart = firstLeftMostNumber(dPartsArray(1))'endast numeric på sida 1
+					secondPart = firstLeftMostNumber(dPartsArray(2))'endast numeric på sida 2
+				case 3
+						if(firstLeftMostNumber(dPartsArray(1))>0) then
+							cleanVar = 1
+							goto cleanedNumber
+						else
+							firstPart = firstLeftMostNumber(dPartsArray(2))'endast numeric på sida 1
+							secondPart = firstLeftMostNumber(dPartsArray(3))'endast numeric på sida 2
+						end if
+				case else
+			end case
+		elseif(nrOfSpaces = 2) then
+			firstPart = firstLeftMostNumber(sPartsArray2(1))'endast numeric på sida 1		
+			secondPart = firstLeftMostNumber(sPartsArray2(2))'endast numeric på sida 2
+		else
+			cleanVar = 2
+			goto cleanedNumber
+		end if
+		
+		if(firstPart = 0 OR secondPart = 0) then
+			cleanVar = 3
+			goto cleanedNumber
+		else
+			
+			tempInteger = len(firstPart & "") 'if it's fournumbered it's hard to estimate how large or small it might be
+			if(tempInteger <> 4)	then 'if yearpart is not 4 letters			
+				if(firstPart > 20) then
+						firstPart = 1900 + firstPart
+				else
+						firstPart = 2000 + firstPart
+				end if
+			end if
+		
+			DiarieMixedToUnit = "MHN-" & firstPart & "-" & secondPart
+					
+		end if
+		
+	else
+		DiarieMixedToUnit = text
+	end if
+exit function
+	cleanedNumber:
+		DiarieMixedToUnit = (cleanVar) & text 'kan inte tolka nummret
+End Function
+
+function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
+
+	dim itterator as integer
+	
+	itterator = ubound(utskriftsObjekt()) +1
+	redim UtskriftsObjekt(itterator)
+	
+	expandUtskriftsObjekt = itterator
+
+end function
+
+sub FastighetsObjToInsertStringArray(
+									output() as string,
+									inputx as fastighetsObjekt,
+									rObj() as ReningsObjekt,
+									swerefobj() as SwerefObjekt,
+									enObj() as EnskiltObjekt)
+ 	dim x as integer
+	,rening, sweref,enskilt as string
+	,dedupedrening(),dedupedenskilt(),dedupedsweref() as integer
+
+	redim output(11)
+
+	for x=1 to ubound(rObj)
+		if rObj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedrening, rObj(x).rowindex)
+		end if
+	next
+	
+	for x=1 to ubound(enObj)
+		if enObj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedenskilt, enObj(x).rowindex)
+		end if	
+	next
+	
+	for x=1 to ubound(swerefobj)
+		if swerefobj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedsweref, swerefobj(x).rowindex)
+		end if	
+	next
+		
+	rening = intArrayAsString(dedupedrening)
+	sweref = intArrayAsString(dedupedsweref)
+	enskilt = intArrayAsString(dedupedenskilt)
+	
+	output(1) =inputx.adress & " "
+	output(2) =inputx.postnr & " "
+	output(3) =inputx.ort & " "
+	output(4) =inputx.fastighet & " "
+	output(5) ="" & val("" & inputx.fnr )
+	output(6) ="" & val("" & inputx.HuvudSweref )
+	output(7) ="" & val("" & inputx.HuvudRening )
+	output(8) ="" & val("" & inputx.HuvudEnskilt )
+	output(9) = sweref & " "
+	output(10) = rening & " "
+	output(11) = enskilt & " "
+
+end sub
+
+sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
+		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
+		
+		swerefTot = swerefStop-swerefStart+0.01
+		ReningTot = ReningStop-ReningStart+0.01
+		EnskiltTot = EnskiltStop-EnskiltStart+0.01
+		objektTot = objektCreationStop-objektCreationStart+0.01
+		
+		total = (swerefTot)+(EnskiltTot)+(ReningTot)+(objektTot)
+						
+		print "[total:" & Format$(total, "#.##") & 
+		"|Sw "& Format$((swerefTot/total), "%")  &
+		" |Re "& Format$ ((ReningTot/total), "%")  &
+		" |En "& Format$ ((enskiltTot/total), "%")  &
+		" |Ob "& Format$ ((objektTot/total), "%") & " ]"
+	
+End Sub
+
+sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
+
+	redim swerefTokenObjekt(1)
+	swerefTokenObjekt(1).FASTIGHET = ""
+	swerefTokenObjekt(1).Fastighet_tillstånd = ""
+	swerefTokenObjekt(1).Ärendenr = ""
+	swerefTokenObjekt(1).Beslut_datum = ""
+	swerefTokenObjekt(1).Status = ""
+	swerefTokenObjekt(1).Utskick1_datum = ""
+	swerefTokenObjekt(1).Anteckning = ""
+	swerefTokenObjekt(1).utförddatum = ""
+	swerefTokenObjekt(1).slamhämtning = ""
+	swerefTokenObjekt(1).Antal_byggnader = 0
+	
+	redim reningsTokenObjekt(1)		
+	reningsTokenObjekt(1).spatialFastighet = ""
+	reningsTokenObjekt(1).spatialShift = ""
+	reningsTokenObjekt(1).Fastighet_rening = ""
+	reningsTokenObjekt(1).Antal_hushåll_rening = 0
+	reningsTokenObjekt(1).Reningstyp = ""
+	reningsTokenObjekt(1).Storlek_m2 = 0
+	reningsTokenObjekt(1).kordinater = ""
+	reningsTokenObjekt(1).Beslut_datum = ""
+	reningsTokenObjekt(1).Utförd_datum = ""
+	reningsTokenObjekt(1).Kommentarer = ""
+	reningsTokenObjekt(1).rowIndex = 0
+	
+	redim enskiltTokenObjekt(1)
+	enskiltTokenObjekt(1).Diarienummer = ""	
+	enskiltTokenObjekt(1).Fastighet_tillstånd = ""
+	enskiltTokenObjekt(1).spatialShift = ""
+	enskiltTokenObjekt(1).Typ_byggnad = ""
+	enskiltTokenObjekt(1).Antal_hushåll_tillstånd = ""
+	enskiltTokenObjekt(1).Fastighet_rening = ""
+	enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
+	enskiltTokenObjekt(1).Storlek_m3 = 0
+	enskiltTokenObjekt(1).Typ_rening = ""
+	enskiltTokenObjekt(1).Storlek_m2 = 0
+	enskiltTokenObjekt(1).Typ_sluten_tank = ""
+	enskiltTokenObjekt(1).Storlek__m3 = 0
+	enskiltTokenObjekt(1).Beslut_datum = ""
+	enskiltTokenObjekt(1).Utförd_datum = ""
+	enskiltTokenObjekt(1).Avgift = 0
+	enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
+	enskiltTokenObjekt(1).Anteckningar = ""
+	enskiltTokenObjekt(1).kordinater = ""	
+
+end sub
+
+sub createFastighetsTable(byval tablename as string, byval filePath as string)
+
+	onError goto noTable 
+		close table tablename 
+	onError goto 0
+	print "{Creating " & tablename
+	onError goto creationError
+	dim query as string
+		query = "Create Table " & tableName & " (adress	Char(253),postnr	Char(253),ort Char(253),fastighet	Char(34),fnr integer,HuvudSweref integer,HuvudRening integer,HuvudEnskilt integer,swerefobjekt	Char(253),reningsobjekt	Char(253),enskiltObjekt	Char(253)) file "& chr$(34) & filePath & chr$(34)
+		run command query 
+		Create Map For tablename CoordSys Earth Projection 1, 104
+	onError goto 0
+	
+exit sub
+	creationError:
+	print "creationError" & error$()
+	print query
+	end program
+	
+	noTable:
+	resume next 
+end sub
+
+sub messageEveryString(StringArray() as String)
+	
+	Dim	i As Integer
+		
+		for i = 1 To Ubound(StringArray)
+			print "*" & StringArray(i) & "*"
+		Next
+	
+end sub
+
+function countShiftenGenUtvald(FastighetB as string) as integer
+	dim tempcountz as integer
+	
+	select * from Fastighet_yta where kir = fastighetB into utvaldFastighet
+	
+	countShiftenGenUtvald = countRows(utvaldFastighet)
+end function
+
+function getCOrd(byVal ColumnName as string) as string 'förväntar sig endast ett object av samma typ
+	
+	dim tempAlias as alias
+	tempAlias = ColumnName
+	dim tempInteger as integer
+	
+	select * from urval where not(tempAlias = "") into objUrval
+	tempInteger = tableInfo(objUrval,8)
+		
+	if tempInteger > 0 then
+		onError goto noCordError	
+		fetch first from objUrval
+		getCOrd =  ObjectGeography(objUrval.obj,1) & "," & ObjectGeography(objUrval.obj,2)
+	end if
+
+exit function
+noCordError:
+	print tempInteger & " :rader, " & error$()
+end function
+
+function kollaBredd(values() as string) as logical
+
+	kollaBredd = true
+	dim x as integer
+
+	for x = 1 to ubound(values)
+		select col2 from referenceTable where col1 = x into bucketSize
+			fetch first from bucketSize
+		if(bucketSize.col1 < len(values(x))) then
+			kollaBredd = false
+		end if
+	next
+
+end function
+
+function countDupes(byVal fastighetsBet as string) as integer
+
+dim hasDupes,x as integer
+
+		select * from sammanfogadtabell where Besöksadress_Huvudfastighet = FastighetsBet into urval
+		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
+     		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
+     			hasDupes = hasDupes + 1
+     		end if
+		Next
+
+countDupes = hasDupes
+end function
+
+function countOccurences(byVal colummn as string) as integer
+	
+	Dim query As String
+	dim tempAlias as alias
+	tempAlias = "urval." & colummn
+	
+	onError goto QueryError
+	
+	select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
+	
+	fetch first from tempcolumnFiltered
+	countOccurences = tableInfo(tempcolumnFiltered,8)	
+exit function
+	QueryError:
+		print query & "]countOccurences[" & Error$()
+		countOccurences = 0
+end function
+
+sub injectGemensamma()
+	insert into reningIhopslagen select * from gemensamma
+End Sub
+
 function CreateTable_reningIhopslagen as string
 	dim pathVar as string
 	dim temp as string temp= TempFileName$("") 
@@ -2242,15 +1837,15 @@ function CreateTable_EnskiltIhopslagen as string
 	Create Table "EnskiltIhopslagen" (
 	
 	Diarienummer Char(30),
-	Fastighet_tillstånd Char(40),
+	Fastighet_tillstånd Char(50),
 	Typ_byggnad Char(15),
 	Antal_hushåll_tillstånd Char(17),
-	Fastighet_rening Char(33),
-	Typ_Slamavskiljare Char(15),
+	Fastighet_rening Char(50),
+	Typ_Slamavskiljare Char(27),
 	Storlek_m3 Float,
-	Typ_rening Char(15),
+	Typ_rening Char(19),
 	Storlek_m2 Float,
-	Typ_sluten_tank Char(8),
+	Typ_sluten_tank Char(11),
 	Storlek__m3 Float,
 	Beslut_datum Date,
 	Utförd_datum Date,
@@ -2267,281 +1862,6 @@ function CreateTable_EnskiltIhopslagen as string
 	CreateTable_EnskiltIhopslagen = pathVar
 end function
 
-sub diarienummerForUtskriftsObjekt(
-	utskriftsObjekt() as utskriftsobjekt,
-	itterator as integer,
-	enskiltObjekt as enskiltobjekt,
-	swerefObjekt as swerefobjekt, 
-	objektid as integer
-	)
-	dim ärendennr() as string
-	if (enskiltObjekt.Diarienummer<>"MHN") then
-		call addStringToArrayAsifSet(ärendennr(),enskiltObjekt.Diarienummer)
-		utskriftsObjekt(itterator).Externt_Tjänsteid = iif(EnskiltÄrInteToken(enskiltObjekt),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
-		utskriftsObjekt(itterator).Externt_Tjänsteid_2 = iif(EnskiltÄrInteToken(enskiltObjekt) AND (enskiltObjekt.Typ_sluten_tank <> "0" and enskiltObjekt.Typ_sluten_tank <> "" and enskiltObjekt.Typ_sluten_tank <> "-"),DiarieUtanBokstäver(enskiltObjekt.diarienummer),"")
-	end if
-	if (swerefObjekt.Ärendenr<>"MHN") then
-		call addStringToArrayAsifSet(ärendennr(),swerefObjekt.Ärendenr) 
-	end if
-
-	'redan standardiserat call StandardiseraDiarie(swerefObjekt.Ärendenr,EnskiltObjekt.Diarienummer, ärendennr)
-	if(ubound(ärendennr)>0) then
-		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(1)
-	end if
-
-	'skapa en ny rad, med itterator+1 men objektide det samma.
-	'ärendenr(2) har då ett värde 
-	if(ubound(ärendennr)=2) then
-		itterator = itterator + 1
-		redim utskriftsobjekt(itterator)
-		utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(2)
-		utskriftsobjekt(itterator).Objektid = objektid	
-	end if
-end sub
-
-function trovärdighetsIndexer(
-	användaReningar() as integer,
-	swerefobjekt as swerefobjekt,
-	reningsobjekt as reningsobjekt,
-	enskiltobjekt as enskiltobjekt
-	) as float
-
-	dim trovärdighetsIndex,tempFloat,xplan,yplan,hypoten,distans as float
-	,swerefKord(),enskiltKord() as string
-	,Et,St,Rt as logical
-	,p as integer
-	
-	Et = EnskiltÄrInteToken(enskiltObjekt)
-	St = swerefÄrInteToken(swerefObjekt)
-	Rt = ReningÄrInteToken(reningsobjekt)
-	
-	if(Et AND St) then			
-		if(SplitStringAtCharacter(swerefobjekt.kordinater,",",swerefKord)+SplitStringAtCharacter(enskiltobjekt.kordinater,",",enskiltKord) = 4) then
-			xplan = val(swerefKord(1)) - val(enskiltKord(1))
-			yplan = val(swerefKord(2)) - val(enskiltKord(2))
-			
-			hypoten = sqr(xplan*xplan+yplan*yplan)'hypotenusan mellan enskilt och sweref
-			distans = sqr(hypoten*hypoten)
-			
-			trovärdighetsIndex = 1/iif(distans<>0,distans,0.1)
-		else
-			print "errorX:" & enskiltAsString(enskiltObjekt)
-			print "errorY:" & SwerefAsString(swerefObjekt)
-		end if
-		
-		trovärdighetsindex = trovärdighetsindex 
-		+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Ärendenr,EnskiltObjekt.Diarienummer)'om diarie nummer stämmer mellan flagga och enskilt 1
-		+ iif(len(swerefobjekt.Ärendenr)>13 OR len(EnskiltObjekt.Diarienummer)>13,-0.3,0)'om diarie är längre än 13 bokstäver -1
-	end if
-	
-	if(Rt) then
-		tempFloat = 0
-		
-		if(Et) then			
-			if XOR(ubound(ReningsObjekt.Anslutna_fastigheter()) = 0,enskiltobjekt.Fastighet_rening = "") then  'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
-				tempFloat = 0.5
-			else
-				for p=1 to ubound(ReningsObjekt.Anslutna_fastigheter())
-					if(enskiltobjekt.Fastighet_rening = ReningsObjekt.Anslutna_fastigheter(p)) then 'om någon av anslutna fastigheter = fastighet rening
-						tempFloat = 1
-					end if
-				next
-				
-				dim a,b,c as logical
-				
-				a = tempFloat=0
-				b = findInINTArray(reningsobjekt.rowIndex,användaReningar)
-				c = ubound(ReningsObjekt.Anslutna_fastigheter)>1
-				
-				if(a) then
-					tempFloat = tempFloat + iif(b,-9.4,iif(c,1,0))'om rening redan är uptagen.. och gemensamt != true = -1
-				end if
-			end if
-			
-			trovärdighetsIndex = trovärdighetsIndex
-			+ tempFloat			
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Fastighet_rening,ReningsObjekt.SpatialFastighet)' om det finns en rening på fastighet_rening
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Typ_rening,ReningsObjekt.Reningstyp)'om rening på fastighet med rening har typ rening = fastighet 1
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Storlek_m2,ReningsObjekt.storlek_m2)'om rening på fastighet med rening har typ storlekrening = fastighet 1
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Utförd_datum,ReningsObjekt.Utförd_datum)'om rening på fastighet med rening har typ Utförandedatum	 
-		end if
-		
-		if(St) then
-			trovärdighetsIndex = trovärdighetsIndex
-			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)	'1 extra poäng om sweref också matchar
-			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)'om rening på fastighet med rening har typ beslutdatum
-		end if
-	end if
-	
-	trovärdighetsIndexer = (trovärdighetsIndex)/9 'tempFloat om fastighet inte fanns i listan på anslutna, men kan aldrig bli mer än 1
-end function
-
-sub skapaMutationer(fastighetsobjekt as fastighetsobjekt,användaReningar as integer,UtskriftsObjekt() as utskriftsobjekt,tolkningsobjekt() as trovärdighetsobjekt)
-
-	dim enskiltItterator,i,mestTrov,enskiltEjTagna(),reningEjTagna(),swerefEjTagna(),temparray(),temp as integer
-	,enskiltTokenOrObjekt(),enskiltTokenObjekt() as enskiltObjekt
-	,reningTokenOrObjekt(),reningsTokenObjekt() as reningsobjekt
-	,swerefTokenOrObjekt(),swerefTokenObjekt() as swerefobjekt
-	,trovärdighetsobjekt() as trovärdighetsobjekt
-	,objektKvarAttKonstruera,debugg as logical
-	,högstaIn,trovärdighetsIndex as float 
-
-	for i=1 to ubound(FastighetsObjekt.reningsobjekt)
-		call addIntToArrayAsifSet(reningEjTagna,i)' reference index
-	next
-		
-	for i=1 to ubound(FastighetsObjekt.enskiltObjekt)
-		call addIntToArrayAsifSet(enskiltEjTagna,i)
-	next
-		
-	for i=1 to ubound(FastighetsObjekt.swerefobjekt)
-		call addIntToArrayAsifSet(swerefEjTagna,i)
-	next
-	
-	debugg = (fastighetsobjekt.kir = "ALA OLLAJVS 1:17")
-	
-if(debugg) then
-	dim Dbx as integer
-	print "|R" & ubound(FastighetsObjekt.reningsobjekt) & "|E" & ubound(FastighetsObjekt.enskiltObjekt) & "|S" & ubound(FastighetsObjekt.swerefobjekt)
-	
-	print "-------------------rening"
-	for Dbx=1 to ubound(FastighetsObjekt.reningsobjekt)
-		print Dbx & " " & ReningAsString(FastighetsObjekt.reningsobjekt(Dbx))
-	next
-	print "-------------------enskilt"
-	for Dbx=1 to ubound(FastighetsObjekt.enskiltObjekt)
-		print Dbx & " " & EnskiltAsString(FastighetsObjekt.enskiltObjekt(Dbx))
-	next
-	print "-------------------sweref"
-	for Dbx=1 to ubound(FastighetsObjekt.swerefobjekt)
-		print Dbx & " " & SwerefAsString(FastighetsObjekt.swerefobjekt(Dbx))
-	next
-	
-end if
-	
-	do	'denna sektion skapar alla möjliga förslag på kominationer.
-		dim EnsObjInx, fx, rx,tx,antalTrovärdsObjekt,antalAnläggningar,NrEejtagna,NrSejtagna,sfv,env,rnv,St,Et,Rt as integer
-		
-		NrEejtagna = ubound(enskiltEjTagna)
-		NrSejtagna = ubound(swerefEjTagna)
-		
-		tx = 0	EnsObjInx=1	fx=1 rx=1
-		
-		do
-			do
-				do
-					St = ubound(swerefEjTagna)
-					Et = ubound(enskiltEjTagna)
-					Rt = ubound(reningEjTagna)
-					tx = tx +1
-					
-					redim trovärdighetsobjekt(tx)
-					
-					if(st<>0 AND not(st<fx)) then
-						sfv = swerefEjTagna(fx)
-					else
-						sfv = st
-					end if
-										
-					if(not(Et<ensObjInx) AND (Et<>0)) then
-						env = enskiltEjTagna(ensObjInx)
-					else
-						env = Et
-					end if
-					
-					if(Rt<>0) AND not(Rt<rx) then
-						rnv = reningEjTagna(rx)
-					else
-						rnv = Rt					
-					end if
-					
-					trovärdighetsobjekt(tx).fx = FillerOrSwerefObjekt(sfV,FastighetsObjekt.swerefobjekt(),swerefTokenOrObjekt)
-					trovärdighetsobjekt(tx).ex = FillerOrEnskiltObjekt(enV,FastighetsObjekt.enskiltobjekt(),enskiltTokenOrObjekt)
-					trovärdighetsobjekt(tx).rx = FillerOrReningObjekt(rnv,FastighetsObjekt.reningsobjekt(),reningTokenOrObjekt)
-
-					trovärdighetsobjekt(tx).index = trovärdighetsIndexer(användaReningar,swerefTokenOrObjekt(1),reningTokenOrObjekt(1),enskiltTokenOrObjekt(1))
-					rx=rx+1
-					
-if(debugg) then
-	print trovärdighetsobjekt(tx).fx & ";" & trovärdighetsobjekt(tx).ex & ";" & trovärdighetsobjekt(tx).rx
-end if
-					
-				loop while rx < Rt
-				fx=fx+1
-			loop while fx < NrSejtagna
-			EnsObjInx=EnsObjInx+1
-		loop while EnsObjInx < NrEejtagna
-
-if(debugg) then
-	print fastighetsobjekt.kir & "|totalt" & ubound(trovärdighetsobjekt)
-end if
-	
-		'Denna sektions syfte är att välja ut ett objekt som har högst trovärdighet
-		for i=1 to ubound(trovärdighetsobjekt)
-			if((i = 1) OR trovärdighetsobjekt(i).index > högstaIn) then
-				mestTrov = i
-				högstaIn = trovärdighetsobjekt(i).index
-			end if	
-		next
-		
-		print fas.postort 'to halt eternal loops
-if(debugg) then			
-	print "|taget" & högstaIn & "|nr" & mestTrov
-	print "|R" & ReningAsString(FastighetsObjekt.reningsobjekt(trovärdighetsobjekt(mestTrov).rx)) & "|E" & enskiltAsString(FastighetsObjekt.enskiltObjekt(trovärdighetsobjekt(mestTrov).ex)) & "|S" & swerefAsString(FastighetsObjekt.swerefobjekt(trovärdighetsobjekt(mestTrov).fx))
-end if
-
-		'denna sektion stoppar det mest trovärdiga objektet i returnarrayn
-		'om varken enskilt eller sweref finns, görs inget returnobjekt
-		if(NrEejtagna + nrSejTagna <> 0) then 
-			temp = ubound(tolkningsobjekt)+1
-			redim tolkningsobjekt(temp)
-			tolkningsobjekt(temp).rx = trovärdighetsobjekt(mestTrov).rx
-			tolkningsobjekt(temp).ex = trovärdighetsobjekt(mestTrov).ex
-			tolkningsobjekt(temp).fx = trovärdighetsobjekt(mestTrov).fx
-			tolkningsobjekt(temp).index = trovärdighetsobjekt(mestTrov).index
-		end if
-
-if(debugg) then
-	print trovärdighetsobjekt(mestTrov).rx & " Rremoving from"
-	print DebuggStringEveryInt(reningEjTagna)
-end if
-		
-		'denna sektion tar bort de delar som använts i övre delen
-		if(trovärdighetsobjekt(mestTrov).rx <> 0) then
-			call removeFromIntArray(reningEjTagna(),trovärdighetsobjekt(mestTrov).rx)
-		end if
-
-if(debugg) then
-	print DebuggStringEveryInt(reningEjTagna)
-	print trovärdighetsobjekt(mestTrov).ex & " Eremoving from"
-	print DebuggStringEveryInt(enskiltEjTagna)
-end if
-		
-		if(trovärdighetsobjekt(mestTrov).ex <> 0) then
-			call removeFromIntArray(enskiltEjTagna(),trovärdighetsobjekt(mestTrov).ex)
-		end if
-
-if(debugg) then
-	print DebuggStringEveryInt(enskiltEjTagna)
-	print trovärdighetsobjekt(mestTrov).fx & " Sremoving from"
-	print DebuggStringEveryInt(swerefEjTagna)
-end if
-		
-		if(trovärdighetsobjekt(mestTrov).fx <> 0) then
-			call removeFromIntArray(swerefEjTagna(),trovärdighetsobjekt(mestTrov).fx)
-		end if
-
-if(debugg) then
-	print DebuggStringEveryInt(swerefEjTagna)
-end if
-		
-		NrEejtagna = ubound(enskiltEjTagna)
-		NrSejtagna = ubound(swerefEjTagna)
-		redim trovärdighetsobjekt()'töm trovärdighetsobjekten så de kan återskapas.
-	loop while ((NrSejtagna+NrEejtagna) <> 0)
-
-end sub
-
 function DebuggStringEveryInt(IntArray() as integer) as string
 	
 	Dim	i As Integer
@@ -2552,169 +1872,1038 @@ function DebuggStringEveryInt(IntArray() as integer) as string
 	
 end function
 
-sub utskrivningsobjektsKonstruktor(
-		sO as swerefobjekt,
-		rO as reningsObjekt,
-		eO as enskiltobjekt,
-		Uo() as utskriftsobjekt,
-		användaReningar() as integer,
-		trovärdighetsIndex as float,
-		fastighetsObjekt as fastighetsObjekt
-	)
-
-	dim ittr, objektid as integer
-	,reningsTokenObjekt() as reningsObjekt
-	,enskiltTokenObjekt() as enskiltobjekt
-	,swerefTokenObjekt() as swerefobjekt
-	,tableName as string
+sub do6_1_assosieraFnr()
+    dim query as string
+    
+    onError goto err1
+    call openSingleTable("fastighet_yta")
+    query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr"
+    run command query
+	onError goto 0
 	
-	ittr = expandutskriftsobjekt(Uo)
-	tableName = "LatestObjectID"
+	onError goto err2
+	query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas"
+	run command query
+	query = "Add Column ""NoFas"" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 "
+	run command query
+	onError goto 0
 	
-	if IsTableOpen(tableName) then 
-		select col1 from LatestObjectID
-		fetch first from latestObjectID
-		senastObjectID = iif(senastObjectID < latestObjectID.col1,latestObjectID.col1,senastObjectID)
-	end if
+	onError goto err3
+	query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr"
+	run command query
+	query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1"
+	run command query
+	onError goto 0
+
+	onError goto err4
+	query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr"
+	run command query
+	onError goto 0
 	
-	objektid = iif(senastObjectID <> 0,senastObjectID + 1,1)
+	call openSingleTable("UrsprungsFastigheterMedSockenOc")
 	
-	senastObjectID = objektid
-	Uo(ittr).Objektid = objektid
+	onError goto err5
+		query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas"
+	run command query
+		query = "Add Column ""NoFas"" (fliken_Fastigheter )From UrsprungsFastigheterMedSockenOc Set To Beteckning Where COL2 = COL3"
+	run command query
+	onError goto 0
 	
-	Uo(ittr).trovärdighetsIndex = trovärdighetsIndex
-	Uo(ittr).Path = ""
-	Uo(ittr).Diarienummer = ""
-	Uo(ittr).Löpnummer = ""
-	Uo(ittr).Enhet = "VATTEN"
-	Uo(ittr).Timdebitering = TRUE
-	Uo(ittr).Aktuell_timavgift = 925
+	onError goto err6
+		query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr"
+	run command query
+		query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From UrsprungsFastigheterMedSockenOc Set To FNR Where COL1 = Col4"
+	run command query
+	onError goto 0
+	
+exit sub
 
-	Uo(ittr).Verksamhetsutövare_Namn = "" 'fastighetsObjekt.namn
-	Uo(ittr).Verksamhetsutöv_Person_orgnr = "" ' fastighetsObjekt.personnr
+err1:
+	print "do6_1_assosieraFnr " & 1 & error$()
+	print query
+	resume next
+err2:
+	print "do6_1_assosieraFnr " & 2 & error$()
+	print query
+	resume next
+err3:
+	print "do6_1_assosieraFnr " & 3 & error$()
+	print query
+	resume next
+err4:
+	print "do6_1_assosieraFnr " & 4 & error$()
+	print query
+	resume next
+err5:
+	print "do6_1_assosieraFnr " & 5 & error$()
+	print query
+	resume next
+err6:
+	print "do6_1_assosieraFnr " & 6 & error$()
+	print query
+	resume next
+end sub
 
-	Uo(ittr).Fakturamottagare_NAMN = "" ' fastighetsObjekt.namn
-	Uo(ittr).Fakturamottagare_Faktura_ADRESS = "" ' fastighetsObjekt.adressNamn
-	Uo(ittr).Fakturamottagare_Faktura_POSTNR = "" ' fastighetsObjekt.PostNrNamn
-	Uo(ittr).Fakturamottagare_Faktura_POSTOR = "" ' fastighetsObjekt.PostortNamn
+sub do6_2_MHK()
+	dim query as string
+	call openSingleTable("MhkToVision")
+	query = "insert into HelaSolen (path,Diarienummer) select * from MhkToVision"
+	onError goto error1
+	run command query
+	onError goto 0
 
-	Uo(ittr).Besöksadress_Adress = fastighetsObjekt.adress
-	Uo(ittr).Besöksadress_Postnr = fastighetsObjekt.postnr
-	Uo(ittr).Besöksadress_Ort = fastighetsObjekt.ort
-	Uo(ittr).Besöksadress_Huvudfastighet = fastighetsObjekt.kir
-	Uo(ittr).FNR = fastighetsObjekt.fnr
+exit sub
+	error1:
+	print "[Error do6_2_MHK] " & error$()
+	print query
 
-	'har sweref
-	if(swerefÄrInteToken(sO)) then
-		Uo(ittr).Inventering = "klart Vatten"
-		Uo(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
-		Uo(ittr).Inventeringsinformation_Status = sO.Status
-		Uo(ittr).Bedömning = sO.Ärendenr
-		Uo(ittr).Anteckning = sO.Anteckning
-	end if
+end sub
 
-	if(EnskiltÄrInteToken(eO)) then	
-				
-		Uo(ittr).flik_Avloppsänlaggni_Boendetyp = eO.Typ_byggnad
-		Uo(ittr).flik_Avloppsanläggn_Byggnadsår = eO.Tillstånd_giltigt_tom
-		Uo(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utförd_datum
-		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = eO.Beslut_datum
-		Uo(ittr).Vatten = eO.Antal_hushåll_tillstånd
+sub do6_3_Anteckningar
+
+	dim query as string
+	call openSingleTable("anteckningar")
+	query = "insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnummer,path from anteckningar"
+	onError goto error1
+	run command query
+	onError goto 0
+
+exit sub
+	error1:
+	print "[Error do6_3_Anteckningar] " & error$()
+	print query
+
+end sub
+
+sub do6_4_MultiplaFastigheter
+	
+	dim query as string
+	call openSingleTable("Mer_än_en_fastighet")
+	query = "Insert Into HelaSolen Select * From Mer_än_en_fastighet"
+	onError goto error1
+	run command query
+	onError goto 0
+
+exit sub
+	error1:
+	print "[Error do6_4_MultiplaFastigheter] " & error$()
+	print query
+
+
+end sub
+	
+sub do6_5_MånsBilder
+
+	call openSingleTable("bilder")
+	
+	dim query as string
+	call openSingleTable("anteckningar")
+	onError goto error1
+		query = "select fastighet,path from bilder where fastighet <> ""blött jan2018"" into utanJan"
+		run command query
+		query = "insert into HelaSolen (fliken_fastigheter,path) select * from utanJan"
+		run command query
+	onError goto 0
+
+	onError goto error2
+	query = "select path from bilder where fastighet = ""blött jan2018"" into Jan"
+		run command query
+	query = "insert into HelaSolen (path) select * from Jan"
+		run command query
+	onError goto 0
+
+exit sub
+	error1:
+	print "[Error do6_5_MånsBilder1] " & error$()
+	print query
+	
+	error2:
+	print "[Error do6_5_MånsBilder2] " & error$()
+	print query
+	
+end sub
+	 
+sub do6_6_Gem
+'		'injesera gemensamhetsanläggningar
+'		call openSingleTable("reningIhopslagen")
+'		call PrepareGemensamma()
+'		call injectGemensamma()
+'		dim tableNames(1) as string tableNames(1) = "reningIhopslagen"
+'		dim tempAlias as alias tempAlias = tableNames(1)
+'		commit table reningIhopslagen
+'		call UpdateIndex("reningIhopslagen")'already commits
+'		call tableCloserAndCommiter(tableNames)	
+end sub
+
+sub do6_7_CorW3Fas()
+	
+	dim query as string
+	call openSingleTable("ÄrendenMedIngenEllerFelFastighet2")
+	
+	onError goto error1
+		query = "Select Diarienummer, Fnr from ÄrendenMedIngenEllerFelFastighet2 where Fnr <> 0 into fä2"
+		run command query
+		query = "insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from fä2"
+		run command query
+	onError goto 0
+
+exit sub
+	error1:
+	print "[Error do6_3_Anteckningar] " & error$()
+	print query
+	
+end sub
+
+sub do6_8_SlamDisp 	
+		dim tableNames(1) as string 
+		redim tableNames(2)
+		tableNames(1) = "Lokalt_omhändertagande_slam"
+		tablenames(2) = "fastighet_yta"
+		call tableOpener(tablenames)
 		
-		Uo(ittr).Objektnamn = iif (eO.spatialShift <> "",eO.spatialShift,fastighetsObjekt.namn & " Återställed enskilt")
-				
-		Uo(ittr).PunkttypAB = "Ansluten byggnad"
-		Uo(ittr).Anläggningskategori_2 = "Slamavskiljare"
-		Uo(ittr).Anläggning_för_S_Anläggningstyp = eO.Typ_Slamavskiljare
-		Uo(ittr).text = eO.Anteckningar
-		Uo(ittr).Anläggning_för_Slamav_Volym_m3 = eO.Storlek_m3
-		Uo(ittr).Fliken_Koordinater = eO.kordinater
-		
-		'har tank
-		if((eO.Typ_sluten_tank <> "0" and eO.Typ_sluten_tank <> "" and eO.Typ_sluten_tank <> "-")) then
-			Uo(ittr).Anläggningskategori_3 = "Tank"
-			Uo(ittr).AnlförEfterR_Anläggningstyp = eO.Typ_sluten_tank
-			Uo(ittr).besiktningdatum_2 = eO.Utförd_datum
-			Uo(ittr).beslutsdatum_2 = eO.Beslut_datum
-	
-			Uo(ittr).Volym_m3_2 = eO.Storlek__m3
-		end if
+		Select fastighet_yta.KIR, Lokalt_omhändertagande_slam.Diarienr, Lokalt_omhändertagande_slam.Beslutsdatum from Lokalt_omhändertagande_slam, fastighet_yta where Lokalt_omhändertagande_slam.Obj Within fastighet_yta.Obj into slam
+		Alter Table "EnskiltIhopslagen" ( add SlamDispDat Date )
+		Commit table EnskiltIhopslagen
+		Add Column "EnskiltIhopslagen" (SlamDispDat )From Lokalt_omhändertagande_slam Set To Beslutsdatum Where COL17 = COL1 
+		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp på: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
+		Commit table EnskiltIhopslagen
+end sub
 
-	else'not(EnskiltÄrInteToken(eO)) then	
-		Uo(ittr).Objektnamn = iif(sO.fastighet_tillstånd <> "",sO.fastighet_tillstånd,fastighetsObjekt.fastighet) & " " & sO.Status
-		Uo(ittr).Fliken_Koordinater = sO.kordinater
-		Uo(ittr).text = sO.Anteckning
-		Uo(ittr).flik_Avloppsa_Besiktningsdatum = sO.utförddatum
-		Uo(ittr).flik_Avloppsanläg_Beslutsdatum = sO.Beslut_datum
-	end if
-	
-	call generateTokenObjekts(reningsTokenObjekt, enskiltTokenObjekt, swerefTokenObjekt)
-	
-	if(ReningÄrInteToken(rO)) then
-		'gemensam är också true om antal fastighet rening är mer än 1
-		if not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) then 'ickeGemensam
-			
-			Uo(ittr).Recipient = iif(rO.spatialShift <> "",rO.spatialShift,eO.fastighet_rening)
-			Uo(ittr).Anläggningskategori = "Efterföljande rening"
-			Uo(ittr).besiktningdatum = rO.Utförd_datum
-			Uo(ittr).beslutsdatum = rO.Beslut_datum
-			Uo(ittr).Anläggningstyp = rO.Reningstyp
-			Uo(ittr).Volym_m3 = rO.Storlek_m2
-			Uo(ittr).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
-			Uo(ittr).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
-			Uo(ittr).PunkttypER = "Efterföljande rening"
-						
-			call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
-			call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,rO,eO, objektid)	
-		else'((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar)) gemensam
-			 Uo(ittr).Recipient =  "gem. på " & iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))		
-		
-			if (not(findInINTArray(rO.rowIndex,användaReningar))) then 'om den inte redan skapats					
-				dim rInd,rI as integer
-				rI = ittr
-				
-				if((findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then ' om gemensamhetsanläggn, avsluta fastighet, itteratorn ökas, objectidet ändras, men annars behandla det som vanlig rening.
-					call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
-					call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)'onödigt att regga fastigherna flera gånger
-					
-					objektId = val(rO.Kommentarer)
-					rI = ittr+1
-					
-					Uo(ittr).Objektid = objektId
-					Uo(ittr).Vatten = rO.Antal_hushåll_rening
-				end if
-								
-				rInd = ubound(användaReningar())+1
-				redim användaReningar(rInd)
-				användaReningar(rInd) = rO.rowIndex
-		
-				Uo(rI).Anläggning_för_EfterföljRText = rO.Kommentarer
-				Uo(rI).Anläggningskategori = "Efterföljande rening"
-				Uo(rI).besiktningdatum = rO.Utförd_datum
-				Uo(rI).beslutsdatum = rO.Beslut_datum
-				Uo(rI).Anläggningstyp = rO.Reningstyp
-				Uo(rI).Volym_m3 = rO.Storlek_m2
-				
-				Uo(rI).AnlF_efR_Koordinater_X_o_Y = rO.kordinater
-				Uo(rI).PunkttypER = "Efterföljande rening"
-				
-				if(not(findInStringArray("gem,gem",rO.Anslutna_fastigheter))) then
-					Uo(rI).Anl_för_EftR_TöInterv_mån = rO.Antal_hushåll_rening
-					call diarienummerForutskriftsobjekt(Uo,rI,eO,sO, objektid)
-					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
-				else'(ettTillsynsObjekt)
-					call fastighetForutskriftsobjekt(Uo,rI,fastighetsobjekt,sO,rO,eO, objektid)
-				end if'(not(ettTillsynsObjekt))
-			else
-				call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
-			end if'(not(findInINTArray(rO.rowIndex,användaReningar)))
-			
-		end if'not((ubound(rO.Anslutna_fastigheter())> 1) OR findInINTArray(rO.rowIndex,användaReningar))
-		
-	else'(not(ReningÄrInteToken(rO))
-		Uo(ittr).Recipient = eO.fastighet_rening
-		call diarienummerForutskriftsobjekt(Uo,ittr,eO,sO, objektid)
-		call fastighetForutskriftsobjekt(Uo,ittr,fastighetsobjekt,sO,reningsTokenObjekt(1),eO, objektid)
-	end if
-
+sub do6_9_byggnadsÅrTillFyraTecken
+	commit table helaSolen
+	'Alter Table "HelaSolen" ( modify flik_Avloppsanläggn_Byggnadsår Char(4) ) Interactive
 End Sub
+
+function getMain(inputString as string, output() as string) as integer
+	dim ant as integer
+	ant = SplitStringAtCharacter(inputString, ",",output()) 
+	
+	if (ant = 1) then
+		getMain = val(output(1))
+	else
+		getMain = 0
+	end if
+
+end function
+
+sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
+		dim x,q,i as integer ,fastighetsObjekt as fastighetsObjekt
+'		,fastighetensReningsobjekt() as fastighetensReningsobjekt'		,fastighetensSwerefObjekt() as fastighetensSwerefObjekt'		,fastighetensEnskiltObjekt() as fastighetensEnskiltObjekt
+		
+		fastighetsObjekt.kir = fastighetsBetInput	
+		onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & chr$(34) & fastighetsBetInput & chr$(34) & " into fas" onerror goto 0 fetch first from fas			
+		fastighetsObjekt.adress = fas.adress
+		fastighetsObjekt.postnr = fas.postnr 
+		fastighetsObjekt.ort = fas.postort 
+		fastighetsObjekt.fastighet = fas.fastighet 
+		fastighetsObjekt.fnr = fas.fnr 
+		close table fas
+		
+		call saveFastighetsObjektToTable(tableName,fastighetsObjekt,fastighetensReningsobjekt(),fastighetensSwerefObjekt(),fastighetensEnskiltObjekt())
+exit sub
+
+fasSelectError:
+	print "FastighetsObjCreationSelectError" & error$()
+	
+End Sub
+
+function findWhereInStringArray(byVal värde as string, array() as string) as integer
+
+	dim itterator as integer
+	
+		for itterator=1 to ubound(array)
+			if(värde = array(itterator)) then
+				findWhereInStringArray = itterator
+			end if
+		next
+		
+	findWhereInStringArray = 0
+
+end function
+
+sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as integer)
+	
+	dim originalPosition as integer
+	,påOrgPlatts as string
+	
+	if positionX > ubound(arrayTobePutIn) then
+		redim arrayTobePutIn(positionX)
+	end if
+	
+	'finns stränngen redan, returnera dess possition, annars returnera en ny positino
+	originalPosition = findWhereInStringArray(inputString,arrayToBePutIn)
+	if originalPosition = 0	then
+		originalPosition = ubound(arrayTobePutIn)+1
+		redim arrayTobePutIn(originalPosition)
+	end if
+
+	'hämta vad som är på platts, och skriv över med input
+	påOrgPlatts = arrayTobePutIn(positionX) arrayTobePutIn(positionX) = inputString
+	if påOrgPlatts <> "" then
+		'skriv det forna objektet på den forna plattsen
+		arrayTobePutIn(originalPosition) = påOrgPlatts
+	end if
+	
+end sub
+
+sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+
+	dim query,filePath,värde() as string
+	
+	call FastighetsObjToInsertStringArray(värde,inputx,ReningsObjekt(),SwerefObjekt(),EnskiltObjekt())
+		if(StringArrayAsString(värde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
+			query = generateInsertStringWithArray(tableName, värde)
+	
+			onerror goto queryError
+				run command query onerror goto 0 
+		else goto queryError end if
+
+	
+	commit table tableName
+	'call SaveAnvändaReningar
+			
+	methodEnd:
+exit sub
+queryError:
+	print "[saveFastighetsObjektToTable_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
+
+end sub
+
+sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
+
+	dim query,tablename,filePath,värde() as string,x as integer 
+	
+	tableName = "SockenRessultat"
+	
+	for x=1 to ubound(utskriftsObjekt)
+		call UtskriftsObjToInsertStringArray(värde, utskriftsObjekt(x)) 'queryError on eather "0,0,0,0,F,0,0,0,0,0,0,0,0" "Insert Into ressultat () Values ()" 
+		if(StringArrayAsString(värde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
+		query = generateInsertStringWithArray(tableName, värde) 
+		
+		onerror goto queryError 
+		run command query 
+		onerror goto 0 
+		else goto queryError end if
+	next
+	
+	
+	'call SaveAnvändaReningar
+			
+
+exit sub
+queryError:
+	print "[saveSockenProgress_error] queryError|" & query & "Commiting table" print error$() commit table tableName resume methodEnd
+	methodEnd:
+end sub
+
+sub saveSockenProgress(socken as string)
+
+	dim query	,filePath,värde(),tablename as string,x as integer
+	,tablenameA as alias
+	
+	tableName = Socken & "ressultat" 
+	filePath = ApplicationDirectory$() + tableName & ".tab"
+
+	call createRessultTableX(tablename,filePath)
+
+	tableNameA = tableName
+	Insert Into tableNameA select * From SockenRessultat DropIndex Auto
+
+	commit table tableName
+	drop table SockenRessultat
+	methodEnd:
+exit sub
+queryError:
+	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
+end sub
+
+Sub genTrovärdighet(tovärdighetsObjektArray() as trovärdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
+'return is only interested in tovärdighetsObjektArray(1), where our return objekt will be
+	dim q,x,z,y as integer
+	
+	q = 1
+	for x=1 TO ubound(reningsTokenObjekt)
+	 	For y=1 to ubound(swerefTokenObjekt) 
+			for z=1 to ubound(enskiltTokenObjekt)
+				redim tovärdighetsObjektArray(q)
+					tovärdighetsObjektArray(q).index = trovärdighetsIndexer(swerefTokenObjekt(y),reningsTokenObjekt(x),enskiltTokenObjekt(z))
+					tovärdighetsObjektArray(q).rx = x
+					tovärdighetsObjektArray(q).fx = y
+					tovärdighetsObjektArray(q).ex = z
+			next next next
+			
+		dim tMax as integer
+		tMax = 0
+		
+		for x=1 to q
+			if ((x=1) or (tMax < tovärdighetsObjektArray(x).index)) then
+				tMax = tovärdighetsObjektArray(x).index
+				
+				tovärdighetsObjektArray(1).rx = tovärdighetsObjektArray(x).rx
+				tovärdighetsObjektArray(1).fx = tovärdighetsObjektArray(x).fx
+				tovärdighetsObjektArray(1).ex = tovärdighetsObjektArray(x).ex
+				tovärdighetsObjektArray(1).index = tMax
+			end if
+		next
+end sub
+
+Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt,ByVal minimumDebt as integer)
+	dim x as integer
+
+	for x=minimumDebt to ubound(inputEn)
+		if x > ubound(inputEn) then
+			redim inputEn(x)
+		end if
+'		onError goto Xerror
+'		print "-----------------------------" & x
+'		
+'		print ubound(outPutEn)
+'		print ubound(inputEn)
+'		print ubound(outPutre) 
+'		print ubound(inputre)
+'		print ubound(outPutsw)
+'		print ubound(inputsw)
+'		print minimumDebt
+'		print x
+'		print "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"		
+			call enskiltCopyConstruktor(inputEn(x), outPutEn,x)
+		
+'		onError goto 0
+	next
+	
+	for x=minimumDebt to ubound(inputre)
+		if x > ubound(inputre) then
+			redim inputre(x)
+		end if
+		
+		call reningObjCopyConstr(inputre(x),outPutre,x)
+	next
+	
+	for x=minimumDebt to ubound(inputsw)
+		if x > ubound(inputsw) then
+			redim inputsw(x)
+		end if
+		
+		call swerefObjektCopyConstr(inputsw(x), outPutsw,x)
+	next
+exit sub
+
+	Xerror:
+	print "subTablesafter|" &  error$()
+	end program
+end sub
+
+'the method should replace the objects, whichever was on the original position should be placed last in the table.
+Sub insertAt(
+				trodvädighet as trovärdighetsobjekt, 'which rows in each table that should be moved
+				enskiltTokenObjekt() as enskiltObjekt,
+				reningsTokenObjekt() as reningsObjekt,
+				swerefTokenObjekt() as swerefObjekt,
+				toInsertAt as integer) ' to which place in the table
+				
+	'for each positin provided in trovärdighetsobjekt,
+	dim originalPositionE,originalPositionS,originalPositionR as integer
+	,påOrgPlatts as string
+
+	originalPositionS = trodvädighet.fx
+	dim swerefIn(1) as swerefobjekt
+	dim swerefOut(1) as swerefobjekt
+
+	if toInsertAt <> originalPositionS then
+		'hämta vad som är på platts
+		call swerefObjektCopyConstr(swereftokenObjekt(originalPositionS),swerefIn(),1)
+		if toInsertAt > ubound(swereftokenObjekt) then
+			redim swereftokenObjekt(toInsertAt)
+		end if
+		call swerefObjektCopyConstr(swereftokenObjekt(toInsertAt),swerefOut(),1)
+			
+		', och skriv över med input
+		call swerefObjektCopyConstr(swerefIn(1),swereftokenObjekt(),toInsertAt)
+		call swerefObjektCopyConstr(swerefOut(1),swereftokenObjekt(),originalPositionS)
+	end if
+
+	originalPositionE = trodvädighet.ex
+
+	dim EnskiltIn(1) as enskiltObjekt
+	dim EnskiltUt(1) as enskiltObjekt
+
+	if toInsertAt <> originalPositionE then
+		'hämta vad som är på platts, och skriv över med input
+		call enskiltCopyConstruktor(enskiltTokenObjekt(originalPositionE),EnskiltIn(),1)
+		if toInsertAt > ubound(enskiltTokenObjekt) then
+			redim enskiltTokenObjekt(toInsertAt)
+		end if
+		
+		call enskiltCopyConstruktor(enskiltTokenObjekt(toInsertAt),EnskiltUt(),1)
+		
+		call enskiltCopyConstruktor(EnskiltIn(1),enskiltTokenObjekt(),toInsertAt)
+		call enskiltCopyConstruktor(EnskiltUt(1),enskiltTokenObjekt(),originalPositionE)
+	end if
+
+	originalPositionR = trodvädighet.rx
+	dim ReningIn(1) as reningsobjekt
+	dim ReningOut(1) as reningsobjekt
+	
+	if toInsertAt <> originalPositionR then
+		'hämta vad som är på platts, och skriv över med input
+		call reningObjCopyConstr(reningsTokenObjekt(originalPositionR),ReningIn(),1)
+		if toInsertAt > ubound(reningsTokenObjekt) then
+			redim reningsTokenObjekt(toInsertAt)
+		end if
+		call reningObjCopyConstr(reningsTokenObjekt(toInsertAt),ReningOut(),1)
+		
+		call reningObjCopyConstr(ReningIn(1),reningsTokenObjekt(),toInsertAt)
+		call reningObjCopyConstr(ReningOut(1),reningsTokenObjekt(),originalPositionR)
+	end if
+					
+end sub
+
+sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
+		'inserts copy of inputX at place of outputItterator
+		if ubound(outputXTable) < outPutItterator then
+			Redim outputXTable(outPutItterator)
+		end if
+		
+		outputXTable(outPutItterator).Diarienummer = 		inputX.Diarienummer
+		outputXTable(outPutItterator).Fastighet_tillstånd = 	inputX.Fastighet_tillstånd
+		outputXTable(outPutItterator).spatialShift = 		inputX.spatialshift
+		outputXTable(outPutItterator).spatialFastighet = 	inputX.spatialFastighet
+		outputXTable(outPutItterator).Typ_byggnad = 			inputX.Typ_byggnad
+		outputXTable(outPutItterator).Antal_hushåll_tillstånd = inputX.Antal_hushåll_tillstånd
+		outputXTable(outPutItterator).Fastighet_rening = 	inputX.Fastighet_rening
+		outputXTable(outPutItterator).Typ_Slamavskiljare = 	inputX.Typ_Slamavskiljare
+		outputXTable(outPutItterator).Storlek_m3 = 			inputX.Storlek_m3
+		outputXTable(outPutItterator).Typ_rening = 			inputX.Typ_rening
+		outputXTable(outPutItterator).Storlek_m2 = 			inputX.Storlek_m2
+		outputXTable(outPutItterator).Typ_sluten_tank = 		inputX.Typ_sluten_tank
+		outputXTable(outPutItterator).Storlek__m3 = 			inputX.Storlek__m3
+		outputXTable(outPutItterator).Beslut_datum = 		inputX.Beslut_datum
+		outputXTable(outPutItterator).Utförd_datum = 		inputX.Utförd_datum
+		outputXTable(outPutItterator).Avgift = 				inputX.Avgift
+		outputXTable(outPutItterator).Tillstånd_giltigt_tom = inputX.Tillstånd_giltigt_tom
+		outputXTable(outPutItterator).Anteckningar = 		inputX.Anteckningar
+		outputXTable(outPutItterator).kordinater = 			inputX.kordinater
+		outputXTable(outPutItterator).rowindex = 			inputX.rowindex
+End Sub
+
+sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
+		'inserts copy of inputX at place of outputItterator
+		
+		if ubound(outputTable) < outPutItterator then
+			Redim outputTable(outPutItterator)
+		end if
+			
+		OutputTable(outPutItterator).FASTIGHET = inputX.FASTIGHET
+		OutputTable(outPutItterator).Fastighet_tillstånd = inputX.Fastighet_tillstånd
+		OutputTable(outPutItterator).Ärendenr = inputX.Ärendenr
+		OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
+		OutputTable(outPutItterator).Status = inputX.Status
+		OutputTable(outPutItterator).Utskick1_datum = inputX.Utskick1_datum
+		OutputTable(outPutItterator).Anteckning = inputX.Anteckning
+		OutputTable(outPutItterator).utförddatum = inputX.utförddatum
+		OutputTable(outPutItterator).slamhämtning = inputX.slamhämtning
+		OutputTable(outPutItterator).Antal_byggnader = inputX.Antal_byggnader
+		OutputTable(outPutItterator).kordinater = inputX.kordinater
+		OutputTable(outPutItterator).SpatialFastighet = inputX.SpatialFastighet
+		OutputTable(outPutItterator).rowindex = inputX.rowindex
+End Sub
+
+sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
+			dim z as integer
+			if ubound(outputTable) < outPutItterator then
+				Redim OutputTable(outPutItterator)
+			end if
+		
+			OutputTable(outPutItterator).spatialFastighet = inputX.spatialFastighet OutputTable(outPutItterator).spatialShift = inputX.spatialShift OutputTable(outPutItterator).Fastighet_rening = inputX.Fastighet_rening OutputTable(outPutItterator).Antal_hushåll_rening = inputX.Antal_hushåll_rening
+			OutputTable(outPutItterator).Reningstyp = inputX.Reningstyp OutputTable(outPutItterator).Storlek_m2 = inputX.Storlek_m2 OutputTable(outPutItterator).kordinater = inputX.kordinater OutputTable(outPutItterator).Kommentarer = inputX.Kommentarer
+			OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
+			OutputTable(outPutItterator).utförd_datum = inputX.Utförd_datum
+							
+			redim OutputTable(outPutItterator).Anslutna_fastigheter(ubound(inputX.Anslutna_fastigheter()))
+			
+			for z=1 to ubound(inputX.Anslutna_fastigheter())
+				OutputTable(outPutItterator).Anslutna_fastigheter(z) = inputX.Anslutna_fastigheter(z)
+			next		
+
+			OutputTable(outPutItterator).rowIndex = inputX.rowIndex
+end sub
+
+function ReningAsString(reningsObjekt as reningsobjekt) as String
+
+dim tempString,TempArray() as string
+,loopvar as integer
+	
+	tempString = reningsObjekt.spatialFastighet
+	& "," & reningsObjekt.spatialShift
+	& "," & reningsObjekt.Fastighet_rening
+	& "," & reningsObjekt.Antal_hushåll_rening
+	& "," & reningsObjekt.Reningstyp
+	& "," & reningsObjekt.Storlek_m2
+	& "," & reningsObjekt.kordinater
+	& "," & reningsObjekt.Beslut_datum
+	& "," & reningsObjekt.Utförd_datum
+	& "," & reningsObjekt.Kommentarer
+	& "," & reningsObjekt.rowIndex
+	
+	for loopvar=1 to ubound(reningsObjekt.Anslutna_fastigheter)
+		call addStringToArrayAsifSet(TempArray,reningsObjekt.Anslutna_fastigheter(loopVar))' reference index
+	next
+		
+	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",StringArrayAsString(TempArray))
+
+end function
+
+function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
+
+	dim tempstring as string
+	
+	tempstring = enskiltObjekt.Diarienummer
+	& "," & enskiltObjekt.Fastighet_tillstånd 
+	& "," & enskiltObjekt.Typ_byggnad 
+	& "," & (enskiltObjekt.Antal_hushåll_tillstånd )
+	& "," & enskiltObjekt.Fastighet_rening 
+	& "," & enskiltObjekt.Typ_Slamavskiljare 
+	& "," & enskiltObjekt.Storlek_m3
+	& "," & enskiltObjekt.Typ_rening 
+	& "," & enskiltObjekt.Storlek_m2
+	& "," & enskiltObjekt.Typ_sluten_tank 
+	& "," & enskiltObjekt.Storlek__m3
+	& "," & enskiltObjekt.Beslut_datum 
+	& "," & enskiltObjekt.Utförd_datum 
+	& "," & enskiltObjekt.Avgift
+	& "," & enskiltObjekt.Tillstånd_giltigt_tom 
+	& "," & enskiltObjekt.Anteckningar 
+	& "," & enskiltObjekt.spatialFastighet 
+	& "," & enskiltObjekt.spatialShift 
+	& "," & enskiltObjekt.kordinater
+	& "," & enskiltObjekt.rowindex
+enskiltAsString = tempstring
+
+end function
+
+function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
+
+	dim tempString as string
+	
+	tempString = swerefTokenObjekt.FASTIGHET
+	& "," & swerefTokenObjekt.Fastighet_tillstånd
+	& "," & swerefTokenObjekt.Ärendenr
+	& "," & swerefTokenObjekt.Beslut_datum
+	& "," & swerefTokenObjekt.Status
+	& "," & swerefTokenObjekt.Utskick1_datum
+	& "," & swerefTokenObjekt.Anteckning
+	& "," & swerefTokenObjekt.utförddatum
+	& "," & swerefTokenObjekt.slamhämtning
+	& "," & swerefTokenObjekt.Antal_byggnader
+	& "," & swerefTokenObjekt.rowindex
+	
+	swerefAsString = tempstring
+end function
+
+function ReningÄrInteToken(reningsTokenObjekt as reningsobjekt) as logical
+	
+'	dim tempboolean as logical
+'		
+'	tempBoolean = (",,,0,,0,,,,,0" <> ReningAsString(reningsTokenObjekt)) AND 
+'		= tempBoolean
+	ReningÄrInteToken = reningsTokenObjekt.rowIndex <> 0
+
+	
+end function
+
+function EnskiltÄrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
+	
+'	dim tempbolean as logical
+'	,tempstring as string
+'	tempstring = enskiltAsString(enskiltTokenObjekt)
+'	tempbolean = tempstring <> ",,,0,,,0,,0,,0,,,0,,,,,0" AND tempstring <> ",,,,,,,,,0,0" AND 
+'		 = tempbolean
+	EnskiltÄrInteToken = enskiltTokenObjekt.rowIndex <> 0
+
+end function
+
+function swerefÄrInteToken(swerefTokenObjekt as swerefObjekt) as logical
+		
+	dim tempboolean as logical
+	'(",,,0,,0,,,,,0,0" <> swerefAsString(swerefTokenObjekt) AND ",,,,,,,,,0,0" <> swerefAsString(swerefTokenObjekt)) AND 
+	
+	swerefÄrInteToken = swerefTokenObjekt.rowindex <> 0
+end function
+
+
+Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swerefObjekt)
+dim query as string
+,x,size as integer	
+	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+	
+	if size > 0 then fetch first from Valtsweref
+		print SockenFastigheter & " " & size & "Valtsweref"
+		for x=1 to size
+			Redim OutputswerefObjekt(x) 
+			OutputswerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
+			OutputswerefObjekt(x).Fastighet_tillstånd = searchReplace(Valtsweref.Fastighet_tillstånd,"""","'")
+			if (Valtsweref.Ärendenr<>"MHN") then OutputswerefObjekt(x).Ärendenr = DiarieMixedToUnit(Valtsweref.Ärendenr) end if
+			OutputswerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
+			OutputswerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
+			OutputswerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
+			OutputswerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
+			OutputswerefObjekt(x).utförddatum = Valtsweref.utförddatum
+			OutputswerefObjekt(x).slamhämtning = searchReplace(Valtsweref.slamhämtning,"""","'")
+			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
+			OutputswerefObjekt(x).kordinater = Valtsweref.koor
+			OutputswerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
+		'	onError goto rowindexError
+		'	print  Valtsweref.rowindex
+			OutputswerefObjekt(x).rowindex = Valtsweref.rowindex
+		'	print OutputswerefObjekt(x).rowindex
+		'	onError goto 0
+			fetch next from Valtsweref
+		next
+	end if
+exit sub
+rowindexError:
+	print "TabToObSweref|" & error$()
+	end program
+	
+end sub
+
+Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as enskiltObjekt)
+dim query as string
+,x,size as integer	
+			query = "select " & getColumnsOfTable_asString("enskiltIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+			
+			fetch first from Valtenskilt
+			print SockenFastigheter & " " & size & "valtEnskilt"
+				for x=1 to size Redim OutputEnskiltObjekt(x)		
+					if (Valtenskilt.Diarienummer<>"MHN") then OutputEnskiltObjekt(x).Diarienummer = DiarieMixedToUnit(Valtenskilt.Diarienummer) end if					
+					OutputEnskiltObjekt(x).Fastighet_tillstånd = searchReplace(Valtenskilt.Fastighet_tillstånd,"""","'")
+					OutputEnskiltObjekt(x).spatialShift = searchReplace(Valtenskilt.spatialshift,"""","'")
+					OutputEnskiltObjekt(x).spatialFastighet = searchReplace(Valtenskilt.spatialFastighet,"""","'")
+					OutputEnskiltObjekt(x).Typ_byggnad = searchReplace(Valtenskilt.Typ_byggnad,"""","'")
+					OutputEnskiltObjekt(x).Antal_hushåll_tillstånd = searchReplace(Valtenskilt.Antal_hushåll_tillstånd,"""","'")
+					OutputEnskiltObjekt(x).Fastighet_rening = searchReplace(Valtenskilt.Fastighet_rening,"""","'")
+					OutputEnskiltObjekt(x).Typ_Slamavskiljare = searchReplace(Valtenskilt.Typ_Slamavskiljare,"""","'")
+					OutputEnskiltObjekt(x).Storlek_m3 = Valtenskilt.Storlek_m3
+					OutputEnskiltObjekt(x).Typ_rening = searchReplace(Valtenskilt.Typ_rening,"""","'")
+					OutputEnskiltObjekt(x).Storlek_m2 = Valtenskilt.Storlek_m2
+					OutputEnskiltObjekt(x).Typ_sluten_tank = searchReplace(Valtenskilt.Typ_sluten_tank,"""","'")
+					OutputEnskiltObjekt(x).Storlek__m3 = Valtenskilt.Storlek__m3
+					OutputEnskiltObjekt(x).Beslut_datum = Valtenskilt.Beslut_datum
+					OutputEnskiltObjekt(x).Utförd_datum = Valtenskilt.Utförd_datum
+					OutputEnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
+					OutputEnskiltObjekt(x).Tillstånd_giltigt_tom = Valtenskilt.Tillstånd_giltigt_tom
+					OutputEnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
+					OutputEnskiltObjekt(x).kordinater = Valtenskilt.koor
+					OutputEnskiltObjekt(x).rowindex = Valtenskilt.rowindex
+					
+					'OutputEnskiltObjekt(x).slamDispDat = 
+				fetch next from ValtEnskilt
+			next
+			'end program
+end sub
+
+Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobjekt)
+	'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsfält'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsfält'assume this line removes double entries in 
+	dim query,tempstring as string ,x,size as integer
+	
+	onError goto queryError 
+		query = "select " & getColumnsOfTable_asString("reningIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" 
+		run command query
+	onError goto 0
+	
+	size = tableInfo(valtRening,tab_info_nrows) 
+
+	if size <> 0 then
+		fetch first from ValtRening 
+		print nSocken & " " & size & "reningsObjekt" 
+	else
+		print "noTrigger"
+		goto queryError 
+	end if
+
+
+	for x=1 to size
+		Redim OutputreningsObjekt(x)
+		OutputreningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
+		OutputreningsObjekt(x).spatialShift = valtRening.spatialShift
+		OutputreningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
+		OutputreningsObjekt(x).Antal_hushåll_rening = iif(val(valtRening.Antal_hushåll_rening & "") <> 0,val(valtRening.Antal_hushåll_rening & ""),1)
+		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
+		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
+		OutputreningsObjekt(x).kordinater = valtRening.koor 
+		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
+		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
+		
+		tempstring = "" & mixedDateToUnion("" & valtRening.Beslut_datum) if tempstring <> "0" then OutputreningsObjekt(x).Beslut_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
+		tempstring = "" & mixedDateToUnion("" & valtRening.Utförd_datum) if tempstring <> "0" then OutputreningsObjekt(x).utförd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
+		
+		call getAnslutna(OutputreningsObjekt(x).Anslutna_fastigheter)
+		
+		fetch next from ValtRening
+	next
+
+exit sub
+queryError:
+	print "[ERROR @ TabToObjRening] no reningobj receated"
+	print query
+	print socken
+	print error$()
+	end program
+
+end sub
+
+
+sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
+
+	dim z,x,y,size as integer
+	size = ubound(supersetTable) y = 1 
+
+	onError goto CommandError	
+		if size > 0 then for x=1 to size
+			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
+			
+			if((supersetTable(x).rowindex & "" = indexArray(z))) then
+				call reningObjCopyConstr(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
+			end if end if next next
+		else
+			goto CommandError
+		end if
+	onError goto 0
+
+exit function
+	CommandError: note "[ERROR] @ reningSubsetByIndex _size" & size & "_" & Error$() end program
+
+end sub
+
+sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
+	dim z,x,y,size as integer
+	size = ubound(supersetTable) y = 1 
+
+	onError goto CommandError	
+		if size > 0 then for x=1 to size
+			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
+			
+			if((supersetTable(x).rowindex & "" = indexArray(z))) then
+				call enskiltCopyConstruktor(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
+			end if end if next next
+		else
+			goto CommandError
+		end if
+	onError goto 0
+
+exit function
+	CommandError: note "[ERROR] @ EnskiltSubsetByIndex _size" & size & "_" & Error$() end program
+end sub
+
+sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
+
+	dim z,x,y,size as integer
+	size = ubound(supersetTable) y = 1 
+
+	onError goto CommandError	
+		if size > 0 then for x=1 to size
+			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
+			
+			if((supersetTable(x).rowindex & "" = indexArray(z))) then
+				call swerefObjektCopyConstr(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
+			end if end if next next
+		else
+			goto CommandError
+		end if
+	onError goto 0
+
+exit function
+	CommandError: note "[ERROR] @ swerefSubsetByIndex _size" & size & "_" & Error$() end program
+end sub
+
+
+function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
+		dim x,y,size as integer
+		size = ubound(inputTable)
+		y = 1
+		if size > 0 then
+	
+			for x=1 to size
+		if((inputTable(x).spatialFastighet = FastighetsBetInput) OR (inputTable(x).Fastighet_tillstånd = FastighetsBetInput)) then
+			call enskiltCopyConstruktor(inputTable(x),outputTable(),y)
+			y = y + 1
+		end if
+	next
+			
+		end if
+	EnskiltSubsetByFasgtighet = ubound(OutputTable)
+exit function
+	CommandError: note "[ERROR] @ EnskiltSubsetByFasgtighet _" & commandString & Error$() end program
+End function
+
+function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
+
+		dim x,y,size as integer
+		
+		size = ubound(inputTable)
+		y = 1
+		if size > 0 then
+			
+			for x=1 to size
+
+				if ((inputTable(x).SpatialFastighet = FastighetsBetInput) OR (inputTable(x).fastighet = FastighetsBetInput) OR (inputTable(x).Fastighet_tillstånd = FastighetsBetInput)) then			
+							
+						call swerefObjektCopyConstr(inputTable(x),outputTable(),y)
+					
+					y = y + 1
+				end if	
+			next
+			
+		end if
+		
+		swerefSubsetByFasgtighet = ubound(OutputTable)
+exit function
+	CommandError: note "[ERROR] @ swerefSubsetByFasgtighet _" & commandString & Error$() end program
+
+End function
+
+function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
+
+		dim x,y,z,lenght,size as integer
+		,found as logical
+		
+		size = ubound(inputTable)
+		y = 1
+		if size > 0 then
+			for x=1 to ubound(inputTable)
+	
+			 'atempting to fasten stringcompare
+				found = false
+				
+				for z=-1 to ubound(inputTable(x).Anslutna_fastigheter())
+					do case z
+						case -1 found = (inputTable(x).spatialFastighet = FastighetsBetInput)
+						case 0 found = (inputTable(x).Fastighet_rening = FastighetsBetInput)
+						case else if(len(FastighetsBetInput) = len(inputTable(x).Anslutna_fastigheter(z))) 
+						then if ((inputTable(x).Anslutna_fastigheter(z) = FastighetsBetInput)) 
+						then goto foundZ end if end if
+					End Case	
+					if found then goto foundZ end if
+				next
+							
+				if found then
+					foundZ:
+						call reningObjCopyConstr(inputTable(x),OutputTable(),y)
+				end if
+					
+				y = y + 1
+			next
+		end if
+		reningsSubsetByFasgtighet = ubound(OutputTable)
+exit function
+	CommandError: note "[ERROR] @ reningsSubsetByFasgtighet _" & commandString & Error$() end program
+End function
+
+
+function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(reningsobjekt)
+	
+	if(storlek = 0 OR intx = 0) then
+		redim reningsTokenObjekt(1)
+		reningsTokenObjekt(1).spatialFastighet = ""
+		reningsTokenObjekt(1).spatialShift = ""
+		reningsTokenObjekt(1).Fastighet_rening = ""
+		reningsTokenObjekt(1).Antal_hushåll_rening = 0
+		reningsTokenObjekt(1).Reningstyp = ""
+		reningsTokenObjekt(1).Storlek_m2 = 0
+		reningsTokenObjekt(1).kordinater = ""
+		reningsTokenObjekt(1).Beslut_datum = ""
+		reningsTokenObjekt(1).Utförd_datum = ""
+		reningsTokenObjekt(1).Kommentarer = ""
+		reningsTokenObjekt(1).rowIndex = 0
+		InitializeReningObjekt = 0
+	else
+		storlek = 1
+		call reningObjCopyConstr(reningsobjekt(intx),reningsTokenObjekt(),storlek)	
+
+		InitializeReningObjekt = intx
+	end if
+end function
+
+function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(enskiltobjekt)
+
+	if(storlek = 0 OR intx = 0) then
+		redim enskiltTokenObjekt(1)
+		enskiltTokenObjekt(1).Diarienummer = ""	
+		enskiltTokenObjekt(1).Fastighet_tillstånd = ""
+		enskiltTokenObjekt(1).spatialShift = ""
+		enskiltTokenObjekt(1).Typ_byggnad = ""
+		enskiltTokenObjekt(1).Antal_hushåll_tillstånd = 0
+		enskiltTokenObjekt(1).Fastighet_rening = ""
+		enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
+		enskiltTokenObjekt(1).Storlek_m3 = 0
+		enskiltTokenObjekt(1).Typ_rening = ""
+		enskiltTokenObjekt(1).Storlek_m2 = 0
+		enskiltTokenObjekt(1).Typ_sluten_tank = ""
+		enskiltTokenObjekt(1).Storlek__m3 = 0
+		enskiltTokenObjekt(1).Beslut_datum = ""
+		enskiltTokenObjekt(1).Utförd_datum = ""
+		enskiltTokenObjekt(1).Avgift = ""
+		enskiltTokenObjekt(1).Tillstånd_giltigt_tom = ""
+		enskiltTokenObjekt(1).Anteckningar = ""
+		enskiltTokenObjekt(1).kordinater = ""	
+		InitializeEnskiltObjekt = 0
+	else
+		storlek = 1
+		call enskiltCopyConstruktor(enskiltobjekt(intx), enskiltTokenObjekt(),storlek)
+		InitializeEnskiltObjekt = intx
+	end if
+end function
+
+function InitializeSwerefObjekt(InitializeOrCopy as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+	
+	dim storlek as integer
+	storlek = ubound(swerefobjekt)
+	
+	if(storlek*InitializeOrCopy = 0) then
+		redim swerefTokenObjekt(1)
+		swerefTokenObjekt(1).FASTIGHET = ""
+		swerefTokenObjekt(1).Fastighet_tillstånd = ""
+		swerefTokenObjekt(1).Ärendenr = ""
+		swerefTokenObjekt(1).Beslut_datum = ""
+		swerefTokenObjekt(1).Status = ""
+		swerefTokenObjekt(1).Utskick1_datum = ""
+		swerefTokenObjekt(1).Anteckning = ""
+		swerefTokenObjekt(1).utförddatum = ""
+		swerefTokenObjekt(1).slamhämtning = ""
+		swerefTokenObjekt(1).Antal_byggnader = 0
+		InitializeSwerefObjekt = 0
+	else
+		storlek = 1
+		call swerefObjektCopyConstr(swerefobjekt(InitializeOrCopy),swerefTokenObjekt(),storlek)
+		
+		InitializeSwerefObjekt = InitializeOrCopy
+	end if
+end function
+
+sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltTokenObjekt() as enskiltObjekt,swerefTokenObjekt() as swerefobjekt)
+
+	dim ignoreR() as reningsobjekt
+	,ignoreE() as enskiltObjekt
+	,ignoreS() as swerefobjekt
+	,ignore as integer
+	ignore = 0
+	'om ingen rening alls, stoppa dit en token
+	if ubound(reningsTokenObjekt) < 1 then
+		ignore = InitializeReningObjekt(ignore,ignoreR(),reningsTokenObjekt())
+	end if
+	
+	'om ingen enskilt alls, stoppa dit en token
+	if ubound(enskiltTokenObjekt) < 1 then
+		ignore = InitializeEnskiltObjekt(ignore,ignoreE(),enskiltTokenObjekt())
+	end if
+	
+	'om ingen sweref alls, stoppa dit en token
+	if ubound(swerefTokenObjekt) < 1 then
+		ignore = InitializeSwerefObjekt(ignore,ignoreS(),swerefTokenObjekt())
+	end if
+	
+end sub
