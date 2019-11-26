@@ -3,7 +3,7 @@
 Include "MapBasic.def"
 include "Menu.def"
 Include "tabellInsammlare.def"
-include "commonLib\commonLib1.def"
+include "Mapbasic-CommonLib\commonLib1.def"
 
 
 declare Sub Main()

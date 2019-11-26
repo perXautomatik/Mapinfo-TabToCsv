@@ -2,7 +2,7 @@
 
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
-include "commonLib\commonLib1.def"
+include "Mapbasic-CommonLib\commonLib1.def"
 
 
 function resTabPos(byVal colName as string) as integer
@@ -1560,17 +1560,6 @@ exit function
 		DiarieMixedToUnit = (cleanVar) & text 'kan inte tolka nummret
 End Function
 
-function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
-
-	dim itterator as integer
-	
-	itterator = ubound(utskriftsObjekt()) +1
-	redim UtskriftsObjekt(itterator)
-	
-	expandUtskriftsObjekt = itterator
-
-end function
-
 sub FastighetsObjToInsertStringArray(
 									output() as string,
 									inputx as fastighetsObjekt,
@@ -1601,9 +1590,9 @@ sub FastighetsObjToInsertStringArray(
 		end if	
 	next
 		
-	rening = intArrayAsString(dedupedrening)
-	sweref = intArrayAsString(dedupedsweref)
-	enskilt = intArrayAsString(dedupedenskilt)
+	rening = intArrayAsPrintString(dedupedrening)
+	sweref = intArrayAsPrintString(dedupedsweref)
+	enskilt = intArrayAsPrintString(dedupedenskilt)
 	
 	output(1) =inputx.adress & " "
 	output(2) =inputx.postnr & " "
@@ -1618,6 +1607,17 @@ sub FastighetsObjToInsertStringArray(
 	output(11) = enskilt & " "
 
 end sub
+
+function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
+
+	dim itterator as integer
+	
+	itterator = ubound(utskriftsObjekt()) +1
+	redim UtskriftsObjekt(itterator)
+	
+	expandUtskriftsObjekt = itterator
+
+end function
 
 sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float

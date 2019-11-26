@@ -2,4 +2,4 @@
 Application = SolenVision.mbx
 Module = main 
 Module = tabellInsammlare
-Module = commonLib\commonLib1
+Module = Mapbasic-CommonLib\commonLib1
