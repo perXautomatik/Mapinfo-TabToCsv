@@ -2,7 +2,7 @@
 
 Include "MapBasic.def"
 Include "tabellInsammlare.def"
-include "Mapbasic-CommonLib\commonLib1.def"
+include "CommonLib\commonLib1.def"
 
 
 function resTabPos(byVal colName as string) as integer

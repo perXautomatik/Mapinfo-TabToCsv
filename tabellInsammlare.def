@@ -284,6 +284,10 @@ declare sub TabToObjEnskilt(byVal nSocken as string,output() as EnskiltObjekt)
 declare sub TabToObjRening(byVal nSocken as string,output() as ReningsObjekt)
 declare Sub TabToObSweref(byVal SockenFastigheter as string,output() as swerefObjekt)
 
+declare function EnskiltSubset(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
+declare function swerefSubset(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
+declare function reningsSubset(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
+
 declare sub createFastighetsTable(byval tablename as string, byval filePath as string)
 declare sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
 declare sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
@@ -362,3 +366,4 @@ declare function enforceFormat(byVal inputx as string,byVal format as string,byV
 declare function enforceFormTa(byVal inputx as string,byVal col as string) as string
 
 declare function textAppend(byVal initial as string,byVal prefix as string,byVal  appendant as string) as string
+

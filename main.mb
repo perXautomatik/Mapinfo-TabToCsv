@@ -1,9 +1,8 @@
 
-
 Include "MapBasic.def"
 include "Menu.def"
 Include "tabellInsammlare.def"
-include "Mapbasic-CommonLib\commonLib1.def"
+include "CommonLib\commonLib1.def"
 declare Sub Main()
 declare sub processor_1Pre
 declare sub processor_2SockenRead 
@@ -34,6 +33,10 @@ declare sub UObjCreator()
 declare sub LoadLatestObjId()
 declare sub runValidation()
 declare sub processor_ValidateTable
+Declare sub correctPathTable()
+Declare sub processor_ValidatePathTable
+Declare function pathTableInvalid() as logical
+
 global 
 
 G_reningsObjekt() as reningsObjekt ,
@@ -43,7 +46,73 @@ G_workDir,G_socken,paths() as string,
 G_rebuild,G_debugg as logical,
 
 G_användaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
+
+
+sub processor_ValidatePathTable
 	
+	do case G_Progress
+		case 1
+			fetch first from pathTable
+		case G_ProgressRange
+			dim failedTables as string
+			commit table NameNalias
+			select Col1,Col2,col3 from NameNalias where not(col1 = any(select col1 from pathTable)) AND col3 = 0 into firstT
+			select col1 from firstT where not(col2 = any(select col1 from pathTable)) and col3 = 0 into failures
+			
+			if(tableInfo("Failures",TAB_INFO_NROWS) <> 0) then
+				select * from NameNalias where not(col1 = any(select col1 from failures)) into success
+				delete from success
+			end if
+		case else 
+			call correctPathTable()
+	end case
+	call increment(G_Progress,G_ProgressRange,G_starttime)    
+exit sub
+
+end sub
+
+sub correctPathTable()	
+	dim testPath as string		
+	,val1,i as integer
+		
+	val1 = pathTable.col4
+	testPath = pathTable.col2
+	
+	if(val1 <> 1) then
+		select * from pathTable where Col4 <> 1 into ToDelete
+		Delete from ToDelete
+	else
+		if(not(ValidateNClosePath(testPath))) then
+			select * from pathTable where testPath = Col2 into ToDelete		
+			Delete from ToDelete
+		end if
+	end if
+	
+	fetch next from pathTable
+
+End Sub
+		
+function pathTableInvalid() as logical
+	onError goto NoTable
+	open table applicationdirectory$()+ "pathTable.tab"
+	
+	G_ProgressRange =  tableInfo("pathTable",TAB_INFO_NROWS)+2
+	ProgressBar "processor_ValidatePathTable...." & G_ProgressRange & " items" Calling processor_ValidatePathTable	Range G_ProgressRange 	
+	
+	select Col1,Col2,col3 from NameNalias where not(left$(col1,len(col1)-4) = any(select col1 from pathTable)) AND col3 = 0 into firstT
+	select col1 from firstT where not(col2 = any(select col1 from pathTable)) and col3 = 0 into failures
+	
+	pathTableInvalid = tableInfo("failures",TAB_INFO_NROWS) 'any integer higher than zero means false
+	
+	print Chr$(12) 'emptyScreen
+	onError goto 0
+
+exit function
+	noTable:
+		print error$()
+		pathTableInvalid = 1
+end function
+
 Sub Main()
 	
 	G_debugg = true
@@ -53,13 +122,16 @@ Sub Main()
 	G_Progress = 0 
 	G_starttime = timer()
 	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  
+	
 	call loadTestData
-	
-	G_ProgressRange =  tableInfo("NameNalias",TAB_INFO_NROWS)+3
-	ProgressBar "processor_ValidateTable...." & G_ProgressRange & " items" Calling processor_ValidateTable	Range G_ProgressRange 	
-	'print Chr$(12) 'emptyScreen
-	
-	dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
+	if(pathTableInvalid()) then		
+		G_ProgressRange =  tableInfo("NameNalias",TAB_INFO_NROWS)+3
+		
+		ProgressBar "processor_ValidateTable...." & G_ProgressRange & " items" Calling processor_ValidateTable	Range G_ProgressRange 	
+		print Chr$(12) 'emptyScreen
+		commit table PathTable
+	end if	
+	dim tablenames(1) as string tablenames(1) = "fastighet_yta" 'call closeAllBut(tableNames)
 
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 	onError goto processor_2SockenRead call openSingletable("socknarOfiltrerade") fetch first from socknarOfiltrerade G_ProgressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) G_Progress = 0 G_starttime = timer() ProgressBar "processor_2SockenRead...." & G_ProgressRange & " items"	calling processor_2SockenRead	Range G_ProgressRange		onError goto 0
@@ -72,7 +144,6 @@ fetch first from sockentabell
 
 		onError goto Selection	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS) 
 		G_socken = sockenTabell.sockenX 
-		call opensingletable("fastighet_yta")
 		call opensingletable("fastighet_yta") dim tempQuery as string tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & G_socken & Chr$(34) & " AND kir <> """" group by kir into SorteradFastighet"	run command tempQuery onError goto 0
 		
 		onError goto LoadSocken call loadSocken() onError goto 0
@@ -148,8 +219,8 @@ sub runValidation()
 	for i=1 to ubound(paths)
   		testPath = paths(i) & val1
   		if(ValidateNClosePath(testPath)) then
-  			val1 = iif(NameNalias.col2<>"",NameNalias.col2,NameNalias.col1)
-  			insert into pathTable (tablePath,tableName) values (testPath,val1)
+  			val1 = iif(NameNalias.col2<>"",NameNalias.col2,left$(NameNalias.col1,len(NameNalias.col1)-4))
+  			insert into pathTable (tablePath,tableName,static) values (testPath,val1,1)
   			goto found
   		end if
 	next	
@@ -163,9 +234,12 @@ sub processor_ValidateTable
 		case 1
 			call loadPathTable()
 		case 2
-			dim tempstring as string tempstring = "PathTABLE" 
-			if IsTableOpen(tempstring) then close table "pathTable" end if	
-			CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256)) File TempFileName$("")
+			dim tempstring as string tempstring = applicationDirectory$() + "pathTable.tab"
+	
+			if not(ValidateNClosePath(tempstring)) then
+				CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(256),static Integer) File tempstring
+			end if
+
 			fetch first from NameNalias
 		case G_ProgressRange
 			dim failedTables as string
@@ -203,8 +277,8 @@ sub processor_1Pre
 					'egen swereftabell med spatial fastighet och index
 	do case G_Progress
 	case 1
-		call do1_1_genPathTab
-		call insertInitialTables()
+		'call do1_1_genPathTab
+		'call insertInitialTables()
 		call do1_3_GenFasWithAdr	
 		call do1_4_prepRenSöd
 		if G_rebuild then print 1 end if
@@ -381,7 +455,6 @@ sub do1_4_prepRenSöd
 			
 end sub
 
-
 sub loadTestData()
 
 	dim P_KvSkikt,C_ParrentFolder,ReningsPath,P_slamMap,P_faYtdBySoc,EnskiltPath,P_SwSkikt,P_OfflineTabFolder,P_Ress,P_komponent as string
@@ -398,18 +471,21 @@ sub loadTestData()
 		insert into PathsPriorityOrder (path,priority) values ("H:\OnGithub\*",2)
 		insert into PathsPriorityOrder (path,priority) values ("C:\Users\crbk01\Desktop\WhenOffline\*",3)
 		insert into PathsPriorityOrder (path,priority) values ("C:\Users\crbk01\Desktop\WhenOffline\MapinfoSkikt\*",1)
+		insert into PathsPriorityOrder (path,priority) values ("C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\*",1)
+		insert into PathsPriorityOrder (path,priority) values ("C:\Users\crbk01\Desktop\WhenOffline\MapinfoSkikt\AVLOPP_RENING_ENSKILT\*",2)
 		insert into PathsPriorityOrder (path,priority) values (applicationdirectory$() & "*",4)
+		insert into PathsPriorityOrder (path,priority) values ("*\",1)
+		insert into PathsPriorityOrder (path,priority) values ("*\SLAM\",6)
+		insert into PathsPriorityOrder (path,priority) values ("*\Adress\",6)
 		insert into PathsPriorityOrder (path,priority) values ("*\Tab-sweref\",6)
 		insert into PathsPriorityOrder (path,priority) values ("*\Tab-Bygg_Fastigheter\",7)
 		insert into PathsPriorityOrder (path,priority) values ("*\ressultat\",8)
 		insert into PathsPriorityOrder (path,priority) values ("*\Komponent\",9)
 		insert into PathsPriorityOrder (path,priority) values ("*\FastighetsytaUpdeladIsocken\",10)
-		insert into PathsPriorityOrder (path,priority) values ("*\FastighetsytaUpdeladIsocken\",2)
-		insert into PathsPriorityOrder (path,priority) values ("*\AVLOPP_RENING_ENSKILT\",1)
-		
+		insert into PathsPriorityOrder (path,priority) values ("*\FastighetsytaUpdeladIsocken\",2)		
 
 
-		insert into NameNalias (fileName,Alias) values ("Adress\Adresspunkter.TAB", "Adresspunkter")
+		insert into NameNalias (fileName,Alias) values ("Adresspunkter.TAB", "Adresspunkter")
  		insert into NameNalias (fileName,Alias) values ("Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
  		insert into NameNalias (fileName,Alias) values ("Enskilt_avlopp_mellersta.tab", "Enskilt_avlopp_MellerstaNoIndex")
  		insert into NameNalias (fileName,Alias) values ("Rening_mellersta.tab", "Rening_MellerstaNoIndex")
@@ -479,7 +555,7 @@ sub loadTestData()
  		insert into NameNalias (fileName) values ("LEVIDEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LINDEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LOJSTAFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("SLAM\Lokalt_omhändertagande_slam.TAB")
+ 		insert into NameNalias (fileName) values ("Lokalt_omhändertagande_slam.TAB")
  		insert into NameNalias (fileName) values ("LOKRUMEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LUMMELUNDAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LYEFastigheter.TAB")
