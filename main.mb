@@ -4,17 +4,13 @@ Include "MapBasic.def"
 include "Menu.def"
 Include "tabellInsammlare.def"
 include "Mapbasic-CommonLib\commonLib1.def"
-
-
 declare Sub Main()
-
 declare sub processor_1Pre
 declare sub processor_2SockenRead 
 declare sub processor_3PrepMutate()
 declare sub processor_4Mutate()
 declare sub Processor_5StoreToHelaSolen()
 declare Sub processor_6Post()
-
 declare sub do1_1_genPathTab 
 declare sub do1_3_GenFasWithAdr
 declare sub do1_4_prepRenMel
@@ -25,42 +21,46 @@ declare sub do1_8_prepareSweref
 declare sub do1_9_egnEnskWSpatFas 
 declare sub do1_10_enskiltIhopslagen
 declare sub do1_11_prepareSocken
-
-declare sub LoadLatestObjId()
+declare sub do2_readCurrentState()
+declare sub loadTestData()
 declare Sub do2_1_newSocken(byVal nSocken as string)
-
 declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
-
 declare sub do4_Mutations()
-
 declare sub UobjInitizializer()
-
 declare sub loadSocken()
 declare sub SaveAnvändaReningar
+declare sub loadPathTable()
+declare sub UObjCreator()
+declare sub LoadLatestObjId()
+declare sub runValidation()
+declare sub processor_ValidateTable
+global 
 
-global G_socken as string,
-G_användaReningar(), 
-G_senastObjectID, 
-G_senastTid,
-G_Progress,G_ProgressRange,G_starttime as integer
-
-
-,G_debugg, 
-G_rebuild as logical,
-
-G_swerefObjekt() as swerefObjekt,
 G_reningsObjekt() as reningsObjekt ,
-G_EnskiltObjekt() as EnskiltObjekt
+G_swerefObjekt() as swerefObjekt,
+G_EnskiltObjekt() as EnskiltObjekt, 		
+G_workDir,G_socken,paths() as string,
+G_rebuild,G_debugg as logical,
 
+G_användaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 	
 Sub Main()
-
+	
 	G_debugg = true
 	G_rebuild = true
-	print Chr$(12) 'emptyScreen
 	G_senastTid = 0
-	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
 	G_socken = ""
+	G_Progress = 0 
+	G_starttime = timer()
+	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  
+	call loadTestData
+	
+	G_ProgressRange =  tableInfo("NameNalias",TAB_INFO_NROWS)+3
+	ProgressBar "processor_ValidateTable...." & G_ProgressRange & " items" Calling processor_ValidateTable	Range G_ProgressRange 	
+	'print Chr$(12) 'emptyScreen
+	
+	dim tablenames(1) as string tablenames(1) = "fastighet_yta" call closeAllBut(tableNames)
+
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 	onError goto processor_2SockenRead call openSingletable("socknarOfiltrerade") fetch first from socknarOfiltrerade G_ProgressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) G_Progress = 0 G_starttime = timer() ProgressBar "processor_2SockenRead...." & G_ProgressRange & " items"	calling processor_2SockenRead	Range G_ProgressRange		onError goto 0
 
@@ -70,9 +70,9 @@ fetch first from sockentabell
 	Do Until EOT(sockentabell)
 		dim tableName,filePath,fastighetsObjektsTabell as string 
 
-		onError goto Selection
-
+		onError goto Selection	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS) 
 		G_socken = sockenTabell.sockenX 
+		call opensingletable("fastighet_yta")
 		call opensingletable("fastighet_yta") dim tempQuery as string tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & G_socken & Chr$(34) & " AND kir <> """" group by kir into SorteradFastighet"	run command tempQuery onError goto 0
 		
 		onError goto LoadSocken call loadSocken() onError goto 0
@@ -110,6 +110,87 @@ exit sub
 	'socken:	print "sockenError"	end program
 	LoadSocken:	print "LoadSockenError"	print error$()	    end program
 	postProcess:	print "postProcessError"	end program
+
+End Sub
+
+sub loadPathTable()
+	open Table applicationdirectory$() & "NameNalias.TAB"
+	open Table applicationdirectory$() & "PathsPriorityOrder.TAB"
+	
+	select right$(Col1,len(Col1)-1),Col2 from PathsPriorityOrder where left$(col1,1) = "*" order by col2 into PostfixPaths
+	select left$(Col1,len(Col1)-2),Col2 from PathsPriorityOrder where right$(col1,1) = "*" order by col2 into PrefixPaths
+	
+	fetch first from PrefixPaths
+	dim val1 as string		
+	,i as integer
+	i = 1
+	do UNtil EOT(PrefixPaths)
+		val1 = PrefixPaths.col1
+		
+		fetch first from PostfixPaths
+		do UNtil EOT(PostfixPaths)
+			redim paths(i)
+		  	paths(i) = Val1 & PostfixPaths.col1
+		  	i=i +1
+		    fetch Next from PostfixPaths
+		 loop
+		 
+	    fetch Next from PrefixPaths
+	 loop
+	
+End Sub
+
+sub runValidation()	
+	dim val1,testPath as string		
+	,i as integer
+		
+	val1 = NameNalias.col1
+	for i=1 to ubound(paths)
+  		testPath = paths(i) & val1
+  		if(ValidateNClosePath(testPath)) then
+  			val1 = iif(NameNalias.col2<>"",NameNalias.col2,NameNalias.col1)
+  			insert into pathTable (tablePath,tableName) values (testPath,val1)
+  			goto found
+  		end if
+	next	
+	found:
+
+End Sub
+
+sub processor_ValidateTable
+	
+	do case G_Progress
+		case 1
+			call loadPathTable()
+		case 2
+			dim tempstring as string tempstring = "PathTABLE" 
+			if IsTableOpen(tempstring) then close table "pathTable" end if	
+			CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256)) File TempFileName$("")
+			fetch first from NameNalias
+		case G_ProgressRange
+			dim failedTables as string
+			select Col1,Col2,col3 from NameNalias where not(col1 = any(select col1 from pathTable)) AND col3 = 0 into firstT
+			select col1 from firstT where not(col2 = any(select col1 from pathTable)) and col3 = 0 into failures
+		
+			if(tableInfo("Failures",TAB_INFO_NROWS) <> 0) then
+				dim failerues() as string
+				
+				call columnAsStringArray("Failures","col1",failerues)
+				failedTables = StringArrayAsString(failerues)
+				goto CouldntOpenEveryTableError
+			end if
+		case else 
+			call runValidation()
+			fetch Next from NameNalias
+	end case
+	call increment(G_Progress,G_ProgressRange,G_starttime)
+
+    
+exit sub
+
+	CouldntOpenEveryTableError:
+		note "CouldntOpenEveryTableERROR " & failedTables
+		end program
 
 end sub
 
@@ -300,7 +381,246 @@ sub do1_4_prepRenSöd
 			
 end sub
 
+
+sub loadTestData()
+
+	dim P_KvSkikt,C_ParrentFolder,ReningsPath,P_slamMap,P_faYtdBySoc,EnskiltPath,P_SwSkikt,P_OfflineTabFolder,P_Ress,P_komponent as string
+			
+		Close All
+
+		Create Table "PathsPriorityOrder" (Path Char(253),priority Smallint) file applicationdirectory$() & "PathsPriorityOrder.TAB" TYPE NATIVE Charset "WindowsLatin1"
+		Create Index On PathsPriorityOrder (Path)
+		
+		
+		Create Table "NameNalias" (fileName Char(254),Alias Char(254),NonMandatory Logical) file applicationdirectory$() & "NameNalias.TAB" TYPE NATIVE Charset "WindowsLatin1"
+		Create Index On NameNalias (fileName)
+		
+		insert into PathsPriorityOrder (path,priority) values ("H:\OnGithub\*",2)
+		insert into PathsPriorityOrder (path,priority) values ("C:\Users\crbk01\Desktop\WhenOffline\*",3)
+		insert into PathsPriorityOrder (path,priority) values ("C:\Users\crbk01\Desktop\WhenOffline\MapinfoSkikt\*",1)
+		insert into PathsPriorityOrder (path,priority) values (applicationdirectory$() & "*",4)
+		insert into PathsPriorityOrder (path,priority) values ("*\Tab-sweref\",6)
+		insert into PathsPriorityOrder (path,priority) values ("*\Tab-Bygg_Fastigheter\",7)
+		insert into PathsPriorityOrder (path,priority) values ("*\ressultat\",8)
+		insert into PathsPriorityOrder (path,priority) values ("*\Komponent\",9)
+		insert into PathsPriorityOrder (path,priority) values ("*\FastighetsytaUpdeladIsocken\",10)
+		insert into PathsPriorityOrder (path,priority) values ("*\FastighetsytaUpdeladIsocken\",2)
+		insert into PathsPriorityOrder (path,priority) values ("*\AVLOPP_RENING_ENSKILT\",1)
+		
+
+
+		insert into NameNalias (fileName,Alias) values ("Adress\Adresspunkter.TAB", "Adresspunkter")
+ 		insert into NameNalias (fileName,Alias) values ("Fastigheter_Sweref.TAB", "Fastigheter_swerefNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Enskilt_avlopp_mellersta.tab", "Enskilt_avlopp_MellerstaNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Rening_mellersta.tab", "Rening_MellerstaNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Enskilt_avlopp_norra.tab", "Enskilt_avlopp_NorraNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Rening_norra.tab", "Rening_NorraNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Enskilt_avlopp_södra.tab", "Enskilt_avlopp_SödraNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Rening_södra.tab", "Rening_SödraNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Fastighet_yta.tab", "fastighet_ytaORg")
+ 
+ 		insert into NameNalias (fileName) values ("AKEBÄCKFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ALAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ALSKOGFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ALVAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ANGAFastigheter.TAB")
+		insert into NameNalias (fileName) values ("Anteckningar.TAB")
+ 		insert into NameNalias (fileName) values ("AnvändaReningarsHash.tab")
+ 		insert into NameNalias (fileName) values ("ARDREFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ATLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BARAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BARLINGBOFastigheter.TAB")
+		insert into NameNalias (fileName) values ("bilder.TAB")
+ 		insert into NameNalias (fileName) values ("BJÖRKEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BOGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BROFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BUNGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BURSFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BUTTLEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BÄLFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("DALHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("EKEBYFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("EKEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("EKSTAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ENDREFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ESKELHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ETELHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FARDHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FIDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FLERINGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FOLEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FOLLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FRÖJELFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FÅRÖFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GAMMELGARNFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GANTHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GARDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GERUMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GOTHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GRÖTLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GULDRUPEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HABLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HALLAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HALLFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HAMRAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HANGVARFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HAVDHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HEJDEBYFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HEJDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HEJNUMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HELLVIFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HEMSEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HOGRÄNFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HÖRSNEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("KLINTEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("KRÄKLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("KÄLLUNGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LAUFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LEVIDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LINDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LOJSTAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("SLAM\Lokalt_omhändertagande_slam.TAB")
+ 		insert into NameNalias (fileName) values ("LOKRUMEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LUMMELUNDAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LYEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LÄRBROFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("MARTEBOFastigheter.TAB")
+		insert into NameNalias (fileName) values ("Mer_än_en_fastighet.TAB")
+		insert into NameNalias (fileName) values ("MhkToVision.TAB")
+ 		insert into NameNalias (fileName) values ("MÄSTERBYFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("NORRLANDAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("NÄRFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("NÄSFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("OTHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ROMAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("RONEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("RUTEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("SANDAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("SILTEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("SJONHEMFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("socknarOfiltrerade.TAB")
+ 		insert into NameNalias (fileName) values ("SPROGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("STENKUMLAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("STENKYRKAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("STÅNGAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("SUNDREFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("TINGSTÄDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("TOFTAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("TRÄKUMLAFastigheter.TAB")
+		insert into NameNalias (fileName) values ("UrsprungsFastigheterMedSockenOc.TAB")
+ 		insert into NameNalias (fileName) values ("VALLFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VALLSTENAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VAMLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VIKLAUFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VISBYFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VÄNGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VÄSKINDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VÄSTERGARNFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VÄSTERHEJDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VÄTEFastigheter.TAB")
+		insert into NameNalias (fileName) values ("ÄrendenMedIngenEllerFelFastighet2.TAB")
+ 		insert into NameNalias (fileName) values ("ÖJAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ÖSTERGARNFastigheter.TAB")
+ 				
+ 		insert into NameNalias (fileName,NonMandatory) values ("AKEBÄCKressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ALAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ALSKOGressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ALVAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ANGAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ARDREressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ATLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BARAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BARLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BJÖRKEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BOGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BROressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BUNGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BURSressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BUTTLEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BÄLressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("DALHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("distriktsindelning.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("EKEBYressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("EKEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("EKSTAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ENDREressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ESKELHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ETELHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FARDHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FIDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FLERINGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FOLEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FOLLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FRÖJELressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FÅRÖressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GAMMELGARNressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GANTHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GARDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GERUMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GOTHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GRÖTLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GULDRUPEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HABLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HALLAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HALLressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HAMRAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HANGVARressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HAVDHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HEJDEBYressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HEJDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HEJNUMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HELLVIressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HEMSEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HOGRÄNressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HÖRSNEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("KLINTEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("KRÄKLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("KÄLLUNGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LAUressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LEVIDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LINDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LOJSTAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LOKRUMEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LUMMELUNDAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LYEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LÄRBROressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("MARTEBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("MÄSTERBYressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("NORRLANDAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("NÄRressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("NÄSressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("OTHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ROMAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("RONEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("RUTEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("SANDAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("SILTEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("SJONHEMressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("SPROGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("STENKUMLAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("STENKYRKAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("STÅNGAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("SUNDREressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("TINGSTÄDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("TOFTAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("TRÄKUMLAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VALLressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VALLSTENAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VAMLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VIKLAUressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VISBYressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VÄNGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VÄSKINDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VÄSTERGARNressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VÄSTERHEJDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VÄTEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ÖJAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ÖSTERGARNressultat.TAB","T")
+End Sub
+
 sub do1_4_prepRenNor
+
+
 		dim tempstring as string 
 		dim tableNames(1) as string
 		redim tableNames(2)
