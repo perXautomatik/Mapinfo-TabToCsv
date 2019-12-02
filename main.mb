@@ -200,7 +200,13 @@ Sub Main()
 	dim tablenames(1) as string tablenames(1) = "fastighet_yta" 'call closeAllBut(tableNames)
 
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
-	onError goto processor_2SockenRead call openSingletable("socknarOfiltrerade") fetch first from socknarOfiltrerade G_ProgressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) G_Progress = 0 G_starttime = timer() ProgressBar "processor_2SockenRead...." & G_ProgressRange & " items"	calling processor_2SockenRead	Range G_ProgressRange		onError goto 0
+	onError goto processor_2SockenRead 
+	call openSingletable("socknarOfiltrerade") 
+	fetch first from socknarOfiltrerade 
+	G_ProgressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) 
+	G_Progress = 0 
+	G_starttime = timer() ProgressBar "processor_2SockenRead...." & G_ProgressRange & " items"	
+	calling processor_2SockenRead	Range G_ProgressRange		onError goto 0
 
 	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
 
@@ -315,15 +321,9 @@ sub processor_1Pre
 End Sub
 
 sub processor_2SockenRead
-	'creates two empty 1 column tables called sockenTabell and sockentabellX
-	
-	'dosent this always evaluate to 0, or, does the magic happen in read current state? 
 	call LoadLatestObjId()
-	'print "|"	& G_Progress
+	
 	call increment(G_Progress,G_ProgressRange,G_starttime)
-
-	'if tableinfo(sockenTabell,tab_info_nrows) = 0 
-	'then G_Progress = -2 end if
 end sub
 
 sub processor_3PrepMutate()
