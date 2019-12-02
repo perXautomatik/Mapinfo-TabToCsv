@@ -319,7 +319,7 @@ sub processor_2SockenRead
 	
 	'dosent this always evaluate to 0, or, does the magic happen in read current state? 
 	call LoadLatestObjId()
-	print "|"	& G_Progress
+	'print "|"	& G_Progress
 	call increment(G_Progress,G_ProgressRange,G_starttime)
 
 	'if tableinfo(sockenTabell,tab_info_nrows) = 0 
