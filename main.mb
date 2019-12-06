@@ -182,12 +182,12 @@ end function
 Sub Main()
 	
 	G_debugg = true
-	G_rebuild = true
+	G_rebuild = false
 	G_senastTid = 0
 	G_socken = ""
 	G_Progress = 0 
 	G_starttime = timer()
-	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  
+	run command("Set " + EPSGToCoordSysString$("ESPG:3015"))  'EPSG::3022 är RT90 0 gon, ESPG:3015 är sweref
 	
 	call loadTestData
 	if(pathTableInvalid()) then		
