@@ -9,7 +9,7 @@ Declare sub Main
 global 
 G_senastTid,
     G_Progress,
-    G_starttime as integer
+    G_starttime,G_ProgressRange as integer
 
 Sub Main
 
