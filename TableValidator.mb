@@ -6,9 +6,17 @@ Declare sub correctPathTable()
 Declare sub runValidation()
 Declare sub Main
 
+global 
+G_debugg,G_rebuild as logical
+
 Sub Main
 
-    G_debugg = true G_rebuild = false G_senastTid = 0 G_socken = "" G_Progress = 0 G_starttime = timer() 
+    G_socken = ""
+    G_senastTid = 0
+    G_Progress = 0
+    G_starttime = timer()
+    G_debugg = true
+    G_rebuild = false
 
 	call loadTestData
 	if(pathTableInvalid()) then		
