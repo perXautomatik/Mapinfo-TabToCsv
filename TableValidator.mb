@@ -13,13 +13,10 @@ G_senastTid,
 
 Sub Main
 
-
     G_senastTid = 0
     G_Progress = 0
     G_starttime = timer()
 
-
-	
 	if(pathTableInvalid()) then		
 		G_ProgressRange =  tableInfo("NameNalias",TAB_INFO_NROWS)+3
 		
