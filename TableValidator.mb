@@ -1,3 +1,5 @@
+include "CommonLib\commonLib1.def"
+
 Declare sub processor_ValidatePathTable 
 Declare function pathTableInvalid() as logical 
 Declare function makeFailures as integer
@@ -7,10 +9,11 @@ Declare sub runValidation()
 Declare sub Main
 
 global 
-G_senastTid,
+	G_senastTid,
     G_Progress,
     G_starttime,G_ProgressRange as integer,
-paths() as string
+	paths() as string
+
 Sub Main
 
     G_senastTid = 0
