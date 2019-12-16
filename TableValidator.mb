@@ -4,6 +4,24 @@ Declare function makeFailures as integer
 Declare sub processor_ValidateTable 
 Declare sub correctPathTable()
 Declare sub runValidation()
+Declare sub Main
+
+Sub Main
+
+    G_debugg = true G_rebuild = false G_senastTid = 0 G_socken = "" G_Progress = 0 G_starttime = timer() 
+
+	call loadTestData
+	if(pathTableInvalid()) then		
+		G_ProgressRange =  tableInfo("NameNalias",TAB_INFO_NROWS)+3
+		
+		ProgressBar "processor_ValidateTable...." & G_ProgressRange & " items" Calling processor_ValidateTable	Range G_ProgressRange 	
+		print Chr$(12) 'emptyScreen
+		commit table PathTable
+	end if	
+	
+end sub
+
+
 
 
 sub runValidation()	
