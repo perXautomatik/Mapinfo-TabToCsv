@@ -1,3 +1,11 @@
+Declare sub processor_ValidatePathTable 
+Declare function pathTableInvalid() as logical 
+Declare function makeFailures as integer
+Declare sub processor_ValidateTable 
+Declare sub correctPathTable()
+Declare sub runValidation()
+
+
 sub runValidation()	
 	dim val1,testPath as string ,i as integer
 		
