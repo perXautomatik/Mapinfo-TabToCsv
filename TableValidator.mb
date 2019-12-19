@@ -1,0 +1,185 @@
+include "CommonLib\commonLib1.def"
+
+Declare sub processor_ValidatePathTable 
+Declare function pathTableInvalid() as logical 
+Declare function makeFailures as integer
+Declare sub processor_ValidateTable 
+Declare sub correctPathTable()
+Declare sub runValidation()
+Declare sub Main
+Declare sub loadPathArray()
+
+global 
+	G_senastTid,
+    G_Progress,
+    G_starttime,G_ProgressRange as integer,
+	paths() as string
+
+Sub Main
+
+    G_senastTid = 0
+    G_Progress = 0
+    G_starttime = timer()
+
+	if(pathTableInvalid()) then		
+		G_ProgressRange =  tableInfo("NameNalias",TAB_INFO_NROWS)+3
+		
+		ProgressBar "processor_ValidateTable...." & G_ProgressRange & " items" Calling processor_ValidateTable	Range G_ProgressRange 	
+		print Chr$(12) 'emptyScreen
+		commit table PathTable
+	end if	
+	
+end sub
+
+sub runValidation()	
+	dim val1,testPath as string ,i as integer
+		
+	val1 = NameNalias.col1
+	for i=1 to ubound(paths)
+  		testPath = paths(i) & val1
+  		if(ValidateNClosePath(testPath)) then
+  			val1 = iif(NameNalias.col2<>"",NameNalias.col2,left$(NameNalias.col1,len(NameNalias.col1)-4))
+  			insert into pathTable (tablePath,tableName,static) values (testPath,val1,1)
+  			goto found
+  		end if
+	next	
+	found:
+
+End Sub
+
+sub processor_ValidateTable
+	
+	DO case G_Progress
+		case 1
+			call loadPathArray()
+		case 2
+			dim tempstring as string tempstring = applicationDirectory$() + "pathTable.tab"
+	
+				if not(ValidateNClosePath(tempstring)) then
+					note "createintg pathTable"
+					CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(256),static Integer) File tempstring
+				end if
+
+			fetch first from NameNalias
+		case G_ProgressRange
+			dim failedTables as string
+			
+			if(makeFailures() <> 0) then
+				dim failerues() as string
+				
+				call columnAsStringArray("Failures","col1",failerues)
+				failedTables = StringArrayAsString(failerues)
+				goto CouldntOpenEveryTableError
+			end if
+		case else 
+			call runValidation()
+			fetch Next from NameNalias
+	end case
+	call increment(G_Progress,G_ProgressRange,G_starttime)
+
+    
+exit sub
+
+	CouldntOpenEveryTableError:
+		note "CouldntOpenEveryTableERROR " & failedTables
+		end program
+
+end sub
+
+sub processor_ValidatePathTable
+	
+	DO case G_Progress
+		case 1
+			fetch first from pathTable
+		case G_ProgressRange
+			dim failedTables as string
+			commit table NameNalias
+					
+			if(makeFailures() <> 0) then
+				select * from NameNalias where not(left$(col1,len(col1)-4) = any(select col1 from pathTable)) into success
+				delete from success
+			end if
+		case else 
+			call correctPathTable()
+	end case
+	call increment(G_Progress,G_ProgressRange,G_starttime)    
+exit sub
+
+end sub
+
+sub correctPathTable()	
+	dim testPath as string		
+	,val1,i as integer
+		
+	val1 = pathTable.col4
+	testPath = pathTable.col2
+	
+	if(val1 <> 1) then
+		select * from pathTable where Col4 <> 1 into ToDelete
+		Delete from ToDelete
+	else
+		if(not(ValidateNClosePath(testPath))) then
+			select * from pathTable where testPath = Col2 into ToDelete		
+			Delete from ToDelete
+		end if
+	end if
+	
+	fetch next from pathTable
+
+End Sub
+
+function makeFailures() as integer
+	select Col1,Col2,col3 from NameNalias 
+		where 
+			not(left$(col1,len(col1)-4) = any(select col1 from pathTable)) 
+			AND col3 = 0 
+			into firstT
+	select col1 from firstT 
+		where 
+			not(col2 = any(select col1 from pathTable)) 
+			and col3 = 0 into failures
+	makeFailures = tableInfo("failures",TAB_INFO_NROWS)
+End function
+		
+function pathTableInvalid() as logical
+	onError goto NoTable
+	open table applicationdirectory$()+ "pathTable.tab"
+	
+	G_ProgressRange =  tableInfo("pathTable",TAB_INFO_NROWS)+2
+	ProgressBar "processor_ValidatePathTable...." & G_ProgressRange & " items" Calling processor_ValidatePathTable	Range G_ProgressRange 	
+	
+	
+	pathTableInvalid = makeFailures() 'any integer higher than zero means false
+	
+	print Chr$(12) 'emptyScreen
+	onError goto 0
+    end program
+exit function
+	noTable:
+		print error$()
+		pathTableInvalid = 1
+end function
+
+
+
+sub loadPathArray()
+	open Table applicationdirectory$() & "NameNalias.TAB" select left$(Col1,len(Col1)-2),Col2 from PathsPriorityOrder where right$(col1,1) = "*" order by col2 into PrefixPaths
+	open Table applicationdirectory$() & "PathsPriorityOrder.TAB" select right$(Col1,len(Col1)-1),Col2 from PathsPriorityOrder where left$(col1,1) = "*" order by col2 into PostfixPaths
+	
+	fetch first from PrefixPaths
+	dim val1 as string ,i as integer
+	i = 1
+	DO UNtil EOT(PrefixPaths)
+		val1 = PrefixPaths.col1
+		
+		fetch first from PostfixPaths
+		DO UNtil EOT(PostfixPaths)
+			redim paths(i) paths(i) = Val1 & PostfixPaths.col1
+		  	i=i +1
+		    fetch Next from PostfixPaths
+		 loop
+		 
+	    fetch Next from PrefixPaths
+	 loop
+	
+End Sub
