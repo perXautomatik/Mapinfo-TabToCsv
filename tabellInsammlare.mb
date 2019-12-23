@@ -1619,17 +1619,7 @@ function DebuggStringEveryInt(IntArray() as integer) as string
 end function
 
 
-function getMain(inputString as string, output() as string) as integer
-	dim ant as integer
-	ant = SplitStringAtCharacter(inputString, ",",output()) 
-	
-	if (ant = 1) then
-		getMain = val(output(1))
-	else
-		getMain = 0
-	end if
 
-end function
 
 sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
 		dim x,q,i as integer ,fastighetsObjekt as fastighetsObjekt
@@ -1962,76 +1952,6 @@ Sub insertAt(
 					
 end sub
 
-sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
-		'inserts copy of inputX at place of outputItterator
-		if ubound(outputXTable) < outPutItterator then
-			Redim outputXTable(outPutItterator)
-		end if
-		
-		outputXTable(outPutItterator).Diarienummer = 		inputX.Diarienummer
-		outputXTable(outPutItterator).Fastighet_tillst?nd = 	inputX.Fastighet_tillst?nd
-		outputXTable(outPutItterator).spatialShift = 		inputX.spatialshift
-		outputXTable(outPutItterator).spatialFastighet = 	inputX.spatialFastighet
-		outputXTable(outPutItterator).Typ_byggnad = 			inputX.Typ_byggnad
-		outputXTable(outPutItterator).Antal_hush?ll_tillst?nd = inputX.Antal_hush?ll_tillst?nd
-		outputXTable(outPutItterator).Fastighet_rening = 	inputX.Fastighet_rening
-		outputXTable(outPutItterator).Typ_Slamavskiljare = 	inputX.Typ_Slamavskiljare
-		outputXTable(outPutItterator).Storlek_m3 = 			inputX.Storlek_m3
-		outputXTable(outPutItterator).Typ_rening = 			inputX.Typ_rening
-		outputXTable(outPutItterator).Storlek_m2 = 			inputX.Storlek_m2
-		outputXTable(outPutItterator).Typ_sluten_tank = 		inputX.Typ_sluten_tank
-		outputXTable(outPutItterator).Storlek__m3 = 			inputX.Storlek__m3
-		outputXTable(outPutItterator).Beslut_datum = 		inputX.Beslut_datum
-		outputXTable(outPutItterator).Utf?rd_datum = 		inputX.Utf?rd_datum
-		outputXTable(outPutItterator).Avgift = 				inputX.Avgift
-		outputXTable(outPutItterator).Tillst?nd_giltigt_tom = inputX.Tillst?nd_giltigt_tom
-		outputXTable(outPutItterator).Anteckningar = 		inputX.Anteckningar
-		outputXTable(outPutItterator).kordinater = 			inputX.kordinater
-		outputXTable(outPutItterator).rowindex = 			inputX.rowindex
-End Sub
-
-sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
-		'inserts copy of inputX at place of outputItterator
-		
-		if ubound(outputTable) < outPutItterator then
-			Redim outputTable(outPutItterator)
-		end if
-			
-		OutputTable(outPutItterator).FASTIGHET = inputX.FASTIGHET
-		OutputTable(outPutItterator).Fastighet_tillst?nd = inputX.Fastighet_tillst?nd
-		OutputTable(outPutItterator).?rendenr = inputX.?rendenr
-		OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
-		OutputTable(outPutItterator).Status = inputX.Status
-		OutputTable(outPutItterator).Utskick1_datum = inputX.Utskick1_datum
-		OutputTable(outPutItterator).Anteckning = inputX.Anteckning
-		OutputTable(outPutItterator).utf?rddatum = inputX.utf?rddatum
-		OutputTable(outPutItterator).slamh?mtning = inputX.slamh?mtning
-		OutputTable(outPutItterator).Antal_byggnader = inputX.Antal_byggnader
-		OutputTable(outPutItterator).kordinater = inputX.kordinater
-		OutputTable(outPutItterator).SpatialFastighet = inputX.SpatialFastighet
-		OutputTable(outPutItterator).rowindex = inputX.rowindex
-End Sub
-
-sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
-			dim z as integer
-			if ubound(outputTable) < outPutItterator then
-				Redim OutputTable(outPutItterator)
-			end if
-		
-			OutputTable(outPutItterator).spatialFastighet = inputX.spatialFastighet OutputTable(outPutItterator).spatialShift = inputX.spatialShift OutputTable(outPutItterator).Fastighet_rening = inputX.Fastighet_rening OutputTable(outPutItterator).Antal_hush?ll_rening = inputX.Antal_hush?ll_rening
-			OutputTable(outPutItterator).Reningstyp = inputX.Reningstyp OutputTable(outPutItterator).Storlek_m2 = inputX.Storlek_m2 OutputTable(outPutItterator).kordinater = inputX.kordinater OutputTable(outPutItterator).Kommentarer = inputX.Kommentarer
-			OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
-			OutputTable(outPutItterator).utf?rd_datum = inputX.Utf?rd_datum
-							
-			redim OutputTable(outPutItterator).Anslutna_fastigheter(ubound(inputX.Anslutna_fastigheter()))
-			
-			for z=1 to ubound(inputX.Anslutna_fastigheter())
-				OutputTable(outPutItterator).Anslutna_fastigheter(z) = inputX.Anslutna_fastigheter(z)
-			next		
-
-			OutputTable(outPutItterator).rowIndex = inputX.rowIndex
-end sub
-
 function ReningAsString(reningsObjekt as reningsobjekt) as String
 
 dim tempString,TempArray() as string
@@ -2208,69 +2128,6 @@ end sub
 
 
 
-sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
-
-	dim z,x,y,size as integer
-	size = ubound(supersetTable) y = 1 
-
-	onError goto CommandError	
-		if size > 0 then for x=1 to size
-			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
-			
-			if((supersetTable(x).rowindex & "" = indexArray(z))) then
-				call reningObjCopyConstr(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
-			end if end if next next
-		else
-			goto CommandError
-		end if
-	onError goto 0
-
-exit function
-	CommandError: note "[ERROR] @ reningSubsetByIndex _size" & size & "_" & Error$() end program
-
-end sub
-
-sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
-	dim z,x,y,size as integer
-	size = ubound(supersetTable) y = 1 
-
-	onError goto CommandError	
-		if size > 0 then for x=1 to size
-			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
-			
-			if((supersetTable(x).rowindex & "" = indexArray(z))) then
-				call enskiltCopyConstruktor(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
-			end if end if next next
-		else
-			goto CommandError
-		end if
-	onError goto 0
-
-exit function
-	CommandError: note "[ERROR] @ EnskiltSubsetByIndex _size" & size & "_" & Error$() end program
-end sub
-
-sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
-
-	dim z,x,y,size as integer
-	size = ubound(supersetTable) y = 1 
-
-	onError goto CommandError	
-		if size > 0 then for x=1 to size
-			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
-			
-			if((supersetTable(x).rowindex & "" = indexArray(z))) then
-				call swerefObjektCopyConstr(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
-			end if end if next next
-		else
-			goto CommandError
-		end if
-	onError goto 0
-
-exit function
-	CommandError: note "[ERROR] @ swerefSubsetByIndex _size" & size & "_" & Error$() end program
-end sub
-
 
 function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
 		dim x,y,size as integer
@@ -2439,26 +2296,4 @@ function InitializeSwerefObjekt(InitializeOrCopy as integer,swerefobjekt() as sw
 	end if
 end function
 
-sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltTokenObjekt() as enskiltObjekt,swerefTokenObjekt() as swerefobjekt)
 
-	dim ignoreR() as reningsobjekt
-	,ignoreE() as enskiltObjekt
-	,ignoreS() as swerefobjekt
-	,ignore as integer
-	ignore = 0
-	'om ingen rening alls, stoppa dit en token
-	if ubound(reningsTokenObjekt) < 1 then
-		ignore = InitializeReningObjekt(ignore,ignoreR(),reningsTokenObjekt())
-	end if
-	
-	'om ingen enskilt alls, stoppa dit en token
-	if ubound(enskiltTokenObjekt) < 1 then
-		ignore = InitializeEnskiltObjekt(ignore,ignoreE(),enskiltTokenObjekt())
-	end if
-	
-	'om ingen sweref alls, stoppa dit en token
-	if ubound(swerefTokenObjekt) < 1 then
-		ignore = InitializeSwerefObjekt(ignore,ignoreS(),swerefTokenObjekt())
-	end if
-	
-end sub

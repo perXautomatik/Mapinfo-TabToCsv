@@ -1,8 +1,6 @@
 
 declare sub createRessultTable(byVal tableName as string,byVal pathX as string)
 
-declare sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
-
 declare function InitializeSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
 declare function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 declare function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
@@ -54,10 +52,6 @@ declare function DebuggStringEveryInt(IntArray() as integer) as string
 declare sub PrepareGemensamma()
 
 
-declare sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
-declare sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
-declare sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
-
 
 declare function EnskiltSubset(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
 declare function swerefSubset(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
@@ -75,12 +69,6 @@ declare function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,Fastigh
 declare function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
 declare function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
 
-declare sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
-declare sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
-declare sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
-
-
-declare function getMain(inputString as string, output() as string) as integer
 
 declare function findWhereInStringArray(byVal v�rde as string, array() as string) as integer 
 
@@ -96,7 +84,6 @@ Declare Sub insertAt(
 				toInsertAt as integer) ' to which place in the table
 
 Declare Sub genTrov�rdighet(trodv�dighet() as trov�rdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
-Declare sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltsTokenObjekt() as enskiltObjekt,swerefsTokenObjekt() as swerefobjekt)
 
 Declare Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt, byVal minimumDebt as integer)
 
@@ -110,12 +97,6 @@ Declare sub koordinater(uObj() as UtskriftsObjekt,ittr as integer)
 Declare sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
 Declare sub Anl�ggning(uObj() as anl�ggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
 
-declare sub utskrivningsobjektsKonstruktor(
-		sO() as swerefobjekt,
-		rO() as reningsObjekt,
-		eO() as enskiltobjekt
-	)
-	
 Declare function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
  
 Declare function anl�ggningsobjektToUtskifts(anl() as Anl�ggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer

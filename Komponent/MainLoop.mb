@@ -1,4 +1,4 @@
-﻿Include "MapBasic.def"
+Include "MapBasic.def"
 include "Menu.def"
 include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
 
@@ -6,11 +6,11 @@ include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib
 Type ReningsObjekt
 
 	Fastighet_rening as string
-	Antal_hushåll_rening as integer
+	Antal_hush�ll_rening as integer
 	Reningstyp as string
 	Storlek_m2 as float
 	Beslut_datum as date
-	Utförd_datum as date
+	Utf�rd_datum as date
 	Kommentarer as string
 	spatialFastighet as string
 	spatialShift as string
@@ -23,14 +23,14 @@ end Type
 Type SwerefObjekt
 
 	FASTIGHET as string
-	Fastighet_tillstånd as string
-	ärendenr as string
+	Fastighet_tillst�nd as string
+	�rendenr as string
 	Beslut_datum as date
 	Status as string
 	Utskick1_datum as date
 	Anteckning as string
-	utförddatum as date
-	slamhämtning as string
+	utf�rddatum as date
+	slamh�mtning as string
 	Antal_byggnader as integer	
 	kordinater as string
 	SpatialFastighet as string
@@ -41,9 +41,9 @@ end Type
 Type EnskiltObjekt
 
 	Diarienummer as string
-	Fastighet_tillstånd as string
+	Fastighet_tillst�nd as string
 	Typ_byggnad as string
-	Antal_hushåll_tillstånd as string
+	Antal_hush�ll_tillst�nd as string
 	Fastighet_rening as string
 	Typ_Slamavskiljare as string
 	Storlek_m3 as float
@@ -52,9 +52,9 @@ Type EnskiltObjekt
 	Typ_sluten_tank as string
 	Storlek__m3 as float
 	Beslut_datum as date
-	Utförd_datum as date
+	Utf�rd_datum as date
 	Avgift as integer
-	Tillstånd_giltigt_tom as date
+	Tillst�nd_giltigt_tom as date
 	Anteckningar as string
 	spatialShift as string
 	spatialFastighet as string
@@ -93,16 +93,16 @@ End Type
 
 Type UtskriftsObjekt
 	
-	trovärdighetsIndex as float
+	trov�rdighetsIndex as float
 
-	Besöksadress_Adress as String
-	Besöksadress_Postnr as String
-	Besöksadress_Ort as String
-	Besöksadress_Huvudfastighet as String
+	Bes�ksadress_Adress as String
+	Bes�ksadress_Postnr as String
+	Bes�ksadress_Ort as String
+	Bes�ksadress_Huvudfastighet as String
 	FNR as integer
 	 
-	Verksamhetsutövare_Namn as String
-	Verksamhetsutöv_Person_orgnr as integer
+	Verksamhetsut�vare_Namn as String
+	Verksamhetsut�v_Person_orgnr as integer
  
 	Fakturamottagare_NAMN as String
 	Fakturamottagare_Faktura_ADRESS as String
@@ -115,10 +115,10 @@ Type UtskriftsObjekt
 	Timdebitering as Logical
 	Objektnamn as String
 
-	flik_Avloppsänlaggni_Boendetyp as String
-	flik_Avloppsanläggn_Byggnadsår as date
+	flik_Avlopps�nlaggni_Boendetyp as String
+	flik_Avloppsanl�ggn_Byggnads�r as date
 	flik_Avloppsa_Besiktningsdatum as date
-	flik_Avloppsanläg_Beslutsdatum as date
+	flik_Avloppsanl�g_Beslutsdatum as date
 	Vatten as String
   
 	Recipient as String
@@ -126,7 +126,7 @@ Type UtskriftsObjekt
 	Inventering as String
 	Inventeringsinformation_Datum as date
 	Inventeringsinformation_Status as String
-	Bedömning as String
+	Bed�mning as String
   
 	fliken_Fastigheter as String
 	fliken_Fastigheter_FNR as integer
@@ -134,35 +134,35 @@ Type UtskriftsObjekt
 	PunkttypAB as String
 	Fliken_Koordinater as String
 
-	fliken_ärenden as String
+	fliken_�renden as String
 
-	Anläggningskategori as String
+	Anl�ggningskategori as String
 	besiktningdatum as date
 	beslutsdatum as date
-	Anläggningstyp as String
+	Anl�ggningstyp as String
 	Volym_m3 as float
-	Anl_för_EftR_TöInterv_mån as integer
+	Anl_f�r_EftR_T�Interv_m�n as integer
 	AnlF_efR_Koordinater_X_o_Y as String
 	PunkttypER as String
-	Anläggning_för_EfterföljRText as String
+	Anl�ggning_f�r_Efterf�ljRText as String
 
-	Anläggningskategori_2 as String
-	Anläggning_för_S_Anläggningstyp as String
-	Externt_Tjänsteid as String
+	Anl�ggningskategori_2 as String
+	Anl�ggning_f�r_S_Anl�ggningstyp as String
+	Externt_Tj�nsteid as String
 	text as String
-	Anläggning_för_Slamav_Volym_m3 as float
+	Anl�ggning_f�r_Slamav_Volym_m3 as float
 	
-	Anläggningskategori_3 as String
-	AnlförEfterR_Anläggningstyp as String
+	Anl�ggningskategori_3 as String
+	Anlf�rEfterR_Anl�ggningstyp as String
 	besiktningdatum_2 as date
 	beslutsdatum_2 as date
-	Externt_Tjänsteid_2 as String
+	Externt_Tj�nsteid_2 as String
 	Volym_m3_2 as float
 
 	Objektid as integer
 	Path as String
 	Diarienummer as String
-	Löpnummer as integer
+	L�pnummer as integer
 
 	sql as string
 	reningsindex as integer
@@ -171,7 +171,7 @@ end Type
 
 
 
-Type TrovärdighetsObjekt
+Type Trov�rdighetsObjekt
 	index as float
 	ex as integer
 	fx as integer
@@ -179,45 +179,46 @@ Type TrovärdighetsObjekt
 End Type
 
 
-Type AnläggningsObjekt
+Type Anl�ggningsObjekt
 
-		Anläggningskategori as string '",: "Char(29)",: "Efterföljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
-		Kartpunkt as string '",: "Char(20)",:PunkttypER "Efterföljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
+		Anl�ggningskategori as string '",: "Char(29)",: "Efterf�ljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
+		Kartpunkt as string '",: "Char(20)",:PunkttypER "Efterf�ljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
 		
-		besiktningdatum as date ',: "datum(??-MM-DD)",: "utförandedatum  (rening/beslut/tank)"
-		beslutsdatum as date '",: "datum(??-MM-DD)",: "beslutsdatum (rening/beslut/tank)"
+		besiktningdatum as date ',: "datumä?-MM-DD)",: "utf�randedatum  (rening/beslut/tank)"
+		beslutsdatum as date '",: "datumä?-MM-DD)",: "beslutsdatum (rening/beslut/tank)"
 		
-		Anläggningstyp as string '",: "Char(15)",: "Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) \"Klart Vatten"
+		Anl�ggningstyp as string '",: "Char(15)",: "Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) \"Klart Vatten"
 		
 		Volym_m3 as float '",: "float",: "Storlek_m2 (rening)/Storlek_m3  (Beslut)"
 		
-		Antal_hushåll_rening as integer '",: "integer",: "Anl_för_EftR_TöInterv_mån (rening)"
+		Antal_hush�ll_rening as integer '",: "integer",: "Anl_f�r_EftR_T�Interv_m�n (rening)"
 		
-		Koordinater as string '",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (d?r infiltration/markb?dd ?r bel?gen)/(d?r ansluten)/(d?r EXTRA inventeringsinformation ?r bel?gen)"
+		Koordinater as string '",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (är infiltration/markädd ?r beägen)/(är ansluten)/(är EXTRA inventeringsinformation ?r beägen)"
 				
-		Kommentarer as string '",: "Char(253)(f?ltmaxl?ngd)",: "Anläggning_för_EfterföljRText (rening/sweref/beslut)"
+		Kommentarer as string '",: "Char(253)(ältmaxängd)",: "Anl�ggning_f�r_Efterf�ljRText (rening/sweref/beslut)"
 		
-		ärendenr as string '",: "integer",: " Externt Tjänsteid (beslut/tank/sweref)"
+		�rendenr as string '",: "integer",: " Externt Tj�nsteid (beslut/tank/sweref)"
 		
-		Typ_byggnad as string '",: "Char(15)",: "Anläggning_för_S_Anläggningstyp (beslut)"
+		Typ_byggnad as string '",: "Char(15)",: "Anl�ggning_f�r_S_Anl�ggningstyp (beslut)"
 		
 		Status as string '",: "Char(6)",: " text (sweref)"
 		
-		Slamdispense as date '",: "datum(??-MM-DD)",:AnlförEfterR_Anläggningstyp ""
+		Slamdispense as date '",: "datumä?-MM-DD)",:Anlf�rEfterR_Anl�ggningstyp ""
 		
-		Utskick1_datum as date '",: "datum(??-MM-DD)",: "Anläggning_för_Slamav_Volym_m3  (sweref)"
+		Utskick1_datum as date '",: "datumä?-MM-DD)",: "Anl�ggning_f�r_Slamav_Volym_m3  (sweref)"
 		
 		radNummer as integer
 
 end type
 
-declare function trovärdighetsIndexer(
+declare function trov�rdighetsIndexer(
 	swerefobjekt as swerefobjekt,
 	reningsobjekt as reningsobjekt,
 	enskiltobjekt as enskiltobjekt
 	) as float
 
 
+Declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 
 Declare Sub Main
 Declare sub loadSocken()
@@ -228,7 +229,32 @@ declare sub createFastighetsTable(byval tablename as string, byval filePath as s
 declare sub TabToObjEnskilt(byVal nSocken as string,output() as EnskiltObjekt)
 declare sub TabToObjRening(byVal nSocken as string,output() as ReningsObjekt)
 declare Sub TabToObSweref(byVal SockenFastigheter as string,output() as swerefObjekt)
+Declare sub UobjInitizializer()
 
+declare sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
+Declare sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltsTokenObjekt() as enskiltObjekt,swerefsTokenObjekt() as swerefobjekt)
+
+
+declare sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
+declare sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
+declare sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
+
+
+
+declare sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
+declare sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
+declare sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
+
+
+declare function getMain(inputString as string, output() as string) as integer
+
+
+declare sub utskrivningsobjektsKonstruktor(
+		sO() as swerefobjekt,
+		rO() as reningsObjekt,
+		eO() as enskiltobjekt
+	)
+	
 
 
 declare sub saveSockenProgress(socken as string)
@@ -238,9 +264,9 @@ global
 G_workDir,G_socken as string,
 G_rebuild,G_debugg as logical,
 G_ProgressRange,G_Progress,G_senastObjectID, 
-G_senastTid,G_användaReningar(),G_starttime as integer
+G_senastTid,G_anv�ndaReningar(),G_starttime as integer
 
-G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, 
+,G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt
 
 
 
@@ -323,6 +349,101 @@ exit sub
 end sub
 
 
+sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
+
+	dim z,x,y,size as integer
+	size = ubound(supersetTable) y = 1 
+
+	onError goto CommandError	
+		if size > 0 then for x=1 to size
+			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
+			
+			if((supersetTable(x).rowindex & "" = indexArray(z))) then
+				call reningObjCopyConstr(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
+			end if end if next next
+		else
+			goto CommandError
+		end if
+	onError goto 0
+
+exit function
+	CommandError: note "[ERROR] @ reningSubsetByIndex _size" & size & "_" & Error$() end program
+
+end sub
+
+sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
+	dim z,x,y,size as integer
+	size = ubound(supersetTable) y = 1 
+
+	onError goto CommandError	
+		if size > 0 then for x=1 to size
+			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
+			
+			if((supersetTable(x).rowindex & "" = indexArray(z))) then
+				call enskiltCopyConstruktor(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
+			end if end if next next
+		else
+			goto CommandError
+		end if
+	onError goto 0
+
+exit function
+	CommandError: note "[ERROR] @ EnskiltSubsetByIndex _size" & size & "_" & Error$() end program
+end sub
+
+sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
+
+	dim z,x,y,size as integer
+	size = ubound(supersetTable) y = 1 
+
+	onError goto CommandError	
+		if size > 0 then for x=1 to size
+			found: for z=1 to ubound(indexArray) if (val(indexArray(z)) <> 0 AND (indexArray(z) <> "0")) then
+			
+			if((supersetTable(x).rowindex & "" = indexArray(z))) then
+				call swerefObjektCopyConstr(supersetTable(x),outputTable(),y) y = y + 1 indexArray(z) = 0 goto found
+			end if end if next next
+		else
+			goto CommandError
+		end if
+	onError goto 0
+
+exit function
+	CommandError: note "[ERROR] @ swerefSubsetByIndex _size" & size & "_" & Error$() end program
+end sub
+
+
+sub UobjInitizializer()
+
+	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fastighetsObjekt as alias,ignore as integer
+
+	fastighetsObjekt = G_socken & "fastighetsObjekt.reningsobjekt" inputString = fastighetsObjekt ignore = getMain(inputString, RenObjIndex())
+	fastighetsObjekt = G_socken & "FastighetsObjekt.enskiltObjekt" inputString = fastighetsObjekt ignore = getMain(inputString, EnObjIndex())
+	fastighetsObjekt = G_socken & "FastighetsObjekt.swerefobjekt" inputString = fastighetsObjekt ignore = getMain(inputString, SweObjIndex())
+
+	call ReningSubsetByIndex(G_reningsobjekt,RenObjIndex,ren)
+	call EnskiltSubsetByIndex(G_enskiltobjekt,EnObjIndex,ensk)
+	call SwerefSubsetByIndex(G_swerefObjekt,SweObjIndex,sweref)
+
+	'skapa muttationer organiserar om arrayna om s� beh�vs
+	dim before as integer
+	before = ubound(ren) + ubound(ensk) + ubound(sweref)
+	if (ubound(ren) > 1 OR ubound(ensk) > 1 OR ubound(sweref) > 1) then
+		call skapaMutationer(ensk,ren,sweref,1) 
+	end if
+	
+	if (before <> ubound(ren) + ubound(ensk) + ubound(sweref))
+		then print "WARNING before:" & before & " after_ " & ubound(ren) + ubound(ensk) + ubound(sweref)
+	end if
+		
+	'utskriftskonstruktor f�rv�ntar sig att ingen av objekten har 0 som rowindex, alts�, d� blir det tomt.
+	if (ubound(ren) < 1 OR ubound(ensk) < 1 OR ubound(sweref) < 1) then
+		call initializer(ren,ensk,sweref)
+	end if
+	call utskrivningsobjektsKonstruktor(sweref,ren,ensk)
+		
+end sub
+
 sub processor_4Mutate()
 	onError goto UobjInitizializer 
 		dim tempALias as alias 
@@ -350,7 +471,7 @@ end sub
 
 sub saveSockenProgress(socken as string)
 
-	dim query	,filePath,v?rde(),tablename as string,x as integer
+	dim query	,filePath,värde(),tablename as string,x as integer
 	,tablenameA as alias
 	
 	tableName = Socken & "ressultat" 
@@ -369,9 +490,20 @@ queryError:
 	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
 end sub
 
+function getMain(inputString as string, output() as string) as integer
+	dim ant as integer
+	ant = SplitStringAtCharacter(inputString, ",",output()) 
+	
+	if (ant = 1) then
+		getMain = val(output(1))
+	else
+		getMain = 0
+	end if
+
+end function
 
 Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobjekt)
-	'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsf?lt'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsf?lt'assume this line removes double entries in 
+	'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsält'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsält'assume this line removes double entries in 
 	dim query,tempstring as string ,x,size as integer
 	
 	onError goto queryError 
@@ -395,7 +527,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		OutputreningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
 		OutputreningsObjekt(x).spatialShift = valtRening.spatialShift
 		OutputreningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
-		OutputreningsObjekt(x).Antal_hushåll_rening = iif(val(valtRening.Antal_hushåll_rening & "") <> 0,val(valtRening.Antal_hushåll_rening & ""),1)
+		OutputreningsObjekt(x).Antal_hush�ll_rening = iif(val(valtRening.Antal_hush�ll_rening & "") <> 0,val(valtRening.Antal_hush�ll_rening & ""),1)
 		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
 		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
 		OutputreningsObjekt(x).kordinater = valtRening.koor 
@@ -403,7 +535,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
 		
 		tempstring = "" & mixedDateToUnion("" & valtRening.Beslut_datum) if tempstring <> "0" then OutputreningsObjekt(x).Beslut_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
-		tempstring = "" & mixedDateToUnion("" & valtRening.Utförd_datum) if tempstring <> "0" then OutputreningsObjekt(x).utförd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
+		tempstring = "" & mixedDateToUnion("" & valtRening.Utf�rd_datum) if tempstring <> "0" then OutputreningsObjekt(x).utf�rd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
 		
 		call getAnslutna(OutputreningsObjekt(x).Anslutna_fastigheter)
 		
@@ -427,61 +559,61 @@ sub createRessultTableX(byval tablename as string, byval filePath as string)
 	onError goto creationError
 
 	Create Table tableName (
-				Besöksadress_Adress	Char(253),								'Fastighetens adress	->	Adress	Char(253)(f?ltmaxl?ngd)	Besöksadress_Adress
-				Besöksadress_Postnr	Char(253),								'Postnr	->	Postnr	Char(253)(f?ltmaxl?ngd)	Besöksadress_Postnr
-				Besöksadress_Ort Char(253),									'Ort	->	Ort	Char(253)(f?ltmaxl?ngd)	Besöksadress_Ort
-				Besöksadress_Huvudfastighet	Char(34),						'Fastighet_tillstånd	->	Huvudfastighet	Char(34)	Besöksadress_Huvudfastighet
-				FNR integer,												'Fastighet_tillstånd	->	Huvudfastighet(FNR)	integer	FNR
-				ignore	Char(253),											'Lagfaren ?gare	->	Namn	Char(253)(f?ltmaxl?ngd)	Verksamhetsutövare_Namn
-				ignore integer,												'Person- /Orgnr	->	Person- /Orgnr	integer	Verksamhetsutöv_Person_orgnr
-				ignore Char(253),											'Namn (kund)	->	Namn (kund)	Char(253)(f?ltmaxl?ngd)	Fakturamottagare_NAMN
-				ignore	Char(253),											'Adress (kund)	->	Adress (kund)	Char(253)(f?ltmaxl?ngd)	Fakturamottagare_Faktura_ADRESS
-				ignore	Char(253),											'Postnr (kund)	->	Postnr (kund)	Char(253)(f?ltmaxl?ngd)	Fakturamottagare_Faktura_POSTNR
-				ignore	Char(253),											'Ort (kund)	->	Ort (kund)	Char(253)(f?ltmaxl?ngd)	Fakturamottagare_Faktura_POSTOR
+				Bes�ksadress_Adress	Char(253),								'Fastighetens adress	->	Adress	Char(253)(ältmaxängd)	Bes�ksadress_Adress
+				Bes�ksadress_Postnr	Char(253),								'Postnr	->	Postnr	Char(253)(ältmaxängd)	Bes�ksadress_Postnr
+				Bes�ksadress_Ort Char(253),									'Ort	->	Ort	Char(253)(ältmaxängd)	Bes�ksadress_Ort
+				Bes�ksadress_Huvudfastighet	Char(34),						'Fastighet_tillst�nd	->	Huvudfastighet	Char(34)	Bes�ksadress_Huvudfastighet
+				FNR integer,												'Fastighet_tillst�nd	->	Huvudfastighet(FNR)	integer	FNR
+				ignore	Char(253),											'Lagfaren ?gare	->	Namn	Char(253)(ältmaxängd)	Verksamhetsut�vare_Namn
+				ignore integer,												'Person- /Orgnr	->	Person- /Orgnr	integer	Verksamhetsut�v_Person_orgnr
+				ignore Char(253),											'Namn (kund)	->	Namn (kund)	Char(253)(ältmaxängd)	Fakturamottagare_NAMN
+				ignore	Char(253),											'Adress (kund)	->	Adress (kund)	Char(253)(ältmaxängd)	Fakturamottagare_Faktura_ADRESS
+				ignore	Char(253),											'Postnr (kund)	->	Postnr (kund)	Char(253)(ältmaxängd)	Fakturamottagare_Faktura_POSTNR
+				ignore	Char(253),											'Ort (kund)	->	Ort (kund)	Char(253)(ältmaxängd)	Fakturamottagare_Faktura_POSTOR
 				Enhet Char(6),												'"VATTEN"	->	Enhet	Char(6)	Enhet
-				Anteckning	Char(253),										'Anteckning (sweref/anläggning/rening)	->	Anteckning	Char(253)	Anteckning
+				Anteckning	Char(253),										'Anteckning (sweref/anl�ggning/rening)	->	Anteckning	Char(253)	Anteckning
 				Aktuell_timavgift integer,									'925	->	Aktuell timavgift	integer	Aktuell timavgift
 				Timdebitering Logical,										'TRUE	->	Timdebitering	Boolean	Timdebitering
 				Objektnamn	Char(36),										'Huvudfastighet	->	Objektnamn	Char(36)	Objektnamn
-				flik_Avloppsänlaggni_Boendetyp	Char(15),					'Typ_byggnad (beslut)	->	Boendetyp	Char(15)	flik_Avloppsänlaggni_Boendetyp
-				flik_Avloppsanläggn_Byggnadsår Char(4),						'Tillstånd_giltigt_tom (beslut)	->	Byggnads?r	Char(4)	flik_Avloppsanläggn_Byggnadsår
-				flik_Avloppsa_Besiktningsdatum Date,						'utförandedatum  (beslut)	->	Besiktningsdatum	datum(??-MM-DD)	flik_Avloppsa_Besiktningsdatum
-				flik_Avloppsanläg_Beslutsdatum Date,						'beslutsdatum (beslut)	->	Beslutsdatum	datum(??-MM-DD)	flik_Avloppsanläg_Beslutsdatum
-				Vatten	Char(17),											'Antal_hushåll_tillstånd (beslut)	->	Vatten	Char(17)	Vatten
+				flik_Avlopps�nlaggni_Boendetyp	Char(15),					'Typ_byggnad (beslut)	->	Boendetyp	Char(15)	flik_Avlopps�nlaggni_Boendetyp
+				flik_Avloppsanl�ggn_Byggnads�r Char(4),						'Tillst�nd_giltigt_tom (beslut)	->	Byggnadär	Char(4)	flik_Avloppsanl�ggn_Byggnads�r
+				flik_Avloppsa_Besiktningsdatum Date,						'utf�randedatum  (beslut)	->	Besiktningsdatum	datumä?-MM-DD)	flik_Avloppsa_Besiktningsdatum
+				flik_Avloppsanl�g_Beslutsdatum Date,						'beslutsdatum (beslut)	->	Beslutsdatum	datumä?-MM-DD)	flik_Avloppsanl�g_Beslutsdatum
+				Vatten	Char(17),											'Antal_hush�ll_tillst�nd (beslut)	->	Vatten	Char(17)	Vatten
 				Recipient Char(49),											'Fastighet Rening (rening)	->	Recipient	Char(49)	Recipient
 				Inventering	Char(12),										'(om sweref) "Klart Vatten"	->	Inventering	Char(12)	Inventering
-				Inventeringsinformation_Datum Date,							'Utskick1_datum (sweref)	->	Datum 	datum(??-MM-DD)	Inventeringsinformation_Datum
+				Inventeringsinformation_Datum Date,							'Utskick1_datum (sweref)	->	Datum 	datumä?-MM-DD)	Inventeringsinformation_Datum
 				Inventeringsinformation_Status	Char(6),					'Status (sweref)	->	Status	Char(6)	Inventeringsinformation_Status
-				Bedömning Char(15),											'ärendenr (sweref)	->	Bedömning	Char(15)	Bedömning
+				Bed�mning Char(15),											'�rendenr (sweref)	->	Bed�mning	Char(15)	Bed�mning
 				fliken_Fastigheter	Char(34),								'Anslutna_fastigheter	->	fliken Fastigheter	Char(34)	fliken_Fastigheter
 				fliken_FastigheterFNR integer,								'Anslutna_fastigheter	->	fliken Fastigheter(FNR)	integer	fliken Fastigheter(FNR)
 				PunkttypAB Char(16),										'Punkttyp	->	Ansluten byggnad	Char(16)	PunkttypAB
 				Fliken_Koordinater	Char(19),								'Koordinater (beslut/rening/sweref)	->	X o Y	Char(19)	Fliken_Koordinater
-				fliken_ärenden	char(13),									'Diarienummer(Flagg,Beslut)	->	fliken ärenden	char(13)	fliken ärenden
-				Anläggningskategori	Char(29),								'"Efterföljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Anläggningskategori	Char(29)	Anläggningskategori
-				besiktningdatum Date,										'utförandedatum  (rening/beslut/tank)	->	besiktningdatum	datum(??-MM-DD)	besiktningdatum
-				beslutsdatum Date,											'beslutsdatum (rening/beslut/tank)	->	beslutsdatum	datum(??-MM-DD)	beslutsdatum
-				Anläggningstyp	Char(15),									'Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) "Klart Vatten"	->	Anläggningstyp	Char(15)	Anläggningstyp
+				fliken_�renden	char(13),									'Diarienummer(Flagg,Beslut)	->	fliken �renden	char(13)	fliken �renden
+				Anl�ggningskategori	Char(29),								'"Efterf�ljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Anl�ggningskategori	Char(29)	Anl�ggningskategori
+				besiktningdatum Date,										'utf�randedatum  (rening/beslut/tank)	->	besiktningdatum	datumä?-MM-DD)	besiktningdatum
+				beslutsdatum Date,											'beslutsdatum (rening/beslut/tank)	->	beslutsdatum	datumä?-MM-DD)	beslutsdatum
+				Anl�ggningstyp	Char(15),									'Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) "Klart Vatten"	->	Anl�ggningstyp	Char(15)	Anl�ggningstyp
 				Volym_m3 float,												'Storlek_m2 (rening)/Storlek_m3  (Beslut)	->	Volym m3	float	Volym m3
-				Anl_för_EftR_TöInterv_mån integer,							'Antal_hushåll_rening (rening)	->	T?mningssintervall	integer	Anl_för_EftR_TöInterv_mån
-				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (d?r infiltration/markb?dd ?r bel?gen)/(d?r ansluten)/(d?r EXTRA inventeringsinformation ?r bel?gen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
-				PunkttypER	Char(20),										'"Efterföljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Punkttyp Koordinater	Char(20)	PunkttypER
-				Anläggning_för_EfterföljRText Char(253),					'Kommentarer (rening/sweref/beslut)	->	Text	Char(253)(f?ltmaxl?ngd)	Anläggning_för_EfterföljRText
+				Anl_f�r_EftR_T�Interv_m�n integer,							'Antal_hush�ll_rening (rening)	->	ämningssintervall	integer	Anl_f�r_EftR_T�Interv_m�n
+				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (är infiltration/markädd ?r beägen)/(är ansluten)/(är EXTRA inventeringsinformation ?r beägen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
+				PunkttypER	Char(20),										'"Efterf�ljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Punkttyp Koordinater	Char(20)	PunkttypER
+				Anl�ggning_f�r_Efterf�ljRText Char(253),					'Kommentarer (rening/sweref/beslut)	->	Text	Char(253)(ältmaxängd)	Anl�ggning_f�r_Efterf�ljRText
 				ignore	Char(19),											''
-				Anläggning_för_S_Anläggningstyp	Char(15),					'Typ_byggnad (beslut)	->	Certifieringstyp (Typ av boende)	Char(15)	Anläggning_för_S_Anläggningstyp
-				Externt_Tjänsteid integer,									'ärendenr  (beslut/tank/sweref)	->	Externt Tjänsteid	integer	Externt Tjänsteid
+				Anl�ggning_f�r_S_Anl�ggningstyp	Char(15),					'Typ_byggnad (beslut)	->	Certifieringstyp (Typ av boende)	Char(15)	Anl�ggning_f�r_S_Anl�ggningstyp
+				Externt_Tj�nsteid integer,									'�rendenr  (beslut/tank/sweref)	->	Externt Tj�nsteid	integer	Externt Tj�nsteid
 				text Char(6),												'Status  (sweref)	->	Status	Char(6)	text
-				Anläggning_för_Slamav_Volym_m3 date,						'Utskick1_datum (sweref)	->	Datum	datum(??-MM-DD)	Anläggning_för_Slamav_Volym_m3
+				Anl�ggning_f�r_Slamav_Volym_m3 date,						'Utskick1_datum (sweref)	->	Datum	datumä?-MM-DD)	Anl�ggning_f�r_Slamav_Volym_m3
 				ignore	Char(19),											''
-				AnlförEfterR_Anläggningstyp	date,							'Slamdispense	->	T?mningsdispens fr.o.m	datum(??-MM-DD)	AnlförEfterR_Anläggningstyp
+				Anlf�rEfterR_Anl�ggningstyp	date,							'Slamdispense	->	ämningsdispens fr.o.m	datumä?-MM-DD)	Anlf�rEfterR_Anl�ggningstyp
 				ignore	 Date,												''
 				ignore	Date,												''
 				ignorex	integer,											''objektIndex
 				ignore	char(1),												''
 				ObjektID integer,											'ObjektItterator	->	ObjektID	integer	ObjektID
-				Path Char(253),												'Path (f?r filer som skall f?ras in, kopplas till objekt)	->	Path	Char(253)	Path
-				Diarienummer char(13),										'Diarienummer (f?r ärenden som skall knytas)	->	Diarienummer	char(13)	Diarienummer
-				Löpnummer integer											'Löpnummer (f?r ärenden som skall knytas)	->	Löpnummer	integer	Löpnummer
+				Path Char(253),												'Path (är filer som skall äras in, kopplas till objekt)	->	Path	Char(253)	Path
+				Diarienummer char(13),										'Diarienummer (är �renden som skall knytas)	->	Diarienummer	char(13)	Diarienummer
+				L�pnummer integer											'L�pnummer (är �renden som skall knytas)	->	L�pnummer	integer	L�pnummer
 
 
 			) file filePath TYPE NATIVE Charset "WindowsLatin1"
@@ -497,3 +629,185 @@ exit sub
 	resume next 
 end sub
 
+
+sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
+		'inserts copy of inputX at place of outputItterator
+		if ubound(outputXTable) < outPutItterator then
+			Redim outputXTable(outPutItterator)
+		end if
+		
+		outputXTable(outPutItterator).Diarienummer = 		inputX.Diarienummer
+		outputXTable(outPutItterator).Fastighet_tillsänd = 	inputX.Fastighet_tillsänd
+		outputXTable(outPutItterator).spatialShift = 		inputX.spatialshift
+		outputXTable(outPutItterator).spatialFastighet = 	inputX.spatialFastighet
+		outputXTable(outPutItterator).Typ_byggnad = 			inputX.Typ_byggnad
+		outputXTable(outPutItterator).Antal_husäll_tillsänd = inputX.Antal_husäll_tillsänd
+		outputXTable(outPutItterator).Fastighet_rening = 	inputX.Fastighet_rening
+		outputXTable(outPutItterator).Typ_Slamavskiljare = 	inputX.Typ_Slamavskiljare
+		outputXTable(outPutItterator).Storlek_m3 = 			inputX.Storlek_m3
+		outputXTable(outPutItterator).Typ_rening = 			inputX.Typ_rening
+		outputXTable(outPutItterator).Storlek_m2 = 			inputX.Storlek_m2
+		outputXTable(outPutItterator).Typ_sluten_tank = 		inputX.Typ_sluten_tank
+		outputXTable(outPutItterator).Storlek__m3 = 			inputX.Storlek__m3
+		outputXTable(outPutItterator).Beslut_datum = 		inputX.Beslut_datum
+		outputXTable(outPutItterator).Utärd_datum = 		inputX.Utärd_datum
+		outputXTable(outPutItterator).Avgift = 				inputX.Avgift
+		outputXTable(outPutItterator).Tillsänd_giltigt_tom = inputX.Tillsänd_giltigt_tom
+		outputXTable(outPutItterator).Anteckningar = 		inputX.Anteckningar
+		outputXTable(outPutItterator).kordinater = 			inputX.kordinater
+		outputXTable(outPutItterator).rowindex = 			inputX.rowindex
+End Sub
+
+sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
+		'inserts copy of inputX at place of outputItterator
+		
+		if ubound(outputTable) < outPutItterator then
+			Redim outputTable(outPutItterator)
+		end if
+			
+		OutputTable(outPutItterator).FASTIGHET = inputX.FASTIGHET
+		OutputTable(outPutItterator).Fastighet_tillsänd = inputX.Fastighet_tillsänd
+		OutputTable(outPutItterator)ärendenr = inputXärendenr
+		OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
+		OutputTable(outPutItterator).Status = inputX.Status
+		OutputTable(outPutItterator).Utskick1_datum = inputX.Utskick1_datum
+		OutputTable(outPutItterator).Anteckning = inputX.Anteckning
+		OutputTable(outPutItterator).utärddatum = inputX.utärddatum
+		OutputTable(outPutItterator).slamämtning = inputX.slamämtning
+		OutputTable(outPutItterator).Antal_byggnader = inputX.Antal_byggnader
+		OutputTable(outPutItterator).kordinater = inputX.kordinater
+		OutputTable(outPutItterator).SpatialFastighet = inputX.SpatialFastighet
+		OutputTable(outPutItterator).rowindex = inputX.rowindex
+End Sub
+
+sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
+			dim z as integer
+			if ubound(outputTable) < outPutItterator then
+				Redim OutputTable(outPutItterator)
+			end if
+		
+			OutputTable(outPutItterator).spatialFastighet = inputX.spatialFastighet OutputTable(outPutItterator).spatialShift = inputX.spatialShift OutputTable(outPutItterator).Fastighet_rening = inputX.Fastighet_rening OutputTable(outPutItterator).Antal_husäll_rening = inputX.Antal_husäll_rening
+			OutputTable(outPutItterator).Reningstyp = inputX.Reningstyp OutputTable(outPutItterator).Storlek_m2 = inputX.Storlek_m2 OutputTable(outPutItterator).kordinater = inputX.kordinater OutputTable(outPutItterator).Kommentarer = inputX.Kommentarer
+			OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
+			OutputTable(outPutItterator).utärd_datum = inputX.Utärd_datum
+							
+			redim OutputTable(outPutItterator).Anslutna_fastigheter(ubound(inputX.Anslutna_fastigheter()))
+			
+			for z=1 to ubound(inputX.Anslutna_fastigheter())
+				OutputTable(outPutItterator).Anslutna_fastigheter(z) = inputX.Anslutna_fastigheter(z)
+			next		
+
+			OutputTable(outPutItterator).rowIndex = inputX.rowIndex
+end sub
+
+
+sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
+
+		dim enskiltTokenObjekt() as enskiltObjekt ,reningsTokenObjekt() as reningsobjekt ,swerefTokenObjekt() as swerefobjekt ,trodv�dighet() as trov�rdighetsobjekt
+		
+			call subTablesafter(enskiltTokenObjekt,en,reningsTokenObjekt,re,swerefTokenObjekt,sw,minimumDebt)
+				call initializer(reningsTokenObjekt,enskiltTokenObjekt,swerefTokenObjekt)
+					call genTrov�rdighet(trodv�dighet,enskiltTokenObjekt,reningsTokenObjekt,swerefTokenObjekt)
+						call insertAt(trodv�dighet(1),enskiltTokenObjekt,reningsTokenObjekt,swerefTokenObjekt,minimumDebt)
+		
+		minimumDebt = minimumDebt + 1
+		if ((ubound(enskiltTokenObjekt) > minimumDebt) OR (ubound(reningsTokenObjekt) > minimumDebt) or (ubound(swerefTokenObjekt) > minimumDebt)) then
+			call skapaMutationer(enskiltTokenObjekt,reningsTokenObjekt,swerefTokenObjekt,minimumDebt)
+		end if
+
+exit sub k: print error$() end program kx: print error$() end program end sub
+
+sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltTokenObjekt() as enskiltObjekt,swerefTokenObjekt() as swerefobjekt)
+
+	dim ignoreR() as reningsobjekt
+	,ignoreE() as enskiltObjekt
+	,ignoreS() as swerefobjekt
+	,ignore as integer
+	ignore = 0
+	'om ingen rening alls, stoppa dit en token
+	if ubound(reningsTokenObjekt) < 1 then
+		ignore = InitializeReningObjekt(ignore,ignoreR(),reningsTokenObjekt())
+	end if
+	
+	'om ingen enskilt alls, stoppa dit en token
+	if ubound(enskiltTokenObjekt) < 1 then
+		ignore = InitializeEnskiltObjekt(ignore,ignoreE(),enskiltTokenObjekt())
+	end if
+	
+	'om ingen sweref alls, stoppa dit en token
+	if ubound(swerefTokenObjekt) < 1 then
+		ignore = InitializeSwerefObjekt(ignore,ignoreS(),swerefTokenObjekt())
+	end if
+	
+end sub
+
+sub utskrivningsobjektsKonstruktor(
+		sOx() as swerefobjekt,
+		rOx() as reningsObjekt,
+		eOx() as enskiltobjekt
+	)
+	
+		dim ittr, objektid as integer	,reningsTokenObjekt() as reningsObjekt	,enskiltTokenObjekt() as enskiltobjekt	,swerefTokenObjekt() as swerefobjekt	,tableName as string	
+		,sO(1) as swerefobjekt,	rO(1) as reningsObjekt,	eO(1) as enskiltobjekt
+		,uObj() as utskriftsObjekt
+
+		ittr = expandutskriftsobjekt(uObj) tableName = "LatestObjectID"	if IsTableOpen(tableName) then select col1 from LatestObjectID	fetch first from latestObjectID 
+		G_senastObjectID = iif(G_senastObjectID < latestObjectID.col1,latestObjectID.col1,G_senastObjectID) end if objektid = iif(G_senastObjectID <> 0,G_senastObjectID + 1,1)
+
+		G_senastObjectID = objektid
+		uObj(ittr).Objektid = objektid '"Huvud","ObjektID",: "integer",: "ObjektItterator" 
+
+		call huvuDObjekt(uObj(),ittr)
+		call anteckningKordinat(sOx(1),eOx(1),rOx(1),uObj(),ittr)					
+		call inventeringsinformation(uObj,ittr,sOx(1))
+		call Recipient(uObj,eOx(1),rOx(1),ittr)
+		call Avloppsanl�ggning(uObj(),ittr,eOx(1))				
+			
+		call subTablesafter(eO,eOx,rO,rOx,sO,sOx,2)
+		
+		'print ubound(eO) + ubound(rO) + ubound(sO) 
+		
+		if ubound(eO) + ubound(rOx) + ubound(sO) > 0 then
+			dim anl() as anl�ggningsobjekt
+			call Anl�ggning(anl,eOx,rOx,sO)
+			'dessa skapar nya rader, men �ndrar inte objektId
+			ittr = ittr + anl�ggningsobjektToUtskifts(anl,uObj,ittr)
+		end if
+		
+		ittr = ittr + diarienummerForutskriftsobjekt(uObj,ittr,eOx,sOx,objektid)
+		call fastighetForUtskriftsobjekt(uObj,ittr,sOx,rOx,eOx,objektid)
+		call saveUtskriftsProgress(uObj)	
+			
+End Sub
+
+
+
+sub OmObjektSkapaFastighet(FastighetsBetInput as string)
+		',swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float 
+	dim antalObjekt,before,after as integer,debugg as logical,fastighetsObjektsTabell as string,
+	EnskiltObjektfastighets() as EnskiltObjekt,reningsObjektfastighets() as reningsObjekt,swerefObjektfastighets() as swerefObjekt
+	debugg = false
+	antalObjekt = 0
+	
+	if(countShiftenGenUtvald(FastighetsBetInput) <> 0) then 
+		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,swerefObjektfastighets) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,reningsObjektfastighets) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,EnskiltObjektfastighets)
+		
+		if(antalObjekt > 0 ) then 
+			fastighetsObjektsTabell = G_socken & "fastighetsObjekt" before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
+		
+			call FastighetsObjCreation(fastighetsObjektsTabell,
+			fastighetsBetInput,
+			reningsObjektfastighets,
+			swerefObjektfastighets,
+			EnskiltObjektfastighets)
+			
+			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
+		else 
+			if(debugg) then	print ubound(G_swerefObjekt) & FastighetsBetInput & ubound(swerefObjektfastighets) print ubound(G_reningsObjekt) & FastighetsBetInput & ubound(reningsObjektfastighets) print ubound(G_EnskiltObjekt) & FastighetsBetInput & ubound(EnskiltObjektfastighets) end if
+		end if
+		
+	else
+		print "Objekt p� fastighet("& FastighetsBetInput & ") = 0" 
+	end if
+	
+exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt p� " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
