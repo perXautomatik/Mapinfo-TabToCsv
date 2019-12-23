@@ -1,6 +1,5 @@
 Include "MapBasic.def"
 include "Menu.def"
-Include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\tabellInsammlare.def"
 include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
 
 
@@ -11,7 +10,7 @@ Declare sub DO1_1_genPathTab
 Declare sub DO1_3_GenFasWithAdr
 Declare sub DO1_4_prepRenMel
 Declare sub DO1_4_prepRenNor
-Declare sub DO1_4_prepRenSöd
+Declare sub DO1_4_prepRenSï¿½d
 Declare sub DO1_5_reningIhopslagen
 Declare sub DO1_8_prepareSweref
 Declare sub DO1_9_egnEnskWSpatFas
@@ -23,7 +22,7 @@ declare sub do6_8_SlamDisp
 global 
 G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, 
 G_workDir,G_socken as string,
- G_rebuild,G_debugg as logical, G_användaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
+ G_rebuild,G_debugg as logical, G_anvï¿½ndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
 
 Sub Main()
@@ -51,7 +50,7 @@ sub processor_1Pre
 		'call DO1_1_genPathTab
 		'call insertInitialTables()
 		call DO1_3_GenFasWithAdr	
-		call DO1_4_prepRenSöd
+		call DO1_4_prepRenSï¿½d
 		if G_rebuild then print 1 end if
 	case 2 
 		call DO1_4_prepRenNor
@@ -127,31 +126,31 @@ sub DO1_3_GenFasWithAdr
 
 end sub
 
-sub DO1_4_prepRenSöd
+sub DO1_4_prepRenSï¿½d
 		dim tempstring as string 
 		dim tableNames(1) as string
 		redim tableNames(2)
 		
-		tempstring = ApplicationDirectory$() & "Rening_Södra.TAB"
+		tempstring = ApplicationDirectory$() & "Rening_Sï¿½dra.TAB"
 		
 		if G_rebuild then
 			tablenames(2) = "fastighet_yta"
-			tablenames(1) = "Rening_SödraNoIndex"		
+			tablenames(1) = "Rening_Sï¿½draNoIndex"		
 			call tableOpener(tablenames)	
 	
-			select * from tablenames(1) into "Rening_Södra"
-			commit table Rening_Södra  As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive
- 			close table Rening_Södra
+			select * from tablenames(1) into "Rening_Sï¿½dra"
+			commit table Rening_Sï¿½dra  As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive
+ 			close table Rening_Sï¿½dra
  			open table tempstring
-			Alter Table Rening_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
-			Add Column "Rening_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column "Rening_Södra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-			commit table Rening_Södra
-			Alter Table "Rening_Södra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+			Alter Table Rening_Sï¿½dra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
+			Add Column "Rening_Sï¿½dra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+			Add Column "Rening_Sï¿½dra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
+			commit table Rening_Sï¿½dra
+			Alter Table "Rening_Sï¿½dra" ( order Fastighet_rening,Antal_hushï¿½ll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utfï¿½rd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 			call tableCloser(tablenames())
 		end if
 		
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Södra")
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Sï¿½dra")
 			
 end sub
 
@@ -176,7 +175,7 @@ sub DO1_4_prepRenNor
 			Add Column "Rening_Norra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column "Rening_Norra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
 			commit table Rening_Norra
-			Alter Table "Rening_Norra" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+			Alter Table "Rening_Norra" ( order Fastighet_rening,Antal_hushï¿½ll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utfï¿½rd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 			call tableCloser(tablenames())
 		end if
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Norra")
@@ -202,7 +201,7 @@ sub DO1_4_prepRenMel
 			Add Column "Rening_Mellersta" (SpatialFastighet)From fastighet_yta Set To kir Where contains
 			Add Column "Rening_Mellersta" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
 			commit table Rening_Mellersta
-			Alter Table "Rening_Mellersta" ( order Fastighet_rening,Antal_hushåll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utförd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+			Alter Table "Rening_Mellersta" ( order Fastighet_rening,Antal_hushï¿½ll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utfï¿½rd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 			
 			call tableCloser(tablenames())
 		end if
@@ -214,12 +213,12 @@ dim tablenames(3) as string
 
 tablenames(1) = "Rening_Mellersta"
 tablenames(2) = "rening_Norra"
-tablenames(3) = "rening_Södra"
+tablenames(3) = "rening_Sï¿½dra"
 		call tableOpener(tablenames)	
 		dim tempstring as string tempstring = CreateTable_reningIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("rening_mellersta","reningIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
-		call insertXintoYtableWhereXcolLessThaYcol("rening_Södra","reningIhopslagen")
+		call insertXintoYtableWhereXcolLessThaYcol("rening_Sï¿½dra","reningIhopslagen")
 		Commit table reningIhopslagen
 		
 		call UpdateIndex("reningIhopslagen")'already commits
@@ -258,12 +257,12 @@ sub DO1_9_egnEnskWSpatFas
 				
 		dim tempstring1,tempstring2,tempstring3 as string ,tempAlias as alias
 	
-		tempstring1 = ApplicationDirectory$() & "Enskilt_avlopp_Södra.TAB"
+		tempstring1 = ApplicationDirectory$() & "Enskilt_avlopp_Sï¿½dra.TAB"
 		tempstring2 = ApplicationDirectory$() & "Enskilt_avlopp_Norra.TAB"
 		tempstring3 = ApplicationDirectory$() & "Enskilt_avlopp_Mellersta.TAB"
 		
 		if G_rebuild then
-			tablenames(1) = "Enskilt_avlopp_SödraNoIndex"
+			tablenames(1) = "Enskilt_avlopp_Sï¿½draNoIndex"
 			tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
 			tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
 			tablenames(4) = "fastighet_yta"
@@ -282,9 +281,9 @@ onError goto e424
 onError goto 0
 
 onError goto e428		
-			Alter Table Enskilt_avlopp_SödraNoIndex ( add SpatialFastighet Char(40), SpatialShift Char(40) )
-			Add Column "Enskilt_avlopp_SödraNoIndex" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column "Enskilt_avlopp_SödraNoIndex" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
+			Alter Table Enskilt_avlopp_Sï¿½draNoIndex ( add SpatialFastighet Char(40), SpatialShift Char(40) )
+			Add Column "Enskilt_avlopp_Sï¿½draNoIndex" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+			Add Column "Enskilt_avlopp_Sï¿½draNoIndex" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
 onError goto 0
 
 onError goto e434
@@ -304,7 +303,7 @@ onError goto e445
 			onError goto 0
 		end if
 	onError goto e450
-		insert into Pathtable (tablePath,TableName) values (Tempstring1, "Enskilt_avlopp_Södra")
+		insert into Pathtable (tablePath,TableName) values (Tempstring1, "Enskilt_avlopp_Sï¿½dra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring2, "Enskilt_avlopp_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring3, "Enskilt_avlopp_Mellersta")
 	onError goto 0
@@ -324,7 +323,7 @@ exit sub
 
 
 ErRRZ:
-		print "[ErRRZ] failed to commit table Enskilt_avlopp_Södra  As " & tempstring1 
+		print "[ErRRZ] failed to commit table Enskilt_avlopp_Sï¿½dra  As " & tempstring1 
 		end program	
 ErRRZ2:
 		print "[ErRRZ] failed to commit table Enskilt_avlopp_Norra  As " & tempstring2 
@@ -340,7 +339,7 @@ sub DO1_10_enskiltIhopslagen
 		dim tableNames(1) as string
 		redim tableNames(3)
 	
-		tablenames(1) = "Enskilt_avlopp_Södra"
+		tablenames(1) = "Enskilt_avlopp_Sï¿½dra"
 		tablenames(2) = "Enskilt_avlopp_Norra"
 		tablenames(3) = "Enskilt_avlopp_Mellersta"
 		
@@ -348,7 +347,7 @@ sub DO1_10_enskiltIhopslagen
 	
 		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_mellersta","EnskiltIhopslagen")
 		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_Norra","EnskiltIhopslagen")
-		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_Södra","EnskiltIhopslagen")
+		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_Sï¿½dra","EnskiltIhopslagen")
 		Commit table EnskiltIhopslagen
 				
 		call UpdateIndex("EnskiltIhopslagen")'already commits
@@ -359,11 +358,11 @@ end sub
 sub DO1_11_prepareSocken
 		'figure out what wee need to DO whit this function 
 		'lets say we generate a necessary table for processor_2SockenRead
-		'sockenTabell måste skapas, men denna skall vara tom
-		'varför behöver sockenX, och 
-		'varför behöver vi änns skapa socknarOfiltrerade?
-		'verkar som att processor_2SockenRead behöver socknarOfiltrerade,
-		'döper om den så att det förhoppningsvis inte sprider sig vidare
+		'sockenTabell mï¿½ste skapas, men denna skall vara tom
+		'varfï¿½r behï¿½ver sockenX, och 
+		'varfï¿½r behï¿½ver vi ï¿½nns skapa socknarOfiltrerade?
+		'verkar som att processor_2SockenRead behï¿½ver socknarOfiltrerade,
+		'dï¿½per om den sï¿½ att det fï¿½rhoppningsvis inte sprider sig vidare
 
 		dim tempstring,tablenames(3) as string	,tempAlias as alias
 '	
@@ -373,7 +372,7 @@ sub DO1_11_prepareSocken
 			dim tempBool as logical call openSingleTable("fastighet_yta") 
 
 			tempstring = createTemporaryTableAnDOpen("""sockenTabelx"" (sockenX Char(254))")
-			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmänt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta
+			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmï¿½nt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta
 			select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
 			commit table socknarOfiltrerade as ApplicationDirectory$() & "socknarOfiltrerade.tab"
 			close table sockenTabelx
@@ -390,14 +389,14 @@ end sub
 sub do6_8_SlamDisp 	
 		dim tableNames(1) as string 
 		redim tableNames(2)
-		tableNames(1) = "Lokalt_omhändertagande_slam"
+		tableNames(1) = "Lokalt_omhï¿½ndertagande_slam"
 		tablenames(2) = "fastighet_yta"
 		call tableOpener(tablenames)
 		
-		Select fastighet_yta.KIR, Lokalt_omhändertagande_slam.Diarienr, Lokalt_omhändertagande_slam.Beslutsdatum from Lokalt_omhändertagande_slam, fastighet_yta where Lokalt_omhändertagande_slam.Obj Within fastighet_yta.Obj into slam
+		Select fastighet_yta.KIR, Lokalt_omhï¿½ndertagande_slam.Diarienr, Lokalt_omhï¿½ndertagande_slam.Beslutsdatum from Lokalt_omhï¿½ndertagande_slam, fastighet_yta where Lokalt_omhï¿½ndertagande_slam.Obj Within fastighet_yta.Obj into slam
 		Alter Table "EnskiltIhopslagen" ( add SlamDispDat Date )
 		Commit table EnskiltIhopslagen
-		Add Column "EnskiltIhopslagen" (SlamDispDat )From Lokalt_omhändertagande_slam Set To Beslutsdatum Where COL17 = COL1 
-		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp på: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
+		Add Column "EnskiltIhopslagen" (SlamDispDat )From Lokalt_omhï¿½ndertagande_slam Set To Beslutsdatum Where COL17 = COL1 
+		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp pï¿½: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
 		Commit table EnskiltIhopslagen
 end sub
