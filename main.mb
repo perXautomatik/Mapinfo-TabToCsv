@@ -50,7 +50,6 @@ sub processor_2SockenRead
 	call increment(G_Progress,G_ProgressRange,G_starttime)
 end sub
 
-
 Sub Main()
 	call loadTestData
 
@@ -467,12 +466,7 @@ sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as sweref
 			call skapaMutationer(enskiltTokenObjekt,reningsTokenObjekt,swerefTokenObjekt,minimumDebt)
 		end if
 
-exit sub
-
-k: print error$() end program
-kx: print error$() end program
-
-end sub
+exit sub k: print error$() end program kx: print error$() end program end sub
 
 sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 		',swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float 
@@ -502,14 +496,7 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 		print "Objekt på fastighet("& FastighetsBetInput & ") = 0" 
 	end if
 	
-exit sub
-creationerror:
-	 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt på " & FastighetsBetInput
-	print "[ERROR @ OmObjektSkapaFastighet]" & error$()
-	end program
-	
-
-End sub
+exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt på " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
 
 sub processor_4Mutate()
 	onError goto UobjInitizializer 
@@ -713,11 +700,7 @@ sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator a
 	end if
 
 	onError goto 0
-exit sub
-underskriptsFel:
-	note error$()
-	end program
-end sub
+exit sub underskriptsFel: note error$() end program end sub
 		
 sub Anläggning(anlObj() as anläggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
 		
