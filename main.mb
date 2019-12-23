@@ -1,18 +1,8 @@
-
+﻿
 Include "MapBasic.def"
 include "Menu.def"
 Include "tabellInsammlare.def"
 include "CommonLib\commonLib1.def"
-Declare sub DO1_1_genPathTab
-Declare sub DO1_3_GenFasWithAdr
-Declare sub DO1_4_prepRenMel
-Declare sub DO1_4_prepRenNor
-Declare sub DO1_4_prepRenSöd
-Declare sub DO1_5_reningIhopslagen
-Declare sub DO1_8_prepareSweref
-Declare sub DO1_9_egnEnskWSpatFas
-Declare sub DO1_10_enskiltIhopslagen
-Declare sub DO1_11_prepareSocken
 
 Declare sub DO2_readCurrentState()
 Declare Sub DO2_1_newSocken(byVal nSocken as string)
