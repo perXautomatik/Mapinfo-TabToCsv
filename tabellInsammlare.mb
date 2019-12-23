@@ -1454,28 +1454,6 @@ sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObje
 
 end sub
 
-sub createFastighetsTable(byval tablename as string, byval filePath as string)
-
-	onError goto noTable 
-		close table tablename 
-	onError goto 0
-	print "{Creating " & tablename
-	onError goto creationError
-	dim query as string
-		query = "Create Table " & tableName & " (adress	Char(253),postnr	Char(253),ort Char(253),fastighet	Char(34),fnr integer,HuvudSweref integer,HuvudRening integer,HuvudEnskilt integer,swerefobjekt	Char(253),reningsobjekt	Char(253),enskiltObjekt	Char(253)) file "& chr$(34) & filePath & chr$(34)
-		run command query 
-		Create Map For tablename CoordSys Earth Projection 1, 104
-	onError goto 0
-	
-exit sub
-	creationError:
-	print "creationError" & error$()
-	print query
-	end program
-	
-	noTable:
-	resume next 
-end sub
 
 sub messageEveryString(StringArray() as String)
 	
@@ -1759,31 +1737,9 @@ sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
 
 exit sub
 queryError:
-	print "[saveSockenProgress_error] queryError|" & query & "Commiting table" print error$() commit table tableName resume methodEnd
+	print "[saveUtskriftsProgress_error] queryError|" & query & "Commiting table" print error$() commit table tableName resume methodEnd
 	methodEnd:
 end sub
-
-sub saveSockenProgress(socken as string)
-
-	dim query	,filePath,v?rde(),tablename as string,x as integer
-	,tablenameA as alias
-	
-	tableName = Socken & "ressultat" 
-	filePath = ApplicationDirectory$() + tableName & ".tab"
-
-	call createRessultTableX(tablename,filePath)
-
-	tableNameA = tableName
-	Insert Into tableNameA select * From SockenRessultat DropIndex Auto
-
-	commit table tableName
-	drop table SockenRessultat
-	methodEnd:
-exit sub
-queryError:
-	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
-end sub
-
 
 function trov?rdighetsIndexer(
 	swerefobjekt as swerefobjekt,
@@ -2250,55 +2206,6 @@ dim query as string
 			'end program
 end sub
 
-Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobjekt)
-	'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsf?lt'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningsf?lt'assume this line removes double entries in 
-	dim query,tempstring as string ,x,size as integer
-	
-	onError goto queryError 
-		query = "select " & getColumnsOfTable_asString("reningIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" 
-		run command query
-	onError goto 0
-	
-	size = tableInfo(valtRening,tab_info_nrows) 
-
-	if size <> 0 then
-		fetch first from ValtRening 
-		print nSocken & " " & size & "reningsObjekt" 
-	else
-		print "noTrigger"
-		goto queryError 
-	end if
-
-
-	for x=1 to size
-		Redim OutputreningsObjekt(x)
-		OutputreningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
-		OutputreningsObjekt(x).spatialShift = valtRening.spatialShift
-		OutputreningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
-		OutputreningsObjekt(x).Antal_hush?ll_rening = iif(val(valtRening.Antal_hush?ll_rening & "") <> 0,val(valtRening.Antal_hush?ll_rening & ""),1)
-		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
-		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
-		OutputreningsObjekt(x).kordinater = valtRening.koor 
-		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
-		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
-		
-		tempstring = "" & mixedDateToUnion("" & valtRening.Beslut_datum) if tempstring <> "0" then OutputreningsObjekt(x).Beslut_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
-		tempstring = "" & mixedDateToUnion("" & valtRening.Utf?rd_datum) if tempstring <> "0" then OutputreningsObjekt(x).utf?rd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
-		
-		call getAnslutna(OutputreningsObjekt(x).Anslutna_fastigheter)
-		
-		fetch next from ValtRening
-	next
-
-exit sub
-queryError:
-	print "[ERROR @ TabToObjRening] no reningobj receated"
-	print query
-	print socken
-	print error$()
-	end program
-
-end sub
 
 
 sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)

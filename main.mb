@@ -10,14 +10,14 @@ Declare sub DO4_Mutations()
 
 Declare sub processor_1Pre
 Declare sub processor_2SockenRead
-Declare sub processor_3PrepMutate()
-Declare sub processor_4Mutate()
+
+
 Declare sub Processor_5StoreToHelaSolen()
 
 
 Declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 Declare sub Do2_LoadLatestObjId()
-Declare sub loadSocken()
+
 Declare sub loadTestData()
 Declare Sub Main()
 Declare sub SaveAnvändaReningar 
@@ -62,31 +62,16 @@ Sub Main()
 	run application applicationdirectory$() & "PostProcesses.MBX"
 
 exit sub	
-	createFastighetsTable: print "processor_1PreError" print error$()	    end program
+	
 	
 	processor_2SockenRead: print "processor_2SockenReadError" print error$()	    end program
-	processor_3PrepMutate:	print "processor_3PrepMutateError"	print error$()	    end program
-	processor_4Mutate:	print "processor_4MutateError"	print error$()	    end program
 	Processor_5StoreToHelaSolen:	print "Processor_5StoreToHelaSolenError"	end program
 	
-	saveSockenProgress: print "[ERROR_saveSockenProgressError] 0 objekts " & G_socken print error$()	    end program
-	genSortFa:	print "selectionError " & tempQuery	print error$()	end program
-	LoadSocken:	print "LoadSockenError"	print error$()	    end program
+
+	
 
 
 End Sub
-
-sub processor_3PrepMutate()
- 'initializing global vars? senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program 'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet") '	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if'reads selected row from sorteradFastighet 
-	dim fastighetJustNu as string
-	fastighetJustNu = SorteradFastighet.kir 
-	if fastighetJustNu <> "" then 
-		call OmObjektSkapaFastighet(fastighetJustNu) 
-	else
-		print "noFastighet"
-	end if
-	fetch Next from SorteradFastighet call increment(G_Progress,G_ProgressRange,G_starttime)
-end sub
 
 sub Processor_5StoreToHelaSolen()
 	
@@ -402,31 +387,6 @@ sub SaveAnvändaReningar
 
 exit sub queryError: print "[ERROR_SaveAnvändaReningar] " & error$() end sub
 
-sub loadSocken()
-'rewrite so that progressbar can be visualized in this method, 'was thinking that maybe a case division, 'DOes case work with variables?	it seems like it DOes in fact work ' but maybe not neccessary		
-	dim CurrentSocken,sTbl,tempstring as string
-	,iLoop,tempinterger as integer 
-
-	
-	if G_socken <> "" then
-		dim tableNames(1) as string
-		redim tablenames(4) 
-		print "change to " & G_socken
-		
-		CurrentSocken = G_socken & "Fastigheter" 
-		tablenames(1) = CurrentSocken 
-		tablenames(2) = "EnskiltIhopslagen"
-		tablenames(3) = "reningIhopslagen"  
-		tablenames(4) = "Fastigheter_sweref"
-		call tableOpener(tablenames)
-		G_starttime = timer() 
-		
-		Call TabToObjRening(CurrentSocken,G_ReningsObjekt) 'tempinterger = UBound(G_reningsObjekt()) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjRening") G_starttime = timer() 
-		Call TabToObjEnskilt(CurrentSocken,G_EnskiltObjekt) 'tempinterger = ubound(G_EnskiltObjekt) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjEnskilt") G_starttime = timer()
-		Call TabToObSweref(CurrentSocken,G_SwerefObjekt) 'tempinterger = ubound(G_swerefObjekt) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObSweref")
-	end if
-	
-end sub
 
 sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
 
@@ -474,18 +434,6 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 	
 exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt på " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
 
-sub processor_4Mutate()
-	onError goto UobjInitizializer 
-		dim tempALias as alias 
-		
-		call UobjInitizializer()
-	
-		tempAlias = G_socken & "fastighetsObjekt"
-		call increment(G_Progress,G_ProgressRange,G_starttime)	
-	fetch next from tempAlias	onError goto 0
-exit sub
-	UobjInitizializer: print error$() end program
-end sub
 
 sub huvuDObjekt(uObj() as UtskriftsObjekt, it as integer)
 	
