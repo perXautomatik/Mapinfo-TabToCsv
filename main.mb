@@ -55,17 +55,8 @@ Sub Main()
 	
 	print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
 
-	fetch first from sockentabell DO Until EOT(sockentabell)
-		dim tableName,filePath,fastighetsObjektsTabell as string 
+	run application applicationdirectory$() & "MainLoop.MBX"
 
-		onError goto genSortFa	 G_socken = sockenTabell.sockenX call opensingletable("fastighet_yta") dim tempQuery as string tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & G_socken & Chr$(34) & " AND kir <> """" group by kir into SorteradFastighet"	run command tempQuery onError goto 0
-		onError goto LoadSocken call loadSocken() onError goto 0
-		onError goto createFastighetsTable fastighetsObjektsTabell = G_socken & "fastighetsObjekt" 		filePath = ApplicationDirectory$() + fastighetsObjektsTabell & ".tab"  		call createFastighetsTable(fastighetsObjektsTabell,filePath) onError goto 0
-		onError goto processor_3PrepMutate G_ProgressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & G_ProgressRange & " items" Calling processor_3PrepMutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_3PrepMutate") end if onError goto 0	
-		onError goto processor_4Mutate  		tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 1 fetch first from fastighetsObjektsTabell 		ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling processor_4Mutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") end if onError goto 0 		
-		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 'Runns = Runns+1 if(runns = 2) then '	end program	
-	fetch next from sockentabell loop
-			
 	onError goto Processor_5StoreToHelaSolen call createRessultTableX("HelaSolen",applicationdirectory$() & "\HelaSolen.TAB") fetch first from socknarOfiltrerade	G_ProgressRange = tableInfo("socknarOfiltrerade",TAB_INFO_NROWS) 		if G_ProgressRange <> 0 then				G_starttime = timer() 			G_Progress = 0 			ProgressBar "Processor_5StoreToHelaSolen_LoadingIntoTable...." & G_ProgressRange & " items" 			Calling Processor_5StoreToHelaSolen			Range G_ProgressRange				call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"Processor_5StoreToHelaSolen")		end if 	commit table HelaSolen onError goto 0
 		
 	run application applicationdirectory$() & "PostProcesses.MBX"
