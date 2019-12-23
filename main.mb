@@ -39,7 +39,7 @@ Declare sub UobjInitizializer()
 'TODO: prioritize Status, according to Gem>Kom>Grön>Röd>Ejvtn, if more than one flagg.
 'TODO: rename every anslutningspunkt into slamskiljare
 'TODO: slamdisp, ta vara på anteckningarna till anteckningar, och ärendenr
-'TODO: split PReProcess and post process into there own modules
+
 
 global G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, G_workDir,G_socken as string, G_rebuild,G_debugg as logical, G_användaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
