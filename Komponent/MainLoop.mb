@@ -169,15 +169,12 @@ Type UtskriftsObjekt
 	
 end Type
 
-
-
 Type Trov�rdighetsObjekt
 	index as float
 	ex as integer
 	fx as integer
 	rx as integer
 End Type
-
 
 Type Anl�ggningsObjekt
 
@@ -217,8 +214,9 @@ declare function trov�rdighetsIndexer(
 	enskiltobjekt as enskiltobjekt
 	) as float
 
-
 Declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
+
+declare sub getAnslutna(anslutan() as string)
 
 Declare Sub Main
 Declare sub loadSocken()
@@ -234,20 +232,15 @@ Declare sub UobjInitizializer()
 declare sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
 Declare sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltsTokenObjekt() as enskiltObjekt,swerefsTokenObjekt() as swerefobjekt)
 
-
 declare sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
 declare sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
 declare sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
-
-
 
 declare sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
 declare sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
 declare sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
 
-
 declare function getMain(inputString as string, output() as string) as integer
-
 
 declare sub utskrivningsobjektsKonstruktor(
 		sO() as swerefobjekt,
@@ -255,10 +248,7 @@ declare sub utskrivningsobjektsKonstruktor(
 		eO() as enskiltobjekt
 	)
 	
-
-
 declare sub saveSockenProgress(socken as string)
-
 
 global 
 G_workDir,G_socken as string,
@@ -267,8 +257,6 @@ G_ProgressRange,G_Progress,G_senastObjectID,
 G_senastTid,G_anv�ndaReningar(),G_starttime as integer
 
 ,G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt
-
-
 
 Sub Main()
 	G_debugg = true G_rebuild = false 
@@ -324,7 +312,6 @@ sub loadSocken()
 	
 end sub
 
-
 sub createFastighetsTable(byval tablename as string, byval filePath as string)
 
 	onError goto noTable 
@@ -347,7 +334,6 @@ exit sub
 	noTable:
 	resume next 
 end sub
-
 
 sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
 
@@ -411,7 +397,6 @@ sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,
 exit function
 	CommandError: note "[ERROR] @ swerefSubsetByIndex _size" & size & "_" & Error$() end program
 end sub
-
 
 sub UobjInitizializer()
 
@@ -629,7 +614,6 @@ exit sub
 	resume next 
 end sub
 
-
 sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
 		'inserts copy of inputX at place of outputItterator
 		if ubound(outputXTable) < outPutItterator then
@@ -780,8 +764,6 @@ sub utskrivningsobjektsKonstruktor(
 			
 End Sub
 
-
-
 sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 		',swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float 
 	dim antalObjekt,before,after as integer,debugg as logical,fastighetsObjektsTabell as string,
@@ -811,3 +793,25 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 	end if
 	
 exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt p� " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
+
+sub getAnslutna(anslutan() as string)'h?mtar ocks? gemensamhetsanl?ggningar
+	dim P as integer
+	,tempString as string
+	,anslutningsAlias as alias
+	,temptext as string
+	
+	if(not(valtRening.anslutna_fastigheter_10 = "gem,gem")) then
+		for p=1 to 10		
+			anslutningsAlias = "valtRening.Anslutna_fastigheter_" & p
+			temptext = anslutningsAlias
+			if(temptext <> "") then
+				call addStringToArrayAsifSet(anslutan(),searchReplace(temptext,"""","'"))
+			end if
+		next
+	else
+		tempString = valtRening.kommentarer 'kommentarf?ltet har identifieringen
+		call gemAnslutna(tempstring,anslutan())
+		call addStringToArrayAsifSet(anslutan(),"gem,gem")
+	end if
+
+end sub

@@ -6,8 +6,8 @@ declare function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as ensk
 declare function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
 
 declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
-declare function Rening�rInteToken(x as reningsobjekt) as logical
-declare function Enskilt�rInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
+declare function ReningrInteToken(x as reningsobjekt) as logical
+declare function EnskiltrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
 
 
 declare function countShiftenGenUtvald(FastighetB as string) as integer
@@ -26,15 +26,13 @@ declare sub insertInitialTables()
 
 declare sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 declare sub createRessultTableX(byval tablename as string, byval filePath as string)
-declare sub UtskriftsObjToInsertStringArray(v�rde() as string, utskriftsobjekt as utskriftsobjekt)
+declare sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as utskriftsobjekt)
 
-declare sub doTheDateStandardisation(v�rde() as string,p�Platts() as string,byVal DatumStr�ngTagIsammanfogad as string)
+declare sub doTheDateStandardisation(vrde() as string,pPlatts() as string,byVal DatumStrngTagIsammanfogad as string)
 
 declare function DiarieMixedToUnit(byVal text as string) as string
 
 declare sub genereraFastighetsYtaMedFastighetsAdress()
-
-declare sub getAnslutna(anslutan() as string)
 
 declare sub StandardiseraDiarie(byval a as string,byval b as string,c() as string)
 
@@ -42,7 +40,7 @@ declare function enskiltAsString(enskiltTokenObjekt as EnskiltObjekt) as string
 declare function ReningAsString(reningsTokenObjekt as reningsobjekt) as string
 declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
 
-declare function sweref�rInteToken(swerefObjekt as swerefObjekt) as logical
+declare function swerefrInteToken(swerefObjekt as swerefObjekt) as logical
 Declare Sub gemAnslutna(caseString as string,ressultArray() as string)
 
 declare sub messageEveryString(StringArray() as String)
@@ -70,36 +68,36 @@ declare function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,Fastighet
 declare function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
 
 
-declare function findWhereInStringArray(byVal v�rde as string, array() as string) as integer 
+declare function findWhereInStringArray(byVal vrde as string, array() as string) as integer 
 
 declare sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as integer)
 
 declare sub saveUtskriftsProgress(G_utskriftsObjekt() as utskriftsObjekt)
 
 Declare Sub insertAt(
-				trodv�dighet as trov�rdighetsobjekt, 'which rows in each table that should be moved
+				trodvdighet as trovrdighetsobjekt, 'which rows in each table that should be moved
 				enskiltTokenObjekt() as enskiltObjekt,
 				reningsTokenObjekt() as reningsObjekt,
 				swerefTokenObjekt() as swerefObjekt,
 				toInsertAt as integer) ' to which place in the table
 
-Declare Sub genTrov�rdighet(trodv�dighet() as trov�rdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
+Declare Sub genTrovrdighet(trodvdighet() as trovrdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
 
 Declare Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt, byVal minimumDebt as integer)
 
-Declare sub Avloppsanl�ggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
+Declare sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
 Declare sub huvudObjekt(uObj() as UtskriftsObjekt, it as integer)
 Declare sub samlingsobjekt(uObj() as UtskriftsObjekt,ittr as integer)
 Declare sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swerefobjekt)
 
-Declare sub �renden(uObj() as UtskriftsObjekt,ittr as integer)
+Declare sub renden(uObj() as UtskriftsObjekt,ittr as integer)
 Declare sub koordinater(uObj() as UtskriftsObjekt,ittr as integer)
 Declare sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
-Declare sub Anl�ggning(uObj() as anl�ggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
+Declare sub Anlggning(uObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
 
 Declare function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
  
-Declare function anl�ggningsobjektToUtskifts(anl() as Anl�ggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
+Declare function anlggningsobjektToUtskifts(anl() as AnlggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
 
 declare function diarienummerForUtskriftsObjekt(
 	utskriftsObjekt() as utskriftsobjekt,

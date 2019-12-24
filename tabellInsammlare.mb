@@ -1236,27 +1236,6 @@ sub UtskriftsObjToInsertStringArray(v?rde() as string, utskriftsobjekt as utskri
 	
 end sub
 
-sub getAnslutna(anslutan() as string)'h?mtar ocks? gemensamhetsanl?ggningar
-	dim P as integer
-	,tempString as string
-	,anslutningsAlias as alias
-	,temptext as string
-	
-	if(not(valtRening.anslutna_fastigheter_10 = "gem,gem")) then
-		for p=1 to 10		
-			anslutningsAlias = "valtRening.Anslutna_fastigheter_" & p
-			temptext = anslutningsAlias
-			if(temptext <> "") then
-				call addStringToArrayAsifSet(anslutan(),searchReplace(temptext,"""","'"))
-			end if
-		next
-	else
-		tempString = valtRening.kommentarer 'kommentarf?ltet har identifieringen
-		call gemAnslutna(tempstring,anslutan())
-		call addStringToArrayAsifSet(anslutan(),"gem,gem")
-	end if
-
-end sub
 
 function DiarieMixedToUnit(byVal text as string) as string
 	'skall bli, mhn-xxxx-xxxx
