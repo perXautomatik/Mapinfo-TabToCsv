@@ -80,7 +80,7 @@ function diarienummerForUtskriftsObjekt(
 	next
 	
 	for x=1 to ubound(swerefObjekt)
-		call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).Ärendenr) 
+		call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).rendenr) 
 	next	
 		
 	for x=1 to ubound(tempDirty)
@@ -91,7 +91,7 @@ function diarienummerForUtskriftsObjekt(
 		if (rendennr(x) <> "MHN") then
 			itterator = itterator + 1
 			redim utskriftsobjekt(itterator)
-			utskriftsobjekt(itterator).fliken_Ärenden = rendennr(x)
+			utskriftsobjekt(itterator).fliken_renden = rendennr(x)
 			utskriftsobjekt(itterator).Objektid = objektid
 			
 			returnInteger = returnInteger + 1 
