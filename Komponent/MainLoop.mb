@@ -39,6 +39,43 @@ exit sub
 			genSortFa:	print "selectionError " & tempQuery	print error$()	end program
 end sub
 
+function diarienummerForUtskriftsObjekt(
+		utskriftsObjekt() as utskriftsobjekt,
+		itterator as integer,
+		enskiltObjekt() as enskiltobjekt,
+		swerefObjekt() as swerefobjekt, 
+		objektid as integer
+		) as integer
+		dim ärendennr(),tempDirty() as string
+		,x,returnInteger as integer
+		
+	for x=1 to ubound(enskiltObjekt)
+		call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).Diarienummer)
+	next
+	
+	for x=1 to ubound(swerefObjekt)
+		call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).Ärendenr) 
+	next	
+		
+	for x=1 to ubound(tempDirty)
+		call addStringToArrayAsifSet(ärendennr,DiarieMixedToUnit(tempDirty(x)))
+	next
+		
+	for x = 1 to ubound(ärendennr)
+		if (ärendennr(x) <> "MHN") then
+			itterator = itterator + 1
+			redim utskriftsobjekt(itterator)
+			utskriftsobjekt(itterator).fliken_Ärenden = ärendennr(x)
+			utskriftsobjekt(itterator).Objektid = objektid
+			
+			returnInteger = returnInteger + 1 
+		end if
+	next		
+
+	diarienummerForUtskriftsObjekt = returnInteger
+end function
+
+
 sub loadSocken()
 'rewrite so that progressbar can be visualized in this method, 'was thinking that maybe a case division, 'DOes case work with variables	it seems like it DOes in fact work ' but maybe not neccessary		
 	dim CurrentSocken,sTbl,tempstring as string
