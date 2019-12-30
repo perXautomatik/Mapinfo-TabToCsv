@@ -74,17 +74,6 @@ declare sub putAtIndex(arrayTobePutIn() as string,inputString as string,position
 
 declare sub saveUtskriftsProgress(G_utskriftsObjekt() as utskriftsObjekt)
 
-Declare Sub insertAt(
-				trodvdighet as trovrdighetsobjekt, 'which rows in each table that should be moved
-				enskiltTokenObjekt() as enskiltObjekt,
-				reningsTokenObjekt() as reningsObjekt,
-				swerefTokenObjekt() as swerefObjekt,
-				toInsertAt as integer) ' to which place in the table
-
-Declare Sub genTrovrdighet(trodvdighet() as trovrdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
-
-Declare Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt, byVal minimumDebt as integer)
-
 Declare sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
 Declare sub huvudObjekt(uObj() as UtskriftsObjekt, it as integer)
 Declare sub samlingsobjekt(uObj() as UtskriftsObjekt,ittr as integer)

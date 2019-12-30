@@ -2,7 +2,6 @@ Include "MapBasic.def"
 include "Menu.def"
 include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
 
-
 Type ReningsObjekt
 
 	Fastighet_rening as string
@@ -190,7 +189,7 @@ Type AnlggningsObjekt
 		
 		Antal_hushll_rening as integer '",: "integer",: "Anl_fr_EftR_TInterv_mn (rening)"
 		
-		Koordinater as string '",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (r infiltration/markdd ?r begen)/(r ansluten)/(r EXTRA inventeringsinformation ?r begen)"
+		Koordinater as string '",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (r infiltration/markdd r begen)/(r ansluten)/(r EXTRA inventeringsinformation r begen)"
 				
 		Kommentarer as string '",: "Char(253)(ltmaxngd)",: "Anlggning_fr_EfterfljRText (rening/sweref/beslut)"
 		
@@ -217,6 +216,18 @@ declare function trovrdighetsIndexer(
 Declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 
 declare sub getAnslutna(anslutan() as string)
+
+Declare Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt, byVal minimumDebt as integer)
+
+
+Declare Sub genTrovrdighet(trodvdighet() as trovrdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
+
+Declare Sub insertAt(
+				trodvdighet as trovrdighetsobjekt, 'which rows in each table that should be moved
+				enskiltTokenObjekt() as enskiltObjekt,
+				reningsTokenObjekt() as reningsObjekt,
+				swerefTokenObjekt() as swerefObjekt,
+				toInsertAt as integer) ' to which place in the table
 
 Declare Sub Main
 Declare sub loadSocken()
@@ -549,7 +560,7 @@ sub createRessultTableX(byval tablename as string, byval filePath as string)
 				Besksadress_Ort Char(253),									'Ort	->	Ort	Char(253)(ltmaxngd)	Besksadress_Ort
 				Besksadress_Huvudfastighet	Char(34),						'Fastighet_tillstnd	->	Huvudfastighet	Char(34)	Besksadress_Huvudfastighet
 				FNR integer,												'Fastighet_tillstnd	->	Huvudfastighet(FNR)	integer	FNR
-				ignore	Char(253),											'Lagfaren ?gare	->	Namn	Char(253)(ltmaxngd)	Verksamhetsutvare_Namn
+				ignore	Char(253),											'Lagfaren gare	->	Namn	Char(253)(ltmaxngd)	Verksamhetsutvare_Namn
 				ignore integer,												'Person- /Orgnr	->	Person- /Orgnr	integer	Verksamhetsutv_Person_orgnr
 				ignore Char(253),											'Namn (kund)	->	Namn (kund)	Char(253)(ltmaxngd)	Fakturamottagare_NAMN
 				ignore	Char(253),											'Adress (kund)	->	Adress (kund)	Char(253)(ltmaxngd)	Fakturamottagare_Faktura_ADRESS
@@ -581,7 +592,7 @@ sub createRessultTableX(byval tablename as string, byval filePath as string)
 				Anlggningstyp	Char(15),									'Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) "Klart Vatten"	->	Anlggningstyp	Char(15)	Anlggningstyp
 				Volym_m3 float,												'Storlek_m2 (rening)/Storlek_m3  (Beslut)	->	Volym m3	float	Volym m3
 				Anl_fr_EftR_TInterv_mn integer,							'Antal_hushll_rening (rening)	->	mningssintervall	integer	Anl_fr_EftR_TInterv_mn
-				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (r infiltration/markdd ?r begen)/(r ansluten)/(r EXTRA inventeringsinformation ?r begen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
+				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (r infiltration/markdd r begen)/(r ansluten)/(r EXTRA inventeringsinformation r begen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
 				PunkttypER	Char(20),										'"Efterfljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Punkttyp Koordinater	Char(20)	PunkttypER
 				Anlggning_fr_EfterfljRText Char(253),					'Kommentarer (rening/sweref/beslut)	->	Text	Char(253)(ltmaxngd)	Anlggning_fr_EfterfljRText
 				ignore	Char(19),											''
@@ -614,74 +625,50 @@ exit sub
 	resume next 
 end sub
 
-sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
-		'inserts copy of inputX at place of outputItterator
-		if ubound(outputXTable) < outPutItterator then
-			Redim outputXTable(outPutItterator)
+Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt,ByVal minimumDebt as integer)
+	dim x as integer
+
+	for x=minimumDebt to ubound(inputEn)
+		if x > ubound(inputEn) then
+			redim inputEn(x)
+		end if
+'		onError goto Xerror
+'		print "-----------------------------" & x
+'		
+'		print ubound(outPutEn)
+'		print ubound(inputEn)
+'		print ubound(outPutre) 
+'		print ubound(inputre)
+'		print ubound(outPutsw)
+'		print ubound(inputsw)
+'		print minimumDebt
+'		print x
+'		print "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"		
+			call enskiltCopyConstruktor(inputEn(x), outPutEn,x)
+		
+'		onError goto 0
+	next
+	
+	for x=minimumDebt to ubound(inputre)
+		if x > ubound(inputre) then
+			redim inputre(x)
 		end if
 		
-		outputXTable(outPutItterator).Diarienummer = 		inputX.Diarienummer
-		outputXTable(outPutItterator).Fastighet_tillsnd = 	inputX.Fastighet_tillsnd
-		outputXTable(outPutItterator).spatialShift = 		inputX.spatialshift
-		outputXTable(outPutItterator).spatialFastighet = 	inputX.spatialFastighet
-		outputXTable(outPutItterator).Typ_byggnad = 			inputX.Typ_byggnad
-		outputXTable(outPutItterator).Antal_husll_tillsnd = inputX.Antal_husll_tillsnd
-		outputXTable(outPutItterator).Fastighet_rening = 	inputX.Fastighet_rening
-		outputXTable(outPutItterator).Typ_Slamavskiljare = 	inputX.Typ_Slamavskiljare
-		outputXTable(outPutItterator).Storlek_m3 = 			inputX.Storlek_m3
-		outputXTable(outPutItterator).Typ_rening = 			inputX.Typ_rening
-		outputXTable(outPutItterator).Storlek_m2 = 			inputX.Storlek_m2
-		outputXTable(outPutItterator).Typ_sluten_tank = 		inputX.Typ_sluten_tank
-		outputXTable(outPutItterator).Storlek__m3 = 			inputX.Storlek__m3
-		outputXTable(outPutItterator).Beslut_datum = 		inputX.Beslut_datum
-		outputXTable(outPutItterator).Utrd_datum = 		inputX.Utrd_datum
-		outputXTable(outPutItterator).Avgift = 				inputX.Avgift
-		outputXTable(outPutItterator).Tillsnd_giltigt_tom = inputX.Tillsnd_giltigt_tom
-		outputXTable(outPutItterator).Anteckningar = 		inputX.Anteckningar
-		outputXTable(outPutItterator).kordinater = 			inputX.kordinater
-		outputXTable(outPutItterator).rowindex = 			inputX.rowindex
-End Sub
-
-sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
-		'inserts copy of inputX at place of outputItterator
-		
-		if ubound(outputTable) < outPutItterator then
-			Redim outputTable(outPutItterator)
+		call reningObjCopyConstr(inputre(x),outPutre,x)
+	next
+	
+	for x=minimumDebt to ubound(inputsw)
+		if x > ubound(inputsw) then
+			redim inputsw(x)
 		end if
-			
-		OutputTable(outPutItterator).FASTIGHET = inputX.FASTIGHET
-		OutputTable(outPutItterator).Fastighet_tillsnd = inputX.Fastighet_tillsnd
-		OutputTable(outPutItterator)rendenr = inputXrendenr
-		OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
-		OutputTable(outPutItterator).Status = inputX.Status
-		OutputTable(outPutItterator).Utskick1_datum = inputX.Utskick1_datum
-		OutputTable(outPutItterator).Anteckning = inputX.Anteckning
-		OutputTable(outPutItterator).utrddatum = inputX.utrddatum
-		OutputTable(outPutItterator).slammtning = inputX.slammtning
-		OutputTable(outPutItterator).Antal_byggnader = inputX.Antal_byggnader
-		OutputTable(outPutItterator).kordinater = inputX.kordinater
-		OutputTable(outPutItterator).SpatialFastighet = inputX.SpatialFastighet
-		OutputTable(outPutItterator).rowindex = inputX.rowindex
-End Sub
-
-sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
-			dim z as integer
-			if ubound(outputTable) < outPutItterator then
-				Redim OutputTable(outPutItterator)
-			end if
 		
-			OutputTable(outPutItterator).spatialFastighet = inputX.spatialFastighet OutputTable(outPutItterator).spatialShift = inputX.spatialShift OutputTable(outPutItterator).Fastighet_rening = inputX.Fastighet_rening OutputTable(outPutItterator).Antal_husll_rening = inputX.Antal_husll_rening
-			OutputTable(outPutItterator).Reningstyp = inputX.Reningstyp OutputTable(outPutItterator).Storlek_m2 = inputX.Storlek_m2 OutputTable(outPutItterator).kordinater = inputX.kordinater OutputTable(outPutItterator).Kommentarer = inputX.Kommentarer
-			OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
-			OutputTable(outPutItterator).utrd_datum = inputX.Utrd_datum
-							
-			redim OutputTable(outPutItterator).Anslutna_fastigheter(ubound(inputX.Anslutna_fastigheter()))
-			
-			for z=1 to ubound(inputX.Anslutna_fastigheter())
-				OutputTable(outPutItterator).Anslutna_fastigheter(z) = inputX.Anslutna_fastigheter(z)
-			next		
+		call swerefObjektCopyConstr(inputsw(x), outPutsw,x)
+	next
+exit sub
 
-			OutputTable(outPutItterator).rowIndex = inputX.rowIndex
+	Xerror:
+	print "subTablesafter|" &  error$()
+	end program
 end sub
 
 
@@ -700,6 +687,71 @@ sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as sweref
 		end if
 
 exit sub k: print error$() end program kx: print error$() end program end sub
+
+'the method should replace the objects, whichever was on the original position should be placed last in the table.
+Sub insertAt(
+				trodvdighet as trovrdighetsobjekt, 'which rows in each table that should be moved
+				enskiltTokenObjekt() as enskiltObjekt,
+				reningsTokenObjekt() as reningsObjekt,
+				swerefTokenObjekt() as swerefObjekt,
+				toInsertAt as integer) ' to which place in the table
+				
+	'for each positin provided in trovrdighetsobjekt,
+	dim originalPositionE,originalPositionS,originalPositionR as integer
+	,pOrgPlatts as string
+
+	originalPositionS = trodvdighet.fx
+	dim swerefIn(1) as swerefobjekt
+	dim swerefOut(1) as swerefobjekt
+
+	if toInsertAt <> originalPositionS then
+		'hmta vad som r p? platts
+		call swerefObjektCopyConstr(swereftokenObjekt(originalPositionS),swerefIn(),1)
+		if toInsertAt > ubound(swereftokenObjekt) then
+			redim swereftokenObjekt(toInsertAt)
+		end if
+		call swerefObjektCopyConstr(swereftokenObjekt(toInsertAt),swerefOut(),1)
+			
+		', och skriv ver med input
+		call swerefObjektCopyConstr(swerefIn(1),swereftokenObjekt(),toInsertAt)
+		call swerefObjektCopyConstr(swerefOut(1),swereftokenObjekt(),originalPositionS)
+	end if
+
+	originalPositionE = trodvdighet.ex
+
+	dim EnskiltIn(1) as enskiltObjekt
+	dim EnskiltUt(1) as enskiltObjekt
+
+	if toInsertAt <> originalPositionE then
+		'hmta vad som r p? platts, och skriv ver med input
+		call enskiltCopyConstruktor(enskiltTokenObjekt(originalPositionE),EnskiltIn(),1)
+		if toInsertAt > ubound(enskiltTokenObjekt) then
+			redim enskiltTokenObjekt(toInsertAt)
+		end if
+		
+		call enskiltCopyConstruktor(enskiltTokenObjekt(toInsertAt),EnskiltUt(),1)
+		
+		call enskiltCopyConstruktor(EnskiltIn(1),enskiltTokenObjekt(),toInsertAt)
+		call enskiltCopyConstruktor(EnskiltUt(1),enskiltTokenObjekt(),originalPositionE)
+	end if
+
+	originalPositionR = trodvdighet.rx
+	dim ReningIn(1) as reningsobjekt
+	dim ReningOut(1) as reningsobjekt
+	
+	if toInsertAt <> originalPositionR then
+		'hmta vad som r p? platts, och skriv ver med input
+		call reningObjCopyConstr(reningsTokenObjekt(originalPositionR),ReningIn(),1)
+		if toInsertAt > ubound(reningsTokenObjekt) then
+			redim reningsTokenObjekt(toInsertAt)
+		end if
+		call reningObjCopyConstr(reningsTokenObjekt(toInsertAt),ReningOut(),1)
+		
+		call reningObjCopyConstr(ReningIn(1),reningsTokenObjekt(),toInsertAt)
+		call reningObjCopyConstr(ReningOut(1),reningsTokenObjekt(),originalPositionR)
+	end if
+					
+end sub
 
 sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltTokenObjekt() as enskiltObjekt,swerefTokenObjekt() as swerefobjekt)
 
@@ -794,7 +846,7 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 	
 exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt p " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
 
-sub getAnslutna(anslutan() as string)'h?mtar ocks? gemensamhetsanl?ggningar
+sub getAnslutna(anslutan() as string)'hmtar ocks? gemensamhetsanlggningar
 	dim P as integer
 	,tempString as string
 	,anslutningsAlias as alias
@@ -809,9 +861,80 @@ sub getAnslutna(anslutan() as string)'h?mtar ocks? gemensamhetsanl?ggningar
 			end if
 		next
 	else
-		tempString = valtRening.kommentarer 'kommentarf?ltet har identifieringen
+		tempString = valtRening.kommentarer 'kommentarfltet har identifieringen
 		call gemAnslutna(tempstring,anslutan())
 		call addStringToArrayAsifSet(anslutan(),"gem,gem")
 	end if
 
+end sub
+
+
+sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
+		'inserts copy of inputX at place of outputItterator
+		if ubound(outputXTable) < outPutItterator then
+			Redim outputXTable(outPutItterator)
+		end if
+		
+		outputXTable(outPutItterator).Diarienummer = 		inputX.Diarienummer
+		outputXTable(outPutItterator).Fastighet_tillsnd = 	inputX.Fastighet_tillsnd
+		outputXTable(outPutItterator).spatialShift = 		inputX.spatialshift
+		outputXTable(outPutItterator).spatialFastighet = 	inputX.spatialFastighet
+		outputXTable(outPutItterator).Typ_byggnad = 			inputX.Typ_byggnad
+		outputXTable(outPutItterator).Antal_husll_tillsnd = inputX.Antal_husll_tillsnd
+		outputXTable(outPutItterator).Fastighet_rening = 	inputX.Fastighet_rening
+		outputXTable(outPutItterator).Typ_Slamavskiljare = 	inputX.Typ_Slamavskiljare
+		outputXTable(outPutItterator).Storlek_m3 = 			inputX.Storlek_m3
+		outputXTable(outPutItterator).Typ_rening = 			inputX.Typ_rening
+		outputXTable(outPutItterator).Storlek_m2 = 			inputX.Storlek_m2
+		outputXTable(outPutItterator).Typ_sluten_tank = 		inputX.Typ_sluten_tank
+		outputXTable(outPutItterator).Storlek__m3 = 			inputX.Storlek__m3
+		outputXTable(outPutItterator).Beslut_datum = 		inputX.Beslut_datum
+		outputXTable(outPutItterator).Utrd_datum = 		inputX.Utrd_datum
+		outputXTable(outPutItterator).Avgift = 				inputX.Avgift
+		outputXTable(outPutItterator).Tillsnd_giltigt_tom = inputX.Tillsnd_giltigt_tom
+		outputXTable(outPutItterator).Anteckningar = 		inputX.Anteckningar
+		outputXTable(outPutItterator).kordinater = 			inputX.kordinater
+		outputXTable(outPutItterator).rowindex = 			inputX.rowindex
+End Sub
+
+sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
+		'inserts copy of inputX at place of outputItterator
+		
+		if ubound(outputTable) < outPutItterator then
+			Redim outputTable(outPutItterator)
+		end if
+			
+		OutputTable(outPutItterator).FASTIGHET = inputX.FASTIGHET
+		OutputTable(outPutItterator).Fastighet_tillsnd = inputX.Fastighet_tillsnd
+		OutputTable(outPutItterator)rendenr = inputXrendenr
+		OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
+		OutputTable(outPutItterator).Status = inputX.Status
+		OutputTable(outPutItterator).Utskick1_datum = inputX.Utskick1_datum
+		OutputTable(outPutItterator).Anteckning = inputX.Anteckning
+		OutputTable(outPutItterator).utrddatum = inputX.utrddatum
+		OutputTable(outPutItterator).slammtning = inputX.slammtning
+		OutputTable(outPutItterator).Antal_byggnader = inputX.Antal_byggnader
+		OutputTable(outPutItterator).kordinater = inputX.kordinater
+		OutputTable(outPutItterator).SpatialFastighet = inputX.SpatialFastighet
+		OutputTable(outPutItterator).rowindex = inputX.rowindex
+End Sub
+
+sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
+			dim z as integer
+			if ubound(outputTable) < outPutItterator then
+				Redim OutputTable(outPutItterator)
+			end if
+		
+			OutputTable(outPutItterator).spatialFastighet = inputX.spatialFastighet OutputTable(outPutItterator).spatialShift = inputX.spatialShift OutputTable(outPutItterator).Fastighet_rening = inputX.Fastighet_rening OutputTable(outPutItterator).Antal_husll_rening = inputX.Antal_husll_rening
+			OutputTable(outPutItterator).Reningstyp = inputX.Reningstyp OutputTable(outPutItterator).Storlek_m2 = inputX.Storlek_m2 OutputTable(outPutItterator).kordinater = inputX.kordinater OutputTable(outPutItterator).Kommentarer = inputX.Kommentarer
+			OutputTable(outPutItterator).Beslut_datum = inputX.Beslut_datum
+			OutputTable(outPutItterator).utrd_datum = inputX.Utrd_datum
+							
+			redim OutputTable(outPutItterator).Anslutna_fastigheter(ubound(inputX.Anslutna_fastigheter()))
+			
+			for z=1 to ubound(inputX.Anslutna_fastigheter())
+				OutputTable(outPutItterator).Anslutna_fastigheter(z) = inputX.Anslutna_fastigheter(z)
+			next		
+
+			OutputTable(outPutItterator).rowIndex = inputX.rowIndex
 end sub
