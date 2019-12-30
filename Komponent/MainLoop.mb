@@ -65,6 +65,22 @@ sub loadSocken()
 	
 end sub
 
+sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
+	
+	if((ubound(rO.Anslutna_fastigheter())> 1)) then 'gemensam
+		uObj(ittr).Recipient =  "gem. " & 
+		iif(
+		(uObj(ittr).Besksadress_Huvudfastighet 
+		<> ro.spatialFastighet)
+		,"p�"
+		,"med")
+		& iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))
+	else
+		uObj(ittr).Recipient = iif(rO.spatialShift <> "",rO.spatialShift,eO.fastighet_rening)
+	end if
+	
+end sub
+
 sub createFastighetsTable(byval tablename as string, byval filePath as string)
 
 	onError goto noTable 
