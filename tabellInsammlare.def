@@ -6,10 +6,8 @@ declare function ReningrInteToken(x as reningsobjekt) as logical
 declare function EnskiltrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
 
 
-declare function countShiftenGenUtvald(FastighetB as string) as integer
 declare function CreateTable_reningIhopslagen as string
 declare function CreateTable_EnskiltIhopslagen as string
-declare function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
 
 declare function countDupes(byVal fastighetsBet as string) as integer
 declare function kollaBredd(values() as string) as logical
@@ -51,51 +49,16 @@ declare function EnskiltSubset(inputTable() as EnskiltObjekt,FastighetsBetInput 
 declare function swerefSubset(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
 declare function reningsSubset(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
 
-declare sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
-declare sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
-declare sub FastighetsObjToInsertStringArray(output() as string, inputx as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
 
 declare sub fetchReningByIndex(stringArray() as string,output() as reningsObjekt)
 declare sub fetchEnskiltByIndex(stringArray() as string,output() as enskiltObjekt)
 declare sub fetchSwerefByIndex(stringArray() as string,output() as swerefObjekt)
 
-declare function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
-declare function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
-declare function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
-
-
 declare function findWhereInStringArray(byVal vrde as string, array() as string) as integer 
 
 declare sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as integer)
 
-declare sub saveUtskriftsProgress(G_utskriftsObjekt() as utskriftsObjekt)
 
-Declare sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
-Declare sub huvudObjekt(uObj() as UtskriftsObjekt, it as integer)
-Declare sub samlingsobjekt(uObj() as UtskriftsObjekt,ittr as integer)
-Declare sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swerefobjekt)
-
-Declare sub renden(uObj() as UtskriftsObjekt,ittr as integer)
-Declare sub koordinater(uObj() as UtskriftsObjekt,ittr as integer)
-Declare sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
-Declare sub Anlggning(uObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
-
-Declare function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
- 
-Declare function anlggningsobjektToUtskifts(anl() as AnlggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
-
-declare function diarienummerForUtskriftsObjekt(
-	utskriftsObjekt() as utskriftsobjekt,
-	itterator as integer,
-	enskiltObjekt() as enskiltobjekt,
-	swerefObjekt() as swerefobjekt, 
-	objektid as integer
-	) as integer
-
-
-declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,swerefObjekt() as swerefobjekt,reningsobjekt() as reningsobjekt,enskiltObjekt() as enskiltobjekt, objektid as integer)
-
-declare sub anteckningKordinat(sweref as swerefobjekt,ensk as enskiltobjekt,rening as reningsobjekt ,uObj() as utskriftsobjekt, ittr as integer)
 Declare function resTabPos(byVal colName as string) as integer
 
 declare function enforceFormat(byVal inputx as string,byVal format as string,byVal lenght as integer) as string

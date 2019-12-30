@@ -1,0 +1,302 @@
+
+Type ReningsObjekt
+
+	Fastighet_rening as string
+	Antal_hushll_rening as integer
+	Reningstyp as string
+	Storlek_m2 as float
+	Beslut_datum as date
+	Utfrd_datum as date
+	Kommentarer as string
+	spatialFastighet as string
+	spatialShift as string
+	rowIndex as integer
+	kordinater as string
+	Anslutna_fastigheter() as string
+
+end Type
+
+Type SwerefObjekt
+
+	FASTIGHET as string
+	Fastighet_tillstnd as string
+	rendenr as string
+	Beslut_datum as date
+	Status as string
+	Utskick1_datum as date
+	Anteckning as string
+	utfrddatum as date
+	slamhmtning as string
+	Antal_byggnader as integer	
+	kordinater as string
+	SpatialFastighet as string
+	rowIndex as integer
+	
+end Type
+
+Type EnskiltObjekt
+
+	Diarienummer as string
+	Fastighet_tillstnd as string
+	Typ_byggnad as string
+	Antal_hushll_tillstnd as string
+	Fastighet_rening as string
+	Typ_Slamavskiljare as string
+	Storlek_m3 as float
+	Typ_rening as string
+	Storlek_m2 as float
+	Typ_sluten_tank as string
+	Storlek__m3 as float
+	Beslut_datum as date
+	Utfrd_datum as date
+	Avgift as integer
+	Tillstnd_giltigt_tom as date
+	Anteckningar as string
+	spatialShift as string
+	spatialFastighet as string
+	kordinater as string
+	rowIndex as integer
+	
+end Type
+
+Type FastighetsObjekt
+	
+	fastighet as string
+	fnr as integer
+	
+	HuvudSweref as integer
+	HuvudRening as integer
+	HuvudEnskilt as integer
+	
+	swerefObjekt as String
+	ReningsObjekt as String
+	EnskiltObjekt as String
+	
+	
+	adress as string
+	postnr as string
+	ort as string
+	kir as string
+			
+	namn as string
+	personnr as integer
+
+	adressNamn as string
+	PostNrNamn as string
+	PostortNamn as string
+	
+End Type
+
+Type UtskriftsObjekt
+	
+	trovrdighetsIndex as float
+
+	Besksadress_Adress as String
+	Besksadress_Postnr as String
+	Besksadress_Ort as String
+	Besksadress_Huvudfastighet as String
+	FNR as integer
+	 
+	Verksamhetsutvare_Namn as String
+	Verksamhetsutv_Person_orgnr as integer
+ 
+	Fakturamottagare_NAMN as String
+	Fakturamottagare_Faktura_ADRESS as String
+	Fakturamottagare_Faktura_POSTNR as String
+	Fakturamottagare_Faktura_POSTOR as String
+ 
+	Enhet as String
+	Anteckning as String
+	Aktuell_timavgift as integer
+	Timdebitering as Logical
+	Objektnamn as String
+
+	flik_Avloppsnlaggni_Boendetyp as String
+	flik_Avloppsanlggn_Byggnadsr as date
+	flik_Avloppsa_Besiktningsdatum as date
+	flik_Avloppsanlg_Beslutsdatum as date
+	Vatten as String
+  
+	Recipient as String
+
+	Inventering as String
+	Inventeringsinformation_Datum as date
+	Inventeringsinformation_Status as String
+	Bedmning as String
+  
+	fliken_Fastigheter as String
+	fliken_Fastigheter_FNR as integer
+
+	PunkttypAB as String
+	Fliken_Koordinater as String
+
+	fliken_renden as String
+
+	Anlggningskategori as String
+	besiktningdatum as date
+	beslutsdatum as date
+	Anlggningstyp as String
+	Volym_m3 as float
+	Anl_fr_EftR_TInterv_mn as integer
+	AnlF_efR_Koordinater_X_o_Y as String
+	PunkttypER as String
+	Anlggning_fr_EfterfljRText as String
+
+	Anlggningskategori_2 as String
+	Anlggning_fr_S_Anlggningstyp as String
+	Externt_Tjnsteid as String
+	text as String
+	Anlggning_fr_Slamav_Volym_m3 as float
+	
+	Anlggningskategori_3 as String
+	AnlfrEfterR_Anlggningstyp as String
+	besiktningdatum_2 as date
+	beslutsdatum_2 as date
+	Externt_Tjnsteid_2 as String
+	Volym_m3_2 as float
+
+	Objektid as integer
+	Path as String
+	Diarienummer as String
+	Lpnummer as integer
+
+	sql as string
+	reningsindex as integer
+	
+end Type
+
+Type TrovrdighetsObjekt
+	index as float
+	ex as integer
+	fx as integer
+	rx as integer
+End Type
+
+Type AnlggningsObjekt
+
+		Anlggningskategori as string '",: "Char(29)",: "Efterfljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
+		Kartpunkt as string '",: "Char(20)",:PunkttypER "Efterfljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
+		
+		besiktningdatum as date ',: "datum?-MM-DD)",: "utfrandedatum  (rening/beslut/tank)"
+		beslutsdatum as date '",: "datum?-MM-DD)",: "beslutsdatum (rening/beslut/tank)"
+		
+		Anlggningstyp as string '",: "Char(15)",: "Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) \"Klart Vatten"
+		
+		Volym_m3 as float '",: "float",: "Storlek_m2 (rening)/Storlek_m3  (Beslut)"
+		
+		Antal_hushll_rening as integer '",: "integer",: "Anl_fr_EftR_TInterv_mn (rening)"
+		
+		Koordinater as string '",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (r infiltration/markdd r begen)/(r ansluten)/(r EXTRA inventeringsinformation r begen)"
+				
+		Kommentarer as string '",: "Char(253)(ltmaxngd)",: "Anlggning_fr_EfterfljRText (rening/sweref/beslut)"
+		
+		rendenr as string '",: "integer",: " Externt Tjnsteid (beslut/tank/sweref)"
+		
+		Typ_byggnad as string '",: "Char(15)",: "Anlggning_fr_S_Anlggningstyp (beslut)"
+		
+		Status as string '",: "Char(6)",: " text (sweref)"
+		
+		Slamdispense as date '",: "datum?-MM-DD)",:AnlfrEfterR_Anlggningstyp ""
+		
+		Utskick1_datum as date '",: "datum?-MM-DD)",: "Anlggning_fr_Slamav_Volym_m3  (sweref)"
+		
+		radNummer as integer
+
+end type
+
+declare function trovrdighetsIndexer(
+	swerefobjekt as swerefobjekt,
+	reningsobjekt as reningsobjekt,
+	enskiltobjekt as enskiltobjekt
+	) as float
+Declare sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
+Declare sub huvudObjekt(uObj() as UtskriftsObjekt, it as integer)
+Declare sub samlingsobjekt(uObj() as UtskriftsObjekt,ittr as integer)
+Declare sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swerefobjekt)
+
+declare function countShiftenGenUtvald(FastighetB as string) as integer
+declare sub saveUtskriftsProgress(G_utskriftsObjekt() as utskriftsObjekt)
+
+Declare sub renden(uObj() as UtskriftsObjekt,ittr as integer)
+Declare sub koordinater(uObj() as UtskriftsObjekt,ittr as integer)
+Declare sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
+Declare sub Anlggning(uObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
+
+Declare function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
+ 
+Declare function anlggningsobjektToUtskifts(anl() as AnlggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
+
+declare function diarienummerForUtskriftsObjekt(
+	utskriftsObjekt() as utskriftsobjekt,
+	itterator as integer,
+	enskiltObjekt() as enskiltobjekt,
+	swerefObjekt() as swerefobjekt, 
+	objektid as integer
+	) as integer
+
+
+declare sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,swerefObjekt() as swerefobjekt,reningsobjekt() as reningsobjekt,enskiltObjekt() as enskiltobjekt, objektid as integer)
+
+declare sub anteckningKordinat(sweref as swerefobjekt,ensk as enskiltobjekt,rening as reningsobjekt ,uObj() as utskriftsobjekt, ittr as integer)
+
+declare function InitializeSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+declare function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+declare function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+
+declare function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
+declare function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
+declare function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
+
+declare sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+declare sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
+declare sub FastighetsObjToInsertStringArray(output() as string, inputx as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+
+
+Declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
+
+declare sub getAnslutna(anslutan() as string)
+declare function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
+
+Declare Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outPutre() as reningsObjekt,inputre() as reningsObjekt, outPutsw() as swerefObjekt,inputsw() as swerefObjekt, byVal minimumDebt as integer)
+
+
+Declare Sub genTrovrdighet(trodvdighet() as trovrdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
+
+Declare Sub insertAt(
+				trodvdighet as trovrdighetsobjekt, 'which rows in each table that should be moved
+				enskiltTokenObjekt() as enskiltObjekt,
+				reningsTokenObjekt() as reningsObjekt,
+				swerefTokenObjekt() as swerefObjekt,
+				toInsertAt as integer) ' to which place in the table
+
+Declare Sub Main
+Declare sub loadSocken()
+Declare sub processor_3PrepMutate()
+declare sub createRessultTableX(byval tablename as string, byval filePath as string)
+Declare sub processor_4Mutate()
+declare sub createFastighetsTable(byval tablename as string, byval filePath as string)
+declare sub TabToObjEnskilt(byVal nSocken as string,output() as EnskiltObjekt)
+declare sub TabToObjRening(byVal nSocken as string,output() as ReningsObjekt)
+declare Sub TabToObSweref(byVal SockenFastigheter as string,output() as swerefObjekt)
+Declare sub UobjInitizializer()
+
+declare sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
+Declare sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltsTokenObjekt() as enskiltObjekt,swerefsTokenObjekt() as swerefobjekt)
+
+declare sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObjekt,byVal outPutItterator as integer)
+declare sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,byVal outPutItterator as integer)
+declare sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
+
+declare sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() as string,OutputTable() as reningsObjekt)
+declare sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
+declare sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
+
+declare function getMain(inputString as string, output() as string) as integer
+
+declare sub utskrivningsobjektsKonstruktor(
+		sO() as swerefobjekt,
+		rO() as reningsObjekt,
+		eO() as enskiltobjekt
+	)
+	
+declare sub saveSockenProgress(socken as string)

@@ -1355,16 +1355,6 @@ sub FastighetsObjToInsertStringArray(
 
 end sub
 
-function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
-
-	dim itterator as integer
-	
-	itterator = ubound(utskriftsObjekt()) +1
-	redim UtskriftsObjekt(itterator)
-	
-	expandUtskriftsObjekt = itterator
-
-end function
 
 sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
@@ -1443,14 +1433,6 @@ sub messageEveryString(StringArray() as String)
 		Next
 	
 end sub
-
-function countShiftenGenUtvald(FastighetB as string) as integer
-	dim tempcountz as integer
-	
-	select * from Fastighet_yta where kir = fastighetB into utvaldFastighet
-	
-	countShiftenGenUtvald = countRows(utvaldFastighet)
-end function
 
 function getCOrd(byVal ColumnName as string) as string 'f?rv?ntar sig endast ett object av samma typ
 	
@@ -1597,29 +1579,30 @@ function DebuggStringEveryInt(IntArray() as integer) as string
 	
 end function
 
-
-
-
-sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
-		dim x,q,i as integer ,fastighetsObjekt as fastighetsObjekt
-'		,fastighetensReningsobjekt() as fastighetensReningsobjekt'		,fastighetensSwerefObjekt() as fastighetensSwerefObjekt'		,fastighetensEnskiltObjekt() as fastighetensEnskiltObjekt
-		
-		fastighetsObjekt.kir = fastighetsBetInput	
-		onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & chr$(34) & fastighetsBetInput & chr$(34) & " into fas" onerror goto 0 fetch first from fas			
-		fastighetsObjekt.adress = fas.adress
-		fastighetsObjekt.postnr = fas.postnr 
-		fastighetsObjekt.ort = fas.postort 
-		fastighetsObjekt.fastighet = fas.fastighet 
-		fastighetsObjekt.fnr = fas.fnr 
-		close table fas
-		
-		call saveFastighetsObjektToTable(tableName,fastighetsObjekt,fastighetensReningsobjekt(),fastighetensSwerefObjekt(),fastighetensEnskiltObjekt())
-exit sub
-
-fasSelectError:
-	print "FastighetsObjCreationSelectError" & error$()
+sub getAnslutna(anslutan() as string)'hmtar ocks? gemensamhetsanlggningar
+	dim P as integer
+	,tempString as string
+	,anslutningsAlias as alias
+	,temptext as string
 	
-End Sub
+	if(not(valtRening.anslutna_fastigheter_10 = "gem,gem")) then
+		for p=1 to 10		
+			anslutningsAlias = "valtRening.Anslutna_fastigheter_" & p
+			temptext = anslutningsAlias
+			if(temptext <> "") then
+				call addStringToArrayAsifSet(anslutan(),searchReplace(temptext,"""","'"))
+			end if
+		next
+	else
+		tempString = valtRening.kommentarer 'kommentarfltet har identifieringen
+		call gemAnslutna(tempstring,anslutan())
+		call addStringToArrayAsifSet(anslutan(),"gem,gem")
+	end if
+
+end sub
+
+
+
 
 function findWhereInStringArray(byVal v?rde as string, array() as string) as integer
 
@@ -1682,400 +1665,3 @@ queryError:
 	print "[saveFastighetsObjektToTable_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
 
 end sub
-
-sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
-
-	dim query,tablename,filePath,v?rde() as string,x as integer 
-	
-	tableName = "SockenRessultat"
-	
-	for x=1 to ubound(utskriftsObjekt)
-		call UtskriftsObjToInsertStringArray(v?rde, utskriftsObjekt(x)) 'queryError on eather "0,0,0,0,F,0,0,0,0,0,0,0,0" "Insert Into ressultat () Values ()" 
-		if(StringArrayAsString(v?rde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
-		query = generateInsertStringWithArray(tableName, v?rde) 
-		
-		onerror goto queryError 
-		run command query 
-		onerror goto 0 
-		else goto queryError end if
-	next
-	
-	
-	'call SaveAnv?ndaReningar
-			
-
-exit sub
-queryError:
-	print "[saveUtskriftsProgress_error] queryError|" & query & "Commiting table" print error$() commit table tableName resume methodEnd
-	methodEnd:
-end sub
-
-function trov?rdighetsIndexer(
-	swerefobjekt as swerefobjekt,
-	reningsobjekt as reningsobjekt,
-	enskiltobjekt as enskiltobjekt
-	) as float
-
-
-	dim trov?rdighetsIndex,tempFloat,xplan,yplan,hypoten,distans as float
-	,swerefKord(),enskiltKord() as string
-	,Et,St,Rt as logical
-	,p as integer
-	,anv?ndaReningar() as integer
-	
-	Et = Enskilt?rInteToken(enskiltObjekt)
-	St = sweref?rInteToken(swerefObjekt)
-	Rt = Rening?rInteToken(reningsobjekt)
-	
-	if(Et AND St) then			
-		if(SplitStringAtCharacter(swerefobjekt.kordinater,",",swerefKord)+SplitStringAtCharacter(enskiltobjekt.kordinater,",",enskiltKord) = 4) then
-			xplan = val(swerefKord(1)) - val(enskiltKord(1))
-			yplan = val(swerefKord(2)) - val(enskiltKord(2))
-			
-			hypoten = sqr(xplan*xplan+yplan*yplan)'hypotenusan mellan enskilt och sweref
-			distans = sqr(hypoten*hypoten)
-			
-			trov?rdighetsIndex = 1/iif(distans<>0,distans,0.1)
-		else
-			print "errorX:" & enskiltAsString(enskiltObjekt)
-			print "errorY:" & SwerefAsString(swerefObjekt)
-		end if
-		
-		trov?rdighetsindex = trov?rdighetsindex 
-		+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.?rendenr,EnskiltObjekt.Diarienummer)'om diarie nummer st?mmer mellan flagga och enskilt 1
-		+ iif(len(swerefobjekt.?rendenr)>13 OR len(EnskiltObjekt.Diarienummer)>13,-0.3,0)'om diarie ?r l?ngre ?n 13 bokst?ver -1
-	end if
-	
-	if(Rt) then
-		tempFloat = 0
-		
-		if(Et) then			
-			if XOR(ubound(ReningsObjekt.Anslutna_fastigheter()) = 0,enskiltobjekt.Fastighet_rening = "") then  'tempFloat om fastighet inte fanns i listan p? anslutna, men kan aldrig bli mer ?n 1
-				tempFloat = 0.5
-			else
-				for p=1 to ubound(ReningsObjekt.Anslutna_fastigheter())
-					if(enskiltobjekt.Fastighet_rening = ReningsObjekt.Anslutna_fastigheter(p)) then 'om n?gon av anslutna fastigheter = fastighet rening
-						tempFloat = 1
-					end if
-				next
-				
-				dim a,b,c as logical
-				
-				a = tempFloat=0
-				b = findInINTArray(reningsobjekt.rowIndex,anv?ndaReningar)
-				c = ubound(ReningsObjekt.Anslutna_fastigheter)>1
-				
-				if(a) then
-					tempFloat = tempFloat + iif(b,-9.4,iif(c,1,0))'om rening redan ?r uptagen.. och gemensamt != true = -1
-				end if
-			end if
-			
-			trov?rdighetsIndex = trov?rdighetsIndex
-			+ tempFloat			
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Fastighet_rening,ReningsObjekt.SpatialFastighet)' om det finns en rening p? fastighet_rening
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Typ_rening,ReningsObjekt.Reningstyp)'om rening p? fastighet med rening har typ rening = fastighet 1
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Storlek_m2,ReningsObjekt.storlek_m2)'om rening p? fastighet med rening har typ storlekrening = fastighet 1
-			+ IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Utf?rd_datum,ReningsObjekt.Utf?rd_datum)'om rening p? fastighet med rening har typ Utf?randedatum	 
-		end if
-		
-		if(St) then
-			trov?rdighetsIndex = trov?rdighetsIndex
-			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(swerefobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)	'1 extra po?ng om sweref ocks? matchar
-			 + IFSAMEoneDIFFRENTzeroONEBLANKhalf(enskiltobjekt.Beslut_datum,ReningsObjekt.Beslut_datum)'om rening p? fastighet med rening har typ beslutdatum
-		end if
-	end if
-	
-	trov?rdighetsIndexer = (trov?rdighetsIndex)/9 'tempFloat om fastighet inte fanns i listan p? anslutna, men kan aldrig bli mer ?n 1
-end function
-
-
-
-Sub genTrov?rdighet(tov?rdighetsObjektArray() as trov?rdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
-'return is only interested in tov?rdighetsObjektArray(1), where our return objekt will be
-	dim q,x,z,y as integer
-	
-	q = 1
-	for x=1 TO ubound(reningsTokenObjekt)
-	 	For y=1 to ubound(swerefTokenObjekt) 
-			for z=1 to ubound(enskiltTokenObjekt)
-				redim tov?rdighetsObjektArray(q)
-					tov?rdighetsObjektArray(q).index = trov?rdighetsIndexer(swerefTokenObjekt(y),reningsTokenObjekt(x),enskiltTokenObjekt(z))
-					tov?rdighetsObjektArray(q).rx = x
-					tov?rdighetsObjektArray(q).fx = y
-					tov?rdighetsObjektArray(q).ex = z
-			next next next
-			
-		dim tMax as integer
-		tMax = 0
-		
-		for x=1 to q
-			if ((x=1) or (tMax < tov?rdighetsObjektArray(x).index)) then
-				tMax = tov?rdighetsObjektArray(x).index
-				
-				tov?rdighetsObjektArray(1).rx = tov?rdighetsObjektArray(x).rx
-				tov?rdighetsObjektArray(1).fx = tov?rdighetsObjektArray(x).fx
-				tov?rdighetsObjektArray(1).ex = tov?rdighetsObjektArray(x).ex
-				tov?rdighetsObjektArray(1).index = tMax
-			end if
-		next
-end sub
-
-function ReningAsString(reningsObjekt as reningsobjekt) as String
-
-dim tempString,TempArray() as string
-,loopvar as integer
-	
-	tempString = reningsObjekt.spatialFastighet
-	& "," & reningsObjekt.spatialShift
-	& "," & reningsObjekt.Fastighet_rening
-	& "," & reningsObjekt.Antal_hush?ll_rening
-	& "," & reningsObjekt.Reningstyp
-	& "," & reningsObjekt.Storlek_m2
-	& "," & reningsObjekt.kordinater
-	& "," & reningsObjekt.Beslut_datum
-	& "," & reningsObjekt.Utf?rd_datum
-	& "," & reningsObjekt.Kommentarer
-	& "," & reningsObjekt.rowIndex
-	
-	for loopvar=1 to ubound(reningsObjekt.Anslutna_fastigheter)
-		call addStringToArrayAsifSet(TempArray,reningsObjekt.Anslutna_fastigheter(loopVar))' reference index
-	next
-		
-	ReningAsString = tempString & iif(ubound(TempArray) = 0, "",StringArrayAsString(TempArray))
-
-end function
-
-function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
-
-	dim tempstring as string
-	
-	tempstring = enskiltObjekt.Diarienummer
-	& "," & enskiltObjekt.Fastighet_tillst?nd 
-	& "," & enskiltObjekt.Typ_byggnad 
-	& "," & (enskiltObjekt.Antal_hush?ll_tillst?nd )
-	& "," & enskiltObjekt.Fastighet_rening 
-	& "," & enskiltObjekt.Typ_Slamavskiljare 
-	& "," & enskiltObjekt.Storlek_m3
-	& "," & enskiltObjekt.Typ_rening 
-	& "," & enskiltObjekt.Storlek_m2
-	& "," & enskiltObjekt.Typ_sluten_tank 
-	& "," & enskiltObjekt.Storlek__m3
-	& "," & enskiltObjekt.Beslut_datum 
-	& "," & enskiltObjekt.Utf?rd_datum 
-	& "," & enskiltObjekt.Avgift
-	& "," & enskiltObjekt.Tillst?nd_giltigt_tom 
-	& "," & enskiltObjekt.Anteckningar 
-	& "," & enskiltObjekt.spatialFastighet 
-	& "," & enskiltObjekt.spatialShift 
-	& "," & enskiltObjekt.kordinater
-	& "," & enskiltObjekt.rowindex
-enskiltAsString = tempstring
-
-end function
-
-function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
-
-	dim tempString as string
-	
-	tempString = swerefTokenObjekt.FASTIGHET
-	& "," & swerefTokenObjekt.Fastighet_tillst?nd
-	& "," & swerefTokenObjekt.?rendenr
-	& "," & swerefTokenObjekt.Beslut_datum
-	& "," & swerefTokenObjekt.Status
-	& "," & swerefTokenObjekt.Utskick1_datum
-	& "," & swerefTokenObjekt.Anteckning
-	& "," & swerefTokenObjekt.utf?rddatum
-	& "," & swerefTokenObjekt.slamh?mtning
-	& "," & swerefTokenObjekt.Antal_byggnader
-	& "," & swerefTokenObjekt.rowindex
-	
-	swerefAsString = tempstring
-end function
-
-function Rening?rInteToken(reningsTokenObjekt as reningsobjekt) as logical
-	
-'	dim tempboolean as logical
-'		
-'	tempBoolean = (",,,0,,0,,,,,0" <> ReningAsString(reningsTokenObjekt)) AND 
-'		= tempBoolean
-	Rening?rInteToken = reningsTokenObjekt.rowIndex <> 0
-
-	
-end function
-
-function Enskilt?rInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
-	
-'	dim tempbolean as logical
-'	,tempstring as string
-'	tempstring = enskiltAsString(enskiltTokenObjekt)
-'	tempbolean = tempstring <> ",,,0,,,0,,0,,0,,,0,,,,,0" AND tempstring <> ",,,,,,,,,0,0" AND 
-'		 = tempbolean
-	Enskilt?rInteToken = enskiltTokenObjekt.rowIndex <> 0
-
-end function
-
-function sweref?rInteToken(swerefTokenObjekt as swerefObjekt) as logical
-		
-	dim tempboolean as logical
-	'(",,,0,,0,,,,,0,0" <> swerefAsString(swerefTokenObjekt) AND ",,,,,,,,,0,0" <> swerefAsString(swerefTokenObjekt)) AND 
-	
-	sweref?rInteToken = swerefTokenObjekt.rowindex <> 0
-end function
-
-
-Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swerefObjekt)
-dim query as string
-,x,size as integer	
-	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
-	
-	if size > 0 then fetch first from Valtsweref
-		print SockenFastigheter & " " & size & "Valtsweref"
-		for x=1 to size
-			Redim OutputswerefObjekt(x) 
-			OutputswerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
-			OutputswerefObjekt(x).Fastighet_tillst?nd = searchReplace(Valtsweref.Fastighet_tillst?nd,"""","'")
-			if (Valtsweref.?rendenr<>"MHN") then OutputswerefObjekt(x).?rendenr = DiarieMixedToUnit(Valtsweref.?rendenr) end if
-			OutputswerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
-			OutputswerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
-			OutputswerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
-			OutputswerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
-			OutputswerefObjekt(x).utf?rddatum = Valtsweref.utf?rddatum
-			OutputswerefObjekt(x).slamh?mtning = searchReplace(Valtsweref.slamh?mtning,"""","'")
-			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
-			OutputswerefObjekt(x).kordinater = Valtsweref.koor
-			OutputswerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
-		'	onError goto rowindexError
-		'	print  Valtsweref.rowindex
-			OutputswerefObjekt(x).rowindex = Valtsweref.rowindex
-		'	print OutputswerefObjekt(x).rowindex
-		'	onError goto 0
-			fetch next from Valtsweref
-		next
-	end if
-exit sub
-rowindexError:
-	print "TabToObSweref|" & error$()
-	end program
-	
-end sub
-
-Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as enskiltObjekt)
-dim query as string
-,x,size as integer	
-			query = "select " & getColumnsOfTable_asString("enskiltIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
-			
-			fetch first from Valtenskilt
-			print SockenFastigheter & " " & size & "valtEnskilt"
-				for x=1 to size Redim OutputEnskiltObjekt(x)		
-					if (Valtenskilt.Diarienummer<>"MHN") then OutputEnskiltObjekt(x).Diarienummer = DiarieMixedToUnit(Valtenskilt.Diarienummer) end if					
-					OutputEnskiltObjekt(x).Fastighet_tillst?nd = searchReplace(Valtenskilt.Fastighet_tillst?nd,"""","'")
-					OutputEnskiltObjekt(x).spatialShift = searchReplace(Valtenskilt.spatialshift,"""","'")
-					OutputEnskiltObjekt(x).spatialFastighet = searchReplace(Valtenskilt.spatialFastighet,"""","'")
-					OutputEnskiltObjekt(x).Typ_byggnad = searchReplace(Valtenskilt.Typ_byggnad,"""","'")
-					OutputEnskiltObjekt(x).Antal_hush?ll_tillst?nd = searchReplace(Valtenskilt.Antal_hush?ll_tillst?nd,"""","'")
-					OutputEnskiltObjekt(x).Fastighet_rening = searchReplace(Valtenskilt.Fastighet_rening,"""","'")
-					OutputEnskiltObjekt(x).Typ_Slamavskiljare = searchReplace(Valtenskilt.Typ_Slamavskiljare,"""","'")
-					OutputEnskiltObjekt(x).Storlek_m3 = Valtenskilt.Storlek_m3
-					OutputEnskiltObjekt(x).Typ_rening = searchReplace(Valtenskilt.Typ_rening,"""","'")
-					OutputEnskiltObjekt(x).Storlek_m2 = Valtenskilt.Storlek_m2
-					OutputEnskiltObjekt(x).Typ_sluten_tank = searchReplace(Valtenskilt.Typ_sluten_tank,"""","'")
-					OutputEnskiltObjekt(x).Storlek__m3 = Valtenskilt.Storlek__m3
-					OutputEnskiltObjekt(x).Beslut_datum = Valtenskilt.Beslut_datum
-					OutputEnskiltObjekt(x).Utf?rd_datum = Valtenskilt.Utf?rd_datum
-					OutputEnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
-					OutputEnskiltObjekt(x).Tillst?nd_giltigt_tom = Valtenskilt.Tillst?nd_giltigt_tom
-					OutputEnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
-					OutputEnskiltObjekt(x).kordinater = Valtenskilt.koor
-					OutputEnskiltObjekt(x).rowindex = Valtenskilt.rowindex
-					
-					'OutputEnskiltObjekt(x).slamDispDat = 
-				fetch next from ValtEnskilt
-			next
-			'end program
-end sub
-
-
-
-
-function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
-		dim x,y,size as integer
-		size = ubound(inputTable)
-		y = 1
-		if size > 0 then
-	
-			for x=1 to size
-		if((inputTable(x).spatialFastighet = FastighetsBetInput) OR (inputTable(x).Fastighet_tillst?nd = FastighetsBetInput)) then
-			call enskiltCopyConstruktor(inputTable(x),outputTable(),y)
-			y = y + 1
-		end if
-	next
-			
-		end if
-	EnskiltSubsetByFasgtighet = ubound(OutputTable)
-exit function
-	CommandError: note "[ERROR] @ EnskiltSubsetByFasgtighet _" & commandString & Error$() end program
-End function
-
-function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
-
-		dim x,y,size as integer
-		
-		size = ubound(inputTable)
-		y = 1
-		if size > 0 then
-			
-			for x=1 to size
-
-				if ((inputTable(x).SpatialFastighet = FastighetsBetInput) OR (inputTable(x).fastighet = FastighetsBetInput) OR (inputTable(x).Fastighet_tillst?nd = FastighetsBetInput)) then			
-							
-						call swerefObjektCopyConstr(inputTable(x),outputTable(),y)
-					
-					y = y + 1
-				end if	
-			next
-			
-		end if
-		
-		swerefSubsetByFasgtighet = ubound(OutputTable)
-exit function
-	CommandError: note "[ERROR] @ swerefSubsetByFasgtighet _" & commandString & Error$() end program
-
-End function
-
-function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
-
-		dim x,y,z,lenght,size as integer
-		,found as logical
-		
-		size = ubound(inputTable)
-		y = 1
-		if size > 0 then
-			for x=1 to ubound(inputTable)
-	
-			 'atempting to fasten stringcompare
-				found = false
-				
-				for z=-1 to ubound(inputTable(x).Anslutna_fastigheter())
-					do case z
-						case -1 found = (inputTable(x).spatialFastighet = FastighetsBetInput)
-						case 0 found = (inputTable(x).Fastighet_rening = FastighetsBetInput)
-						case else if(len(FastighetsBetInput) = len(inputTable(x).Anslutna_fastigheter(z))) 
-						then if ((inputTable(x).Anslutna_fastigheter(z) = FastighetsBetInput)) 
-						then goto foundZ end if end if
-					End Case	
-					if found then goto foundZ end if
-				next
-							
-				if found then
-					foundZ:
-						call reningObjCopyConstr(inputTable(x),OutputTable(),y)
-				end if
-					
-				y = y + 1
-			next
-		end if
-		reningsSubsetByFasgtighet = ubound(OutputTable)
-exit function
-	CommandError: note "[ERROR] @ reningsSubsetByFasgtighet _" & commandString & Error$() end program
-End function
-

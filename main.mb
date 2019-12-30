@@ -1,4 +1,4 @@
-Ôªø
+
 Include "MapBasic.def"
 include "Menu.def"
 Include "tabellInsammlare.def"
@@ -19,11 +19,11 @@ Declare sub Do2_LoadLatestObjId()
 
 Declare sub loadTestData()
 Declare Sub Main()
-Declare sub SaveAnv√§ndaReningar 
+Declare sub SaveAnv‰ndaReningar 
 Declare sub UObjCreator()
 
 
-global G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, G_workDir,G_socken as string, G_rebuild,G_debugg as logical, G_anv√§ndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
+global G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, G_workDir,G_socken as string, G_rebuild,G_debugg as logical, G_anv‰ndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
 
 sub processor_2SockenRead
@@ -35,7 +35,7 @@ end sub
 Sub Main()
 	call loadTestData
 
-	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  'EPSG::3022 √§r RT90 0 gon, ESPG::3015 √§r sweref
+	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  'EPSG::3022 ‰r RT90 0 gon, ESPG::3015 ‰r sweref
 	
 	dim tablenames(1) as string tablenames(1) = "fastighet_yta" 'call closeAllBut(tableNames)
 
@@ -123,30 +123,30 @@ sub loadTestData()
  		insert into NameNalias (fileName,Alias) values ("Rening_mellersta.tab", "Rening_MellerstaNoIndex")
  		insert into NameNalias (fileName,Alias) values ("Enskilt_avlopp_norra.tab", "Enskilt_avlopp_NorraNoIndex")
  		insert into NameNalias (fileName,Alias) values ("Rening_norra.tab", "Rening_NorraNoIndex")
- 		insert into NameNalias (fileName,Alias) values ("Enskilt_avlopp_s√∂dra.tab", "Enskilt_avlopp_S√∂draNoIndex")
- 		insert into NameNalias (fileName,Alias) values ("Rening_s√∂dra.tab", "Rening_S√∂draNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Enskilt_avlopp_sˆdra.tab", "Enskilt_avlopp_SˆdraNoIndex")
+ 		insert into NameNalias (fileName,Alias) values ("Rening_sˆdra.tab", "Rening_SˆdraNoIndex")
  		insert into NameNalias (fileName,Alias) values ("Fastighet_yta.tab", "fastighet_ytaORg")
 		
- 		insert into NameNalias (fileName) values ("Lokalt_omh√§ndertagande_slam.TAB")
- 		insert into NameNalias (fileName) values ("AKEB√ÑCKFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("Lokalt_omh‰ndertagande_slam.TAB")
+ 		insert into NameNalias (fileName) values ("AKEBƒCKFastigheter.TAB")
  		insert into NameNalias (fileName) values ("ALAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("ALSKOGFastigheter.TAB")
  		insert into NameNalias (fileName) values ("ALVAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("ANGAFastigheter.TAB")
 		insert into NameNalias (fileName) values ("Anteckningar.TAB")
- 		insert into NameNalias (fileName) values ("Anv√§ndaReningarsHash.tab")
+ 		insert into NameNalias (fileName) values ("Anv‰ndaReningarsHash.tab")
  		insert into NameNalias (fileName) values ("ARDREFastigheter.TAB")
  		insert into NameNalias (fileName) values ("ATLINGBOFastigheter.TAB")
  		insert into NameNalias (fileName) values ("BARAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("BARLINGBOFastigheter.TAB")
 		insert into NameNalias (fileName) values ("bilder.TAB")
- 		insert into NameNalias (fileName) values ("BJ√ñRKEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BJ÷RKEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("BOGEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("BROFastigheter.TAB")
  		insert into NameNalias (fileName) values ("BUNGEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("BURSFastigheter.TAB")
  		insert into NameNalias (fileName) values ("BUTTLEFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("B√ÑLFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("BƒLFastigheter.TAB")
  		insert into NameNalias (fileName) values ("DALHEMFastigheter.TAB")
  		insert into NameNalias (fileName) values ("EKEBYFastigheter.TAB")
  		insert into NameNalias (fileName) values ("EKEFastigheter.TAB")
@@ -159,14 +159,14 @@ sub loadTestData()
  		insert into NameNalias (fileName) values ("FLERINGEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("FOLEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("FOLLINGBOFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("FR√ñJELFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("F√ÖR√ñFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("FR÷JELFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("F≈R÷Fastigheter.TAB")
  		insert into NameNalias (fileName) values ("GAMMELGARNFastigheter.TAB")
  		insert into NameNalias (fileName) values ("GANTHEMFastigheter.TAB")
  		insert into NameNalias (fileName) values ("GARDEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("GERUMFastigheter.TAB")
  		insert into NameNalias (fileName) values ("GOTHEMFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("GR√ñTLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("GR÷TLINGBOFastigheter.TAB")
  		insert into NameNalias (fileName) values ("GULDRUPEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("HABLINGBOFastigheter.TAB")
  		insert into NameNalias (fileName) values ("HALLAFastigheter.TAB")
@@ -179,27 +179,27 @@ sub loadTestData()
  		insert into NameNalias (fileName) values ("HEJNUMFastigheter.TAB")
  		insert into NameNalias (fileName) values ("HELLVIFastigheter.TAB")
  		insert into NameNalias (fileName) values ("HEMSEFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("HOGR√ÑNFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("H√ñRSNEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("HOGRƒNFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("H÷RSNEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("KLINTEFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("KR√ÑKLINGBOFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("K√ÑLLUNGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("KRƒKLINGBOFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("KƒLLUNGEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LAUFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LEVIDEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LINDEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LOJSTAFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("Lokalt_omh√§ndertagande_slam.TAB")
+ 		insert into NameNalias (fileName) values ("Lokalt_omh‰ndertagande_slam.TAB")
  		insert into NameNalias (fileName) values ("LOKRUMEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LUMMELUNDAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("LYEFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("L√ÑRBROFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("LƒRBROFastigheter.TAB")
  		insert into NameNalias (fileName) values ("MARTEBOFastigheter.TAB")
-		insert into NameNalias (fileName) values ("Mer_√§n_en_fastighet.TAB")
+		insert into NameNalias (fileName) values ("Mer_‰n_en_fastighet.TAB")
 		insert into NameNalias (fileName) values ("MhkToVision.TAB")
- 		insert into NameNalias (fileName) values ("M√ÑSTERBYFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("MƒSTERBYFastigheter.TAB")
  		insert into NameNalias (fileName) values ("NORRLANDAFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("N√ÑRFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("N√ÑSFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("NƒRFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("NƒSFastigheter.TAB")
  		insert into NameNalias (fileName) values ("OTHEMFastigheter.TAB")
  		insert into NameNalias (fileName) values ("ROMAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("RONEFastigheter.TAB")
@@ -211,27 +211,27 @@ sub loadTestData()
  		insert into NameNalias (fileName) values ("SPROGEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("STENKUMLAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("STENKYRKAFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("ST√ÖNGAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("ST≈NGAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("SUNDREFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("TINGST√ÑDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("TINGSTƒDEFastigheter.TAB")
  		insert into NameNalias (fileName) values ("TOFTAFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("TR√ÑKUMLAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("TRƒKUMLAFastigheter.TAB")
 		insert into NameNalias (fileName) values ("UrsprungsFastigheterMedSockenOc.TAB")
  		insert into NameNalias (fileName) values ("VALLFastigheter.TAB")
  		insert into NameNalias (fileName) values ("VALLSTENAFastigheter.TAB")
  		insert into NameNalias (fileName) values ("VAMLINGBOFastigheter.TAB")
  		insert into NameNalias (fileName) values ("VIKLAUFastigheter.TAB")
  		insert into NameNalias (fileName) values ("VISBYFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("V√ÑNGEFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("V√ÑSKINDEFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("V√ÑSTERGARNFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("V√ÑSTERHEJDEFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("V√ÑTEFastigheter.TAB")
-		insert into NameNalias (fileName) values ("√ÑrendenMedIngenEllerFelFastighet2.TAB")
- 		insert into NameNalias (fileName) values ("√ñJAFastigheter.TAB")
- 		insert into NameNalias (fileName) values ("√ñSTERGARNFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VƒNGEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VƒSKINDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VƒSTERGARNFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VƒSTERHEJDEFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("VƒTEFastigheter.TAB")
+		insert into NameNalias (fileName) values ("ƒrendenMedIngenEllerFelFastighet2.TAB")
+ 		insert into NameNalias (fileName) values ("÷JAFastigheter.TAB")
+ 		insert into NameNalias (fileName) values ("÷STERGARNFastigheter.TAB")
  				
- 		insert into NameNalias (fileName,NonMandatory) values ("AKEB√ÑCKressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("AKEBƒCKressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("ALAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("ALSKOGressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("ALVAressultat.TAB","T")
@@ -240,13 +240,13 @@ sub loadTestData()
  		insert into NameNalias (fileName,NonMandatory) values ("ATLINGBOressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("BARAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("BARLINGBOressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("BJ√ñRKEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BJ÷RKEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("BOGEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("BROressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("BUNGEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("BURSressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("BUTTLEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("B√ÑLressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("BƒLressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("DALHEMressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("distriktsindelning.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("EKEBYressultat.TAB","T")
@@ -260,14 +260,14 @@ sub loadTestData()
  		insert into NameNalias (fileName,NonMandatory) values ("FLERINGEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("FOLEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("FOLLINGBOressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("FR√ñJELressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("F√ÖR√ñressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("FR÷JELressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("F≈R÷ressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("GAMMELGARNressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("GANTHEMressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("GARDEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("GERUMressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("GOTHEMressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("GR√ñTLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("GR÷TLINGBOressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("GULDRUPEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("HABLINGBOressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("HALLAressultat.TAB","T")
@@ -280,11 +280,11 @@ sub loadTestData()
  		insert into NameNalias (fileName,NonMandatory) values ("HEJNUMressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("HELLVIressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("HEMSEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("HOGR√ÑNressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("H√ñRSNEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("HOGRƒNressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("H÷RSNEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("KLINTEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("KR√ÑKLINGBOressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("K√ÑLLUNGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("KRƒKLINGBOressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("KƒLLUNGEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("LAUressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("LEVIDEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("LINDEressultat.TAB","T")
@@ -292,12 +292,12 @@ sub loadTestData()
  		insert into NameNalias (fileName,NonMandatory) values ("LOKRUMEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("LUMMELUNDAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("LYEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("L√ÑRBROressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("LƒRBROressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("MARTEBOressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("M√ÑSTERBYressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("MƒSTERBYressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("NORRLANDAressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("N√ÑRressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("N√ÑSressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("NƒRressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("NƒSressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("OTHEMressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("ROMAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("RONEressultat.TAB","T")
@@ -308,23 +308,23 @@ sub loadTestData()
  		insert into NameNalias (fileName,NonMandatory) values ("SPROGEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("STENKUMLAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("STENKYRKAressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("ST√ÖNGAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("ST≈NGAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("SUNDREressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("TINGST√ÑDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("TINGSTƒDEressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("TOFTAressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("TR√ÑKUMLAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("TRƒKUMLAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("VALLressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("VALLSTENAressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("VAMLINGBOressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("VIKLAUressultat.TAB","T")
  		insert into NameNalias (fileName,NonMandatory) values ("VISBYressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("V√ÑNGEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("V√ÑSKINDEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("V√ÑSTERGARNressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("V√ÑSTERHEJDEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("V√ÑTEressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("√ñJAressultat.TAB","T")
- 		insert into NameNalias (fileName,NonMandatory) values ("√ñSTERGARNressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VƒNGEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VƒSKINDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VƒSTERGARNressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VƒSTERHEJDEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("VƒTEressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("÷JAressultat.TAB","T")
+ 		insert into NameNalias (fileName,NonMandatory) values ("÷STERGARNressultat.TAB","T")
  		
  		commit table NameNalias
 End Sub
@@ -345,7 +345,7 @@ sub Do2_LoadLatestObjId()
 			query = "select max(objektid) " & " from " & tempstring & " " & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
 			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then	
 				call closeSingleTable("LatestObjectID")	
-				select * from LatestObjectX into LatestObjectID	call g√∂rTillBastabell("LatestObjectID")	else
+				select * from LatestObjectX into LatestObjectID	call gˆrTillBastabell("LatestObjectID")	else
 				call closeSingleTable("LatestObjectX") end if onError goto 0
 		else
 			tempstring = socknarOfiltrerade.SockenX
@@ -358,31 +358,31 @@ sub Do2_LoadLatestObjId()
 
 	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
 
-	call g√∂rTillBasTabell("sockenTabell")
+	call gˆrTillBasTabell("sockenTabell")
 end sub
 
-sub SaveAnv√§ndaReningar
-	'sparar G_anv√§ndaReningar 'print Format$((tableInfo(Anv√§ndaReningarsHash,tab_info_nRows)/tableInfo(ArrayTable,tab_info_nRows)), "%") & " success save anv√§nda reningar" 't√∂mmer utskriftobjekt arrayn
+sub SaveAnv‰ndaReningar
+	'sparar G_anv‰ndaReningar 'print Format$((tableInfo(Anv‰ndaReningarsHash,tab_info_nRows)/tableInfo(ArrayTable,tab_info_nRows)), "%") & " success save anv‰nda reningar" 'tˆmmer utskriftobjekt arrayn
 	dim x as integer
 	
-	if ubound(G_anv√§ndaReningar) <> 0 then
-		Create Table "ArrayTable" (F√§lt1 Integer) file TempFileName$("") TYPE NATIVE Charset "WinDOwsLatin1"
+	if ubound(G_anv‰ndaReningar) <> 0 then
+		Create Table "ArrayTable" (F‰lt1 Integer) file TempFileName$("") TYPE NATIVE Charset "WinDOwsLatin1"
 		
-		for x=1 to ubound(G_anv√§ndaReningar) Insert Into ArrayTable Values (G_anv√§ndaReningar(x)) next
+		for x=1 to ubound(G_anv‰ndaReningar) Insert Into ArrayTable Values (G_anv‰ndaReningar(x)) next
 		
-		call closeSingleTable("Anv√§ndaReningarsHash") 
+		call closeSingleTable("Anv‰ndaReningarsHash") 
 		onError goto queryError
 		dim query as string
-		query = "select Anslutna_fastigheter_1,CentroidY(Obj),CentroidX(obj) from reningIhopslagen where rowIndex = any (select Col1 from ArrayTable) into Anv√§ndaReningarsHash"
+		query = "select Anslutna_fastigheter_1,CentroidY(Obj),CentroidX(obj) from reningIhopslagen where rowIndex = any (select Col1 from ArrayTable) into Anv‰ndaReningarsHash"
 		run command query
 		onError goto 0
 		
-		commit table Anv√§ndaReningarsHash as ApplicationDirectory$() & "Anv√§ndaReningarsHash.tab" drop table ArrayTable  print "DOne!"
+		commit table Anv‰ndaReningarsHash as ApplicationDirectory$() & "Anv‰ndaReningarsHash.tab" drop table ArrayTable  print "DOne!"
 	else
 		print "noReningar to save"
 	end if
 
-exit sub queryError: print "[ERROR_SaveAnv√§ndaReningar] " & error$() end sub
+exit sub queryError: print "[ERROR_SaveAnv‰ndaReningar] " & error$() end sub
 
 
 
@@ -391,15 +391,15 @@ sub huvuDObjekt(uObj() as UtskriftsObjekt, it as integer)
 	dim fastighetsObjekt as alias
 	
 	fastighetsObjekt = G_socken & "fastighetsObjekt.adress" 
- 	uObj(it).Bes√∂ksadress_Adress = fastighetsObjekt
+ 	uObj(it).Besˆksadress_Adress = fastighetsObjekt
  	fastighetsObjekt = G_socken & "fastighetsObjekt.postnr" 
-	uObj(it).Bes√∂ksadress_Postnr = fastighetsObjekt
+	uObj(it).Besˆksadress_Postnr = fastighetsObjekt
 	fastighetsObjekt = G_socken & "fastighetsObjekt.ort" 
-	uObj(it).Bes√∂ksadress_Ort = fastighetsObjekt
+	uObj(it).Besˆksadress_Ort = fastighetsObjekt
 	fastighetsObjekt = G_socken & "fastighetsObjekt.fastighet" 
-	uObj(it).Bes√∂ksadress_Huvudfastighet = FindCharTurncStringByPos(">",fastighetsObjekt)
+	uObj(it).Besˆksadress_Huvudfastighet = FindCharTurncStringByPos(">",fastighetsObjekt)
 
-	uObj(it).Objektnamn = uObj(it).Bes√∂ksadress_Huvudfastighet
+	uObj(it).Objektnamn = uObj(it).Besˆksadress_Huvudfastighet
 
 	fastighetsObjekt = G_socken & "fastighetsObjekt.fnr"
 	uObj(it).FNR = fastighetsObjekt
@@ -410,14 +410,14 @@ sub huvuDObjekt(uObj() as UtskriftsObjekt, it as integer)
 	
 end sub
 
-sub Avloppsanl√§ggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
+sub Avloppsanl‰ggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
 
-	'uObj(ittr).flik_Avlopps√§nlaggni_Boendetyp = eO.Typ_byggnad
-	uObj(ittr).flik_Avloppsanl√§ggn_Byggnads√•r = eO.Tillst√•nd_giltigt_tom
-	uObj(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utf√∂rd_datum
-	uObj(ittr).flik_Avloppsanl√§g_Beslutsdatum = eO.Beslut_datum
-	uObj(ittr).Vatten = eO.Antal_hush√•ll_tillst√•nd
-	'diarienummer l√§ggs direkt i √Ñrenden
+	'uObj(ittr).flik_Avlopps‰nlaggni_Boendetyp = eO.Typ_byggnad
+	uObj(ittr).flik_Avloppsanl‰ggn_ByggnadsÂr = eO.TillstÂnd_giltigt_tom
+	uObj(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utfˆrd_datum
+	uObj(ittr).flik_Avloppsanl‰g_Beslutsdatum = eO.Beslut_datum
+	uObj(ittr).Vatten = eO.Antal_hushÂll_tillstÂnd
+	'diarienummer l‰ggs direkt i ƒrenden
 	'uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"SlamVol:",eO.Storlek_m3)
 	'uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"SlamTyp:",
 	'iif((len(eO.Typ_Slamavskiljare) > 18),right$(eO.Typ_Slamavskiljare,len(eO.Typ_Slamavskiljare)-18),eO.Typ_Slamavskiljare))
@@ -431,13 +431,13 @@ sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swer
 	'	 "Inventeringsinformation","Bed?mning",: "Char(15)",: "?rendenr (sweref)"': "Alla fastigheter som n?mns p? alla anl?ggningar som ligger huvudfastigheten (objektet)", 
  
 		'har sweref
-		if(sweref√§rInteToken(sO)) then
+		if(sweref‰rInteToken(sO)) then
 			uObj(ittr).Inventering = "klart Vatten"
 		end if
 		
 		uObj(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
 		uObj(ittr).Inventeringsinformation_Status = sO.Status
-		uObj(ittr).Bed√∂mning = sO.√§rendenr
+		uObj(ittr).Bedˆmning = sO.‰rendenr
 
 End Sub
 
@@ -446,9 +446,9 @@ sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt
 	if((ubound(rO.Anslutna_fastigheter())> 1)) then 'gemensam
 		uObj(ittr).Recipient =  "gem. " & 
 		iif(
-		(uObj(ittr).Bes√∂ksadress_Huvudfastighet 
+		(uObj(ittr).Besˆksadress_Huvudfastighet 
 		<> ro.spatialFastighet)
-		,"p√•"
+		,"pÂ"
 		,"med")
 		& iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))
 	else
@@ -470,31 +470,31 @@ function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
 
 end function
 
-function anl√§ggningsobjektToUtskifts(anl() as Anl√§ggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
+function anl‰ggningsobjektToUtskifts(anl() as Anl‰ggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
 dim x,q as integer
 
 	for x=1 to ubound(anl)
 		ittr = ittr + 1 
 		redim uObj(ittr)
-		uObj(ittr).Anl√§ggningskategori = anl(x).Anl√§ggningskategori 
+		uObj(ittr).Anl‰ggningskategori = anl(x).Anl‰ggningskategori 
 		uObj(ittr).PunkttypER = anl(x).Kartpunkt
 		uObj(ittr).besiktningdatum = anl(x).besiktningdatum
 		uObj(ittr).beslutsdatum = anl(x).beslutsdatum 
-		uObj(ittr).Anl√§ggningstyp = anl(x).Anl√§ggningstyp 
+		uObj(ittr).Anl‰ggningstyp = anl(x).Anl‰ggningstyp 
 		uObj(ittr).Volym_m3 = anl(x).Volym_m3 		
-		uObj(ittr).Anl_f√∂r_EftR_T√∂Interv_m√•n = anl(x).Antal_hush√•ll_rening 		
+		uObj(ittr).Anl_fˆr_EftR_TˆInterv_mÂn = anl(x).Antal_hushÂll_rening 		
 		uObj(ittr).AnlF_efR_Koordinater_X_o_Y = anl(x).Koordinater 				
-		uObj(ittr).Anl√§ggning_f√∂r_Efterf√∂ljRText = anl(x).Kommentarer 		
-		uObj(ittr).Externt_Tj√§nsteid  = anl(x).√§rendenr 		
-		uObj(ittr).Anl√§ggning_f√∂r_S_Anl√§ggningstyp = anl(x).Typ_byggnad 		
+		uObj(ittr).Anl‰ggning_fˆr_EfterfˆljRText = anl(x).Kommentarer 		
+		uObj(ittr).Externt_Tj‰nsteid  = anl(x).‰rendenr 		
+		uObj(ittr).Anl‰ggning_fˆr_S_Anl‰ggningstyp = anl(x).Typ_byggnad 		
 		uObj(ittr).text = anl(x).Status 		
-		uObj(ittr).Anlf√∂rEfterR_Anl√§ggningstyp = anl(x).Slamdispense 		
-		uObj(ittr).Anl√§ggning_f√∂r_Slamav_Volym_m3 = anl(x).Utskick1_datum 	
+		uObj(ittr).AnlfˆrEfterR_Anl‰ggningstyp = anl(x).Slamdispense 		
+		uObj(ittr).Anl‰ggning_fˆr_Slamav_Volym_m3 = anl(x).Utskick1_datum 	
 		uObj(ittr).reningsindex = anl(x).radnummer
 		uObj(ittr).objektid = G_senastObjectID
 	next
 	
-	anl√§ggningsobjektToUtskifts = ubound(anl)
+	anl‰ggningsobjektToUtskifts = ubound(anl)
 end function
 
 function diarienummerForUtskriftsObjekt(
@@ -504,7 +504,7 @@ function diarienummerForUtskriftsObjekt(
 		swerefObjekt() as swerefobjekt, 
 		objektid as integer
 		) as integer
-		dim √§rendennr(),tempDirty() as string
+		dim ‰rendennr(),tempDirty() as string
 		,x,returnInteger as integer
 		
 	for x=1 to ubound(enskiltObjekt)
@@ -512,18 +512,18 @@ function diarienummerForUtskriftsObjekt(
 	next
 	
 	for x=1 to ubound(swerefObjekt)
-		call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).√Ñrendenr) 
+		call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).ƒrendenr) 
 	next	
 		
 	for x=1 to ubound(tempDirty)
-		call addStringToArrayAsifSet(√§rendennr,DiarieMixedToUnit(tempDirty(x)))
+		call addStringToArrayAsifSet(‰rendennr,DiarieMixedToUnit(tempDirty(x)))
 	next
 		
-	for x = 1 to ubound(√§rendennr)
-		if (√§rendennr(x) <> "MHN") then
+	for x = 1 to ubound(‰rendennr)
+		if (‰rendennr(x) <> "MHN") then
 			itterator = itterator + 1
 			redim utskriftsobjekt(itterator)
-			utskriftsobjekt(itterator).fliken_√Ñrenden = √§rendennr(x)
+			utskriftsobjekt(itterator).fliken_ƒrenden = ‰rendennr(x)
 			utskriftsobjekt(itterator).Objektid = objektid
 			
 			returnInteger = returnInteger + 1 
@@ -533,189 +533,3 @@ function diarienummerForUtskriftsObjekt(
 	diarienummerForUtskriftsObjekt = returnInteger
 end function
 
-sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,swerefObjekt() as swerefobjekt,reningsobjekt() as reningsobjekt,enskiltObjekt() as enskiltobjekt, objektid as integer)
-	onError goto underskriptsFel	
-	dim antal,x,nt,y as integer,allaFastigheter(),tempDirty() as string,fastighetsobjekt as fastighetsobjekt
-	
-	call addStringToArrayAsifSet(tempDirty(),fastighetsobjekt.kir)
-
-	for x=1 to 	ubound(enskiltObjekt)
-		call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).Fastighet_rening)
-		call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).spatialFastighet)
-		call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).Fastighet_tillst√•nd)
-	next
-	
-	for x=1 to 	ubound(SwerefObjekt)
-		call addStringToArrayAsifSet(tempDirty(),SwerefObjekt(x).FASTIGHET)
-	next
-	
-	for y=1 to 	ubound(reningsobjekt)
-		call addStringToArrayAsifSet(tempDirty(),reningsobjekt(y).spatialFastighet)
-		call addStringToArrayAsifSet(tempDirty(),reningsobjekt(y).Fastighet_rening)
-			
-		for x=1 to ubound(reningsobjekt(y).Anslutna_fastigheter)
-			call addStringToArrayAsifSet(tempDirty(),reningsobjekt(y).Anslutna_fastigheter(x))
-		next
-	next
-	
-	for x=1 to ubound(tempDirty)
-		call addStringToArrayAsifSet(allaFastigheter(),FindCharTurncStringByPos(">",FindCharTurncStringByPos("<",tempDirty(x))))
-	next
-		
-	antal = ubound(allaFastigheter)
-	
-	if antal <> 0 then
-		for x=1 to antal
-			nt = itterator+x-1
-			If allaFastigheter(x) <> "" Then
-				redim utskriftsobjekt(nt) utskriftsobjekt(nt).objektId = objektid
-				utskriftsobjekt(nt).fliken_Fastigheter = allaFastigheter(x) 
-			End If
-		next
-	end if
-
-	onError goto 0
-exit sub underskriptsFel: note error$() end program end sub
-		
-sub Anl√§ggning(anlObj() as anl√§ggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
-		
-	 'metoden skall l√§gga till anl√§ggningar, s√• som tank, etc utefter om det finns fler √§n ett av varje av dessa, ifall av 0 √§r det inte mer √§n att de blir toma ytor.
-	 dim x,enskilt,sweref,rening as integer
-	 ,antal as integer
-	 enskilt = ubound(eO)
-	 sweref = ubound(sO)
-	 rening = ubound(rO)
-	 antal = 0
-	 
-	 if enskilt >= 1 then
-	 	for x=1 to enskilt
-	 		if eO(x).rowindex <> 0 then
-		 		'anlObj(antal).Objektnamn = iif(sO.fastighet_tillst√•nd <> "",sO.fastighet_tillst√•nd,fastighetsObjekt.fastighet) & " " & sO.Status
-				antal = antal + 1
-				redim anlObj(antal)
-				anlObj(antal).Kartpunkt = "Ansluten byggnad"
-				anlObj(antal).Anl√§ggningskategori = x & " Slamavskiljare"
-				anlObj(antal).Anl√§ggningstyp = eO(x).Typ_Slamavskiljare
-				anlObj(antal).besiktningdatum = eO(x).Utf√∂rd_datum
-				anlObj(antal).beslutsdatum = eO(x).Beslut_datum
-				anlObj(antal).Kommentarer = textAppend(eO(x).Anteckningar,"rening p√•:", eO(x).fastighet_rening)
-				anlObj(antal).Volym_m3 = eO(x).Storlek_m3
-				anlObj(antal).Koordinater = eO(x).kordinater
-				anlObj(antal).radnummer = eO(x).rowindex
-				anlObj(antal).√§rendenr =  DiarieUtanBokst√§ver(DiarieMixedToUnit(eO(x).Diarienummer))
-				anlObj(antal).Typ_byggnad = eO(x).Typ_byggnad
-			end if
-	 	next
-	 end if
-	 
-	 if enskilt >= 1 then
-	 	for x=1 to enskilt
-	 		if eO(x).rowindex <> 0 then
-			 	if((eO(x).Typ_sluten_tank <> "0" and eO(x).Typ_sluten_tank <> "" and eO(x).Typ_sluten_tank <> "-")) then
-			 		antal = antal + 1
-					redim anlObj(antal)
-					anlObj(antal).Kartpunkt = "Tank"
-					anlObj(antal).Anl√§ggningskategori = x & " Tank"
-					anlObj(antal).Anl√§ggningstyp = eO(x).Typ_sluten_tank
-					anlObj(antal).besiktningdatum = eO(x).Utf√∂rd_datum
-					anlObj(antal).beslutsdatum = eO(x).Beslut_datum
-					anlObj(antal).Volym_m3 = eO(x).Storlek__m3
-					anlObj(antal).radnummer = eO(x).rowindex
-					anlObj(antal).√§rendenr =  DiarieUtanBokst√§ver(DiarieMixedToUnit(eO(x).Diarienummer))
-				end if
-			end if
-		next
-	end if
-	
-	 if rening >= 1 then
-		for x=1 to rening
-			if rO(x).rowindex <> 0 then
-			 	'if rening is located here, or otherwise
-			 	'have to make sure we distinguish unique and non unique references
-				antal = antal + 1
-				redim anlObj(antal)
-			 	anlObj(antal).Kartpunkt = "Efterf√∂ljande rening"
-				anlObj(antal).Anl√§ggningskategori = x & " Efterf√∂ljande rening"		 
-	
-				anlObj(antal).Antal_hush√•ll_rening = rO(x).Antal_hush√•ll_rening
-				anlObj(antal).Anl√§ggningstyp = rO(x).Reningstyp
-				anlObj(antal).besiktningdatum = rO(x).Utf√∂rd_datum
-				anlObj(antal).beslutsdatum = rO(x).Beslut_datum
-				anlObj(antal).Kommentarer = textAppend(rO(x).Kommentarer,"ansl|",reningsfastigheterAsString(rO(x)))
-				anlObj(antal).Volym_m3 = rO(x).Storlek_m2
-				anlObj(antal).Koordinater = rO(x).kordinater
-				anlObj(antal).radnummer = rO(x).rowindex
-				
-			end if
-		next
-	end if
-	
-	if sweref >= 1 then
-		for x=1 to sweref
-			if sO(x).rowindex <> 0 then
-				antal = antal + 1
-				redim anlObj(antal)
-				anlObj(antal).Kartpunkt = "Extra inventeringsinformation"
-				anlObj(antal).Anl√§ggningskategori = x & " Extra inventeringsinformation"
-				anlObj(antal).Utskick1_datum  = sO(x).Utskick1_datum
-				anlObj(antal).Status = sO(x).Status
-				anlObj(antal).√§rendenr = sO(x).√§rendenr
-				anlObj(antal).Koordinater = sO(x).kordinater
-				anlObj(antal).radnummer = sO(x).rowindex
-				anlObj(antal).√§rendenr =  DiarieUtanBokst√§ver(DiarieMixedToUnit(sO(x).√Ñrendenr))
-			end if
-		next
-	end if
-	 
-	 
-   end sub
-   
-
-
-
-function textAppend(byVal initial as string,byVal prefix as string,byVal  appendant as string) as string
-
-	initial = rtrim$(ltrim$(initial))
-	appendant = rtrim$(ltrim$(appendant))
-	prefix = rtrim$(ltrim$(prefix))
-	
-	if appendant = "0" then
-		prefix = " " & prefix & "?" & " "
-	else if len(appendant) < 2 then
-		prefix = " "
-		else
-		prefix = " " & prefix & " "
-		end if
-		
-	end if
-	
-	textAppend = rtrim$(ltrim$(initial & prefix & appendant))
-
-end function
-
-sub anteckningKordinat(sweref as swerefobjekt,ensk as enskiltobjekt,rening as reningsobjekt ,uObj() as utskriftsobjekt, ittr as integer)
-   
-   		if (sweref.rowindex <> 0) then		
-		 	if (ensk.rowindex <> 0) then
-				uObj(ittr).Anteckning = textAppend(textAppend(uObj(ittr).Anteckning,"inv|",sweref.Anteckning),"Bes|",ensk.Anteckningar)
-				uObj(ittr).Fliken_Koordinater = ensk.kordinater
-			else
-		 		uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"inv|",sweref.Anteckning)
-		 		uObj(ittr).Fliken_Koordinater = sweref.kordinater
-		 	end if
-		 	uObj(ittr).PunkttypAB = "inventeringsinformation"
-		else  
-			if (ensk.rowindex <> 0) then
-				uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"Bes|",ensk.Anteckningar)
-				uObj(ittr).Fliken_Koordinater = ensk.kordinater
-				uObj(ittr).PunkttypAB = "Ansluten byggnad"
-			else
-				if (rening.rowindex <> 0) then
-					uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"Ren|",rening.Kommentarer)
-					uObj(ittr).Fliken_Koordinater = rening.kordinater
-					uObj(ittr).PunkttypAB = "Efterf√∂ljande rening"
-				end if
-			end if
-		end if
-   
-end sub
