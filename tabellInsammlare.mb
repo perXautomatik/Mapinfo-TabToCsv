@@ -1390,26 +1390,3 @@ sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as int
 	end if
 	
 end sub
-
-sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
-
-	dim query,filePath,v?rde() as string
-	
-	call FastighetsObjToInsertStringArray(v?rde,inputx,ReningsObjekt(),SwerefObjekt(),EnskiltObjekt())
-		if(StringArrayAsString(v?rde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
-			query = generateInsertStringWithArray(tableName, v?rde)
-	
-			onerror goto queryError
-				run command query onerror goto 0 
-		else goto queryError end if
-
-	
-	commit table tableName
-	'call SaveAnv?ndaReningar
-			
-	methodEnd:
-exit sub
-queryError:
-	print "[saveFastighetsObjektToTable_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
-
-end sub

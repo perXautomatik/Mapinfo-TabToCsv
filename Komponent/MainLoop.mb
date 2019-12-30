@@ -1023,6 +1023,20 @@ exit sub underskriptsFel: note error$()
 end program
 end sub
 	
+
+function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
+
+	dim tempString,TempArray() as string
+	,loopvar as integer
+			
+	for loopvar=1 to ubound(reningsObjekt.Anslutna_fastigheter)
+		call addStringToArrayAsifSet(TempArray,reningsObjekt.Anslutna_fastigheter(loopVar))' reference index
+	next
+		
+	reningsfastigheterAsString = iif(ubound(TempArray) = 0, "",StringArrayAsString(TempArray))
+
+end function
+
 sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
 		
 	 'metoden skall lgga till anlggningar, s som tank, etc utefter om det finns fler n ett av varje av dessa, ifall av 0 r det inte mer n att de blir toma ytor.
