@@ -213,6 +213,12 @@ declare function trovrdighetsIndexer(
 	enskiltobjekt as enskiltobjekt
 	) as float
 
+
+declare function InitializeSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+declare function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+declare function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+
+
 Declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 
 declare sub getAnslutna(anslutan() as string)
@@ -753,6 +759,34 @@ Sub insertAt(
 					
 end sub
 
+
+function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(reningsobjekt)
+	
+	if(storlek = 0 OR intx = 0) then
+		redim reningsTokenObjekt(1)
+		reningsTokenObjekt(1).spatialFastighet = ""
+		reningsTokenObjekt(1).spatialShift = ""
+		reningsTokenObjekt(1).Fastighet_rening = ""
+		reningsTokenObjekt(1).Antal_hushll_rening = 0
+		reningsTokenObjekt(1).Reningstyp = ""
+		reningsTokenObjekt(1).Storlek_m2 = 0
+		reningsTokenObjekt(1).kordinater = ""
+		reningsTokenObjekt(1).Beslut_datum = ""
+		reningsTokenObjekt(1).Utfrd_datum = ""
+		reningsTokenObjekt(1).Kommentarer = ""
+		reningsTokenObjekt(1).rowIndex = 0
+		InitializeReningObjekt = 0
+	else
+		storlek = 1
+		call reningObjCopyConstr(reningsobjekt(intx),reningsTokenObjekt(),storlek)	
+
+		InitializeReningObjekt = intx
+	end if
+end function
+
+
 sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltTokenObjekt() as enskiltObjekt,swerefTokenObjekt() as swerefobjekt)
 
 	dim ignoreR() as reningsobjekt
@@ -938,3 +972,64 @@ sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,b
 
 			OutputTable(outPutItterator).rowIndex = inputX.rowIndex
 end sub
+
+
+function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
+	dim storlek as integer
+	storlek = ubound(enskiltobjekt)
+
+	if(storlek = 0 OR intx = 0) then
+		redim enskiltTokenObjekt(1)
+		enskiltTokenObjekt(1).Diarienummer = ""	
+		enskiltTokenObjekt(1).Fastighet_tillstnd = ""
+		enskiltTokenObjekt(1).spatialShift = ""
+		enskiltTokenObjekt(1).Typ_byggnad = ""
+		enskiltTokenObjekt(1).Antal_hushll_tillstnd = 0
+		enskiltTokenObjekt(1).Fastighet_rening = ""
+		enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
+		enskiltTokenObjekt(1).Storlek_m3 = 0
+		enskiltTokenObjekt(1).Typ_rening = ""
+		enskiltTokenObjekt(1).Storlek_m2 = 0
+		enskiltTokenObjekt(1).Typ_sluten_tank = ""
+		enskiltTokenObjekt(1).Storlek__m3 = 0
+		enskiltTokenObjekt(1).Beslut_datum = ""
+		enskiltTokenObjekt(1).Utfrd_datum = ""
+		enskiltTokenObjekt(1).Avgift = ""
+		enskiltTokenObjekt(1).Tillstnd_giltigt_tom = ""
+		enskiltTokenObjekt(1).Anteckningar = ""
+		enskiltTokenObjekt(1).kordinater = ""	
+		InitializeEnskiltObjekt = 0
+	else
+		storlek = 1
+		call enskiltCopyConstruktor(enskiltobjekt(intx), enskiltTokenObjekt(),storlek)
+		InitializeEnskiltObjekt = intx
+	end if
+end function
+
+function InitializeSwerefObjekt(InitializeOrCopy as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
+	
+	dim storlek as integer
+	storlek = ubound(swerefobjekt)
+	
+	if(storlek*InitializeOrCopy = 0) then
+		redim swerefTokenObjekt(1)
+		swerefTokenObjekt(1).FASTIGHET = ""
+		swerefTokenObjekt(1).Fastighet_tillstnd = ""
+		swerefTokenObjekt(1).rendenr = ""
+		swerefTokenObjekt(1).Beslut_datum = ""
+		swerefTokenObjekt(1).Status = ""
+		swerefTokenObjekt(1).Utskick1_datum = ""
+		swerefTokenObjekt(1).Anteckning = ""
+		swerefTokenObjekt(1).utfrddatum = ""
+		swerefTokenObjekt(1).slamhmtning = ""
+		swerefTokenObjekt(1).Antal_byggnader = 0
+		InitializeSwerefObjekt = 0
+	else
+		storlek = 1
+		call swerefObjektCopyConstr(swerefobjekt(InitializeOrCopy),swerefTokenObjekt(),storlek)
+		
+		InitializeSwerefObjekt = InitializeOrCopy
+	end if
+end function
+
+

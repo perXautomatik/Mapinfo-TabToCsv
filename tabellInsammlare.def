@@ -1,10 +1,6 @@
 
 declare sub createRessultTable(byVal tableName as string,byVal pathX as string)
 
-declare function InitializeSwerefObjekt(intx as integer,swerefobjekt() as swerefobjekt,swerefTokenObjekt() as swerefobjekt) as integer
-declare function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
-declare function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
-
 declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
 declare function ReningrInteToken(x as reningsobjekt) as logical
 declare function EnskiltrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
