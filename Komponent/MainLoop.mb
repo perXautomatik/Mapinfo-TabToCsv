@@ -72,7 +72,7 @@ sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt
 		iif(
 		(uObj(ittr).Besksadress_Huvudfastighet 
 		<> ro.spatialFastighet)
-		,"p�"
+		,"p"
 		,"med")
 		& iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))
 	else
@@ -128,9 +128,9 @@ end sub
 
 sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swerefobjekt)
 	'	 "Inventeringsinformation","Inventering",: "Char(12)",: "(om sweref) \"Klart Vatten"
-	'	 "Inventeringsinformation","Inventeringsinformation_Datum",: "datum(??-MM-DD)",: "Utskick1_datum (sweref)" 
+	'	 "Inventeringsinformation","Inventeringsinformation_Datum",: "datum(-MM-DD)",: "Utskick1_datum (sweref)" 
 	'	 "Inventeringsinformation","Inventeringsinformation_Status",: "Char(6)",: "Status (sweref)" 
-	'	 "Inventeringsinformation","Bedmning",: "Char(15)",: "rendenr (sweref)"': "Alla fastigheter som nmns p? alla anlggningar som ligger huvudfastigheten (objektet)", 
+	'	 "Inventeringsinformation","Bedmning",: "Char(15)",: "rendenr (sweref)"': "Alla fastigheter som nmns p alla anlggningar som ligger huvudfastigheten (objektet)", 
  
 		'har sweref
 		if(swerefrInteToken(sO)) then
@@ -400,7 +400,7 @@ exit sub
 	resume next 
 end sub
 
-sub getAnslutna(anslutan() as string)'hmtar ocks? gemensamhetsanlggningar
+sub getAnslutna(anslutan() as string)'hmtar ocks gemensamhetsanlggningar
 	dim P as integer
 	,tempString as string
 	,anslutningsAlias as alias
