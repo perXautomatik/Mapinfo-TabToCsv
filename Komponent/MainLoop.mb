@@ -65,6 +65,33 @@ sub loadSocken()
 	
 end sub
 
+function anlggningsobjektToUtskifts(anl() as AnlggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
+dim x,q as integer
+
+	for x=1 to ubound(anl)
+		ittr = ittr + 1 
+		redim uObj(ittr)
+		uObj(ittr).Anlggningskategori = anl(x).Anlggningskategori 
+		uObj(ittr).PunkttypER = anl(x).Kartpunkt
+		uObj(ittr).besiktningdatum = anl(x).besiktningdatum
+		uObj(ittr).beslutsdatum = anl(x).beslutsdatum 
+		uObj(ittr).Anlggningstyp = anl(x).Anlggningstyp 
+		uObj(ittr).Volym_m3 = anl(x).Volym_m3 		
+		uObj(ittr).Anl_fr_EftR_TInterv_mn = anl(x).Antal_hushll_rening 		
+		uObj(ittr).AnlF_efR_Koordinater_X_o_Y = anl(x).Koordinater 				
+		uObj(ittr).Anlggning_fr_EfterfljRText = anl(x).Kommentarer 		
+		uObj(ittr).Externt_Tjnsteid  = anl(x).rendenr 		
+		uObj(ittr).Anlggning_fr_S_Anlggningstyp = anl(x).Typ_byggnad 		
+		uObj(ittr).text = anl(x).Status 		
+		uObj(ittr).AnlfrEfterR_Anlggningstyp = anl(x).Slamdispense 		
+		uObj(ittr).Anlggning_fr_Slamav_Volym_m3 = anl(x).Utskick1_datum 	
+		uObj(ittr).reningsindex = anl(x).radnummer
+		uObj(ittr).objektid = G_senastObjectID
+	next
+	
+	anlggningsobjektToUtskifts = ubound(anl)
+end function
+
 sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
 	
 	if((ubound(rO.Anslutna_fastigheter())> 1)) then 'gemensam
