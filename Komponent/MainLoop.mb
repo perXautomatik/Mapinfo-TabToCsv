@@ -662,6 +662,22 @@ exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefo
 end sub
 
 
+function DiarieUtanBokstver(ByVal diarienummer as string) as string
+	dim sPartsArray() As String
+	,tempInteger as integer
+		
+	tempInteger = SplitStringAtCharacter(diarienummer,"-",sPartsArray())
+	
+	if(tempInteger = 3) then
+		if (val(spartsArray(1)) = 0) then
+			DiarieUtanBokstver = val(sPartsArray(2) & sPartsArray(3))
+		end if
+	else
+		DiarieUtanBokstver = 0
+	end if
+	
+End Function
+
 function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 	dim storlek as integer
 	storlek = ubound(enskiltobjekt)
@@ -720,6 +736,76 @@ function InitializeSwerefObjekt(InitializeOrCopy as integer,swerefobjekt() as sw
 	end if
 end function
 
+
+function DiarieMixedToUnit(byVal text as string) as string
+	'skall bli, mhn-xxxx-xxxx
+	'kan vara mhn xxxx/xxxx
+	'eller xx/xxxx
+	'eller xxxx/xxxx
+	'eller xx-xxxx
+	'eller mhn-xx-xxxx
+	'eller mhn-xxxx-xxxx
+	If text <> "" Then
+			
+		dim sPartsArray(),sPartsArray2(),dPartsArray(),ressultString,paddedDiarieNummer,PaddedDay,tempstring as string
+		,tempInteger,nrOfSpaces,i,theYear,theMonth,theDay,nrOfslashes,nrOfdashes,firstPart,secondPart,cleanVar as integer
+		
+		nrOfslashes = SplitStringAtCharacter(text & "", "/", sPartsArray())
+		nrOfdashes = SplitStringAtCharacter(text & "", "-", dPartsArray())
+		nrOfSpaces = SplitStringAtCharacter(text & "", " ", sPartsArray2())
+		if nrOfslashes = 2 then	
+			'it has a / (spartArray()
+			'mste d ha ett numeriskt vde i 2 och text eller numeriskt i 1
+			firstPart = firstLeftMostNumber(sPartsArray(1))'endast numeric vnstra del av 1
+			secondPart = firstLeftMostNumber(sPartsArray(2))'endast numeric vnstra p sida 2
+		elseif(nrOfdashes > 1) then
+			do case nrOfdashes		
+				case 2
+					firstPart = firstLeftMostNumber(dPartsArray(1))'endast numeric p sida 1
+					secondPart = firstLeftMostNumber(dPartsArray(2))'endast numeric p sida 2
+				case 3
+						if(firstLeftMostNumber(dPartsArray(1))>0) then
+							cleanVar = 1
+							goto cleanedNumber
+						else
+							firstPart = firstLeftMostNumber(dPartsArray(2))'endast numeric p sida 1
+							secondPart = firstLeftMostNumber(dPartsArray(3))'endast numeric p sida 2
+						end if
+				case else
+			end case
+		elseif(nrOfSpaces = 2) then
+			firstPart = firstLeftMostNumber(sPartsArray2(1))'endast numeric p sida 1		
+			secondPart = firstLeftMostNumber(sPartsArray2(2))'endast numeric p sida 2
+		else
+			cleanVar = 2
+			goto cleanedNumber
+		end if
+		
+		if(firstPart = 0 OR secondPart = 0) then
+			cleanVar = 3
+			goto cleanedNumber
+		else
+			
+			tempInteger = len(firstPart & "") 'if it's fournumbered it's hard to estimate how large or small it might be
+			if(tempInteger <> 4)	then 'if yearpart is not 4 letters			
+				if(firstPart > 20) then
+						firstPart = 1900 + firstPart
+				else
+						firstPart = 2000 + firstPart
+				end if
+			end if
+		
+			DiarieMixedToUnit = "MHN-" & firstPart & "-" & secondPart
+					
+		end if
+		
+	else
+		DiarieMixedToUnit = text
+	end if
+exit function
+	cleanedNumber:
+		DiarieMixedToUnit = (cleanVar) & text 'kan inte tolka nummret
+End Function
 
 sub fastighetForUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt,itterator as integer,swerefObjekt() as swerefobjekt,reningsobjekt() as reningsobjekt,enskiltObjekt() as enskiltobjekt, objektid as integer)
 	onError goto underskriptsFel	
@@ -905,6 +991,112 @@ sub anteckningKordinat(sweref as swerefobjekt,ensk as enskiltobjekt,rening as re
 			end if
 		end if
    
+end sub
+
+
+sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as utskriftsobjekt)
+	redim vrde(tableInfo(sockenRessultat,TAB_INFO_NCOLS))
+
+	vrde(resTabPos("Besksadress_Adress")) = enforceFormTa(utskriftsObjekt.Besksadress_Adress & " ","Besksadress_Adress")
+	vrde(resTabPos("Besksadress_Postnr")) = enforceFormTa(utskriftsObjekt.Besksadress_Postnr & " ","Besksadress_Postnr")
+	vrde(resTabPos("Besksadress_Ort")) = enforceFormTa(utskriftsObjekt.Besksadress_Ort & " ","Besksadress_Ort")
+	vrde(resTabPos("Besksadress_Huvudfastighet")) = enforceFormTa(utskriftsObjekt.Besksadress_Huvudfastighet & " ","Besksadress_Huvudfastighet")
+	vrde(resTabPos("FNR")) = enforceFormTa("" & utskriftsObjekt.FNR, "FNR")
+
+	vrde(resTabPos("Enhet")) = enforceFormTa(utskriftsObjekt.Enhet & " ","Enhet")
+	vrde(resTabPos("Anteckning")) = enforceFormTa(utskriftsObjekt.Anteckning & " ","Anteckning")
+	vrde(resTabPos("Aktuell_timavgift")) = enforceFormTa("" & utskriftsObjekt.Aktuell_timavgift, "Aktuell_timavgift")
+	vrde(resTabPos("Timdebitering")) = enforceFormTa(utskriftsObjekt.Timdebitering, "Timdebitering")
+	vrde(resTabPos("Objektnamn")) = enforceFormTa(utskriftsObjekt.Objektnamn & " ","Objektnamn")
+	vrde(resTabPos("flik_Avloppsnlaggni_Boendetyp")) = enforceFormTa(utskriftsObjekt.flik_Avloppsnlaggni_Boendetyp & " ","flik_Avloppsnlaggni_Boendetyp")
+	vrde(resTabPos("flik_Avloppsanlggn_Byggnadsr")) = enforceFormTa("" & utskriftsObjekt.flik_Avloppsanlggn_Byggnadsr,"flik_Avloppsanlggn_Byggnadsr")
+	vrde(resTabPos("flik_Avloppsa_Besiktningsdatum")) = enforceFormTa("" & utskriftsObjekt.flik_Avloppsa_Besiktningsdatum, "flik_Avloppsa_Besiktningsdatum")
+	vrde(resTabPos("flik_Avloppsanlg_Beslutsdatum")) = enforceFormTa("" & utskriftsObjekt.flik_Avloppsanlg_Beslutsdatum, "flik_Avloppsanlg_Beslutsdatum")
+	vrde(resTabPos("Vatten")) = enforceFormTa(utskriftsObjekt.Vatten & " ","Vatten")
+	vrde(resTabPos("Recipient")) = enforceFormTa(utskriftsObjekt.Recipient & " ","Recipient")
+	vrde(resTabPos("Inventering")) = enforceFormTa(utskriftsObjekt.Inventering & " ","Inventering")
+	vrde(resTabPos("Inventeringsinformation_Datum")) = enforceFormTa("" & utskriftsObjekt.Inventeringsinformation_Datum, "Inventeringsinformation_Datum")
+	vrde(resTabPos("Inventeringsinformation_Status")) = enforceFormTa(utskriftsObjekt.Inventeringsinformation_Status & " ","Inventeringsinformation_Status")
+	vrde(resTabPos("Bedmning")) = enforceFormTa(utskriftsObjekt.Bedmning & " ","Bedmning")
+	vrde(resTabPos("fliken_Fastigheter")) = enforceFormTa(utskriftsObjekt.fliken_Fastigheter & " ","fliken_Fastigheter")
+	vrde(resTabPos("fliken_FastigheterFNR")) = enforceFormTa("" & utskriftsObjekt.fliken_Fastigheter_FNR, "fliken_FastigheterFNR")
+	vrde(resTabPos("PunkttypAB")) = enforceFormTa(utskriftsObjekt.PunkttypAB & " ","PunkttypAB")
+	vrde(resTabPos("Fliken_Koordinater")) = enforceFormTa(utskriftsObjekt.Fliken_Koordinater & " ","Fliken_Koordinater")
+	vrde(resTabPos("fliken_renden")) = enforceFormTa(utskriftsObjekt.fliken_renden & " ","fliken_renden")
+	vrde(resTabPos("Anlggningskategori")) = enforceFormTa(utskriftsObjekt.Anlggningskategori & " ","Anlggningskategori")
+	vrde(resTabPos("besiktningdatum")) = enforceFormTa("" & utskriftsObjekt.besiktningdatum, "besiktningdatum")
+	vrde(resTabPos("beslutsdatum")) = enforceFormTa("" & utskriftsObjekt.beslutsdatum, "beslutsdatum")
+	vrde(resTabPos("Anlggningstyp")) = enforceFormTa(utskriftsObjekt.Anlggningstyp & " ","Anlggningstyp")
+	vrde(resTabPos("Volym_m3")) = enforceFormTa("" & utskriftsObjekt.Volym_m3, "Volym_m3")
+	vrde(resTabPos("Anl_fr_EftR_TInterv_mn")) = enforceFormTa("" & utskriftsObjekt.Anl_fr_EftR_TInterv_mn, "Anl_fr_EftR_TInterv_mn")
+	vrde(resTabPos("AnlF_efR_Koordinater_X_o_Y")) = enforceFormTa(utskriftsObjekt.AnlF_efR_Koordinater_X_o_Y & " ","AnlF_efR_Koordinater_X_o_Y")
+	vrde(resTabPos("PunkttypER")) = enforceFormTa(utskriftsObjekt.PunkttypER & " ","PunkttypER")
+	vrde(resTabPos("Anlggning_fr_EfterfljRText")) = enforceFormTa(utskriftsObjekt.Anlggning_fr_EfterfljRText & " ","Anlggning_fr_EfterfljRText")
+
+	vrde(resTabPos("Anlggning_fr_S_Anlggningstyp")) = enforceFormTa(utskriftsObjekt.Anlggning_fr_S_Anlggningstyp & " ","Anlggning_fr_S_Anlggningstyp")
+	vrde(resTabPos("Externt_Tjnsteid")) = enforceFormTa(utskriftsObjekt.Externt_Tjnsteid & " ", "Externt_Tjnsteid")
+	vrde(resTabPos("text")) = enforceFormTa(utskriftsObjekt.text & " ","text")
+	vrde(resTabPos("Anlggning_fr_Slamav_Volym_m3")) = enforceFormTa("" & utskriftsObjekt.Anlggning_fr_Slamav_Volym_m3, "Anlggning_fr_Slamav_Volym_m3")
+
+	vrde(resTabPos("AnlfrEfterR_Anlggningstyp")) = enforceFormTa(utskriftsObjekt.AnlfrEfterR_Anlggningstyp & " ", "AnlfrEfterR_Anlggningstyp")
+	
+	'vrde(resTabPos("Externt_Tjnsteid2")) = enforceFormTa(utskriftsObjekt.Externt_Tjnsteid_2 & " ", "Externt_Tjnsteid2")
+
+	vrde(resTabPos("ObjektID")) = enforceFormTa("" & utskriftsObjekt.Objektid, "ObjektID")
+	vrde(resTabPos("Path")) = enforceFormTa(utskriftsObjekt.Path & " ","Path")
+	vrde(resTabPos("Diarienummer")) = enforceFormTa(utskriftsObjekt.Diarienummer & " ","Diarienummer")
+	vrde(resTabPos("Lpnummer")) = enforceFormTa("" & utskriftsObjekt.Lpnummer, "Lpnummer")
+	vrde(resTabPos("ignorex")) = "" & utskriftsObjekt.reningsindex
+	
+end sub
+
+
+sub FastighetsObjToInsertStringArray(
+									output() as string,
+									inputx as fastighetsObjekt,
+									rObj() as ReningsObjekt,
+									swerefobj() as SwerefObjekt,
+									enObj() as EnskiltObjekt)
+ 	dim x as integer
+	,rening, sweref,enskilt as string
+	,dedupedrening(),dedupedenskilt(),dedupedsweref() as integer
+
+	redim output(11)
+
+	for x=1 to ubound(rObj)
+		if rObj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedrening, rObj(x).rowindex)
+		end if
+	next
+	
+	for x=1 to ubound(enObj)
+		if enObj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedenskilt, enObj(x).rowindex)
+		end if	
+	next
+	
+	for x=1 to ubound(swerefobj)
+		if swerefobj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedsweref, swerefobj(x).rowindex)
+		end if	
+	next
+		
+	rening = intArrayAsPrintString(dedupedrening)
+	sweref = intArrayAsPrintString(dedupedsweref)
+	enskilt = intArrayAsPrintString(dedupedenskilt)
+	
+	output(1) =inputx.adress & " "
+	output(2) =inputx.postnr & " "
+	output(3) =inputx.ort & " "
+	output(4) =inputx.fastighet & " "
+	output(5) ="" & val("" & inputx.fnr )
+	output(6) ="" & val("" & inputx.HuvudSweref )
+	output(7) ="" & val("" & inputx.HuvudRening )
+	output(8) ="" & val("" & inputx.HuvudEnskilt )
+	output(9) = sweref & " "
+	output(10) = rening & " "
+	output(11) = enskilt & " "
+
 end sub
 
 

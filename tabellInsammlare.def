@@ -24,8 +24,6 @@ declare sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as
 
 declare sub doTheDateStandardisation(vrde() as string,pPlatts() as string,byVal DatumStrngTagIsammanfogad as string)
 
-declare function DiarieMixedToUnit(byVal text as string) as string
-
 declare sub genereraFastighetsYtaMedFastighetsAdress()
 
 declare sub StandardiseraDiarie(byval a as string,byval b as string,c() as string)
@@ -63,6 +61,4 @@ Declare function resTabPos(byVal colName as string) as integer
 
 declare function enforceFormat(byVal inputx as string,byVal format as string,byVal lenght as integer) as string
 declare function enforceFormTa(byVal inputx as string,byVal col as string) as string
-
-declare function textAppend(byVal initial as string,byVal prefix as string,byVal  appendant as string) as string
 

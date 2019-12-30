@@ -214,6 +214,11 @@ Declare sub huvudObjekt(uObj() as UtskriftsObjekt, it as integer)
 Declare sub samlingsobjekt(uObj() as UtskriftsObjekt,ittr as integer)
 Declare sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swerefobjekt)
 
+
+declare function textAppend(byVal initial as string,byVal prefix as string,byVal  appendant as string) as string
+
+declare function DiarieUtanBokstver(ByVal diarienummer as string) as string
+
 declare function countShiftenGenUtvald(FastighetB as string) as integer
 declare sub saveUtskriftsProgress(G_utskriftsObjekt() as utskriftsObjekt)
 
@@ -300,3 +305,5 @@ declare sub utskrivningsobjektsKonstruktor(
 	)
 	
 declare sub saveSockenProgress(socken as string)
+
+declare function DiarieMixedToUnit(byVal text as string) as string
