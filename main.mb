@@ -385,20 +385,6 @@ sub SaveAnvändaReningar
 exit sub queryError: print "[ERROR_SaveAnvändaReningar] " & error$() end sub
 
 
-sub Avloppsanläggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
-
-	'uObj(ittr).flik_Avloppsänlaggni_Boendetyp = eO.Typ_byggnad
-	uObj(ittr).flik_Avloppsanläggn_Byggnadsår = eO.Tillstånd_giltigt_tom
-	uObj(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utförd_datum
-	uObj(ittr).flik_Avloppsanläg_Beslutsdatum = eO.Beslut_datum
-	uObj(ittr).Vatten = eO.Antal_hushåll_tillstånd
-	'diarienummer läggs direkt i Ärenden
-	'uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"SlamVol:",eO.Storlek_m3)
-	'uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"SlamTyp:",
-	'iif((len(eO.Typ_Slamavskiljare) > 18),right$(eO.Typ_Slamavskiljare,len(eO.Typ_Slamavskiljare)-18),eO.Typ_Slamavskiljare))
-	
-end sub
-
 function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
 
 	dim tempString,TempArray() as string

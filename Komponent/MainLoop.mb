@@ -1128,6 +1128,20 @@ exit function
 end function
 
 
+sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
+
+	'uObj(ittr).flik_Avloppsnlaggni_Boendetyp = eO.Typ_byggnad
+	uObj(ittr).flik_Avloppsanlggn_Byggnadsr = eO.Tillstnd_giltigt_tom
+	uObj(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utfrd_datum
+	uObj(ittr).flik_Avloppsanlg_Beslutsdatum = eO.Beslut_datum
+	uObj(ittr).Vatten = eO.Antal_hushll_tillstnd
+	'diarienummer lggs direkt i renden
+	'uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"SlamVol:",eO.Storlek_m3)
+	'uObj(ittr).Anteckning = textAppend(uObj(ittr).Anteckning,"SlamTyp:",
+	'iif((len(eO.Typ_Slamavskiljare) > 18),right$(eO.Typ_Slamavskiljare,len(eO.Typ_Slamavskiljare)-18),eO.Typ_Slamavskiljare))
+	
+end sub
+
 
 sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as utskriftsobjekt)
 	redim vrde(tableInfo(sockenRessultat,TAB_INFO_NCOLS))
