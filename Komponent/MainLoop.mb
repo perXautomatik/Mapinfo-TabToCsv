@@ -114,16 +114,16 @@ sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swer
 	'	 "Inventeringsinformation","Inventering",: "Char(12)",: "(om sweref) \"Klart Vatten"
 	'	 "Inventeringsinformation","Inventeringsinformation_Datum",: "datum(??-MM-DD)",: "Utskick1_datum (sweref)" 
 	'	 "Inventeringsinformation","Inventeringsinformation_Status",: "Char(6)",: "Status (sweref)" 
-	'	 "Inventeringsinformation","Bed?mning",: "Char(15)",: "?rendenr (sweref)"': "Alla fastigheter som n?mns p? alla anl?ggningar som ligger huvudfastigheten (objektet)", 
+	'	 "Inventeringsinformation","Bedmning",: "Char(15)",: "rendenr (sweref)"': "Alla fastigheter som nmns p? alla anlggningar som ligger huvudfastigheten (objektet)", 
  
 		'har sweref
-		if(swerefärInteToken(sO)) then
+		if(swerefrInteToken(sO)) then
 			uObj(ittr).Inventering = "klart Vatten"
 		end if
 		
 		uObj(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
 		uObj(ittr).Inventeringsinformation_Status = sO.Status
-		uObj(ittr).Bedömning = sO.ärendenr
+		uObj(ittr).Bedmning = sO.rendenr
 
 End Sub
 
