@@ -5,17 +5,6 @@ Include "tabellInsammlare.def"
 include "CommonLib\commonLib1.def"
 
 
-function resTabPos(byVal colName as string) as integer
-	
-	onError goto killProgram
-		resTabPos = Columninfo("sockenRessultat",colName,Col_info_num)
-	onError goto 0
-	
-exit function
-	killProgram:
-	print "[CRITICAL resTabPos]" & error$()
-End Function
-
 Sub gemAnslutna(caseString as string,ressultArray() as string)
 	dim caseInt as integer
 	caseInt = val(caseString)
@@ -1140,47 +1129,6 @@ exit function
 		resume next
 End Function
 
-function enforceFormTa(byVal inputx as string,byVal col as string) as string
-
-	dim return as string
-	
-	do case ColumnInfo(sockenRessultat,col,COL_INFO_TYPE)
-		case 1 '"Char"
-			return = left$(inputx,ColumnInfo( sockenRessultat,col,COL_INFO_WIDTH))
-		case 5,38 '"Date"
-			return = "" & NumberToDate(val(DeformatNumber$(inputx)))
-		case 8 '"float"
-			return = "" & DeformatNumber$(inputx)		
-		case 3,4,39 '"integer"
-			return = "" & val(DeformatNumber$(inputx))
-		case 6 '"Logical"
-			do case inputx
-			case "1","0","F","T"
-				return = inputx
-			case else
-				return = "" & val(inputx)	
-			end case
-		case else
-			goto unrecognized		
-	End Case
-	
-		if( len(return) >= len(inputx)+2) then
-			print "Warning overflow, " & inputx & " <> " & return
-		end if
-			
-		enforceFormTa = return
-	
-exit function
-	unrecognized:
-		print "unrecognized format " & ColumnInfo( sockenRessultat,col,COL_INFO_TYPE)
-	end program
-		overflow:
-		
-		resume next
-
-end function
-
-
 sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
 		
@@ -1403,31 +1351,6 @@ function DebuggStringEveryInt(IntArray() as integer) as string
 		Next
 	
 end function
-
-sub getAnslutna(anslutan() as string)'hmtar ocks? gemensamhetsanlggningar
-	dim P as integer
-	,tempString as string
-	,anslutningsAlias as alias
-	,temptext as string
-	
-	if(not(valtRening.anslutna_fastigheter_10 = "gem,gem")) then
-		for p=1 to 10		
-			anslutningsAlias = "valtRening.Anslutna_fastigheter_" & p
-			temptext = anslutningsAlias
-			if(temptext <> "") then
-				call addStringToArrayAsifSet(anslutan(),searchReplace(temptext,"""","'"))
-			end if
-		next
-	else
-		tempString = valtRening.kommentarer 'kommentarfltet har identifieringen
-		call gemAnslutna(tempstring,anslutan())
-		call addStringToArrayAsifSet(anslutan(),"gem,gem")
-	end if
-
-end sub
-
-
-
 
 function findWhereInStringArray(byVal v?rde as string, array() as string) as integer
 

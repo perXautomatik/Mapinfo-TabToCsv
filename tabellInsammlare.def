@@ -1,9 +1,6 @@
 
 declare sub createRessultTable(byVal tableName as string,byVal pathX as string)
 
-declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
-declare function ReningrInteToken(x as reningsobjekt) as logical
-declare function EnskiltrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
 
 
 declare function CreateTable_reningIhopslagen as string
@@ -20,7 +17,6 @@ declare sub insertInitialTables()
 
 declare sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
 declare sub createRessultTableX(byval tablename as string, byval filePath as string)
-declare sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as utskriftsobjekt)
 
 declare sub doTheDateStandardisation(vrde() as string,pPlatts() as string,byVal DatumStrngTagIsammanfogad as string)
 
@@ -28,11 +24,7 @@ declare sub genereraFastighetsYtaMedFastighetsAdress()
 
 declare sub StandardiseraDiarie(byval a as string,byval b as string,c() as string)
 
-declare function enskiltAsString(enskiltTokenObjekt as EnskiltObjekt) as string
-declare function ReningAsString(reningsTokenObjekt as reningsobjekt) as string
-declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
 
-declare function swerefrInteToken(swerefObjekt as swerefObjekt) as logical
 Declare Sub gemAnslutna(caseString as string,ressultArray() as string)
 
 declare sub messageEveryString(StringArray() as String)
@@ -57,8 +49,6 @@ declare function findWhereInStringArray(byVal vrde as string, array() as string)
 declare sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as integer)
 
 
-Declare function resTabPos(byVal colName as string) as integer
-
 declare function enforceFormat(byVal inputx as string,byVal format as string,byVal lenght as integer) as string
-declare function enforceFormTa(byVal inputx as string,byVal col as string) as string
+
 

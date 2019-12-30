@@ -303,7 +303,17 @@ declare sub utskrivningsobjektsKonstruktor(
 		rO() as reningsObjekt,
 		eO() as enskiltobjekt
 	)
-	
+declare function swerefrInteToken(swerefObjekt as swerefObjekt) as logical
 declare sub saveSockenProgress(socken as string)
+declare sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
+declare function ReningrInteToken(x as reningsobjekt) as logical
+declare function EnskiltrInteToken(enskiltTokenObjekt as enskiltObjekt) as logical
 
+Declare function resTabPos(byVal colName as string) as integer
+declare function enforceFormTa(byVal inputx as string,byVal col as string) as string
 declare function DiarieMixedToUnit(byVal text as string) as string
+declare sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as utskriftsobjekt)
+declare function enskiltAsString(enskiltTokenObjekt as EnskiltObjekt) as string
+declare function ReningAsString(reningsTokenObjekt as reningsobjekt) as string
+declare function swerefAsString(swerefTokenObjekt as swerefObjekt) as string
+

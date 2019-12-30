@@ -385,31 +385,6 @@ sub SaveAnvändaReningar
 exit sub queryError: print "[ERROR_SaveAnvändaReningar] " & error$() end sub
 
 
-
-sub huvuDObjekt(uObj() as UtskriftsObjekt, it as integer)
-	
-	dim fastighetsObjekt as alias
-	
-	fastighetsObjekt = G_socken & "fastighetsObjekt.adress" 
- 	uObj(it).Besöksadress_Adress = fastighetsObjekt
- 	fastighetsObjekt = G_socken & "fastighetsObjekt.postnr" 
-	uObj(it).Besöksadress_Postnr = fastighetsObjekt
-	fastighetsObjekt = G_socken & "fastighetsObjekt.ort" 
-	uObj(it).Besöksadress_Ort = fastighetsObjekt
-	fastighetsObjekt = G_socken & "fastighetsObjekt.fastighet" 
-	uObj(it).Besöksadress_Huvudfastighet = FindCharTurncStringByPos(">",fastighetsObjekt)
-
-	uObj(it).Objektnamn = uObj(it).Besöksadress_Huvudfastighet
-
-	fastighetsObjekt = G_socken & "fastighetsObjekt.fnr"
-	uObj(it).FNR = fastighetsObjekt
-	
- 	uObj(it).Enhet = "VATTEN"
-	uObj(it).Timdebitering = TRUE
-	uObj(it).Aktuell_timavgift = 925
-	
-end sub
-
 sub Avloppsanläggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
 
 	'uObj(ittr).flik_Avloppsänlaggni_Boendetyp = eO.Typ_byggnad
