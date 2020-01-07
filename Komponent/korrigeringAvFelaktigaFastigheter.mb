@@ -1,4 +1,4 @@
-ÔªøInclude "MapBasic.def"
+Include "MapBasic.def"
 
 Declare Sub Main
 declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
@@ -11,14 +11,14 @@ declare sub process()
 
 Sub Main()
 	'print Chr$(12) 'empty message
-	'elect * from f√§2 into UtanFnr
-	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\√ÑrendenMedIngenEllerFelFastighet.TAB" as UtanFnr
-	Update HelaSolen Set ignorex = rowid DropIndex Auto
-	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr",ignorex "rowid" 
+	'elect * from f‰2 into UtanFnr
+	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ƒrendenMedIngenEllerFelFastighet.TAB" as UtanFnr
+	'Update HelaSolen Set ignorex = rowid DropIndex Auto
+	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr"',ignorex "rowid" 
 	from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into UtanFnr
 	
 	
-	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmilj√∂\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
+	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmiljˆ\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
 		Select Socken from korrigerandeTabell where socken <> "" group by socken into socken
 	
 	select * from UtanFnr group by flikenFastigheter into Left
@@ -40,47 +40,27 @@ FSUrsprungsFastigheterMedSockenOc:
 End Sub
 
 
-'FNR, BETECKNING, UFNR, UBETECKNING, 
-'left$(UBETECKNING,instr(1,UBETECKNING," ")) "USocken",
-'LTrim$(Mid$(UBETECKNING,instr(1,UBETECKNING," "),(len(UBETECKNING)-instr(1,UBETECKNING," ")-(len(UBETECKNING)-instr(1,UBETECKNING,":")+2)))) "UTrakt",
-'right$(UBETECKNING,(len(UBETECKNING)-instr(1,UBETECKNING,":")+2)) "UblockEnhet"
-
-'for each row in FelFastighet
-'
-'see if any socken match 
-'
-'if socken match
-'	and s√∂kbegr√§p <> socken
-'		see if Track is in s√∂kbegr√§pp
-'			if true
-'				see if blockenhet
-'					if true
-'						update fnr
-'						print updated
-'end if
-'
-'increment()
 sub process()
 
 	fetch first from socken
 
 	do until eot(socken)
-		dim sokStreng,sockenB,fsTrakt,blockb as string B		sockenB = socken.col1 sokStreng = Left.flikenFastigheter
+		dim sokStreng,sockenB,korrigerandeTrackt,blockb as string		sockenB = socken.col1 sokStreng = Left.flikenFastigheter
 		
 		if instr(1,sokStreng,left$(sockenB,5)) <> 0 then
 			if sokStreng <> sockenB then select trakt from korrigerandeTabell where socken = SockenB AND trakt <> "" group by trakt into trakt fetch first from trakt
 				do until eot(Trakt)
 					dim sPartsArray(2) As String			
-					korrigerandeTrackt = iif((SplitStringAtCharacter(trakt.Col1, " ", sPartsArray) = 2),spartsArray(2),trakt.Col1) 'n√∂dv√§ndigt f√∂r att kunna kolla b√•de lilla och stora bj√§rs, tex
+					korrigerandeTrackt = iif((SplitStringAtCharacter(trakt.Col1, " ", sPartsArray) = 2),spartsArray(2),trakt.Col1) 'nˆdv‰ndigt fˆr att kunna kolla bÂde lilla och stora bj‰rs, tex
 					
 					if instr(1,sokStreng,korrigerandeTrackt) <> 0 then dim sockenOTrackt as logical sockenOTrackt = sokStreng <> SockenB & " " & korrigerandeTrackt				
-						if Not(sockenOTrackt) then select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = fstrakt AND blockenhet <> ""  group by blockenhet into blockenhet fetch first from blockenhet
+						if Not(sockenOTrackt) then select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = korrigerandeTrackt AND blockenhet <> ""  group by blockenhet into blockenhet fetch first from blockenhet
 							do until eot(blockenhet) blockB = Blockenhet.col1
 								
 								if instr(1,sokStreng,blockB) <> 0 then
-									select fnr from korrigerandeTabell where socken = SockenB AND trakt = fstrakt AND blockenhet = blockB group by fnr into hittatFNR fetch first from hittatFNR dim FnrF as integer FnrF = hittatFNR.fnr
+									select fnr from korrigerandeTabell where socken = SockenB AND trakt = korrigerandeTrackt AND blockenhet = blockB group by fnr into hittatFNR fetch first from hittatFNR dim FnrF as integer FnrF = hittatFNR.fnr
 									
-									update UtanFnr set fnr=FnrF where flikenFastigheter = sokStreng print "updated : " & sokStreng & " = " & SockenB & " " & fstrakt & " " & blockB goto LoopEnd
+									update UtanFnr set fnr=FnrF where flikenFastigheter = sokStreng print "updated : " & sokStreng & " = " & SockenB & " " & korrigerandeTrackt & " " & blockB goto LoopEnd
 								end if
 								fetch next from blockenhet loop	
 						else goto LoopEnd end if						
