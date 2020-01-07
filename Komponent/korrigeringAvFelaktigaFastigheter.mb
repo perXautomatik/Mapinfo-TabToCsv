@@ -1,4 +1,4 @@
-Include "MapBasic.def"
+ï»¿Include "MapBasic.def"
 
 Declare Sub Main
 declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
@@ -11,17 +11,19 @@ declare sub process()
 
 Sub Main()
 	'print Chr$(12) 'empty message
-	'elect * from fä2 into ÄF
-	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet.TAB" as ÄF
+	'elect * from fÃ¤2 into Ã„F
+	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\Ã„rendenMedIngenEllerFelFastighet.TAB" as Ã„F
 	Update HelaSolen Set ignorex = rowid DropIndex Auto
-	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
-	'Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as FS
+	Select fliken_Fastigheter "sÃ¶kbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into Ã„F
+	'Open Table "G:\sbf\LivsmiljÃ¶\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as FS
 	
 	onError goto UrsprungsFastigheterMedSockenOc
 		run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as FS"
 	onError goto 0
 		Select Socken from Fs where socken <> "" group by socken into socken
 	
+	select * from Ã„F group by sÃ¶kbegrepp into Left
+
 	fetch first from Left
 	startTime = timer()
 	iprogressRange = tableInfo(left,tab_info_nRows)
@@ -31,7 +33,7 @@ Sub Main()
 	Range iProgressRange
 
 	commit table helaSolen
-	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
+	Select fliken_Fastigheter "sÃ¶kbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
 
 	end program
 UrsprungsFastigheterMedSockenOc:
@@ -49,8 +51,8 @@ End Sub
 'see if any socken match 
 '
 'if socken match
-'	and sökbegräp <> socken
-'		see if Track is in sökbegräpp
+'	and sÃ¶kbegrÃ¤p <> socken
+'		see if Track is in sÃ¶kbegrÃ¤pp
 '			if true
 '				see if blockenhet
 '					if true
@@ -63,11 +65,11 @@ sub process()
 
 	fetch first from socken
 	do until eot(socken)
-	dim sökB,sockenB,FsTrakt,blockb as string
+	dim sÃ¶kB,sockenB,FsTrakt,blockb as string
 	sockenB = socken.col1
-	sökb = Left.sökbegrepp
-		if instr(1,sökB,left$(sockenB,3)) <> 0 then
-			if sökB <> socken then
+	sÃ¶kb = Left.sÃ¶kbegrepp
+		if instr(1,sÃ¶kB,left$(sockenB,3)) <> 0 then
+			if sÃ¶kB <> socken then
 				select trakt from FS where socken = SockenB AND trakt <> ""  group by trakt into trakt
 				fetch first from trakt
 				do until eot(Trakt)
@@ -80,22 +82,22 @@ sub process()
 						tempString = fsTrakt
 					end if
 					
-					if instr(1,sökB,tempString) <> 0 then	
-						if sökb <> Socken & " " & fstrakt then
+					if instr(1,sÃ¶kB,tempString) <> 0 then	
+						if sÃ¶kb <> Socken & " " & fstrakt then
 							select blockenhet from Fs where socken = SockenB AND trakt = fstrakt AND blockenhet <> ""  group by blockenhet into blockenhet
 							fetch first from blockenhet
 							
 							do until eot(blockenhet)
 							blockB = Blockenhet.col1
-								if instr(1,sökB,blockB) <> 0 then
+								if instr(1,sÃ¶kB,blockB) <> 0 then
 									dim FnrF,idx as integer
 									
 									select fnr from fs where socken = SockenB AND trakt = fstrakt AND blockenhet = blockB group by fnr into ressult
 									fetch first from ressult
 									FnrF = ressult.fnr
-									idx = Left.rowid			
+									idx = Left.sÃ¶kbegrepp
 									
-									update Left set fnr=FnrF where rowid = idx
+									update Ã„F set fnr=FnrF where sÃ¶kbegrepp = idx
 									print "updated"
 									goto loopend
 								end if
@@ -104,7 +106,7 @@ sub process()
 						else
 							goto LoopEnd
 						end if
-						'nödvändigt för att kunna kolla både lilla och stora bjärs, tex
+						'nÃ¶dvÃ¤ndigt fÃ¶r att kunna kolla bÃ¥de lilla och stora bjÃ¤rs, tex
 					end if
 					fetch next from trakt
 				loop
