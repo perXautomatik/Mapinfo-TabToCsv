@@ -10,19 +10,13 @@ Dim iProgress,iProgressRange,starttime as integer
 declare sub process()
 
 Sub Main()
-	'print Chr$(12) 'empty message
-	'elect * from fï¿½2 into UtanFnr
-	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ï¿½rendenMedIngenEllerFelFastighet.TAB" as UtanFnr
-	'Update HelaSolen Set ignorex = rowid DropIndex Auto
-	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr"',ignorex "rowid" 
+	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr"
 	from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into UtanFnr
 	
 	
 	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmiljï¿½\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
 		Select Socken from korrigerandeTabell where socken <> "" group by socken into socken
-	
 	select * from UtanFnr group by flikenFastigheter into Left
-
 	fetch first from Left
 	startTime = timer()
 	iprogressRange = tableInfo(left,tab_info_nRows)
@@ -30,26 +24,22 @@ Sub Main()
 	ProgressBar "ProcessingflikenFastigheter...." & iProgressRange & " items"
 		     Calling process
 	Range iProgressRange
-
 	commit table helaSolen
 	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
-
-	Select besÃ¶ksfastighet "flikenFastigheter",FNR
-	from HelaSolen where besÃ¶ksfastighet <> "" AND FNR = 0 into UtanFnr
+	Select besöksfastighet "flikenFastigheter",FNR
+	from HelaSolen where besöksfastighet <> "" AND FNR = 0 into UtanFnr
 	select * from UtanFnr group by flikenFastigheter into Left
-
 	fetch first from Left
 	startTime = timer()
 	iprogressRange = tableInfo(left,tab_info_nRows)
 	iprogress = 0	
-	ProgressBar "ProcessingbesÃ¶ksfastighet...." & iProgressRange & " items"
+	ProgressBar "Processingbessfastighet...." & iProgressRange & " items"
 		     Calling process
 	Range iProgressRange
 
-
 	end program
-FSUrsprungsFastigheterMedSockenOc:
-	print error$() end program
+		FSUrsprungsFastigheterMedSockenOc:
+	print error$() resume next
 End Sub
 
 
@@ -59,12 +49,17 @@ sub process()
 
 	do until eot(socken)
 		dim sokStreng,sockenB,korrigerandeTrackt,blockb as string		sockenB = socken.col1 sokStreng = Left.flikenFastigheter
-		
 		if instr(1,sokStreng,left$(sockenB,5)) <> 0 then
 			if sokStreng <> sockenB then select trakt from korrigerandeTabell where socken = SockenB AND trakt <> "" group by trakt into trakt fetch first from trakt
 				do until eot(Trakt)
-					dim sPartsArray(2) As String			
-					korrigerandeTrackt = iif((SplitStringAtCharacter(trakt.Col1, " ", sPartsArray) = 2),spartsArray(2),trakt.Col1) 'nï¿½dvï¿½ndigt fï¿½r att kunna kolla bï¿½de lilla och stora bjï¿½rs, tex
+					dim sPartsArray() As String			
+					
+					if(SplitStringAtCharacter(trakt.Col1, " ", sPartsArray) = 2) then
+						korrigerandeTrackt = spartsArray(2)
+					else
+						korrigerandeTrackt = trakt.Col1
+					end if
+					
 					
 					if instr(1,sokStreng,korrigerandeTrackt) <> 0 then dim sockenOTrackt as logical sockenOTrackt = sokStreng <> SockenB & " " & korrigerandeTrackt				
 						if Not(sockenOTrackt) then select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = korrigerandeTrackt AND blockenhet <> ""  group by blockenhet into blockenhet fetch first from blockenhet
@@ -84,7 +79,6 @@ sub process()
 		
 		fetch next from socken
 	loop
-	
 	LoopEnd:
 	fetch Next from Left
 	call increment(iProgress,iProgressRange,starttime)		
