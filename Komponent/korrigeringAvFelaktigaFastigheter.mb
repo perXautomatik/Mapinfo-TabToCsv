@@ -14,13 +14,12 @@ Sub Main()
 	'elect * from fä2 into ÄF
 	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet.TAB" as ÄF
 	Update HelaSolen Set ignorex = rowid DropIndex Auto
-	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into ÄF
-	'Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as FS
+	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" 
+	from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into ÄF
 	
-	onError goto UrsprungsFastigheterMedSockenOc
-		run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as FS"
-	onError goto 0
-		Select Socken from Fs where socken <> "" group by socken into socken
+	
+	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
+		Select Socken from korrigerandeTabell where socken <> "" group by socken into socken
 	
 	select * from ÄF group by sökbegrepp into Left
 
@@ -36,7 +35,7 @@ Sub Main()
 	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
 
 	end program
-UrsprungsFastigheterMedSockenOc:
+FSUrsprungsFastigheterMedSockenOc:
 	print error$() end program
 End Sub
 
@@ -66,32 +65,29 @@ sub process()
 	fetch first from socken
 
 	do until eot(socken)
-		dim sökB,sockenB,FsTrakt,blockb as string
-		sockenB = socken.col1 sökb = Left.sökbegrepp
+		dim sokStreng,sockenB,FsTrakt,blockb as string B		sockenB = socken.col1 sökb = Left.sökbegrepp
 		
-		if instr(1,sökB,left$(sockenB,5)) <> 0 then
-			if sökB <> socken then
-				select trakt from FS where socken = SockenB AND trakt <> ""  group by trakt into trakt
-				fetch first from trakt
+		if instr(1,sokStreng,left$(sockenB,5)) <> 0 then
+			if sokStreng <> sockenB then select trakt from korrigerandeTabell where socken = SockenB AND trakt <> "" group by trakt into trakt fetch first from trakt
 				do until eot(Trakt)
-					fsTrakt = trakt.Col1
-					dim sPartsArray(),tempString As String
+					korrigerandeTrackt = trakt.Col1
+					dim sPartsArray() As String
 					
-					if(SplitStringAtCharacter(fsTrakt, " ", sPartsArray) = 2) then
-						tempString = spartsArray(2)
+					if(SplitStringAtCharacter(korrigerandeTrackt, " ", sPartsArray) = 2) then
+						korrigerandeTrackt = spartsArray(2)
 					else
-						tempString = fsTrakt
+						korrigerandeTrackt = korrigerandeTrackt
 					end if
 					
-					if instr(1,sökB,tempString) <> 0 then	
-						if sökb <> Socken & " " & fstrakt then
-							select blockenhet from Fs where socken = SockenB AND trakt = fstrakt AND blockenhet <> ""  group by blockenhet into blockenhet
+					if instr(1,sokStreng,korrigerandeTrackt) <> 0 then	
+B						if sökb <> Socken & " " & fstrakt then
+							select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = fstrakt AND blockenhet <> ""  group by blockenhet into blockenhet
 							fetch first from blockenhet
 							
 							do until eot(blockenhet)
 							blockB = Blockenhet.col1
-								if instr(1,sökB,blockB) <> 0 then
-									dim FnrF,idx as integer
+								if instr(1,sokStreng,blockB) <> 0 then
+B									dim FnrF,idx as integer
 									
 									select fnr from fs where socken = SockenB AND trakt = fstrakt AND blockenhet = blockB group by fnr into ressult
 									fetch first from ressult
