@@ -25,9 +25,10 @@ Sub Main()
 		     Calling process
 	Range iProgressRange
 	commit table helaSolen
-	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
-	Select besöksfastighet "flikenFastigheter",FNR
-	from HelaSolen where besöksfastighet <> "" AND FNR = 0 into UtanFnr
+	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left2Correct
+	
+	Select Besksadress_huvudfastighet "flikenFastigheter",FNR
+	from HelaSolen where Besksadress_huvudfastighet <> "" AND FNR = 0 into UtanFnr
 	select * from UtanFnr group by flikenFastigheter into Left
 	fetch first from Left
 	startTime = timer()
@@ -59,7 +60,6 @@ sub process()
 					else
 						korrigerandeTrackt = trakt.Col1
 					end if
-					
 					
 					if instr(1,sokStreng,korrigerandeTrackt) <> 0 then dim sockenOTrackt as logical sockenOTrackt = sokStreng <> SockenB & " " & korrigerandeTrackt				
 						if Not(sockenOTrackt) then select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = korrigerandeTrackt AND blockenhet <> ""  group by blockenhet into blockenhet fetch first from blockenhet
