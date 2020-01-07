@@ -12,15 +12,16 @@ declare sub process()
 Sub Main()
 	'print Chr$(12) 'empty message
 	'elect * from fä2 into ÄF
-	Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet.TAB" as ÄF
+	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet.TAB" as ÄF
+	Update HelaSolen Set ignorex = rowid DropIndex Auto
+	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
 	'Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as FS
 	
 	onError goto UrsprungsFastigheterMedSockenOc
-	run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as FS"
+		run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as FS"
 	onError goto 0
-	Select Socken from Fs where socken <> "" group by socken into socken
+		Select Socken from Fs where socken <> "" group by socken into socken
 	
-	select * from ÄF where fnr = "" into left			
 	fetch first from Left
 	startTime = timer()
 	iprogressRange = tableInfo(left,tab_info_nRows)
@@ -29,8 +30,10 @@ Sub Main()
 		     Calling process
 	Range iProgressRange
 
-	end program
+	commit table helaSolen
+	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
 
+	end program
 UrsprungsFastigheterMedSockenOc:
 	print error$() end program
 End Sub
