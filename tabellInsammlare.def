@@ -1,11 +1,6 @@
 
 declare sub createRessultTable(byVal tableName as string,byVal pathX as string)
 
-
-
-declare function CreateTable_reningIhopslagen as string
-declare function CreateTable_EnskiltIhopslagen as string
-
 declare function countDupes(byVal fastighetsBet as string) as integer
 declare function kollaBredd(values() as string) as logical
 declare function getCOrd(byVal ColumnName as string) as string
@@ -32,17 +27,6 @@ declare function DebuggStringEveryInt(IntArray() as integer) as string
 
 
 declare sub PrepareGemensamma()
-
-
-
-declare function EnskiltSubset(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
-declare function swerefSubset(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
-declare function reningsSubset(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
-
-
-declare sub fetchReningByIndex(stringArray() as string,output() as reningsObjekt)
-declare sub fetchEnskiltByIndex(stringArray() as string,output() as enskiltObjekt)
-declare sub fetchSwerefByIndex(stringArray() as string,output() as swerefObjekt)
 
 declare function findWhereInStringArray(byVal vrde as string, array() as string) as integer 
 

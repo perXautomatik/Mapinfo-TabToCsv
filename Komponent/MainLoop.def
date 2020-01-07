@@ -204,6 +204,19 @@ Type AnlggningsObjekt
 
 end type
 
+
+
+
+declare sub fetchReningByIndex(stringArray() as string,output() as reningsObjekt)
+declare sub fetchEnskiltByIndex(stringArray() as string,output() as enskiltObjekt)
+declare sub fetchSwerefByIndex(stringArray() as string,output() as swerefObjekt)
+
+
+declare function EnskiltSubset(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
+declare function swerefSubset(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
+declare function reningsSubset(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
+
+
 declare function trovrdighetsIndexer(
 	swerefobjekt as swerefobjekt,
 	reningsobjekt as reningsobjekt,

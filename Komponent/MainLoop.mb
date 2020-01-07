@@ -101,7 +101,6 @@ function diarienummerForUtskriftsObjekt(
 	diarienummerForUtskriftsObjekt = returnInteger
 end function
 
-
 function anlggningsobjektToUtskifts(anl() as AnlggningsObjekt,uObj() as UtskriftsObjekt,ittr as integer) as integer
 dim x,q as integer
 
@@ -486,9 +485,6 @@ sub getAnslutna(anslutan() as string)'hmtar ocks gemensamhetsanlggningar
 
 end sub
 
-
-
-
 sub huvuDObjekt(uObj() as UtskriftsObjekt, it as integer)
 	
 	dim fastighetsObjekt as alias
@@ -575,7 +571,8 @@ sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as sweref
 			call skapaMutationer(enskiltTokenObjekt,reningsTokenObjekt,swerefTokenObjekt,minimumDebt)
 		end if
 
-exit sub k: print error$() end program kx: print error$() end program end sub
+exit sub k: print error$() end program kx: print error$() end program 
+end sub
 
 'the method should replace the objects, whichever was on the original position should be placed last in the table.
 Sub insertAt(
@@ -642,7 +639,6 @@ Sub insertAt(
 					
 end sub
 
-
 function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt,reningsTokenObjekt() as reningsobjekt) as integer
 	dim storlek as integer
 	storlek = ubound(reningsobjekt)
@@ -668,7 +664,6 @@ function InitializeReningObjekt(intx as integer,reningsobjekt() as reningsobjekt
 		InitializeReningObjekt = intx
 	end if
 end function
-
 
 sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltTokenObjekt() as enskiltObjekt,swerefTokenObjekt() as swerefobjekt)
 
@@ -767,7 +762,6 @@ queryError:
 
 end sub
 
-
 function countShiftenGenUtvald(FastighetB as string) as integer
 	dim tempcountz as integer
 	
@@ -796,7 +790,6 @@ fasSelectError:
 	print "FastighetsObjCreationSelectError" & error$()
 	
 End Sub
-
 
 sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 		',swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float 
@@ -830,7 +823,6 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 	
 exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt p " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
 end sub
-
 
 function DiarieUtanBokstver(ByVal diarienummer as string) as string
 	dim sPartsArray() As String
@@ -905,7 +897,6 @@ function InitializeSwerefObjekt(InitializeOrCopy as integer,swerefobjekt() as sw
 		InitializeSwerefObjekt = InitializeOrCopy
 	end if
 end function
-
 
 function DiarieMixedToUnit(byVal text as string) as string
 	'skall bli, mhn-xxxx-xxxx
@@ -1023,7 +1014,6 @@ exit sub underskriptsFel: note error$()
 end program
 end sub
 	
-
 function reningsfastigheterAsString(reningsObjekt as reningsObjekt) as string
 
 	dim tempString,TempArray() as string
@@ -1228,7 +1218,6 @@ exit function
 
 end function
 
-
 sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
 
 	'uObj(ittr).flik_Avloppsnlaggni_Boendetyp = eO.Typ_byggnad
@@ -1242,7 +1231,6 @@ sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobje
 	'iif((len(eO.Typ_Slamavskiljare) > 18),right$(eO.Typ_Slamavskiljare,len(eO.Typ_Slamavskiljare)-18),eO.Typ_Slamavskiljare))
 	
 end sub
-
 
 sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as utskriftsobjekt)
 	redim vrde(tableInfo(sockenRessultat,TAB_INFO_NCOLS))
@@ -1300,7 +1288,6 @@ sub UtskriftsObjToInsertStringArray(vrde() as string, utskriftsobjekt as utskrif
 	
 end sub
 
-
 sub FastighetsObjToInsertStringArray(
 									output() as string,
 									inputx as fastighetsObjekt,
@@ -1348,7 +1335,6 @@ sub FastighetsObjToInsertStringArray(
 	output(11) = enskilt & " "
 
 end sub
-
 
 sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
 
@@ -1455,8 +1441,6 @@ function trovrdighetsIndexer(
 	trovrdighetsIndexer = (trovrdighetsIndex)/9 'tempFloat om fastighet inte fanns i listan p anslutna, men kan aldrig bli mer n 1
 end function
 
-
-
 Sub genTrovrdighet(tovrdighetsObjektArray() as trovrdighetsobjekt,enskiltTokenObjekt() as enskiltObjekt,reningsTokenObjekt() as reningsObjekt,swerefTokenObjekt() as swerefObjekt)
 'return is only interested in tovrdighetsObjektArray(1), where our return objekt will be
 	dim q,x,z,y as integer
@@ -1516,7 +1500,6 @@ function swerefrInteToken(swerefTokenObjekt as swerefObjekt) as logical
 	
 	swerefrInteToken = swerefTokenObjekt.rowindex <> 0
 end function
-
 
 Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swerefObjekt)
 dim query as string
@@ -1588,9 +1571,6 @@ dim query as string
 			next
 			'end program
 end sub
-
-
-
 
 function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
 		dim x,y,size as integer
@@ -1673,7 +1653,6 @@ function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetIn
 exit function
 	CommandError: note "[ERROR] @ reningsSubsetByFasgtighet _" & commandString & Error$() end program
 End function
-
 
 function ReningAsString(reningsObjekt as reningsobjekt) as String
 
@@ -1815,4 +1794,54 @@ sub reningObjCopyConstr(inputX as ReningsObjekt,OutputTable() as ReningsObjekt,b
 			next		
 
 			OutputTable(outPutItterator).rowIndex = inputX.rowIndex
+end sub
+
+
+sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
+
+	redim swerefTokenObjekt(1)
+	swerefTokenObjekt(1).FASTIGHET = ""
+	swerefTokenObjekt(1).Fastighet_tillstnd = ""
+	swerefTokenObjekt(1).rendenr = ""
+	swerefTokenObjekt(1).Beslut_datum = ""
+	swerefTokenObjekt(1).Status = ""
+	swerefTokenObjekt(1).Utskick1_datum = ""
+	swerefTokenObjekt(1).Anteckning = ""
+	swerefTokenObjekt(1).utfrddatum = ""
+	swerefTokenObjekt(1).slamhmtning = ""
+	swerefTokenObjekt(1).Antal_byggnader = 0
+	
+	redim reningsTokenObjekt(1)		
+	reningsTokenObjekt(1).spatialFastighet = ""
+	reningsTokenObjekt(1).spatialShift = ""
+	reningsTokenObjekt(1).Fastighet_rening = ""
+	reningsTokenObjekt(1).Antal_hushll_rening = 0
+	reningsTokenObjekt(1).Reningstyp = ""
+	reningsTokenObjekt(1).Storlek_m2 = 0
+	reningsTokenObjekt(1).kordinater = ""
+	reningsTokenObjekt(1).Beslut_datum = ""
+	reningsTokenObjekt(1).Utfrd_datum = ""
+	reningsTokenObjekt(1).Kommentarer = ""
+	reningsTokenObjekt(1).rowIndex = 0
+	
+	redim enskiltTokenObjekt(1)
+	enskiltTokenObjekt(1).Diarienummer = ""	
+	enskiltTokenObjekt(1).Fastighet_tillstnd = ""
+	enskiltTokenObjekt(1).spatialShift = ""
+	enskiltTokenObjekt(1).Typ_byggnad = ""
+	enskiltTokenObjekt(1).Antal_hushll_tillstnd = ""
+	enskiltTokenObjekt(1).Fastighet_rening = ""
+	enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
+	enskiltTokenObjekt(1).Storlek_m3 = 0
+	enskiltTokenObjekt(1).Typ_rening = ""
+	enskiltTokenObjekt(1).Storlek_m2 = 0
+	enskiltTokenObjekt(1).Typ_sluten_tank = ""
+	enskiltTokenObjekt(1).Storlek__m3 = 0
+	enskiltTokenObjekt(1).Beslut_datum = ""
+	enskiltTokenObjekt(1).Utfrd_datum = ""
+	enskiltTokenObjekt(1).Avgift = 0
+	enskiltTokenObjekt(1).Tillstnd_giltigt_tom = ""
+	enskiltTokenObjekt(1).Anteckningar = ""
+	enskiltTokenObjekt(1).kordinater = ""	
+
 end sub

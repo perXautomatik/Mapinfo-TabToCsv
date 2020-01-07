@@ -18,6 +18,9 @@ Declare sub DO1_10_enskiltIhopslagen
 Declare sub DO1_11_prepareSocken
 declare sub do6_8_SlamDisp 
 
+declare function CreateTable_reningIhopslagen as string
+declare function CreateTable_EnskiltIhopslagen as string
+
 
 global 
 G_workDir,G_socken as string,
@@ -29,7 +32,7 @@ Sub Main()
 	G_senastTid = 0 
 	G_socken = "" 
 	
-onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
+	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 
 exit sub
 
@@ -50,29 +53,37 @@ sub processor_1Pre
 		'call insertInitialTables()
 		call DO1_3_GenFasWithAdr	
 		call DO1_4_prepRenSd
-		if G_rebuild then print 1 end if
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 2 
 		call DO1_4_prepRenNor
-		if G_rebuild then print 2 end if
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 3
 		call DO1_4_prepRenMel
-		if G_rebuild then print 3 end if
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 4
 		call DO1_5_reningIhopslagen
-		if G_rebuild then print 4 end if
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 5
 		call DO1_8_prepareSweref
-		if G_rebuild then print 5 end if
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 6
 		call DO1_9_egnEnskWSpatFas
-		if G_rebuild then print 6 end if
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 7
 		call DO1_10_enskiltIhopslagen
+		if G_debugg then print "debugOK: " & G_Progress end if
 		call DO6_8_SlamDisp 'requiered at this step
-		if G_rebuild then print 7 end if
+		if G_rebuild then print G_Progress end if
 	case 8
 		call DO1_11_prepareSocken
-		if G_rebuild then print 8 end if
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	end case
 	
 	call increment(G_Progress,G_ProgressRange,G_starttime)
@@ -130,26 +141,26 @@ sub DO1_4_prepRenSd
 		dim tableNames(1) as string
 		redim tableNames(2)
 		
-		tempstring = ApplicationDirectory$() & "Rening_Sdra.TAB"
+		tempstring = ApplicationDirectory$() & "Rening_Södra.TAB"
 		
 		if G_rebuild then
 			tablenames(2) = "fastighet_yta"
-			tablenames(1) = "Rening_SdraNoIndex"		
+			tablenames(1) = "Rening_SödraNoIndex"		
 			call tableOpener(tablenames)	
 	
-			select * from tablenames(1) into "Rening_Sdra"
-			commit table Rening_Sdra  As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive
- 			close table Rening_Sdra
+			select * from tablenames(1) into "Rening_Södra"
+			commit table Rening_Södra  As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive
+ 			close table Rening_Södra
  			open table tempstring
-			Alter Table Rening_Sdra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
-			Add Column "Rening_Sdra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column "Rening_Sdra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-			commit table Rening_Sdra
-			Alter Table "Rening_Sdra" ( order Fastighet_rening,Antal_hushll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utfrd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+			Alter Table Rening_Södra ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
+			Add Column "Rening_Södra" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+			Add Column "Rening_Södra" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
+			commit table Rening_Södra
+			Alter Table "Rening_Södra" ( order Fastighet_rening,Antal_hushll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utfrd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
 			call tableCloser(tablenames())
 		end if
 		
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Sdra")
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Södra")
 			
 end sub
 
@@ -207,17 +218,51 @@ sub DO1_4_prepRenMel
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "Rening_Mellersta")
 end sub
  
+ 
+function CreateTable_reningIhopslagen as string
+	dim pathVar as string
+	dim temp as string temp= TempFileName$("") 
+	pathVar = left$(temp,len(temp)-4) & ".tab"
+	Create Table "reningIhopslagen" (
+	
+	Fastighet_rening Char(50),
+	Antal_hushll_rening Char(17),
+	Reningstyp Char(15),
+	Storlek_m2 Float,
+	Beslut_datum Char(10),
+	Utfrd_datum Char(10),
+	Kommentarer Char(254),
+	Anslutna_fastigheter_1 Char(50),
+	Anslutna_fastigheter_2 Char(50),
+	Anslutna_fastigheter_3 Char(50),
+	Anslutna_fastigheter_4 Char(50),
+	Anslutna_fastigheter_5 Char(50),
+	Anslutna_fastigheter_6 Char(50),
+	Anslutna_fastigheter_7 Char(50),
+	Anslutna_fastigheter_8 Char(50),
+	Anslutna_fastigheter_9 Char(50),
+	Anslutna_fastigheter_10 Char(50),
+	SpatialFastighet Char(40),
+	SpatialShift Char(40)
+		
+	)
+	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
+	CreateTable_reningIhopslagen = pathVar
+end function
+
+ 
 sub DO1_5_reningIhopslagen
 dim tablenames(3) as string
 
 tablenames(1) = "Rening_Mellersta"
 tablenames(2) = "rening_Norra"
-tablenames(3) = "rening_Sdra"
+tablenames(3) = "rening_Södra"
 		call tableOpener(tablenames)	
 		dim tempstring as string tempstring = CreateTable_reningIhopslagen()
 		call insertXintoYtableWhereXcolLessThaYcol("rening_mellersta","reningIhopslagen")
 		call insertXintoYtableWhereXcolLessThaYcol("rening_Norra","reningIhopslagen")
-		call insertXintoYtableWhereXcolLessThaYcol("rening_Sdra","reningIhopslagen")
+		call insertXintoYtableWhereXcolLessThaYcol("rening_Södra","reningIhopslagen")
 		Commit table reningIhopslagen
 		
 		call UpdateIndex("reningIhopslagen")'already commits
@@ -256,12 +301,12 @@ sub DO1_9_egnEnskWSpatFas
 				
 		dim tempstring1,tempstring2,tempstring3 as string ,tempAlias as alias
 	
-		tempstring1 = ApplicationDirectory$() & "Enskilt_avlopp_Sdra.TAB"
+		tempstring1 = ApplicationDirectory$() & "Enskilt_avlopp_Södra.TAB"
 		tempstring2 = ApplicationDirectory$() & "Enskilt_avlopp_Norra.TAB"
 		tempstring3 = ApplicationDirectory$() & "Enskilt_avlopp_Mellersta.TAB"
 		
 		if G_rebuild then
-			tablenames(1) = "Enskilt_avlopp_SdraNoIndex"
+			tablenames(1) = "Enskilt_avlopp_SödraNoIndex"
 			tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
 			tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
 			tablenames(4) = "fastighet_yta"
@@ -280,9 +325,9 @@ onError goto e424
 onError goto 0
 
 onError goto e428		
-			Alter Table Enskilt_avlopp_SdraNoIndex ( add SpatialFastighet Char(40), SpatialShift Char(40) )
-			Add Column "Enskilt_avlopp_SdraNoIndex" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column "Enskilt_avlopp_SdraNoIndex" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
+			Alter Table Enskilt_avlopp_SödraNoIndex ( add SpatialFastighet Char(40), SpatialShift Char(40) )
+			Add Column "Enskilt_avlopp_SödraNoIndex" (SpatialFastighet )From fastighet_yta Set To kir Where contains
+			Add Column "Enskilt_avlopp_SödraNoIndex" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
 onError goto 0
 
 onError goto e434
@@ -302,7 +347,7 @@ onError goto e445
 			onError goto 0
 		end if
 	onError goto e450
-		insert into Pathtable (tablePath,TableName) values (Tempstring1, "Enskilt_avlopp_Sdra")
+		insert into Pathtable (tablePath,TableName) values (Tempstring1, "Enskilt_avlopp_Södra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring2, "Enskilt_avlopp_Norra")
 		insert into Pathtable (tablePath,TableName) values (Tempstring3, "Enskilt_avlopp_Mellersta")
 	onError goto 0
@@ -338,7 +383,7 @@ sub DO1_10_enskiltIhopslagen
 		dim tableNames(1) as string
 		redim tableNames(3)
 	
-		tablenames(1) = "Enskilt_avlopp_Sdra"
+		tablenames(1) = "Enskilt_avlopp_Södra"
 		tablenames(2) = "Enskilt_avlopp_Norra"
 		tablenames(3) = "Enskilt_avlopp_Mellersta"
 		
@@ -346,7 +391,7 @@ sub DO1_10_enskiltIhopslagen
 	
 		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_mellersta","EnskiltIhopslagen")
 		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_Norra","EnskiltIhopslagen")
-		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_Sdra","EnskiltIhopslagen")
+		call insertCommonColumnsFromTableXintoY("Enskilt_avlopp_Södra","EnskiltIhopslagen")
 		Commit table EnskiltIhopslagen
 				
 		call UpdateIndex("EnskiltIhopslagen")'already commits

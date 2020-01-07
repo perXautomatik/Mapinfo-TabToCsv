@@ -779,7 +779,7 @@ End Sub
 sub PrepareGemensamma()
 	
 	select * from reningIhopslagen where rowid=1 into gemensamma
-	call grTillBastabell("gemensamma")
+	call görTillBastabell("gemensamma")
 	delete from gemensamma
 		
 	Insert Into reningIhopslagen (kommentarer,Col17,storlek_m2) values ("100390","gem,gem",48)
@@ -1147,55 +1147,6 @@ sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float
 	
 End Sub
 
-sub generateTokenObjekts(reningsTokenObjekt() as reningsobjekt, enskiltTokenObjekt() as enskiltObjekt, swerefTokenObjekt() as swerefobjekt)
-
-	redim swerefTokenObjekt(1)
-	swerefTokenObjekt(1).FASTIGHET = ""
-	swerefTokenObjekt(1).Fastighet_tillstnd = ""
-	swerefTokenObjekt(1).rendenr = ""
-	swerefTokenObjekt(1).Beslut_datum = ""
-	swerefTokenObjekt(1).Status = ""
-	swerefTokenObjekt(1).Utskick1_datum = ""
-	swerefTokenObjekt(1).Anteckning = ""
-	swerefTokenObjekt(1).utfrddatum = ""
-	swerefTokenObjekt(1).slamhmtning = ""
-	swerefTokenObjekt(1).Antal_byggnader = 0
-	
-	redim reningsTokenObjekt(1)		
-	reningsTokenObjekt(1).spatialFastighet = ""
-	reningsTokenObjekt(1).spatialShift = ""
-	reningsTokenObjekt(1).Fastighet_rening = ""
-	reningsTokenObjekt(1).Antal_hushll_rening = 0
-	reningsTokenObjekt(1).Reningstyp = ""
-	reningsTokenObjekt(1).Storlek_m2 = 0
-	reningsTokenObjekt(1).kordinater = ""
-	reningsTokenObjekt(1).Beslut_datum = ""
-	reningsTokenObjekt(1).Utfrd_datum = ""
-	reningsTokenObjekt(1).Kommentarer = ""
-	reningsTokenObjekt(1).rowIndex = 0
-	
-	redim enskiltTokenObjekt(1)
-	enskiltTokenObjekt(1).Diarienummer = ""	
-	enskiltTokenObjekt(1).Fastighet_tillstnd = ""
-	enskiltTokenObjekt(1).spatialShift = ""
-	enskiltTokenObjekt(1).Typ_byggnad = ""
-	enskiltTokenObjekt(1).Antal_hushll_tillstnd = ""
-	enskiltTokenObjekt(1).Fastighet_rening = ""
-	enskiltTokenObjekt(1).Typ_Slamavskiljare = ""
-	enskiltTokenObjekt(1).Storlek_m3 = 0
-	enskiltTokenObjekt(1).Typ_rening = ""
-	enskiltTokenObjekt(1).Storlek_m2 = 0
-	enskiltTokenObjekt(1).Typ_sluten_tank = ""
-	enskiltTokenObjekt(1).Storlek__m3 = 0
-	enskiltTokenObjekt(1).Beslut_datum = ""
-	enskiltTokenObjekt(1).Utfrd_datum = ""
-	enskiltTokenObjekt(1).Avgift = 0
-	enskiltTokenObjekt(1).Tillstnd_giltigt_tom = ""
-	enskiltTokenObjekt(1).Anteckningar = ""
-	enskiltTokenObjekt(1).kordinater = ""	
-
-end sub
-
 
 sub messageEveryString(StringArray() as String)
 	
@@ -1277,38 +1228,6 @@ end function
 sub injectGemensamma()
 	insert into reningIhopslagen select * from gemensamma
 End Sub
-
-function CreateTable_reningIhopslagen as string
-	dim pathVar as string
-	dim temp as string temp= TempFileName$("") 
-	pathVar = left$(temp,len(temp)-4) & ".tab"
-	Create Table "reningIhopslagen" (
-	
-	Fastighet_rening Char(50),
-	Antal_hushll_rening Char(17),
-	Reningstyp Char(15),
-	Storlek_m2 Float,
-	Beslut_datum Char(10),
-	Utfrd_datum Char(10),
-	Kommentarer Char(254),
-	Anslutna_fastigheter_1 Char(50),
-	Anslutna_fastigheter_2 Char(50),
-	Anslutna_fastigheter_3 Char(50),
-	Anslutna_fastigheter_4 Char(50),
-	Anslutna_fastigheter_5 Char(50),
-	Anslutna_fastigheter_6 Char(50),
-	Anslutna_fastigheter_7 Char(50),
-	Anslutna_fastigheter_8 Char(50),
-	Anslutna_fastigheter_9 Char(50),
-	Anslutna_fastigheter_10 Char(50),
-	SpatialFastighet Char(40),
-	SpatialShift Char(40)
-		
-	)
-	file pathVar TYPE NATIVE Charset "WindowsLatin1"
-	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
-	CreateTable_reningIhopslagen = pathVar
-end function
 
 function CreateTable_EnskiltIhopslagen as string
 	dim pathVar as string
