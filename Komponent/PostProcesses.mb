@@ -37,6 +37,7 @@ End Sub
 
 
 
+
 Sub processor_6Post()
 
 '   gerdins anläggningar är inte färdiga, not added in endressult !
@@ -87,7 +88,7 @@ Sub processor_6Post()
 	
 	call increment(G_Progress,G_ProgressRange,G_starttime)
 exit sub
-	korrigeringAvFelaktigaFastigheter: print "TableValidator" print error$()	    end program
+	korrigeringAvFelaktigaFastigheter: print "korrigeringAvFelaktigaFastigheter" print error$()	    end program
 End Sub
 
 

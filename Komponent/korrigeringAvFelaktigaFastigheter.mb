@@ -2,20 +2,25 @@ Include "MapBasic.def"
 
 Declare Sub Main
 declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
-declare sub process()
+
 declare Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
 
 Dim iProgress,iProgressRange,starttime as integer
 
+declare sub process()
+
 Sub Main()
 	'print Chr$(12) 'empty message
-	select * from fä2 into ÄF
-	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet2.TAB" as ÄF
+	'elect * from fä2 into ÄF
+	Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet.TAB" as ÄF
 	'Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as FS
-	Open Table "C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB" as FS	
+	
+	onError goto UrsprungsFastigheterMedSockenOc
+	run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as FS"
+	onError goto 0
 	Select Socken from Fs where socken <> "" group by socken into socken
 	
-	select * from ÄF where fnr = 0 into left			
+	select * from ÄF where fnr = "" into left			
 	fetch first from Left
 	startTime = timer()
 	iprogressRange = tableInfo(left,tab_info_nRows)
@@ -25,6 +30,9 @@ Sub Main()
 	Range iProgressRange
 
 	end program
+
+UrsprungsFastigheterMedSockenOc:
+	print error$() end program
 End Sub
 
 
