@@ -34,7 +34,7 @@ Sub Main()
 	
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 
-exit sub
+End program
 
 processor_1Pre: print "processor_1PreError" print error$()	    end program
 
@@ -444,3 +444,36 @@ sub do6_8_SlamDisp
 		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp p�: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
 		Commit table EnskiltIhopslagen
 end sub
+
+
+function CreateTable_EnskiltIhopslagen as string
+	dim pathVar as string
+	dim temp as string temp= TempFileName$("") 
+	pathVar = left$(temp,len(temp)-4) & ".tab"
+	Create Table "EnskiltIhopslagen" (
+	
+	Diarienummer Char(30),
+	Fastighet_tillstnd Char(50),
+	Typ_byggnad Char(15),
+	Antal_hushll_tillstnd Char(17),
+	Fastighet_rening Char(50),
+	Typ_Slamavskiljare Char(27),
+	Storlek_m3 Float,
+	Typ_rening Char(19),
+	Storlek_m2 Float,
+	Typ_sluten_tank Char(11),
+	Storlek__m3 Float,
+	Beslut_datum Date,
+	Utfrd_datum Date,
+	Avgift Char(10),
+	Tillstnd_giltigt_tom Date,
+	Anteckningar Char(254),
+	SpatialFastighet Char(40),
+	SpatialShift Char(40)
+
+		
+	)
+	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
+	CreateTable_EnskiltIhopslagen = pathVar
+end function

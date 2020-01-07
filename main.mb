@@ -23,11 +23,6 @@ Declare sub UObjCreator()
 global
 G_workDir,G_socken as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
-sub processor_2SockenRead
-	call Do2_LoadLatestObjId()
-	
-	call increment(G_Progress,G_ProgressRange,G_starttime)
-end sub
 
 Sub Main()
 
@@ -68,7 +63,7 @@ Sub Main()
 		run application applicationdirectory$() & "PostProcesses.MBX"
 	onError goto 0
 	
-exit sub	
+End program	
 	TableValidator: print "TableValidator" print error$()	    end program
 	PreProcesses: print "PreProcesses" print error$()	    end program
 	MainLoop: print "MainLoop" print error$()	    end program
@@ -77,6 +72,12 @@ exit sub
 	Processor_5StoreToHelaSolen:	print "Processor_5StoreToHelaSolenError"	end program
 
 End Sub
+
+sub processor_2SockenRead
+	call Do2_LoadLatestObjId()
+	
+	call increment(G_Progress,G_ProgressRange,G_starttime)
+end sub
 
 sub Processor_5StoreToHelaSolen()
 	

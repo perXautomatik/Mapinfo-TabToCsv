@@ -1,8 +1,6 @@
 Include "MapBasic.def"
 include "Menu.def"
-Include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\tabellInsammlare.def"
 include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
-
 
 Declare Sub Main
 Declare Sub processor_6Post()
@@ -19,7 +17,7 @@ declare sub do6_9_byggnads≈rTillFyraTecken
 
 
 global 
-G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, 
+'G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, 
 G_workDir,G_socken as string,
  G_rebuild,G_debugg as logical, G_anv‰ndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
@@ -31,7 +29,7 @@ Sub Main()
 	
 	onError goto postProcess G_ProgressRange = 9 G_Progress = 0 G_starttime = timer() ProgressBar "processor_6Post...." & G_ProgressRange & " items"	Calling processor_6Post	Range G_ProgressRange onError goto 0
 
-exit sub
+end program
 
 	postProcess:	print "postProcessError"	end program
 
@@ -47,27 +45,49 @@ Sub processor_6Post()
 ' 	correct fastigheter already before association
 
 	DO case G_Progress case 1
-		'call DO6_1_assosieraFnr()
+		call DO6_1_assosieraFnr()
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 2
 		call DO6_2_MHK()
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 3
 		call DO6_3_Anteckningar
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 4
 		call DO6_4_MultiplaFastigheter
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 5
 		call DO6_5_MÂnsBilder
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 6
-		call DO6_6_Gem	
+		'call DO6_6_Gem	
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 7
 		call DO6_7_CorW3Fas
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 8	
 		'call assosieraGammlaFastigheterTillNyaFnr()
+		onError goto korrigeringAvFelaktigaFastigheter
+			run application applicationdirectory$() & "korrigeringAvFelaktigaFastigheter.MBX"
+		onError goto 0
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	case 9
 		call DO6_9_byggnads≈rTillFyraTecken
+		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_rebuild then print G_Progress end if
 	end case
 	
 	call increment(G_Progress,G_ProgressRange,G_starttime)
-	
+exit sub
+	korrigeringAvFelaktigaFastigheter: print "TableValidator" print error$()	    end program
 End Sub
 
 
@@ -82,21 +102,21 @@ sub do6_1_assosieraFnr()
 	onError goto 0
 	
 	onError goto err2
-	query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas"
+		query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas"
 	run command query
-	query = "Add Column ""NoFas"" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 "
+		query = "Add Column ""NoFas"" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 "
 	run command query
 	onError goto 0
 	
 	onError goto err3
-	query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr"
+		query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr"
 	run command query
-	query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1"
+		query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1"
 	run command query
 	onError goto 0
 
 	onError goto err4
-	query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr"
+		query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr"
 	run command query
 	onError goto 0
 	
@@ -224,15 +244,15 @@ exit sub
 end sub
 	 
 sub do6_6_Gem
-'		'injesera gemensamhetsanl‰ggningar
-'		call openSingleTable("reningIhopslagen")
-'		call PrepareGemensamma()
-'		call injectGemensamma()
-'		dim tableNames(1) as string tableNames(1) = "reningIhopslagen"
-'		dim tempAlias as alias tempAlias = tableNames(1)
-'		commit table reningIhopslagen
-'		call UpdateIndex("reningIhopslagen")'already commits
-'		call tableCloserAndCommiter(tableNames)	
+		'injesera gemensamhetsanl‰ggningar
+		call openSingleTable("reningIhopslagen")
+		'call PrepareGemensamma()
+		'call injectGemensamma()
+		dim tableNames(1) as string tableNames(1) = "reningIhopslagen"
+		dim tempAlias as alias tempAlias = tableNames(1)
+		commit table reningIhopslagen
+		call UpdateIndex("reningIhopslagen")'already commits
+		call tableCloserAndCommiter(tableNames)	
 end sub
 
 sub do6_7_CorW3Fas()

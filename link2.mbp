@@ -3,4 +3,3 @@ Application = PostProcesses.mbx
 
 Module = Komponent\PostProcesses
 Module = CommonLib\commonLib1
-Module = tabellInsammlare

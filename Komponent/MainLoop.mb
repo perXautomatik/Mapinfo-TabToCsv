@@ -30,7 +30,7 @@ Sub Main()
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 'Runns = Runns+1 if(runns = 2) then '	end program	
 	fetch next from sockentabell loop
 	
-exit sub
+end program
 		LoadSocken:	print "LoadSockenError"	print error$()	    end program
 		createFastighetsTable: print "processor_1PreError" print error$()	    end program
 		processor_3PrepMutate:	print "processor_3PrepMutateError"	print error$()	    end program

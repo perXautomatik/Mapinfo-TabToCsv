@@ -4,6 +4,273 @@ Include "MapBasic.def"
 Include "tabellInsammlare.def"
 include "CommonLib\commonLib1.def"
 
+sub createRessultTableX(byval tablename as string, byval filePath as string)
+	
+	onError goto noTable close table tablename onError goto 0
+	
+	onError goto creationError
+
+	Create Table tableName (
+				Besksadress_Adress	Char(253),								'Fastighetens adress	->	Adress	Char(253)(fltmaxlngd)	Besksadress_Adress
+				Besksadress_Postnr	Char(253),								'Postnr	->	Postnr	Char(253)(fltmaxlngd)	Besksadress_Postnr
+				Besksadress_Ort Char(253),									'Ort	->	Ort	Char(253)(fltmaxlngd)	Besksadress_Ort
+				Besksadress_Huvudfastighet	Char(34),						'Fastighet_tillstnd	->	Huvudfastighet	Char(34)	Besksadress_Huvudfastighet
+				FNR integer,												'Fastighet_tillstnd	->	Huvudfastighet(FNR)	integer	FNR
+				ignore	Char(253),											'Lagfaren gare	->	Namn	Char(253)(fltmaxlngd)	Verksamhetsutvare_Namn
+				ignore integer,												'Person- /Orgnr	->	Person- /Orgnr	integer	Verksamhetsutv_Person_orgnr
+				ignore Char(253),											'Namn (kund)	->	Namn (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_NAMN
+				ignore	Char(253),											'Adress (kund)	->	Adress (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_Faktura_ADRESS
+				ignore	Char(253),											'Postnr (kund)	->	Postnr (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_Faktura_POSTNR
+				ignore	Char(253),											'Ort (kund)	->	Ort (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_Faktura_POSTOR
+				Enhet Char(6),												'"VATTEN"	->	Enhet	Char(6)	Enhet
+				Anteckning	Char(253),										'Anteckning (sweref/anlggning/rening)	->	Anteckning	Char(253)	Anteckning
+				Aktuell_timavgift integer,									'925	->	Aktuell timavgift	integer	Aktuell timavgift
+				Timdebitering Logical,										'TRUE	->	Timdebitering	Boolean	Timdebitering
+				Objektnamn	Char(36),										'Huvudfastighet	->	Objektnamn	Char(36)	Objektnamn
+				flik_Avloppsnlaggni_Boendetyp	Char(15),					'Typ_byggnad (beslut)	->	Boendetyp	Char(15)	flik_Avloppsnlaggni_Boendetyp
+				flik_Avloppsanlggn_Byggnadsr Char(4),						'Tillstnd_giltigt_tom (beslut)	->	Byggnadsr	Char(4)	flik_Avloppsanlggn_Byggnadsr
+				flik_Avloppsa_Besiktningsdatum Date,						'utfrandedatum  (beslut)	->	Besiktningsdatum	datum(-MM-DD)	flik_Avloppsa_Besiktningsdatum
+				flik_Avloppsanlg_Beslutsdatum Date,						'beslutsdatum (beslut)	->	Beslutsdatum	datum(-MM-DD)	flik_Avloppsanlg_Beslutsdatum
+				Vatten	Char(17),											'Antal_hushll_tillstnd (beslut)	->	Vatten	Char(17)	Vatten
+				Recipient Char(49),											'Fastighet Rening (rening)	->	Recipient	Char(49)	Recipient
+				Inventering	Char(12),										'(om sweref) "Klart Vatten"	->	Inventering	Char(12)	Inventering
+				Inventeringsinformation_Datum Date,							'Utskick1_datum (sweref)	->	Datum 	datum(-MM-DD)	Inventeringsinformation_Datum
+				Inventeringsinformation_Status	Char(6),					'Status (sweref)	->	Status	Char(6)	Inventeringsinformation_Status
+				Bedmning Char(15),											'rendenr (sweref)	->	Bedmning	Char(15)	Bedmning
+				fliken_Fastigheter	Char(34),								'Anslutna_fastigheter	->	fliken Fastigheter	Char(34)	fliken_Fastigheter
+				fliken_FastigheterFNR integer,								'Anslutna_fastigheter	->	fliken Fastigheter(FNR)	integer	fliken Fastigheter(FNR)
+				PunkttypAB Char(16),										'Punkttyp	->	Ansluten byggnad	Char(16)	PunkttypAB
+				Fliken_Koordinater	Char(19),								'Koordinater (beslut/rening/sweref)	->	X o Y	Char(19)	Fliken_Koordinater
+				fliken_renden	char(13),									'Diarienummer(Flagg,Beslut)	->	fliken renden	char(13)	fliken renden
+				Anlggningskategori	Char(29),								'"Efterfljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Anlggningskategori	Char(29)	Anlggningskategori
+				besiktningdatum Date,										'utfrandedatum  (rening/beslut/tank)	->	besiktningdatum	datum(-MM-DD)	besiktningdatum
+				beslutsdatum Date,											'beslutsdatum (rening/beslut/tank)	->	beslutsdatum	datum(-MM-DD)	beslutsdatum
+				Anlggningstyp	Char(15),									'Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) "Klart Vatten"	->	Anlggningstyp	Char(15)	Anlggningstyp
+				Volym_m3 float,												'Storlek_m2 (rening)/Storlek_m3  (Beslut)	->	Volym m3	float	Volym m3
+				Anl_fr_EftR_TInterv_mn integer,							'Antal_hushll_rening (rening)	->	Tmningssintervall	integer	Anl_fr_EftR_TInterv_mn
+				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (dr infiltration/markbdd r belgen)/(dr ansluten)/(dr EXTRA inventeringsinformation r belgen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
+				PunkttypER	Char(20),										'"Efterfljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Punkttyp Koordinater	Char(20)	PunkttypER
+				Anlggning_fr_EfterfljRText Char(253),					'Kommentarer (rening/sweref/beslut)	->	Text	Char(253)(fltmaxlngd)	Anlggning_fr_EfterfljRText
+				ignore	Char(19),											''
+				Anlggning_fr_S_Anlggningstyp	Char(15),					'Typ_byggnad (beslut)	->	Certifieringstyp (Typ av boende)	Char(15)	Anlggning_fr_S_Anlggningstyp
+				Externt_Tjnsteid integer,									'rendenr  (beslut/tank/sweref)	->	Externt Tjnsteid	integer	Externt Tjnsteid
+				text Char(6),												'Status  (sweref)	->	Status	Char(6)	text
+				Anlggning_fr_Slamav_Volym_m3 date,						'Utskick1_datum (sweref)	->	Datum	datum(-MM-DD)	Anlggning_fr_Slamav_Volym_m3
+				ignore	Char(19),											''
+				AnlfrEfterR_Anlggningstyp	date,							'Slamdispense	->	Tmningsdispens fr.o.m	datum(-MM-DD)	AnlfrEfterR_Anlggningstyp
+				ignore	 Date,												''
+				ignore	Date,												''
+				ignorex	integer,											''objektIndex
+				ignore	char(1),												''
+				ObjektID integer,											'ObjektItterator	->	ObjektID	integer	ObjektID
+				Path Char(253),												'Path (fr filer som skall fras in, kopplas till objekt)	->	Path	Char(253)	Path
+				Diarienummer char(13),										'Diarienummer (fr renden som skall knytas)	->	Diarienummer	char(13)	Diarienummer
+				Lpnummer integer											'Lpnummer (fr renden som skall knytas)	->	Lpnummer	integer	Lpnummer
+
+
+			) file filePath TYPE NATIVE Charset "WindowsLatin1"
+			Create Map For tablename CoordSys Earth Projection 1, 104
+	onError goto 0
+	
+exit sub
+	creationError:
+	print "creationError" & error$()
+	end program
+	
+	noTable:
+	resume next 
+end sub
+
+function enforceFormat(byVal inputx as string,byVal format as string,byVal lenght as integer) as string
+	
+	dim return as string
+	
+	do case format
+		case "Char"
+			return = left$(inuptx,lenght)
+		case "Date"		
+			return = "" & NumberToDate(val(DeformatNumber$(inuptx)))
+			if return = "" then
+				return = "0"
+			end if
+		case "float"
+			return = "" & DeformatNumber$(inuptx)		
+		case "integer"
+			return = "" & val(DeformatNumber$(inuptx))
+		case "Logical"
+			do case inuptx
+			case "1","0","F","T"
+				return = inputx
+			case else
+				return = "" & val(inuptx)	
+			end case
+		case else
+			goto unrecognized		
+	End Case
+	
+		if( return <> inuptx ) then
+			goto overflow
+		end if
+			
+		enforceFormat = return
+	
+exit function
+	unrecognized:
+		print "unrecognized format " & format & "lenght:" & lenght
+	end program
+		overflow:
+		print "Warning overflow, " & inputx & " = " & return
+		resume next
+End Function
+
+sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
+		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
+		
+		swerefTot = swerefStop-swerefStart+0.01
+		ReningTot = ReningStop-ReningStart+0.01
+		EnskiltTot = EnskiltStop-EnskiltStart+0.01
+		objektTot = objektCreationStop-objektCreationStart+0.01
+		
+		total = (swerefTot)+(EnskiltTot)+(ReningTot)+(objektTot)
+						
+		print "[total:" & Format$(total, "#.##") & 
+		"|Sw "& Format$((swerefTot/total), "%")  &
+		" |Re "& Format$ ((ReningTot/total), "%")  &
+		" |En "& Format$ ((enskiltTot/total), "%")  &
+		" |Ob "& Format$ ((objektTot/total), "%") & " ]"
+	
+End Sub
+
+sub messageEveryString(StringArray() as String)
+	
+	Dim	i As Integer
+		
+		for i = 1 To Ubound(StringArray)
+			print "*" & StringArray(i) & "*"
+		Next
+	
+end sub
+
+function getCOrd(byVal ColumnName as string) as string 'frvntar sig endast ett object av samma typ
+	
+	dim tempAlias as alias
+	tempAlias = ColumnName
+	dim tempInteger as integer
+	
+	select * from urval where not(tempAlias = "") into objUrval
+	tempInteger = tableInfo(objUrval,8)
+		
+	if tempInteger > 0 then
+		onError goto noCordError	
+		fetch first from objUrval
+		getCOrd =  ObjectGeography(objUrval.obj,1) & "," & ObjectGeography(objUrval.obj,2)
+	end if
+
+exit function
+noCordError:
+	print tempInteger & " :rader, " & error$()
+end function
+
+function kollaBredd(values() as string) as logical
+
+	kollaBredd = true
+	dim x as integer
+
+	for x = 1 to ubound(values)
+		select col2 from referenceTable where col1 = x into bucketSize
+			fetch first from bucketSize
+		if(bucketSize.col1 < len(values(x))) then
+			kollaBredd = false
+		end if
+	next
+
+end function
+
+function countDupes(byVal fastighetsBet as string) as integer
+
+dim hasDupes,x as integer
+
+		select * from sammanfogadtabell where Besksadress_Huvudfastighet = FastighetsBet into urval
+		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
+     		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
+     			hasDupes = hasDupes + 1
+     		end if
+		Next
+
+countDupes = hasDupes
+end function
+
+function countOccurences(byVal colummn as string) as integer
+	
+	Dim query As String
+	dim tempAlias as alias
+	tempAlias = "urval." & colummn
+	
+	onError goto QueryError
+	
+	select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
+	
+	fetch first from tempcolumnFiltered
+	countOccurences = tableInfo(tempcolumnFiltered,8)	
+exit function
+	QueryError:
+		print query & "]countOccurences[" & Error$()
+		countOccurences = 0
+end function
+
+function DebuggStringEveryInt(IntArray() as integer) as string
+	
+	Dim	i As Integer
+		
+		for i = 1 To Ubound(IntArray)
+			print "[" & IntArray(i) & "]"
+		Next
+	
+end function
+
+function findWhereInStringArray(byVal vrde as string, array() as string) as integer
+
+	dim itterator as integer
+	
+		for itterator=1 to ubound(array)
+			if(vrde = array(itterator)) then
+				findWhereInStringArray = itterator
+			end if
+		next
+		
+	findWhereInStringArray = 0
+
+end function
+
+sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as integer)
+	
+	dim originalPosition as integer
+	,pOrgPlatts as string
+	
+	if positionX > ubound(arrayTobePutIn) then
+		redim arrayTobePutIn(positionX)
+	end if
+	
+	'finns strnngen redan, returnera dess possition, annars returnera en ny positino
+	originalPosition = findWhereInStringArray(inputString,arrayToBePutIn)
+	if originalPosition = 0	then
+		originalPosition = ubound(arrayTobePutIn)+1
+		redim arrayTobePutIn(originalPosition)
+	end if
+
+	'hmta vad som r p platts, och skriv ver med input
+	pOrgPlatts = arrayTobePutIn(positionX) arrayTobePutIn(positionX) = inputString
+	if pOrgPlatts <> "" then
+		'skriv det forna objektet p den forna plattsen
+		arrayTobePutIn(originalPosition) = pOrgPlatts
+	end if
+	
+end sub
+
+
+sub injectGemensamma()
+	insert into reningIhopslagen select * from gemensamma
+End Sub
 
 Sub gemAnslutna(caseString as string,ressultArray() as string)
 	dim caseInt as integer
@@ -1008,304 +1275,4 @@ sub PrepareGemensamma()
 	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushll_rening) values ("508520","BARLINGBO BJRKHAGE 1:6","gem,gem","slam. & inf.","45 pe")
 	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushll_rening,storlek_m2) values ("506296","Ardre Kaupungs 6:1","gem,gem","slam. & inf.","36 pe",642)						
 
-end sub
-
-sub createRessultTableX(byval tablename as string, byval filePath as string)
-	
-	onError goto noTable close table tablename onError goto 0
-	
-	onError goto creationError
-
-	Create Table tableName (
-				Besksadress_Adress	Char(253),								'Fastighetens adress	->	Adress	Char(253)(fltmaxlngd)	Besksadress_Adress
-				Besksadress_Postnr	Char(253),								'Postnr	->	Postnr	Char(253)(fltmaxlngd)	Besksadress_Postnr
-				Besksadress_Ort Char(253),									'Ort	->	Ort	Char(253)(fltmaxlngd)	Besksadress_Ort
-				Besksadress_Huvudfastighet	Char(34),						'Fastighet_tillstnd	->	Huvudfastighet	Char(34)	Besksadress_Huvudfastighet
-				FNR integer,												'Fastighet_tillstnd	->	Huvudfastighet(FNR)	integer	FNR
-				ignore	Char(253),											'Lagfaren gare	->	Namn	Char(253)(fltmaxlngd)	Verksamhetsutvare_Namn
-				ignore integer,												'Person- /Orgnr	->	Person- /Orgnr	integer	Verksamhetsutv_Person_orgnr
-				ignore Char(253),											'Namn (kund)	->	Namn (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_NAMN
-				ignore	Char(253),											'Adress (kund)	->	Adress (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_Faktura_ADRESS
-				ignore	Char(253),											'Postnr (kund)	->	Postnr (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_Faktura_POSTNR
-				ignore	Char(253),											'Ort (kund)	->	Ort (kund)	Char(253)(fltmaxlngd)	Fakturamottagare_Faktura_POSTOR
-				Enhet Char(6),												'"VATTEN"	->	Enhet	Char(6)	Enhet
-				Anteckning	Char(253),										'Anteckning (sweref/anlggning/rening)	->	Anteckning	Char(253)	Anteckning
-				Aktuell_timavgift integer,									'925	->	Aktuell timavgift	integer	Aktuell timavgift
-				Timdebitering Logical,										'TRUE	->	Timdebitering	Boolean	Timdebitering
-				Objektnamn	Char(36),										'Huvudfastighet	->	Objektnamn	Char(36)	Objektnamn
-				flik_Avloppsnlaggni_Boendetyp	Char(15),					'Typ_byggnad (beslut)	->	Boendetyp	Char(15)	flik_Avloppsnlaggni_Boendetyp
-				flik_Avloppsanlggn_Byggnadsr Char(4),						'Tillstnd_giltigt_tom (beslut)	->	Byggnadsr	Char(4)	flik_Avloppsanlggn_Byggnadsr
-				flik_Avloppsa_Besiktningsdatum Date,						'utfrandedatum  (beslut)	->	Besiktningsdatum	datum(-MM-DD)	flik_Avloppsa_Besiktningsdatum
-				flik_Avloppsanlg_Beslutsdatum Date,						'beslutsdatum (beslut)	->	Beslutsdatum	datum(-MM-DD)	flik_Avloppsanlg_Beslutsdatum
-				Vatten	Char(17),											'Antal_hushll_tillstnd (beslut)	->	Vatten	Char(17)	Vatten
-				Recipient Char(49),											'Fastighet Rening (rening)	->	Recipient	Char(49)	Recipient
-				Inventering	Char(12),										'(om sweref) "Klart Vatten"	->	Inventering	Char(12)	Inventering
-				Inventeringsinformation_Datum Date,							'Utskick1_datum (sweref)	->	Datum 	datum(-MM-DD)	Inventeringsinformation_Datum
-				Inventeringsinformation_Status	Char(6),					'Status (sweref)	->	Status	Char(6)	Inventeringsinformation_Status
-				Bedmning Char(15),											'rendenr (sweref)	->	Bedmning	Char(15)	Bedmning
-				fliken_Fastigheter	Char(34),								'Anslutna_fastigheter	->	fliken Fastigheter	Char(34)	fliken_Fastigheter
-				fliken_FastigheterFNR integer,								'Anslutna_fastigheter	->	fliken Fastigheter(FNR)	integer	fliken Fastigheter(FNR)
-				PunkttypAB Char(16),										'Punkttyp	->	Ansluten byggnad	Char(16)	PunkttypAB
-				Fliken_Koordinater	Char(19),								'Koordinater (beslut/rening/sweref)	->	X o Y	Char(19)	Fliken_Koordinater
-				fliken_renden	char(13),									'Diarienummer(Flagg,Beslut)	->	fliken renden	char(13)	fliken renden
-				Anlggningskategori	Char(29),								'"Efterfljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Anlggningskategori	Char(29)	Anlggningskategori
-				besiktningdatum Date,										'utfrandedatum  (rening/beslut/tank)	->	besiktningdatum	datum(-MM-DD)	besiktningdatum
-				beslutsdatum Date,											'beslutsdatum (rening/beslut/tank)	->	beslutsdatum	datum(-MM-DD)	beslutsdatum
-				Anlggningstyp	Char(15),									'Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) "Klart Vatten"	->	Anlggningstyp	Char(15)	Anlggningstyp
-				Volym_m3 float,												'Storlek_m2 (rening)/Storlek_m3  (Beslut)	->	Volym m3	float	Volym m3
-				Anl_fr_EftR_TInterv_mn integer,							'Antal_hushll_rening (rening)	->	Tmningssintervall	integer	Anl_fr_EftR_TInterv_mn
-				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (dr infiltration/markbdd r belgen)/(dr ansluten)/(dr EXTRA inventeringsinformation r belgen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
-				PunkttypER	Char(20),										'"Efterfljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Punkttyp Koordinater	Char(20)	PunkttypER
-				Anlggning_fr_EfterfljRText Char(253),					'Kommentarer (rening/sweref/beslut)	->	Text	Char(253)(fltmaxlngd)	Anlggning_fr_EfterfljRText
-				ignore	Char(19),											''
-				Anlggning_fr_S_Anlggningstyp	Char(15),					'Typ_byggnad (beslut)	->	Certifieringstyp (Typ av boende)	Char(15)	Anlggning_fr_S_Anlggningstyp
-				Externt_Tjnsteid integer,									'rendenr  (beslut/tank/sweref)	->	Externt Tjnsteid	integer	Externt Tjnsteid
-				text Char(6),												'Status  (sweref)	->	Status	Char(6)	text
-				Anlggning_fr_Slamav_Volym_m3 date,						'Utskick1_datum (sweref)	->	Datum	datum(-MM-DD)	Anlggning_fr_Slamav_Volym_m3
-				ignore	Char(19),											''
-				AnlfrEfterR_Anlggningstyp	date,							'Slamdispense	->	Tmningsdispens fr.o.m	datum(-MM-DD)	AnlfrEfterR_Anlggningstyp
-				ignore	 Date,												''
-				ignore	Date,												''
-				ignorex	integer,											''objektIndex
-				ignore	char(1),												''
-				ObjektID integer,											'ObjektItterator	->	ObjektID	integer	ObjektID
-				Path Char(253),												'Path (fr filer som skall fras in, kopplas till objekt)	->	Path	Char(253)	Path
-				Diarienummer char(13),										'Diarienummer (fr renden som skall knytas)	->	Diarienummer	char(13)	Diarienummer
-				Lpnummer integer											'Lpnummer (fr renden som skall knytas)	->	Lpnummer	integer	Lpnummer
-
-
-			) file filePath TYPE NATIVE Charset "WindowsLatin1"
-			Create Map For tablename CoordSys Earth Projection 1, 104
-	onError goto 0
-	
-exit sub
-	creationError:
-	print "creationError" & error$()
-	end program
-	
-	noTable:
-	resume next 
-end sub
-
-function enforceFormat(byVal inputx as string,byVal format as string,byVal lenght as integer) as string
-	
-	dim return as string
-	
-	do case format
-		case "Char"
-			return = left$(inuptx,lenght)
-		case "Date"		
-			return = "" & NumberToDate(val(DeformatNumber$(inuptx)))
-			if return = "" then
-				return = "0"
-			end if
-		case "float"
-			return = "" & DeformatNumber$(inuptx)		
-		case "integer"
-			return = "" & val(DeformatNumber$(inuptx))
-		case "Logical"
-			do case inuptx
-			case "1","0","F","T"
-				return = inputx
-			case else
-				return = "" & val(inuptx)	
-			end case
-		case else
-			goto unrecognized		
-	End Case
-	
-		if( return <> inuptx ) then
-			goto overflow
-		end if
-			
-		enforceFormat = return
-	
-exit function
-	unrecognized:
-		print "unrecognized format " & format & "lenght:" & lenght
-	end program
-		overflow:
-		print "Warning overflow, " & inputx & " = " & return
-		resume next
-End Function
-
-sub presentTime(swerefStart as float,ReningStart as float, EnskiltStart as float, objektCreationStart as float,swerefStop as float,ReningStop as float, EnskiltStop as float, objektCreationStop as float)
-		dim total, swerefProc, reningProc,enskiltProc,objektProc,swerefTot, reningTot,enskiltTot,objektTot as float
-		
-		swerefTot = swerefStop-swerefStart+0.01
-		ReningTot = ReningStop-ReningStart+0.01
-		EnskiltTot = EnskiltStop-EnskiltStart+0.01
-		objektTot = objektCreationStop-objektCreationStart+0.01
-		
-		total = (swerefTot)+(EnskiltTot)+(ReningTot)+(objektTot)
-						
-		print "[total:" & Format$(total, "#.##") & 
-		"|Sw "& Format$((swerefTot/total), "%")  &
-		" |Re "& Format$ ((ReningTot/total), "%")  &
-		" |En "& Format$ ((enskiltTot/total), "%")  &
-		" |Ob "& Format$ ((objektTot/total), "%") & " ]"
-	
-End Sub
-
-
-sub messageEveryString(StringArray() as String)
-	
-	Dim	i As Integer
-		
-		for i = 1 To Ubound(StringArray)
-			print "*" & StringArray(i) & "*"
-		Next
-	
-end sub
-
-function getCOrd(byVal ColumnName as string) as string 'frvntar sig endast ett object av samma typ
-	
-	dim tempAlias as alias
-	tempAlias = ColumnName
-	dim tempInteger as integer
-	
-	select * from urval where not(tempAlias = "") into objUrval
-	tempInteger = tableInfo(objUrval,8)
-		
-	if tempInteger > 0 then
-		onError goto noCordError	
-		fetch first from objUrval
-		getCOrd =  ObjectGeography(objUrval.obj,1) & "," & ObjectGeography(objUrval.obj,2)
-	end if
-
-exit function
-noCordError:
-	print tempInteger & " :rader, " & error$()
-end function
-
-function kollaBredd(values() as string) as logical
-
-	kollaBredd = true
-	dim x as integer
-
-	for x = 1 to ubound(values)
-		select col2 from referenceTable where col1 = x into bucketSize
-			fetch first from bucketSize
-		if(bucketSize.col1 < len(values(x))) then
-			kollaBredd = false
-		end if
-	next
-
-end function
-
-function countDupes(byVal fastighetsBet as string) as integer
-
-dim hasDupes,x as integer
-
-		select * from sammanfogadtabell where Besksadress_Huvudfastighet = FastighetsBet into urval
-		For x=1 to TableInfo(urval, TAB_INFO_NCOLS)
-     		if(countOccurences(ColumnInfo(urval, "col"+str$(x), COL_INFO_NAME))> 1) then
-     			hasDupes = hasDupes + 1
-     		end if
-		Next
-
-countDupes = hasDupes
-end function
-
-function countOccurences(byVal colummn as string) as integer
-	
-	Dim query As String
-	dim tempAlias as alias
-	tempAlias = "urval." & colummn
-	
-	onError goto QueryError
-	
-	select tempAlias from urval where not(tempAlias & "" = "0" or tempAlias & "" = "") group by tempAlias into tempcolumnFiltered
-	
-	fetch first from tempcolumnFiltered
-	countOccurences = tableInfo(tempcolumnFiltered,8)	
-exit function
-	QueryError:
-		print query & "]countOccurences[" & Error$()
-		countOccurences = 0
-end function
-
-sub injectGemensamma()
-	insert into reningIhopslagen select * from gemensamma
-End Sub
-
-function CreateTable_EnskiltIhopslagen as string
-	dim pathVar as string
-	dim temp as string temp= TempFileName$("") 
-	pathVar = left$(temp,len(temp)-4) & ".tab"
-	Create Table "EnskiltIhopslagen" (
-	
-	Diarienummer Char(30),
-	Fastighet_tillstnd Char(50),
-	Typ_byggnad Char(15),
-	Antal_hushll_tillstnd Char(17),
-	Fastighet_rening Char(50),
-	Typ_Slamavskiljare Char(27),
-	Storlek_m3 Float,
-	Typ_rening Char(19),
-	Storlek_m2 Float,
-	Typ_sluten_tank Char(11),
-	Storlek__m3 Float,
-	Beslut_datum Date,
-	Utfrd_datum Date,
-	Avgift Char(10),
-	Tillstnd_giltigt_tom Date,
-	Anteckningar Char(254),
-	SpatialFastighet Char(40),
-	SpatialShift Char(40)
-
-		
-	)
-	file pathVar TYPE NATIVE Charset "WindowsLatin1"
-	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
-	CreateTable_EnskiltIhopslagen = pathVar
-end function
-
-function DebuggStringEveryInt(IntArray() as integer) as string
-	
-	Dim	i As Integer
-		
-		for i = 1 To Ubound(IntArray)
-			print "[" & IntArray(i) & "]"
-		Next
-	
-end function
-
-function findWhereInStringArray(byVal vrde as string, array() as string) as integer
-
-	dim itterator as integer
-	
-		for itterator=1 to ubound(array)
-			if(vrde = array(itterator)) then
-				findWhereInStringArray = itterator
-			end if
-		next
-		
-	findWhereInStringArray = 0
-
-end function
-
-sub putAtIndex(arrayTobePutIn() as string,inputString as string,positionX as integer)
-	
-	dim originalPosition as integer
-	,pOrgPlatts as string
-	
-	if positionX > ubound(arrayTobePutIn) then
-		redim arrayTobePutIn(positionX)
-	end if
-	
-	'finns strnngen redan, returnera dess possition, annars returnera en ny positino
-	originalPosition = findWhereInStringArray(inputString,arrayToBePutIn)
-	if originalPosition = 0	then
-		originalPosition = ubound(arrayTobePutIn)+1
-		redim arrayTobePutIn(originalPosition)
-	end if
-
-	'hmta vad som r p platts, och skriv ver med input
-	pOrgPlatts = arrayTobePutIn(positionX) arrayTobePutIn(positionX) = inputString
-	if pOrgPlatts <> "" then
-		'skriv det forna objektet p den forna plattsen
-		arrayTobePutIn(originalPosition) = pOrgPlatts
-	end if
-	
 end sub
