@@ -11,17 +11,17 @@ declare sub process()
 
 Sub Main()
 	'print Chr$(12) 'empty message
-	'elect * from fä2 into ÄF
-	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet.TAB" as ÄF
+	'elect * from fä2 into UtanFnr
+	'Open Table "C:\Users\crbk01\OneDrive - Region Gotland\Solen till vision\KomponentProgramm\ÄrendenMedIngenEllerFelFastighet.TAB" as UtanFnr
 	Update HelaSolen Set ignorex = rowid DropIndex Auto
-	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" 
-	from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into ÄF
+	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr",ignorex "rowid" 
+	from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into UtanFnr
 	
 	
 	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmiljö\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
 		Select Socken from korrigerandeTabell where socken <> "" group by socken into socken
 	
-	select * from ÄF group by sökbegrepp into Left
+	select * from UtanFnr group by flikenFastigheter into Left
 
 	fetch first from Left
 	startTime = timer()
@@ -32,7 +32,7 @@ Sub Main()
 	Range iProgressRange
 
 	commit table helaSolen
-	Select fliken_Fastigheter "sökbegrepp",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
+	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left
 
 	end program
 FSUrsprungsFastigheterMedSockenOc:
@@ -65,53 +65,29 @@ sub process()
 	fetch first from socken
 
 	do until eot(socken)
-		dim sokStreng,sockenB,FsTrakt,blockb as string B		sockenB = socken.col1 sökb = Left.sökbegrepp
+		dim sokStreng,sockenB,fsTrakt,blockb as string B		sockenB = socken.col1 sokStreng = Left.flikenFastigheter
 		
 		if instr(1,sokStreng,left$(sockenB,5)) <> 0 then
 			if sokStreng <> sockenB then select trakt from korrigerandeTabell where socken = SockenB AND trakt <> "" group by trakt into trakt fetch first from trakt
 				do until eot(Trakt)
-					korrigerandeTrackt = trakt.Col1
-					dim sPartsArray() As String
+					dim sPartsArray(2) As String			
+					korrigerandeTrackt = iif((SplitStringAtCharacter(trakt.Col1, " ", sPartsArray) = 2),spartsArray(2),trakt.Col1) 'nödvändigt för att kunna kolla både lilla och stora bjärs, tex
 					
-					if(SplitStringAtCharacter(korrigerandeTrackt, " ", sPartsArray) = 2) then
-						korrigerandeTrackt = spartsArray(2)
-					else
-						korrigerandeTrackt = korrigerandeTrackt
-					end if
-					
-					if instr(1,sokStreng,korrigerandeTrackt) <> 0 then	
-B						if sökb <> Socken & " " & fstrakt then
-							select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = fstrakt AND blockenhet <> ""  group by blockenhet into blockenhet
-							fetch first from blockenhet
-							
-							do until eot(blockenhet)
-							blockB = Blockenhet.col1
+					if instr(1,sokStreng,korrigerandeTrackt) <> 0 then dim sockenOTrackt as logical sockenOTrackt = sokStreng <> SockenB & " " & korrigerandeTrackt				
+						if Not(sockenOTrackt) then select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = fstrakt AND blockenhet <> ""  group by blockenhet into blockenhet fetch first from blockenhet
+							do until eot(blockenhet) blockB = Blockenhet.col1
+								
 								if instr(1,sokStreng,blockB) <> 0 then
-B									dim FnrF,idx as integer
+									select fnr from korrigerandeTabell where socken = SockenB AND trakt = fstrakt AND blockenhet = blockB group by fnr into hittatFNR fetch first from hittatFNR dim FnrF as integer FnrF = hittatFNR.fnr
 									
-									select fnr from fs where socken = SockenB AND trakt = fstrakt AND blockenhet = blockB group by fnr into ressult
-									fetch first from ressult
-									FnrF = ressult.fnr
-									idx = Left.sökbegrepp
-									
-									update ÄF set fnr=FnrF where sökbegrepp = idx
-									print "updated"
-									goto loopend
+									update UtanFnr set fnr=FnrF where flikenFastigheter = sokStreng print "updated : " & sokStreng & " = " & SockenB & " " & fstrakt & " " & blockB goto LoopEnd
 								end if
-								fetch next from blockenhet
-							loop	
-						else
-							goto LoopEnd
-						end if
-						'nödvändigt för att kunna kolla både lilla och stora bjärs, tex
+								fetch next from blockenhet loop	
+						else goto LoopEnd end if						
 					end if
-					fetch next from trakt
-				loop
-			else
-				goto LoopEnd
-			end if
-		end if		
-			
+					fetch next from trakt loop
+			else goto LoopEnd end if
+		end if			
 		
 		fetch next from socken
 	loop
