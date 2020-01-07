@@ -64,11 +64,12 @@ End Sub
 sub process()
 
 	fetch first from socken
+
 	do until eot(socken)
-	dim sökB,sockenB,FsTrakt,blockb as string
-	sockenB = socken.col1
-	sökb = Left.sökbegrepp
-		if instr(1,sökB,left$(sockenB,3)) <> 0 then
+		dim sökB,sockenB,FsTrakt,blockb as string
+		sockenB = socken.col1 sökb = Left.sökbegrepp
+		
+		if instr(1,sökB,left$(sockenB,5)) <> 0 then
 			if sökB <> socken then
 				select trakt from FS where socken = SockenB AND trakt <> ""  group by trakt into trakt
 				fetch first from trakt
@@ -114,7 +115,7 @@ sub process()
 				goto LoopEnd
 			end if
 		end if		
-		
+			
 		
 		fetch next from socken
 	loop
