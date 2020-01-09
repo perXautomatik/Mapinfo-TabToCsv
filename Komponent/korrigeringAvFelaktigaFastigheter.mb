@@ -2,7 +2,7 @@ Include "MapBasic.def"
 
 Declare Sub Main
 declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
-
+declare sub basicdump
 declare Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
 
 Dim iProgress,iProgressRange,starttime as integer
@@ -14,7 +14,7 @@ Sub Main()
 	from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into UtanFnr
 	
 	
-	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmilj�\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
+	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc2.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmilj�\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
 		Select Socken from korrigerandeTabell where socken <> "" group by socken into socken
 	select * from UtanFnr group by flikenFastigheter into Left
 	fetch first from Left
@@ -43,6 +43,172 @@ Sub Main()
 	print error$() resume next
 End Sub
 
+sub basicdump
+
+Select FNR,KIR,FNR,KIR,left$(kir,instr(1,kir," ")-1) "socken",mid$(kir,instr(1,kir," "),len(kir)-(instr(1,kir," ")-1)) "trackt_" from Fastighet_yta where not(FNR = any(select NFNR from korrigerandeTabell)) into ToInsert
+Browse * From ToInsert
+Browse * From korrigerandeTabell
+Insert Into korrigerandeTabell ( COL1, COL2, COL3, COL4, COL5, COL6) Select COL1, COL2, COL3, COL4, COL5, COL6 From ToInsert DropIndex Auto
+Select * from korrigerandeTabell where blockEnhet = "" AND FNR <> 0 into wasInserted
+Browse * From wasInserted
+Update wasInserted Set blockenhet = ltrim$(rtrim$(iif(instr(1,trakt," ")=0,trakt,right$(trakt,len(trakt)-instr(1,trakt," ")))))
+Update wasInserted Set trakt = iif(trakt = blockenhet,"",trakt)
+Update wasInserted Set trakt = ltrim$(rtrim$(iif(trakt = blockenhet,"",trakt))) 
+Update wasInserted Set trakt = ltrim$(rtrim$(iif(instr(1,blockenhet," ")=0,"",left$(blockenhet,instr(1,blockenhet," ")))))
+Update wasInserted Set blockenhet = ltrim$(rtrim$(iif(trakt="",blockenhet,right$(blockenhet,len(blockenhet)-instr(1,blockenhet," ")))))
+Rollback Table korrigerandeTabell
+Browse * From wasInserted
+open Table "C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc2.TAB" as korrigerandeTabell
+set browse window 3501 order by 7
+Select * from wasInserted where Trakt<>"" into Selection
+
+set browse window 3519 order by 7
+Update Selection Set Trakt = trakt & " " & left$(blockenhet,instr(1,blockenhet," ")-1) DropIndex Auto
+Browse * From Selection
+close table korrigerandeTabell
+Browse * From korrigerandeTabell
+Select * from korrigerandeTabell where instr(1,blockenhet," ") <> 0 into wasinserted
+Browse * From wasinserted
+Select * from korrigerandeTabell where FNR = 0 into Selection
+Browse * From Selection
+Commit Table korrigerandeTabell
+Pack Table korrigerandeTabell Graphic Data Interactive
+Create Table "~MAP7860" (NFNR Integer,NBETECKNING Char(36),FNR Integer,BETECKNING Char(42),Socken Char(100),Trakt Char(100),blockEnhet Char(100)) file "C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\~MAP7860.TMP" TYPE NATIVEX Charset "UTF-8" Locale "sv-SE" Version 1520 Hide
+Insert Into ~MAP7860 (NFNR, NBETECKNING, FNR, BETECKNING, Socken, Trakt, blockEnhet) Select NFNR, NBETECKNING, FNR, BETECKNING, Socken, Trakt, blockEnhet From ~MAP7859
+Set Table ~MAP7860 FastEdit On Undo Off
+Commit Table ~MAP7860
+Set Table ~MAP7860 FastEdit Off Undo On
+drop index korrigerandeTabell (NFNR)
+Create Index On korrigerandeTabell (NFNR)
+drop index korrigerandeTabell (NBETECKNING)
+Create Index On korrigerandeTabell (NBETECKNING)
+drop index korrigerandeTabell (FNR)
+Create Index On korrigerandeTabell (FNR)
+drop index korrigerandeTabell (BETECKNING)
+Create Index On korrigerandeTabell (BETECKNING)
+drop index korrigerandeTabell (Socken)
+Create Index On korrigerandeTabell (Socken)
+drop index korrigerandeTabell (Trakt)
+Create Index On korrigerandeTabell (Trakt)
+drop index korrigerandeTabell (blockEnhet)
+Create Index On korrigerandeTabell (blockEnhet)
+Browse * From wasinserted
+Browse * From korrigerandeTabell
+set browse window 3569 order by 5
+Select NFNR, NBETECKNING, FNR, BETECKNING, Socken, Trakt, blockEnhet,0 "a" from korrigerandeTabell order by Socken, Trakt, blockEnhet into KorrWithA
+Browse * From Selection
+Select flikenFastigheter, fnr from UtanFnr group by flikenFastigheter order by flikenFastigheter into FlikenFaWithA
+Browse * From FlikenFaWithA
+Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.a AND instr(1,fliken_Fastigheter,left$(Socken,5))*1 <> 0 into Selection
+Commit Table FlikenFaWithA As "C:\Users\crbk01\Desktop\FlikenFaWithA.TAB" TYPE NATIVEX Charset "WindowsLatin1" Locale "sv-SE" Interactive
+Commit Table KorrWithA As "C:\Users\crbk01\Desktop\KorrWithA.TAB" TYPE NATIVEX Charset "UTF-8" Locale "sv-SE" Interactive
+Close All Interactive
+Browse * From KorrWithA
+Browse * From FlikenFaWithA
+Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*1 <> 0 into Selection
+Browse * From Selection
+Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*instr(1,fliken_Fastigheter,Trakt)*instr(1,fliken_Fastigheter,blockEnhet) <> 0 into Selection
+Browse * From Selection
+set browse window 3619 order by 6
+set browse window 3619 order by 6 desc
+Select instr(instr(1,fliken_Fastigheter,":"),fliken_Fastigheter," ") from Selection into Selection
+Select instr(instr(1,BETECKNING,":"),BETECKNING," ") "a" from Selection into Selection
+Browse * From Selection
+Select instr(instr(1,fliken_fastigheter,":"),fliken_fastigheter," ") "a" from Selection into Selection
+Browse * From Selection
+Select instr(instr(1,fliken_fastigheter,":"),fliken_fastigheter," ") "a" from Selection into Selection
+Browse * From Selection
+Select instr(instr(1,fliken_fastigheter,":"),fliken_fastigheter," ") = 0 "a" from Selection into Selection
+Browse * From Selection
+Select iif(
+    (instr(instr(1,fliken_fastigheter,":"),fliken_fastigheter," ") = 0)
+    ,right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":")),"") "a" from FlikenFaWithA into Selection
+Browse * From Selection
+Select int(iif(
+    (instr(instr(1,fliken_fastigheter,":"),fliken_fastigheter," ") = 0)
+    ,right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":")),"")) "a" from FlikenFaWithA into Selection
+Browse * From Selection
+Select int(right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":"))) "a" from FlikenFaWithA into Selection
+Browse * From Selection
+Select fliken_fastigheter,int(right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":"))) "a" from FlikenFaWithA into Selection
+Select FNR "NBETECKNING", KIR "BETECKNING", Socken, Trakt, blockEnhet,a from GammalEllerNy into KorrWithA
+
+
+Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*instr(1,fliken_Fastigheter,Trakt)*instr(1,fliken_Fastigheter,blockEnhet)*instr(1,blockEnhet,"" & val(right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":")))) into  ToFnrWith
+Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*instr(1,fliken_Fastigheter,Trakt)*instr(1,fliken_Fastigheter,blockEnhet)*instr(1,blockEnhet,"" & val(right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":")))) into  ToFnrWith
+Browse * From KorrWithA
+Select NBETECKNING, BETECKNING from KorrWithA where NBETECKNING<>BETECKNING group by BETECKNING into WasInserted1
+select FNR "NBETECKNING", kir "BETECKNING" from gammalEllerNy into wasInserted1
+
+Select NBETECKNING, BETECKNING, left$(BETECKNING,instr(1,BETECKNING," ")-1) "socken",mid$(BETECKNING,instr(1,BETECKNING," "),len(BETECKNING)-(instr(1,BETECKNING," ")-1)) "trackt_" from wasInserted1  into WasInsertedX
+Select Col1, Col2, Col3, trackt_, ltrim$(rtrim$(iif(instr(1,trackt_," ")=0,trackt_,right$(trackt_,len(trackt_)-instr(1,trackt_," "))))) "blockenhet" from WasInsertedX into WasInserted2xx
+Select Col1, Col2, Col3, ltrim$(rtrim$(trackt_)) "trakt", ltrim$(rtrim$(blockenhet)) "blockenhet" from WasInserted2xx into WasInserted3x
+Select Col1, Col2, Col3, left$(trakt,instr(1,trakt," ")-1) "trakt", right$(blockenhet,len(blockenhet)-instr(1,blockenhet," ")) "blockenhet" from WasInserted3x into WasInserted4x
+Browse * From WasInserted4x
+Close Table Query27 Interactive
+Close Table Query26 Interactive
+Close Table Query25 Interactive
+Close Table Selection
+Select NFNR " Fnr" , BETECKNING, "BETECKNING" from KorrWithA group by BETECKNING into utBytlista
+Browse * From utBytlista
+Select NFNR " Fnr" , BETECKNING from KorrWithA group by BETECKNING into utBytlista
+Browse * From utBytlista
+Open Table "C:\Users\crbk01\Desktop\WhenOffline\MapinfoSkikt\fastighetsytor\FastighetUtanSkifte\FastighetUtanSkifte.TAB" Interactive
+Map From FastighetUtanSkifte
+Browse * From FastighetUtanSkifte
+Select FNR, KIR from FastighetUtanSkifte group by KIR into NuvrandeFastigheter
+Browse * From NuvrandeFastigheter
+Commit Table NuvrandeFastigheter As "C:\Users\crbk01\Desktop\NuvrandeFastigheter.TAB" TYPE NATIVEX Charset "WindowsLatin1" Locale "sv-SE" Interactive
+Close Table NuvrandeFastigheter Interactive
+Close Table FastighetUtanSkifte Interactive
+Open Table "C:\Users\crbk01\Desktop\NuvrandeFastigheter.TAB" Interactive
+Browse * From NuvrandeFastigheter
+Insert Into NuvrandeFastigheter (COL1, COL2) Select COL1, left$(COL2,42) From utbytlista DropIndex Auto
+Browse * From NuvrandeFastigheter
+Rollback Table NuvrandeFastigheter
+Rollback Table NuvrandeFastigheter
+Alter Table "NuvrandeFastigheter" ( modify KIR Char(42) ) Interactive
+Rollback Table NuvrandeFastigheter
+Browse * From NuvrandeFastigheter
+Rollback Table NuvrandeFastigheter
+
+Select * from NuvrandeFastigheter group by KIR into gammalEllerNy
+Browse * From gammalEllerNy
+
+Close Table WasInserted Interactive
+Browse * From WasInserted
+
+Browse * From WasInserted2x
+Browse * From WasInsertedX
+
+Browse * From WasInserted2xx
+Browse * From WasInserted2x
+Browse * From WasInserted2
+Browse * From WasInsertedX
+Commit Table WasInsertedX As "C:\Users\crbk01\Desktop\WasInsertedX.TAB" TYPE NATIVEX Charset "WindowsLatin1" Locale "sv-SE" Interactive
+Close Table WasInsertedX Interactive
+Close Table WasInserted Interactive
+Close Table wasInserted1 Interactive
+Close Table WasInserted2xx Interactive
+Close Table WasInserted2x Interactive
+Close Table WasInserted2 Interactive
+Open Table "C:\Users\crbk01\Desktop\WasInsertedX.TAB" Interactive
+Browse * From WasInsertedX
+
+Commit Table WasInserted4x As "C:\Users\crbk01\Desktop\GammalEllerNy.TAB" TYPE NATIVEX Charset "WindowsLatin1" Locale "sv-SE" Interactive
+Close All Interactive
+Open Table "C:\Users\crbk01\Desktop\GammalEllerNy.TAB" Interactive
+Browse * From GammalEllerNy  docked
+Open Table "C:\Users\crbk01\Desktop\FlikenFaWithA.TAB" Interactive
+Browse * From FlikenFaWithA
+Alter Table "GammalEllerNy" ( add a Smallint ) Interactive
+Browse * From GammalEllerNy
+
+Browse * From KorrWithA
+
+Browse * From FlikenFaWithA
+
+end sub
 
 sub process()
 
