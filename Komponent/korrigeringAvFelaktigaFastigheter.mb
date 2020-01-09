@@ -10,37 +10,18 @@ Dim iProgress,iProgressRange,starttime as integer
 declare sub process()
 
 Sub Main()
-	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr"
-	from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into UtanFnr
-	
 	
 	onError goto FSUrsprungsFastigheterMedSockenOc run command "Open Table ""C:\Users\crbk01\OneDrive - Region Gotland\To Vision, GDPR cleanup\MapInfoTables\skikt\Vanliga Tabfiler\UrsprungsFastigheterMedSockenOc2.TAB"" as korrigerandeTabell" onError goto 0 'Open Table "G:\sbf\Livsmilj�\Gemensamt\mapbasic program projekt\skikt\Vanliga Tabfiler\FastigHeterMedSockenTraktSepGrouped.TAB" as korrigerandeTabell
 		Select Socken from korrigerandeTabell where socken <> "" group by socken into socken
-	select * from UtanFnr group by flikenFastigheter into Left
-	fetch first from Left
-	startTime = timer()
-	iprogressRange = tableInfo(left,tab_info_nRows)
-	iprogress = 0	
-	ProgressBar "ProcessingflikenFastigheter...." & iProgressRange & " items"
-		     Calling process
-	Range iProgressRange
+	
+	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into UtanFnr select * from UtanFnr group by flikenFastigheter into Left fetch first from Left startTime = timer() iprogressRange = tableInfo(left,tab_info_nRows) iprogress = 0 ProgressBar "ProcessingflikenFastigheter...." & iProgressRange & " items" Calling process Range iProgressRange
+	
 	commit table helaSolen
 	Select fliken_Fastigheter "flikenFastigheter",fliken_FastigheterFNR "fnr",ignorex "rowid" from HelaSolen where fliken_Fastigheter <> "" AND fliken_FastigheterFNR = 0 into left2Correct
 	
-	Select Besksadress_huvudfastighet "flikenFastigheter",FNR
-	from HelaSolen where Besksadress_huvudfastighet <> "" AND FNR = 0 into UtanFnr
-	select * from UtanFnr group by flikenFastigheter into Left
-	fetch first from Left
-	startTime = timer()
-	iprogressRange = tableInfo(left,tab_info_nRows)
-	iprogress = 0	
-	ProgressBar "Processingbessfastighet...." & iProgressRange & " items"
-		     Calling process
-	Range iProgressRange
-
-	end program
-		FSUrsprungsFastigheterMedSockenOc:
-	print error$() resume next
+	Select Besksadress_huvudfastighet "flikenFastigheter",FNR from HelaSolen where Besksadress_huvudfastighet <> "" AND FNR = 0 into UtanFnr select * from UtanFnr group by flikenFastigheter into Left fetch first from Left startTime = timer() iprogressRange = tableInfo(left,tab_info_nRows) iprogress = 0 ProgressBar "Processingbessfastighet...." & iProgressRange & " items" Calling process Range iProgressRange
+	
+	end program FSUrsprungsFastigheterMedSockenOc: print error$() resume next
 End Sub
 
 sub basicdump
