@@ -41,7 +41,7 @@ End Sub
 Sub processor_6Post()
 
 
-' 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
+
 '	call assosieraGammlaFastigheterTillNyaFnr()
 ' 	correct fastigheter already before association
 
@@ -75,6 +75,7 @@ Sub processor_6Post()
 		if G_debugg then print "DO6_7_CorW3FasOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 8	
+		'Todo: 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
 		'call assosieraGammlaFastigheterTillNyaFnr()
 		onError goto korrigeringAvFelaktigaFastigheter
 			'run application applicationdirectory$() & "korrigeringAvFelaktigaFastigheter.MBX"
