@@ -24,10 +24,9 @@ G_workDir,G_socken as string,
 
 Sub Main()
 	G_debugg = true
-	G_senastTid = 0 
-	G_socken = "" 
-	
-	onError goto postProcess G_ProgressRange = 9 G_Progress = 0 G_starttime = timer() ProgressBar "processor_6Post...." & G_ProgressRange & " items"	Calling processor_6Post	Range G_ProgressRange onError goto 0
+	G_ProgressRange = 7
+
+	onError goto postProcess  G_Progress = 0 G_starttime = timer() ProgressBar "processor_6Post...." & G_ProgressRange & " items"	Calling processor_6Post	Range G_ProgressRange onError goto 0
 
 end program
 
@@ -56,13 +55,9 @@ Sub processor_6Post()
 		call DO6_5_MånsBilder
 		if G_debugg then print "DO6_5_MånsBilderOK: " & G_Progress end if
 	case 6
-	'   gerdins anläggningar är inte färdiga, not added in endressult !
-		'call DO6_6_Gem	
-		if G_debugg then print "#DO6_6_GemOK: " & G_Progress end if
-	case 7
 		call DO6_7_CorW3Fas
 		if G_debugg then print "DO6_7_CorW3FasOK: " & G_Progress end if
-	case 8	
+	case 7
 		'Todo: 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
 		'call assosieraGammlaFastigheterTillNyaFnr()
 		' 	correct fastigheter already before association
@@ -70,9 +65,9 @@ Sub processor_6Post()
 			'run application applicationdirectory$() & "korrigeringAvFelaktigaFastigheter.MBX"
 		onError goto 0
 		if G_debugg then print "#korrigeringAvFelaktigaFastigheterOK: " & G_Progress end if
-	case 9
-		'call DO6_9_byggnadsÅrTillFyraTecken
-		if G_debugg then print "#DO6_9_byggnadsÅrTillFyraTeckenOK: " & G_Progress end if
+		'call DO6_9_byggnadsÅrTillFyraTecken case 9 if G_debugg then print "#DO6_9_byggnadsÅrTillFyraTeckenOK: " & G_Progress end if
+		'call DO6_6_Gem case 8 '   gerdins anläggningar är inte färdiga, not added in endressult ! if G_debugg then print "#DO6_6_GemOK: " & G_Progress end if
+		case else
 	end case
 	
 	call increment(G_Progress,G_ProgressRange,G_starttime)
