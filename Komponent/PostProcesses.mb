@@ -40,52 +40,39 @@ End Sub
 
 Sub processor_6Post()
 
-
-
-'	call assosieraGammlaFastigheterTillNyaFnr()
-' 	correct fastigheter already before association
-
 	DO case G_Progress case 1
 		call DO6_1_assosieraFnr()
 		if G_debugg then print "DO6_1_assosieraFnrOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 2
 		call DO6_2_MHK()
 		if G_debugg then print "DO6_2_MHKOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 3
 		call DO6_3_Anteckningar
 		if G_debugg then print "DO6_3_AnteckningarOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 4
 		call DO6_4_MultiplaFastigheter
 		if G_debugg then print "DO6_4_MultiplaFastigheterOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 5
 		call DO6_5_MånsBilder
 		if G_debugg then print "DO6_5_MånsBilderOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 6
 	'   gerdins anläggningar är inte färdiga, not added in endressult !
 		'call DO6_6_Gem	
 		if G_debugg then print "#DO6_6_GemOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 7
 		call DO6_7_CorW3Fas
 		if G_debugg then print "DO6_7_CorW3FasOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 8	
 		'Todo: 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
 		'call assosieraGammlaFastigheterTillNyaFnr()
+		' 	correct fastigheter already before association
 		onError goto korrigeringAvFelaktigaFastigheter
 			'run application applicationdirectory$() & "korrigeringAvFelaktigaFastigheter.MBX"
 		onError goto 0
 		if G_debugg then print "#korrigeringAvFelaktigaFastigheterOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	case 9
 		call DO6_9_byggnadsÅrTillFyraTecken
 		if G_debugg then print "#DO6_9_byggnadsÅrTillFyraTeckenOK: " & G_Progress end if
-		if G_rebuild then print G_Progress end if
 	end case
 	
 	call increment(G_Progress,G_ProgressRange,G_starttime)
@@ -98,47 +85,22 @@ End Sub
 sub do6_1_assosieraFnr()
     dim query as string
     
-    onError goto err1
-    call openSingleTable("fastighet_yta")
-    query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr"
-    run command query
-	onError goto 0
+    onError goto err1 call openSingleTable("fastighet_yta") query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr" run command query onError goto 0
 	
-	onError goto err2
-		query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas"
-	run command query
+	onError goto err2 query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas" run command query
 		
-		query = "Add Column ""NoFas"" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 "
-	run command query
-	onError goto 0
+	query = "Add Column ""NoFas"" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 " run command query onError goto 0
 	
-	onError goto err3
-		query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr"
-	run command query
-		query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1"
-	run command query
-	onError goto 0
+	onError goto err3 query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr" run command query
+		query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From fastighet_yta Set To FNR Where COL1 = COL1" run command query onError goto 0
 
-	onError goto err4
-		query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr"
-	run command query
-	onError goto 0
+	onError goto err4 query = "Select fliken_Fastigheter, fliken_FastigheterFNR from HelaSolen where (fliken_Fastigheter = """" AND fliken_FastigheterFNR  <> 0) OR (fliken_Fastigheter <> """" AND fliken_FastigheterFNR  = 0) into ToFnr" run command query onError goto 0
 	
 	call openSingleTable("UrsprungsFastigheterMedSockenOc")
 	
-	onError goto err5
-		query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas"
-	run command query
-		query = "Add Column ""NoFas"" (fliken_Fastigheter )From UrsprungsFastigheterMedSockenOc Set To Beteckning Where COL2 = COL3"
-	run command query
-	onError goto 0
+	onError goto err5 query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas" run command query query = "Add Column ""NoFas"" (fliken_Fastigheter )From UrsprungsFastigheterMedSockenOc Set To Beteckning Where COL2 = COL3" run command query onError goto 0
 	
-	onError goto err6
-		query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr"
-	run command query
-		query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From UrsprungsFastigheterMedSockenOc Set To FNR Where COL1 = Col4"
-	run command query
-	onError goto 0
+	onError goto err6 query = "Select * from ToFnr where fliken_Fastigheter <> """" AND fliken_FastigheterFNR = 0 into NoFnr" run command query query = "Add Column ""NoFnr"" (fliken_FastigheterFNR )From UrsprungsFastigheterMedSockenOc Set To FNR Where COL1 = Col4" run command query onError goto 0
 	
 exit sub
 
