@@ -71,7 +71,7 @@ Sub processor_6Post()
 		onError goto 0
 		if G_debugg then print "#korrigeringAvFelaktigaFastigheterOK: " & G_Progress end if
 	case 9
-		call DO6_9_byggnadsÅrTillFyraTecken
+		'call DO6_9_byggnadsÅrTillFyraTecken
 		if G_debugg then print "#DO6_9_byggnadsÅrTillFyraTeckenOK: " & G_Progress end if
 	end case
 	
@@ -113,82 +113,31 @@ exit sub
 end sub
 
 sub do6_2_MHK()
-	dim query as string
-	call openSingleTable("MhkToVision")
-	query = "insert into HelaSolen (path,Diarienummer) select * from MhkToVision"
-	onError goto error1
-	run command query
-	onError goto 0
-
-exit sub
-	error1:
-	print "[Error do6_2_MHK] " & error$()
-	print query
-
+	onError goto error1 call openSingleTable("MhkToVision") dim query as string query = "insert into HelaSolen (path,Diarienummer) select * from MhkToVision" run command query onError goto 0
+exit sub error1: print "[Error do6_2_MHK] " & error$() print query
 end sub
 
 sub do6_3_Anteckningar
-
-	dim query as string
-	call openSingleTable("anteckningar")
-	query = "insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnummer,path from anteckningar"
-	onError goto error1
-	run command query
-	onError goto 0
-
-exit sub
-	error1:
-	print "[Error do6_3_Anteckningar] " & error$()
-	print query
-
+	onError goto error1 call openSingleTable("anteckningar") dim query as string query = "insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnummer,path from anteckningar" run command query onError goto 0
+exit sub error1: print "[Error do6_3_Anteckningar] " & error$() print query
 end sub
 
 sub do6_4_MultiplaFastigheter
-	
-	dim query as string
-	call openSingleTable("Mer_än_en_fastighet")
-	query = "Insert Into HelaSolen Select * From Mer_än_en_fastighet"
-	onError goto error1
-	run command query
-	onError goto 0
-
-exit sub
-	error1:
-	print "[Error do6_4_MultiplaFastigheter] " & error$()
-	print query
-
-
+	onError goto error1 call openSingleTable("Mer_än_en_fastighet") dim query as string query = "Insert Into HelaSolen Select * From Mer_än_en_fastighet" run command query onError goto 0
+exit sub error1: print "[Error do6_4_MultiplaFastigheter] " & error$() print query
 end sub
 	
 sub do6_5_MånsBilder
 
-	call openSingleTable("bilder")
-	
 	dim query as string
+	call openSingleTable("bilder")
 	call openSingleTable("anteckningar")
-	onError goto error1
-		query = "select fastighet,path from bilder where fastighet <> ""blött jan2018"" into utanJan"
-		run command query
-		query = "insert into HelaSolen (fliken_fastigheter,path) select * from utanJan"
-		run command query
-	onError goto 0
+	onError goto error1 query = "select fastighet,path from bilder where fastighet <> ""blött jan2018"" into utanJan" run command query query = "insert into HelaSolen (fliken_fastigheter,path) select * from utanJan" run command query onError goto 0
 
-	onError goto error2
-	query = "select path from bilder where fastighet = ""blött jan2018"" into Jan"
-		run command query
-	query = "insert into HelaSolen (path) select * from Jan"
-		run command query
-	onError goto 0
-
+	onError goto error2 query = "select path from bilder where fastighet = ""blött jan2018"" into Jan" run command query query = "insert into HelaSolen (path) select * from Jan" run command query onError goto 0
 exit sub
-	error1:
-	print "[Error do6_5_MånsBilder1] " & error$()
-	print query
-	
-	error2:
-	print "[Error do6_5_MånsBilder2] " & error$()
-	print query
-	
+	error1: print "[Error do6_5_MånsBilder1] " & error$() print query
+	error2: print "[Error do6_5_MånsBilder2] " & error$() print query
 end sub
 	 
 sub do6_6_Gem
@@ -196,29 +145,18 @@ sub do6_6_Gem
 		call openSingleTable("reningIhopslagen")
 		'call PrepareGemensamma()
 		'call injectGemensamma()
-		dim tableNames(1) as string tableNames(1) = "reningIhopslagen"
-		dim tempAlias as alias tempAlias = tableNames(1)
-		commit table reningIhopslagen
+		dim tableNames(1) as string tableNames(1) = "reningIhopslagen" dim tempAlias as alias tempAlias = tableNames(1) commit table reningIhopslagen
 		call UpdateIndex("reningIhopslagen")'already commits
 		call tableCloserAndCommiter(tableNames)	
 end sub
 
 sub do6_7_CorW3Fas()
 	
-	dim query as string
 	call openSingleTable("ÄrendenMedIngenEllerFelFastighet2")
 	
-	onError goto error1
-		query = "Select Diarienummer, Fnr from ÄrendenMedIngenEllerFelFastighet2 where Fnr <> 0 into fä2"
-		run command query
-		query = "insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from fä2"
-		run command query
-	onError goto 0
+	onError goto error1 dim query as string query = "Select Diarienummer, Fnr from ÄrendenMedIngenEllerFelFastighet2 where Fnr <> 0 into fä2" run command query query = "insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from fä2" run command query onError goto 0
 
-exit sub
-	error1:
-	print "[Error do6_3_Anteckningar] " & error$()
-	print query
+exit sub error1: print "[Error do6_3_Anteckningar] " & error$() print query
 	
 end sub
 
