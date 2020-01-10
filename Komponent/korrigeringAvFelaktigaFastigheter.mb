@@ -46,14 +46,13 @@ sub basicdump
 	Commit Table KorrWithA As "C:\Users\crbk01\Desktop\KorrWithA.TAB" TYPE NATIVEX Charset "UTF-8" Locale "sv-SE" Interactive
 	
 
-	Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*1 <> 0 into Selection
 	Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*instr(1,fliken_Fastigheter,Trakt)*instr(1,fliken_Fastigheter,blockEnhet) <> 0 into Selection
 	
 	
 	Select FNR "NBETECKNING", KIR "BETECKNING", Socken, Trakt, blockEnhet,a from GammalEllerNy into KorrWithA
 
 	Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*instr(1,fliken_Fastigheter,Trakt)*instr(1,fliken_Fastigheter,blockEnhet)*instr(1,blockEnhet,"" & val(right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":")))) into  ToFnrWith
-	Select FlikenFaWithA.fliken_Fastigheter, KorrWithA.NBETECKNING, KorrWithA.BETECKNING, KorrWithA.Socken, KorrWithA.Trakt, KorrWithA.blockEnhet from FlikenFaWithA, KorrWithA where KorrWithA.a = FlikenFaWithA.fliken_FastigheterFNR AND instr(1,fliken_Fastigheter,left$(Socken,5))*instr(1,fliken_Fastigheter,Trakt)*instr(1,fliken_Fastigheter,blockEnhet)*instr(1,blockEnhet,"" & val(right$(fliken_Fastigheter,len(fliken_fastigheter)-instr(1,fliken_Fastigheter,":")))) into  ToFnrWith
+
 	Select NBETECKNING, BETECKNING from KorrWithA where NBETECKNING<>BETECKNING group by BETECKNING into WasInserted1
 	select FNR "NBETECKNING", kir "BETECKNING" from gammalEllerNy into wasInserted1
 	Select NBETECKNING, BETECKNING, left$(BETECKNING,instr(1,BETECKNING," ")-1) "socken",mid$(BETECKNING,instr(1,BETECKNING," "),len(BETECKNING)-(instr(1,BETECKNING," ")-1)) "trackt_" from wasInserted1  into WasInsertedX
@@ -95,11 +94,7 @@ sub process()
 				do until eot(Trakt)
 					dim sPartsArray() As String			
 					
-					if(SplitStringAtCharacter(trakt.Col1, " ", sPartsArray) = 2) then
-						korrigerandeTrackt = spartsArray(2)
-					else
-						korrigerandeTrackt = trakt.Col1
-					end if
+					if(SplitStringAtCharacter(trakt.Col1, " ", sPartsArray) = 2) then korrigerandeTrackt = spartsArray(2) else korrigerandeTrackt = trakt.Col1 end if
 					
 					if instr(1,sokStreng,korrigerandeTrackt) <> 0 then dim sockenOTrackt as logical sockenOTrackt = sokStreng <> SockenB & " " & korrigerandeTrackt				
 						if Not(sockenOTrackt) then select blockenhet from korrigerandeTabell where socken = SockenB AND trakt = korrigerandeTrackt AND blockenhet <> ""  group by blockenhet into blockenhet fetch first from blockenhet
