@@ -104,30 +104,12 @@ sub do6_1_assosieraFnr()
 	
 exit sub
 
-err1:
-	print "do6_1_assosieraFnr " & 1 & error$()
-	print query
-	resume next
-err2:
-	print "do6_1_assosieraFnr " & 2 & error$()
-	print query
-	resume next
-err3:
-	print "do6_1_assosieraFnr " & 3 & error$()
-	print query
-	resume next
-err4:
-	print "do6_1_assosieraFnr " & 4 & error$()
-	print query
-	resume next
-err5:
-	print "do6_1_assosieraFnr " & 5 & error$()
-	print query
-	resume next
-err6:
-	print "do6_1_assosieraFnr " & 6 & error$()
-	print query
-	resume next
+	err1: print "do6_1_assosieraFnr " & 1 & error$() print query resume next
+	err2: print "do6_1_assosieraFnr " & 2 & error$() print query resume next
+	err3: print "do6_1_assosieraFnr " & 3 & error$() print query resume next
+	err4: print "do6_1_assosieraFnr " & 4 & error$() print query resume next
+	err5: print "do6_1_assosieraFnr " & 5 & error$() print query resume next
+	err6: print "do6_1_assosieraFnr " & 6 & error$() print query resume next
 end sub
 
 sub do6_2_MHK()
