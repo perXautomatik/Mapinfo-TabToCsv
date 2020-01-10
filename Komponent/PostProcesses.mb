@@ -1,4 +1,4 @@
-Include "MapBasic.def"
+﻿Include "MapBasic.def"
 include "Menu.def"
 include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
 
@@ -9,21 +9,21 @@ declare sub do6_1_assosieraFnr
 declare sub do6_2_MHK
 declare sub do6_3_Anteckningar
 declare sub do6_4_MultiplaFastigheter
-declare sub do6_5_M�nsBilder
+declare sub do6_5_MånsBilder
 declare sub do6_6_Gem
 declare sub do6_7_CorW3Fas
 
-declare sub do6_9_byggnads�rTillFyraTecken
+declare sub do6_9_byggnadsÅrTillFyraTecken
 
 
 global 
 'G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt, 
 G_workDir,G_socken as string,
- G_rebuild,G_debugg as logical, G_anv�ndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
+ G_debugg as logical, G_användaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
 
 Sub Main()
-	G_debugg = true G_rebuild = false 
+	G_debugg = true
 	G_senastTid = 0 
 	G_socken = "" 
 	
@@ -40,49 +40,50 @@ End Sub
 
 Sub processor_6Post()
 
-'   gerdins anl�ggningar �r inte f�rdiga, not added in endressult !
+
 ' 	few uggly fastigheter with paranteses in them, should be moved to anteckningar, make a deduction of total all chars used in fastighetsregister, and then filer all results that has other chars, and trye to fix them.
 '	call assosieraGammlaFastigheterTillNyaFnr()
 ' 	correct fastigheter already before association
 
 	DO case G_Progress case 1
 		call DO6_1_assosieraFnr()
-		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_debugg then print "DO6_1_assosieraFnrOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 2
 		call DO6_2_MHK()
-		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_debugg then print "DO6_2_MHKOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 3
 		call DO6_3_Anteckningar
-		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_debugg then print "DO6_3_AnteckningarOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 4
 		call DO6_4_MultiplaFastigheter
-		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_debugg then print "DO6_4_MultiplaFastigheterOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 5
-		call DO6_5_M�nsBilder
-		if G_debugg then print "debugOK: " & G_Progress end if
+		call DO6_5_MånsBilder
+		if G_debugg then print "DO6_5_MånsBilderOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 6
+	'   gerdins anläggningar är inte färdiga, not added in endressult !
 		'call DO6_6_Gem	
-		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_debugg then print "#DO6_6_GemOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 7
 		call DO6_7_CorW3Fas
-		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_debugg then print "DO6_7_CorW3FasOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 8	
 		'call assosieraGammlaFastigheterTillNyaFnr()
 		onError goto korrigeringAvFelaktigaFastigheter
-			run application applicationdirectory$() & "korrigeringAvFelaktigaFastigheter.MBX"
+			'run application applicationdirectory$() & "korrigeringAvFelaktigaFastigheter.MBX"
 		onError goto 0
-		if G_debugg then print "debugOK: " & G_Progress end if
+		if G_debugg then print "#korrigeringAvFelaktigaFastigheterOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	case 9
-		call DO6_9_byggnads�rTillFyraTecken
-		if G_debugg then print "debugOK: " & G_Progress end if
+		call DO6_9_byggnadsÅrTillFyraTecken
+		if G_debugg then print "#DO6_9_byggnadsÅrTillFyraTeckenOK: " & G_Progress end if
 		if G_rebuild then print G_Progress end if
 	end case
 	
@@ -105,6 +106,7 @@ sub do6_1_assosieraFnr()
 	onError goto err2
 		query = "Select * from ToFnr where fliken_Fastigheter = """" AND fliken_FastigheterFNR <> 0 into NoFas"
 	run command query
+		
 		query = "Add Column ""NoFas"" (fliken_Fastigheter )From fastighet_yta Set To KIR Where COL2 = COL6 "
 	run command query
 	onError goto 0
@@ -184,7 +186,7 @@ sub do6_3_Anteckningar
 
 	dim query as string
 	call openSingleTable("anteckningar")
-	query = "insert into HelaSolen (diarienummer,l�pnummer,path) select diarienummer,l�pnummer,path from anteckningar"
+	query = "insert into HelaSolen (diarienummer,löpnummer,path) select diarienummer,löpnummer,path from anteckningar"
 	onError goto error1
 	run command query
 	onError goto 0
@@ -199,8 +201,8 @@ end sub
 sub do6_4_MultiplaFastigheter
 	
 	dim query as string
-	call openSingleTable("Mer_�n_en_fastighet")
-	query = "Insert Into HelaSolen Select * From Mer_�n_en_fastighet"
+	call openSingleTable("Mer_än_en_fastighet")
+	query = "Insert Into HelaSolen Select * From Mer_än_en_fastighet"
 	onError goto error1
 	run command query
 	onError goto 0
@@ -213,21 +215,21 @@ exit sub
 
 end sub
 	
-sub do6_5_M�nsBilder
+sub do6_5_MånsBilder
 
 	call openSingleTable("bilder")
 	
 	dim query as string
 	call openSingleTable("anteckningar")
 	onError goto error1
-		query = "select fastighet,path from bilder where fastighet <> ""bl�tt jan2018"" into utanJan"
+		query = "select fastighet,path from bilder where fastighet <> ""blött jan2018"" into utanJan"
 		run command query
 		query = "insert into HelaSolen (fliken_fastigheter,path) select * from utanJan"
 		run command query
 	onError goto 0
 
 	onError goto error2
-	query = "select path from bilder where fastighet = ""bl�tt jan2018"" into Jan"
+	query = "select path from bilder where fastighet = ""blött jan2018"" into Jan"
 		run command query
 	query = "insert into HelaSolen (path) select * from Jan"
 		run command query
@@ -235,17 +237,17 @@ sub do6_5_M�nsBilder
 
 exit sub
 	error1:
-	print "[Error do6_5_M�nsBilder1] " & error$()
+	print "[Error do6_5_MånsBilder1] " & error$()
 	print query
 	
 	error2:
-	print "[Error do6_5_M�nsBilder2] " & error$()
+	print "[Error do6_5_MånsBilder2] " & error$()
 	print query
 	
 end sub
 	 
 sub do6_6_Gem
-		'injesera gemensamhetsanl�ggningar
+		'injesera gemensamhetsanläggningar
 		call openSingleTable("reningIhopslagen")
 		'call PrepareGemensamma()
 		'call injectGemensamma()
@@ -259,12 +261,12 @@ end sub
 sub do6_7_CorW3Fas()
 	
 	dim query as string
-	call openSingleTable("�rendenMedIngenEllerFelFastighet2")
+	call openSingleTable("ÄrendenMedIngenEllerFelFastighet2")
 	
 	onError goto error1
-		query = "Select Diarienummer, Fnr from �rendenMedIngenEllerFelFastighet2 where Fnr <> 0 into f�2"
+		query = "Select Diarienummer, Fnr from ÄrendenMedIngenEllerFelFastighet2 where Fnr <> 0 into fä2"
 		run command query
-		query = "insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from f�2"
+		query = "insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from fä2"
 		run command query
 	onError goto 0
 
@@ -275,7 +277,7 @@ exit sub
 	
 end sub
 
-sub do6_9_byggnads�rTillFyraTecken
+sub do6_9_byggnadsÅrTillFyraTecken
 	commit table helaSolen
-	'Alter Table "HelaSolen" ( modify flik_Avloppsanl�ggn_Byggnads�r Char(4) ) Interactive
+	'Alter Table "HelaSolen" ( modify flik_Avloppsanläggn_Byggnadsår Char(4) ) Interactive
 End Sub
