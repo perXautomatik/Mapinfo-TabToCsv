@@ -25,8 +25,14 @@ SELECT
     AKI.strAnlaeggningskategori AS Anläggningskategori,
     A.decVolym AS Volym,
     A.datBeslutsdatum AS Beslutsdatum,
+    A.datBesiktningsdatum as Besiktningsdatum
     A.intToemningsintervall AS Tömningsintervall,
     A.strText AS Text,
+    A.strStatus as Status,
+    A.datStatusDatum as Datum,
+    A.intExterntTjaenstID as ExterntTjaenstID,
+    A.strCertifieringstyp as Certifieringstyp,
+    A.datToemningsdispensFrOM as ToemningsdispensFrOM
 [geometry]::Point(K.decY, K.decX, 3015) AS Shape
 FROM EDPVisionRegionGotlandAvlopp.dbo.tbTrEaAnlaeggning AS A
 INNER JOIN EDPVisionRegionGotlandAvlopp.dbo.tbTrEaAvloppsanlaeggning AS AA ON A.recAvloppsanlaeggningID = AA.recAvloppsanlaeggningID
@@ -37,4 +43,8 @@ INNER JOIN EDPVisionRegionGotlandAvlopp.dbo.tbTrEaAnlaeggningKoordinat AS AK ON 
 INNER JOIN EDPVisionRegionGotlandAvlopp.dbo.tbVisKoordinat AS K ON AK.recKoordinatID = K.recKoordinatID
 WHERE K.strPunkttyp='Efterföljande rening' OR K.strPunkttyp='Ansluten byggnad' OR K.strPunkttyp='Extra inventeringsin' OR K.strPunkttyp='Tank'
 
-
+	
+	
+	
+	
+	
