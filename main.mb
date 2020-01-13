@@ -26,42 +26,25 @@ G_workDir,G_socken as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),
 
 Sub Main()
 
-	onError goto TableValidator
-		run application applicationdirectory$() & "LoadTableData.MBX"
-	onError goto 0
+	onError goto TableValidator run application applicationdirectory$() & "LoadTableData.MBX" onError goto 0
 
 	run command("Set " + EPSGToCoordSysString$("EPSG::3022"))  'EPSG::3022 r RT90 0 gon, ESPG::3015 r sweref
 	
 	dim tablenames(1) as string tablenames(1) = "fastighet_yta" 'call closeAllBut(tableNames)
 
-	G_debugg = true G_rebuild = false 
-	G_senastTid = 0 
-	G_socken = "" 
+	G_debugg = true G_rebuild = false G_senastTid = 0 G_socken = "" 
 	
-	onError goto TableValidator
-		run application applicationdirectory$() & "TableValidator.MBX"
-	onError goto 0
+	onError goto TableValidator run application applicationdirectory$() & "TableValidator.MBX" onError goto 0
 	
-	onError goto PreProcesses
-		run application applicationdirectory$() & "PreProcesses.MBX"
-	onError goto 0
+	onError goto PreProcesses run application applicationdirectory$() & "PreProcesses.MBX" onError goto 0
 	
 	onError goto processor_2SockenRead call openSingletable("socknarOfiltrerade") fetch first from socknarOfiltrerade G_ProgressRange = tableinfo(socknarOfiltrerade,tab_info_nRows) G_Progress = 0 G_starttime = timer() ProgressBar "processor_2SockenRead...." & G_ProgressRange & " items" calling processor_2SockenRead	Range G_ProgressRange		onError goto 0
 	
-	if tableInfo("sockenTabell",TAB_INFO_NROWS) <> 0 then
-		onError goto MainLoop
-			run application applicationdirectory$() & "MainLoop.MBX"
-		onError goto 0
-	else
-		print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS)
-	end if
+	if tableInfo("sockenTabell",TAB_INFO_NROWS) <> 0 then onError goto MainLoop run application applicationdirectory$() & "MainLoop.MBX" onError goto 0 else print "sockenTabell Rader_" & tableInfo("sockenTabell",TAB_INFO_NROWS) end if
 	
-
 	onError goto Processor_5StoreToHelaSolen call createRessultTableX("HelaSolen",applicationdirectory$() & "\HelaSolen.TAB") fetch first from socknarOfiltrerade	G_ProgressRange = tableInfo("socknarOfiltrerade",TAB_INFO_NROWS) 		if G_ProgressRange <> 0 then				G_starttime = timer() 			G_Progress = 0 			ProgressBar "Processor_5StoreToHelaSolen_LoadingIntoTable...." & G_ProgressRange & " items" 			Calling Processor_5StoreToHelaSolen			Range G_ProgressRange				call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"Processor_5StoreToHelaSolen")		end if 	commit table HelaSolen onError goto 0
 
-	onError goto PostProcesses
-		run application applicationdirectory$() & "PostProcesses.MBX"
-	onError goto 0
+	onError goto PostProcesses run application applicationdirectory$() & "PostProcesses.MBX" onError goto 0
 	
 End program	
 	TableValidator: print "TableValidator" print error$()	    end program
@@ -73,28 +56,13 @@ End program
 
 End Sub
 
-sub processor_2SockenRead
-	call Do2_LoadLatestObjId()
-	
-	call increment(G_Progress,G_ProgressRange,G_starttime)
-end sub
+sub processor_2SockenRead call Do2_LoadLatestObjId() call increment(G_Progress,G_ProgressRange,G_starttime) end sub
 
 sub Processor_5StoreToHelaSolen()
 	
-	onError goto InsertERror
-		if socknarOfiltrerade.sockenx <> "" then 
-		call insertCommonColumnsFromTableXintoY(socknarOfiltrerade.sockenx & "ressultat","HelaSolen")
-		end if
-	onError goto 0
-	fetch next from socknarOfiltrerade
-	
-	call increment(G_Progress,G_ProgressRange,G_starttime)
+	onError goto InsertERror if socknarOfiltrerade.sockenx <> "" then call insertCommonColumnsFromTableXintoY(socknarOfiltrerade.sockenx & "ressultat","HelaSolen") end if onError goto 0 fetch next from socknarOfiltrerade call increment(G_Progress,G_ProgressRange,G_starttime)
 
-exit sub
-insertError:
-	print "[ERROR_Processor_5StoreToHelaSolen]" & error$() & socknarOfiltrerade.sockenx
-	end program
-End Sub
+exit sub insertError: print "[ERROR_Processor_5StoreToHelaSolen]" & error$() & socknarOfiltrerade.sockenx end program End Sub
 
 sub Do2_LoadLatestObjId()
 	'call columnAsStringArray("gemensamma","kommentarer",gerdinsID)
@@ -108,24 +76,18 @@ sub Do2_LoadLatestObjId()
 	tempstring = socknarOfiltrerade.SockenX & "ressultat"  'if sockenNamnRessultat exsists, then true, else false
 	if tempstring <> "ressultat" then
 		if openTableAndConfirm(tempstring) then onError goto exitProg 
-			
 			query = "select max(objektid) " & " from " & tempstring & " " & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
 			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then	
-				call closeSingleTable("LatestObjectID")	
-				select * from LatestObjectX into LatestObjectID	call görTillBastabell("LatestObjectID")	else
-				call closeSingleTable("LatestObjectX") end if onError goto 0
+				call closeSingleTable("LatestObjectID") select * from LatestObjectX into LatestObjectID	call gÃ¶rTillBastabell("LatestObjectID")	else call closeSingleTable("LatestObjectX") end if onError goto 0
 		else
-			tempstring = socknarOfiltrerade.SockenX
-			if tempstring <> "" then
-				Insert Into sockenTabell (COL1) values (tempstring) 
-			end if
+			tempstring = socknarOfiltrerade.SockenX if tempstring <> "" then Insert Into sockenTabell (COL1) values (tempstring) end if
 		end if
 		fetch next from socknarOfiltrerade
 	end if
 
 	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
 
-	call görTillBasTabell("sockenTabell")
+	call gÃ¶rTillBasTabell("sockenTabell")
 end sub
 
 sub SaveAnvndaReningar
@@ -138,15 +100,9 @@ sub SaveAnvndaReningar
 		for x=1 to ubound(G_anvndaReningar) Insert Into ArrayTable Values (G_anvndaReningar(x)) next
 		
 		call closeSingleTable("AnvndaReningarsHash") 
-		onError goto queryError
-		dim query as string
-		query = "select Anslutna_fastigheter_1,CentroidY(Obj),CentroidX(obj) from reningIhopslagen where rowIndex = any (select Col1 from ArrayTable) into AnvndaReningarsHash"
-		run command query
-		onError goto 0
+		onError goto queryError dim query as string query = "select Anslutna_fastigheter_1,CentroidY(Obj),CentroidX(obj) from reningIhopslagen where rowIndex = any (select Col1 from ArrayTable) into AnvndaReningarsHash" run command query onError goto 0
 		
 		commit table AnvndaReningarsHash as ApplicationDirectory$() & "AnvndaReningarsHash.tab" drop table ArrayTable  print "DOne!"
-	else
-		print "noReningar to save"
-	end if
+	else print "noReningar to save" end if
 
 exit sub queryError: print "[ERROR_SaveAnvndaReningar] " & error$() end sub
