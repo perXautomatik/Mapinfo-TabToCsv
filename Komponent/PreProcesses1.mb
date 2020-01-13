@@ -131,7 +131,7 @@ sub prepRen(byVal tableName as string)
 			Add Column TableName (SpatialFastighet )From fastighet_yta Set To kir Where contains
 			Add Column TableName (SpatialShift)From fastighet_yta Set To Fastighet Where contains
 			commit table TableName			
-			Alter Table  TableName ( order Fastighet_rening,Antal_hushll_rening,Reningstyp,Storlek_m2,Beslut_datum,Utfrd_datum,Kommentarer,Anslutna_fastigheter_1,Anslutna_fastigheter_2,Anslutna_fastigheter_3,Anslutna_fastigheter_4,Anslutna_fastigheter_5,Anslutna_fastigheter_6,Anslutna_fastigheter_7,Anslutna_fastigheter_8,Anslutna_fastigheter_9,Anslutna_fastigheter_10,SpatialFastighet,SpatialShift)
+			
 			call tableCloser(tablenames())
 		end if
 		
