@@ -2,7 +2,6 @@ Include "MapBasic.def"
 include "Menu.def"
 include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
 
-
 Declare Sub Main
 Declare sub processor_1Pre
 
@@ -20,247 +19,20 @@ declare sub do6_8_SlamDisp
 
 declare function CreateTable_reningIhopslagen as string
 declare function CreateTable_EnskiltIhopslagen as string
-
+declare sub IhopSlag(ByVal typ as string,ByVal typ2 as string, path as string)
+declare sub prepSpatialy(byVal tableName as string)
 
 global 
-G_workDir,G_socken as string,
- G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
-
+G_workDir,G_socken,encodeError as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
 Sub Main()
-	G_debugg = true G_rebuild = false 
-	G_senastTid = 0 
-	G_socken = "" 
-	
+	G_debugg = true G_rebuild = false G_senastTid = 0 G_socken = "" 
+	encodeError = "S�dra"
+
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 
-End program
+End program processor_1Pre: print "processor_1PreError" print error$()	    end program End Sub
 
-processor_1Pre: print "processor_1PreError" print error$()	    end program
-
-End Sub
-
-sub processor_1Pre
-		
-	'grundtabeller
-	'Fastighetskikt med adress	
-	''egna reningstabeller med spatial fastighet
-			'egna EnskiltTabeller med spatial fastighet
-					'egen swereftabell med spatial fastighet och index
-	DO case G_Progress
-	case 1
-		'call DO1_1_genPathTab
-		'call insertInitialTables()
-		call DO1_3_GenFasWithAdr	
-		call DO1_4_prepRenSd if G_debugg then print "DO1_4_prepRenSd: " & G_Progress end if if G_rebuild then print G_Progress end if
-	case 2 
-		call DO1_4_prepRenNor if G_debugg then print "DO1_4_prepRenNor: " & G_Progress end if if G_rebuild then print G_Progress end if
-	case 3
-		call DO1_4_prepRenMel if G_debugg then print "DO1_4_prepRenMel: " & G_Progress end if if G_rebuild then print G_Progress end if
-	case 4
-		call DO1_5_reningIhopslagen if G_debugg then print "DO1_5_reningIhopslagen: " & G_Progress end if if G_rebuild then print G_Progress end if
-	case 5
-		call DO1_8_prepareSweref if G_debugg then print "DO1_8_prepareSweref: " & G_Progress end if if G_rebuild then print G_Progress end if
-	case 6
-		call DO1_9_egnEnskWSpatFas if G_debugg then print "DO1_9_egnEnskWSpatFas: " & G_Progress end if if G_rebuild then print G_Progress end if
-	case 7 'requiered at this step
-		call DO1_10_enskiltIhopslagen if G_debugg then print "DO1_10_enskiltIhopslagen: " & G_Progress end if
-		call DO6_8_SlamDisp if G_rebuild then print G_Progress end if
-	case 8
-		call DO1_11_prepareSocken if G_debugg then print "DO1_11_prepareSocken: " & G_Progress end if if G_rebuild then print G_Progress end if
-	end case
-	
-	call increment(G_Progress,G_ProgressRange,G_starttime)
-		
-End Sub
-
-
-'sub DO1_1_genPathTab dim tempstring as string tempstring = "PathTABLE" if IsTableOpen(tempstring) then close table "pathTable" end if CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("") end sub
-
-sub DO1_3_GenFasWithAdr
-
-		dim tempstring as string
-		tempString = applicationDirectory$() & "fastighet_ytaAd.tab"
-		if(not(FileExists(tempString)) OR G_rebuild) then
-			print "rebuilding fastighet_ytaAd"
-			dim tableNames(1) as string redim tableNames(2) tablenames(1) = "fastighet_ytaORg" tablenames(2) = "Adresspunkter" call tableOpener(tablenames)
-
-			Create Table "FaMedAdrPunkt" (KIR Char(40),ADRESS Char(105),POSTNR Char(9),POSTORT Char(105),FASTIGHET Char(54),FNR Integer) file tempString TYPE NATIVE Charset "WinDOwsLatin1"
-			Create Map For FaMedAdrPunkt CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (-8099143.95363, -10001965.7294) (8399143.95363, 10001965.7294)
-			Insert Into FaMedAdrPunkt (KIR, FASTIGHET,FNR) Select COL2, COL12, Col1  From fastighet_ytaORg DropIndex Auto
-			Add Column "FaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where within
-			Add Column "FaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where within
-			Add Column "FaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where within
-
-			select * from FaMedAdrPunkt where adress = "" into TomtFaMedAdrPunkt
-
-			Add Column "TomtFaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where COL6 = COL3 
-			Add Column "TomtFaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where COL6 = COL3 
-			Add Column "TomtFaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where COL6 = COL3 
-
-			commit table FaMedAdrPunkt
-			Create Index On FaMedAdrPunkt(kir)
-			commit table FaMedAdrPunkt
-			
-			close table fastighet_ytaORg
-			close table Adresspunkter		
-			close table FaMedAdrPunkt
-		end if
-		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
-end sub
-
-declare sub prepRen(byVal tableName as string)
-
-sub prepRen(byVal tableName as string)
-
-		dim tempstring,tableName as string 
-		dim tableNames(1) as string
-		redim tableNames(2)
-
-		tempstring = ApplicationDirectory$() & tableName & ".TAB"
-		
-		if G_rebuild then
-			tablenames(2) = "fastighet_yta"
-			tablenames(1) = tableName & "NoIndex"		
-			call tableOpener(tablenames)	
-
-			select * from tablenames(1) into  TableName
-			commit table TableName As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive
- 			close table TableName	open table tempstring
-			Alter Table TableName( add SpatialFastighet Char(40), SpatialShift Char(40)  )
-			Add Column TableName (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column TableName (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-			commit table TableName			
-			
-			call tableCloser(tablenames())
-		end if
-		
-		insert into Pathtable (tablePath,TableName) values (Tempstring,  TableName)
-			
-
-end sub
-
-
-sub DO1_8_prepareSweref
-		dim tableNames(1) as string
-		redim tableNames(2)
-		dim tempstring as string tempstring = ApplicationDirectory$() & "Fastigheter_sweref.TAB"
-		
-		if G_rebuild then		
-			tablenames(1) = "Fastigheter_swerefNoIndex"
-			tablenames(2) = "fastighet_yta"
-			call tableOpener(tablenames)
-			select * from tablenames(1) into "Fastigheter_sweref"
-			commit table Fastigheter_sweref  As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive
-			close table Fastigheter_sweref
- 			open table tempstring
-			call UpdateIndex("Fastigheter_sweref")
-			Alter Table Fastigheter_sweref (add SpatialFastighet Char(40), SpatialShift Char(40))
-			Commit table Fastigheter_sweref
-			
-			Add Column "Fastigheter_sweref" (SpatialFastighet)From fastighet_yta Set To kir Where contains
-			Add Column "Fastigheter_sweref" (SpatialShift)From fastighet_yta Set To fastighet Where contains
-			Commit table Fastigheter_sweref
-		end if
-		insert into Pathtable (tablePath,TableName) values (tempstring, "Fastigheter_sweref")
-
-end sub
-
-sub DO1_9_egnEnskWSpatFas
-		dim tableNames(1) as string
-		redim tableNames(4)
-				
-		dim tempstring1,tempstring2,tempstring3 as string ,tempAlias as alias
-	
-		tempstring1 = ApplicationDirectory$() & "Enskilt_avlopp_S�dra.TAB"
-		tempstring2 = ApplicationDirectory$() & "Enskilt_avlopp_Norra.TAB"
-		tempstring3 = ApplicationDirectory$() & "Enskilt_avlopp_Mellersta.TAB"
-		
-		if G_rebuild then
-			tablenames(1) = "Enskilt_avlopp_S�draNoIndex"
-			tablenames(2) = "Enskilt_avlopp_NorraNoIndex"
-			tablenames(3) = "Enskilt_avlopp_MellerstaNoIndex"
-			tablenames(4) = "fastighet_yta"
-			onError goto e414
-			call tableOpener(tablenames)
-			onError goto 0		
-			
-			onError goto e418
-				tempAlias = tablenames(1) call commitCloseAndReopen(tempAlias,tempstring1)
-				tempAlias = tablenames(2) call commitCloseAndReopen(tempAlias,tempstring2)
-				tempAlias = tablenames(3) call commitCloseAndReopen(tempAlias,tempstring3)
-			onError goto 0
-
-onError goto e424
-			call openSingleTable("fastighet_yta")
-onError goto 0
-
-onError goto e428		
-			Alter Table Enskilt_avlopp_S�draNoIndex ( add SpatialFastighet Char(40), SpatialShift Char(40) )
-			Add Column "Enskilt_avlopp_S�draNoIndex" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column "Enskilt_avlopp_S�draNoIndex" (SpatialShift )From fastighet_yta Set To Fastighet Where contains
-onError goto 0
-
-onError goto e434
-			Alter Table Enskilt_avlopp_NorraNoIndex ( add SpatialFastighet Char(40), SpatialShift Char(40)  )
-			Add Column "Enskilt_avlopp_NorraNoIndex" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column "Enskilt_avlopp_NorraNoIndex" (SpatialShift) From fastighet_yta Set To Fastighet Where contains
-onError goto 0
-
-onError goto e440
-			Alter Table Enskilt_avlopp_MellerstaNoIndex (add SpatialFastighet Char(40), SpatialShift Char(40) )
-			Add Column "Enskilt_avlopp_MellerstaNoIndex" (SpatialFastighet )From fastighet_yta Set To kir Where contains
-			Add Column "Enskilt_avlopp_MellerstaNoIndex" (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-onError goto 0
-onError goto e445
-			'end program
-			call tableCloserAndCommiter(tableNames)
-			onError goto 0
-		end if
-	onError goto e450
-		insert into Pathtable (tablePath,TableName) values (Tempstring1, "Enskilt_avlopp_S�dra")
-		insert into Pathtable (tablePath,TableName) values (Tempstring2, "Enskilt_avlopp_Norra")
-		insert into Pathtable (tablePath,TableName) values (Tempstring3, "Enskilt_avlopp_Mellersta")
-	onError goto 0
-
-
-exit sub
-
- e414: print " e414:" & " " & error$()
- e418: print " e418:" & " " & error$() 
- e424: print " e424:" & " " & error$() 
- e428: print " e428:" & " " & error$() 
- e434: print " e434:" & " " & error$() 
- e440: print " e440:" & " " & error$() 
- e445: print " e445:" & " " & error$() 
- e450: print " e450:" & " " & error$() 
-
-
-
-ErRRZ:
-		print "[ErRRZ] failed to commit table Enskilt_avlopp_Sdra  As " & tempstring1 
-		end program	
-ErRRZ2:
-		print "[ErRRZ] failed to commit table Enskilt_avlopp_Norra  As " & tempstring2 
-		end program	
-ErRRZ3:
-		print "[ErRRZ] failed to commit table Enskilt_avlopp_Mellersta  As " & tempstring3 
-		end program	
-end sub
-
-sub DO1_4_prepRenSd
-		call prepRen("Rening_S�dra")
-end sub
-
-
-sub DO1_4_prepRenNor
-	call prepRen("Rening_Norra")
-end sub
-
-sub DO1_4_prepRenMel
-		call prepRen("Rening_Mellersta")
-end sub
- 
  
 function CreateTable_reningIhopslagen as string
 	dim pathVar as string
@@ -294,82 +66,6 @@ function CreateTable_reningIhopslagen as string
 	CreateTable_reningIhopslagen = pathVar
 end function
 
-
-declare sub IhopSlag(ByVal typ as string,ByVal typ2 as string, path as string)
-		
-sub IhopSlag(ByVal typ as string,ByVal typ2 as string, path as string)
-		dim tablenames(3) as string
-
-		tablenames(1) = typ & "Mellersta"
-		tablenames(2) = typ & "Norra"
-		tablenames(3) = typ & "S�dra"
-		call tableOpener(tablenames)	
-
-		call insertXintoYtableWhereXcolLessThaYcol(tablenames(1),typ2)
-		call insertXintoYtableWhereXcolLessThaYcol(tablenames(2),typ2)
-		call insertXintoYtableWhereXcolLessThaYcol(tablenames(3),typ2)
-		Commit table reningIhopslagen
-		
-		call UpdateIndex(typ2)'already commits
-		insert into Pathtable (tablePath,TableName) values (path, typ2)	
-		call tableCloserAndCommiter(tableNames)
-end sub
- 
-sub DO1_5_reningIhopslagen	
-		call IhopSlag("Rening_","reningIhopslagen", CreateTable_reningIhopslagen())
-end sub
-
-sub DO1_10_enskiltIhopslagen
-		call IhopSlag("Enskilt_","EnskiltIhopslagen", CreateTable_enskiltIhopslagen())
-end sub
-
-sub DO1_11_prepareSocken
-		'figure out what wee need to DO whit this function 
-		'lets say we generate a necessary table for processor_2SockenRead
-		'sockenTabell mste skapas, men denna skall vara tom
-		'varfr behver sockenX, och 
-		'varfr behver vi nns skapa socknarOfiltrerade?
-		'verkar som att processor_2SockenRead behver socknarOfiltrerade,
-		'dper om den s� att det frhoppningsvis inte sprider sig vidare
-
-		dim tempstring,tablenames(3) as string	,tempAlias as alias
-'	
-		tempstring = "socknarOfiltrerade"
-		if G_rebuild then
-			print "rebuilding socknarOfiltrerade"
-			dim tempBool as logical call openSingleTable("fastighet_yta") 
-
-			tempstring = createTemporaryTableAnDOpen("""sockenTabelx"" (sockenX Char(254))")
-			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmnt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta
-			select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-			commit table socknarOfiltrerade as ApplicationDirectory$() & "socknarOfiltrerade.tab"
-			close table sockenTabelx
-			call openSingleTable("socknarOfiltrerade")
-		end if
-'		
-'		
-'		select * from Sockentabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
-'		redim tablenames(2) tablenames(1) = "EnskiltIhopslagen" tablenames(2) = "reningIhopslagen" call tableOpener(tablenames)	
-		tempstring = createTemporaryTableAnDOpen("""sockenTabell"" (sockenX Char(254))")
-end sub
-
-
-sub do6_8_SlamDisp 	
-		dim tableNames(1) as string 
-		redim tableNames(2)
-		tableNames(1) = "Lokalt_omhndertagande_slam"
-		tablenames(2) = "fastighet_yta"
-		call tableOpener(tablenames)
-		
-		Select fastighet_yta.KIR, Lokalt_omhndertagande_slam.Diarienr, Lokalt_omhndertagande_slam.Beslutsdatum from Lokalt_omhndertagande_slam, fastighet_yta where Lokalt_omhndertagande_slam.Obj Within fastighet_yta.Obj into slam
-		Alter Table "EnskiltIhopslagen" ( add SlamDispDat Date )
-		Commit table EnskiltIhopslagen
-		Add Column "EnskiltIhopslagen" (SlamDispDat )From Lokalt_omhndertagande_slam Set To Beslutsdatum Where COL17 = COL1 
-		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp p�: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
-		Commit table EnskiltIhopslagen
-end sub
-
-
 function CreateTable_EnskiltIhopslagen as string
 	dim pathVar as string
 	dim temp as string temp= TempFileName$("") 
@@ -394,10 +90,169 @@ function CreateTable_EnskiltIhopslagen as string
 	Anteckningar Char(254),
 	SpatialFastighet Char(40),
 	SpatialShift Char(40)
-
 		
 	)
 	file pathVar TYPE NATIVE Charset "WindowsLatin1"
 	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
 	CreateTable_EnskiltIhopslagen = pathVar
 end function
+
+sub processor_1Pre
+		
+	'grundtabeller 'Fastighetskikt med adress ''egna reningstabeller med spatial fastighet 'egna EnskiltTabeller med spatial fastighet 'egen swereftabell med spatial fastighet och index 'call DO1_1_genPathTab 'call insertInitialTables()
+	DO case G_Progress
+		case 1 
+			call DO1_3_GenFasWithAdr call DO1_4_prepRenSd if G_debugg then print "DO1_4_prepRenSd: " & G_Progress end if if G_rebuild then print G_Progress end if
+		case 2 
+			call DO1_4_prepRenNor if G_debugg then print "DO1_4_prepRenNor: " & G_Progress end if if G_rebuild then print G_Progress end if
+		case 3
+			call DO1_4_prepRenMel if G_debugg then print "DO1_4_prepRenMel: " & G_Progress end if if G_rebuild then print G_Progress end if
+		case 4
+			call DO1_5_reningIhopslagen if G_debugg then print "DO1_5_reningIhopslagen: " & G_Progress end if if G_rebuild then print G_Progress end if
+		case 5
+			call DO1_8_prepareSweref if G_debugg then print "DO1_8_prepareSweref: " & G_Progress end if if G_rebuild then print G_Progress end if
+		case 6
+			call DO1_9_egnEnskWSpatFas if G_debugg then print "DO1_9_egnEnskWSpatFas: " & G_Progress end if if G_rebuild then print G_Progress end if
+		case 7 
+			call DO1_10_enskiltIhopslagen if G_debugg then print "DO1_10_enskiltIhopslagen: " & G_Progress end if call DO6_8_SlamDisp if G_rebuild then print G_Progress end if
+		case 8
+			call DO1_11_prepareSocken if G_debugg then print "DO1_11_prepareSocken: " & G_Progress end if if G_rebuild then print G_Progress end if
+	end case
+	
+	call increment(G_Progress,G_ProgressRange,G_starttime)
+		
+End Sub
+
+
+sub DO1_11_prepareSocken
+		'figure out what wee need to DO whit this function 'lets say we generate a necessary table for processor_2SockenRead 'sockenTabell mste skapas, men denna skall vara tom 'varfr behver sockenX, och 'varfr behver vi nns skapa socknarOfiltrerade? 'verkar som att processor_2SockenRead behver socknarOfiltrerade, 'dper om den s� att det frhoppningsvis inte sprider sig vidare ' ' '		select * from Sockentabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade '		redim tablenames(2) tablenames(1) = "EnskiltIhopslagen" tablenames(2) = "reningIhopslagen" call tableOpener(tablenames) ' tempstring = "socknarOfiltrerade"
+		dim tempstring,tablenames(3) as string	,tempAlias as alias
+		
+		if G_rebuild then
+			print "rebuilding socknarOfiltrerade" dim tempBool as logical call openSingleTable("fastighet_yta") 
+
+			tempstring = createTemporaryTableAnDOpen("""sockenTabelx"" (sockenX Char(254))")
+			insert into sockentabelx Select Cond(left$(KIR,InStr(1,KIR," ",)-1), "allmnt","", "outrett", "", right$(left$(KIR,InStr(1,KIR," ",)-1),1) = "S" AND left$(KIR,InStr(1,KIR," ",)-1) <> "burs","", left$(KIR,InStr(1,KIR," ",)-1)) from fastighet_yta
+			select * from sockenTabelx where col1 <> "" group by col1 order by col1 into socknarOfiltrerade
+			commit table socknarOfiltrerade as ApplicationDirectory$() & "socknarOfiltrerade.tab" close table sockenTabelx call openSingleTable("socknarOfiltrerade")
+		end if
+
+		tempstring = createTemporaryTableAnDOpen("""sockenTabell"" (sockenX Char(254))")
+end sub
+
+
+sub do6_8_SlamDisp 	
+		dim tableNames(1) as string redim tableNames(2) tableNames(1) = "Lokalt_omhndertagande_slam" tablenames(2) = "fastighet_yta" call tableOpener(tablenames)
+		
+		Select fastighet_yta.KIR, Lokalt_omhndertagande_slam.Diarienr, Lokalt_omhndertagande_slam.Beslutsdatum from Lokalt_omhndertagande_slam, fastighet_yta where Lokalt_omhndertagande_slam.Obj Within fastighet_yta.Obj into slam
+		Alter Table "EnskiltIhopslagen" ( add SlamDispDat Date ) Commit table EnskiltIhopslagen
+		Add Column "EnskiltIhopslagen" (SlamDispDat )From Lokalt_omhndertagande_slam Set To Beslutsdatum Where COL17 = COL1 
+		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp @: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
+		Commit table EnskiltIhopslagen
+end sub
+
+
+
+sub prepSpatialy(byVal tableName as string)
+
+		dim tempstring,tableName,tableNames(1) as string redim tableNames(2) tempstring = ApplicationDirectory$() & tableName & ".TAB"
+		if G_rebuild then
+			tablenames(2) = "fastighet_yta"
+			tablenames(1) = tableName & "NoIndex"		
+			
+			onError goto e414tableOpener call tableOpener(tablenames) onError goto 0	
+			onError goto e418select select * from tablenames(1) into  TableName onError goto 0	
+			onError goto e424commit commit table TableName As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive onError goto 0					
+			onError goto e428close close table TableName	open table tempstring onError goto 0	
+			onError goto e434Alter Alter Table TableName( add SpatialFastighet Char(40), SpatialShift Char(40)  ) onError goto 0	
+			onError goto e440Add Add Column TableName (SpatialFastighet )From fastighet_yta Set To kir Where contains onError goto 0	
+			onError goto e445Add Add Column TableName (SpatialShift)From fastighet_yta Set To Fastighet Where contains onError goto 0	
+			onError goto e450commit commit table TableName call tableCloser(tablenames()) onError goto 0	
+		end if
+		
+		insert into Pathtable (tablePath,TableName) values (Tempstring,  TableName)
+			
+exit sub e414tableOpener: print "preSpatialy e414tableOpener: "  & error$() e418select: print "preSpatialy e418select: "  & error$() e424commit: print "preSpatialy e424commit: "  & error$() e428close: print "preSpatialy e428close: "  & error$() e434Alter: print "preSpatialy e434Alter: "  & error$() e440Add: print "preSpatialy e440Add: "  & error$() e445Add: print "preSpatialy e445Add: "  & error$() e450commit: print "preSpatialy e450commit: "  & error$() end sub
+
+sub DO1_3_GenFasWithAdr
+
+		dim tempstring as string tempString = applicationDirectory$() & "fastighet_ytaAd.tab"
+		if(not(FileExists(tempString))) then
+			print "rebuilding fastighet_ytaAd"
+			dim tableNames(1) as string redim tableNames(2) tablenames(1) = "fastighet_ytaORg" tablenames(2) = "Adresspunkter" call tableOpener(tablenames)
+
+			Create Table "FaMedAdrPunkt" (KIR Char(40),ADRESS Char(105),POSTNR Char(9),POSTORT Char(105),FASTIGHET Char(54),FNR Integer) file tempString TYPE NATIVE Charset "WinDOwsLatin1"
+			Create Map For FaMedAdrPunkt CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (-8099143.95363, -10001965.7294) (8399143.95363, 10001965.7294)
+			Insert Into FaMedAdrPunkt (KIR, FASTIGHET,FNR) Select COL2, COL12, Col1  From fastighet_ytaORg DropIndex Auto
+			Add Column "FaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where within
+			Add Column "FaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where within
+			Add Column "FaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where within
+
+			select * from FaMedAdrPunkt where adress = "" into TomtFaMedAdrPunkt
+
+			Add Column "TomtFaMedAdrPunkt" (ADRESS )From Adresspunkter Set To ADRESS Where COL6 = COL3 
+			Add Column "TomtFaMedAdrPunkt" (POSTORT )From Adresspunkter Set To POSTORT Where COL6 = COL3 
+			Add Column "TomtFaMedAdrPunkt" (POSTnr )From Adresspunkter Set To POSTnr Where COL6 = COL3 
+
+			commit table FaMedAdrPunkt
+			Create Index On FaMedAdrPunkt(kir)
+			commit table FaMedAdrPunkt
+			
+			close table fastighet_ytaORg
+			close table Adresspunkter		
+			close table FaMedAdrPunkt
+		end if
+		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
+end sub
+
+
+sub IhopSlag(ByVal typ as string,ByVal typ2 as string, path as string)
+		dim tablenames(3) as string
+
+		tablenames(1) = typ & "Mellersta"
+		tablenames(2) = typ & "Norra"
+		tablenames(3) = typ & ""&encodeError
+		call tableOpener(tablenames)	
+
+		call insertXintoYtableWhereXcolLessThaYcol(tablenames(1),typ2)
+		call insertXintoYtableWhereXcolLessThaYcol(tablenames(2),typ2)
+		call insertXintoYtableWhereXcolLessThaYcol(tablenames(3),typ2)
+		Commit table reningIhopslagen
+		
+		call UpdateIndex(typ2)'already commits
+		insert into Pathtable (tablePath,TableName) values (path, typ2)	
+		call tableCloserAndCommiter(tableNames)
+end sub
+
+
+sub DO1_9_egnEnskWSpatFas
+		call prepSpatialy("Enskilt_avlopp_"&encodeError)
+		call prepSpatialy("Enskilt_avlopp_Norra")
+		call prepSpatialy("Enskilt_avlopp_Mellersta")
+end sub
+
+sub DO1_4_prepRenSd
+		call prepSpatialy("Rening_"&encodeError)
+end sub
+
+sub DO1_4_prepRenNor
+	call prepSpatialy("Rening_Norra")
+end sub
+
+sub DO1_4_prepRenMel
+		call prepSpatialy("Rening_Mellersta")
+end sub
+  
+sub DO1_8_prepareSweref
+		call prepSpatialy("Fastigheter_sweref")
+end sub
+
+'sub DO1_1_genPathTab dim tempstring as string tempstring = "PathTABLE" if IsTableOpen(tempstring) then close table "pathTable" end if CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("") end sub
+ 
+sub DO1_5_reningIhopslagen	
+		call IhopSlag("Rening_","reningIhopslagen", CreateTable_reningIhopslagen())
+end sub
+
+sub DO1_10_enskiltIhopslagen
+		call IhopSlag("Enskilt_","EnskiltIhopslagen", CreateTable_enskiltIhopslagen())
+end sub
