@@ -1025,6 +1025,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 	 
    end sub
    
+
 function textAppend(byVal initial as string,byVal prefix as string,byVal  appendant as string) as string
 'Todo: move to Common Methods
 	initial = rtrim$(ltrim$(initial))
@@ -1108,15 +1109,8 @@ function enforceFormTa(byVal inputx as string,byVal col as string) as string
 			
 		enforceFormTa = return
 	
-exit function
-	unrecognized:
-		print "unrecognized format " & ColumnInfo( sockenRessultat,col,COL_INFO_TYPE)
-	end program
-		overflow:
-		
-		resume next
-
-end function
+exit function unrecognized: print "unrecognized format " & ColumnInfo( sockenRessultat,col,COL_INFO_TYPE) end program 
+overflow: resume next end function
 
 sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
 
