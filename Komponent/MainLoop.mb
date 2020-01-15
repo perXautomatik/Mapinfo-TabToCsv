@@ -965,14 +965,8 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				anlObj(antal).radnummer = eO(x).rowindex
 				anlObj(antal).rendenr =  DiarieUtanBokstver(DiarieMixedToUnit(eO(x).Diarienummer))
 				anlObj(antal).Typ_byggnad = eO(x).Typ_byggnad
-			end if
-	 	next
-	 end if
-	 
-	 if enskilt >= 1 then
-	 	for x=1 to enskilt
-	 		if eO(x).rowindex <> 0 then
-			 	if((eO(x).Typ_sluten_tank <> "0" and eO(x).Typ_sluten_tank <> "" and eO(x).Typ_sluten_tank <> "-")) then
+
+				if((eO(x).Typ_sluten_tank <> "0" and eO(x).Typ_sluten_tank <> "" and eO(x).Typ_sluten_tank <> "-")) then
 			 		antal = antal + 1
 					redim anlObj(antal)
 					anlObj(antal).Kartpunkt = "Tank"
@@ -985,9 +979,9 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 					anlObj(antal).rendenr =  DiarieUtanBokstver(DiarieMixedToUnit(eO(x).Diarienummer))
 				end if
 			end if
-		next
-	end if
-	
+	 	next
+	 end if
+		
 	 if rening >= 1 then
 		for x=1 to rening
 			if rO(x).rowindex <> 0 then
@@ -1032,7 +1026,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
    end sub
    
 function textAppend(byVal initial as string,byVal prefix as string,byVal  appendant as string) as string
-
+'Todo: move to Common Methods
 	initial = rtrim$(ltrim$(initial))
 	appendant = rtrim$(ltrim$(appendant))
 	prefix = rtrim$(ltrim$(prefix))
@@ -1080,17 +1074,12 @@ end sub
 
 function resTabPos(byVal colName as string) as integer
 	
-	onError goto killProgram
-		resTabPos = Columninfo("sockenRessultat",colName,Col_info_num)
-	onError goto 0
+	onError goto killProgram resTabPos = Columninfo("sockenRessultat",colName,Col_info_num) onError goto 0
 	
-exit function
-	killProgram:
-	print "[CRITICAL resTabPos]" & error$()
-End Function
+exit function killProgram: note "[CRITICAL resTabPos]" & error$() End Function
 
 function enforceFormTa(byVal inputx as string,byVal col as string) as string
-
+'Todo: move to Common Methods
 	dim return as string
 	
 	do case ColumnInfo(sockenRessultat,col,COL_INFO_TYPE)
