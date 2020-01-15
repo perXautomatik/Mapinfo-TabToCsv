@@ -940,7 +940,7 @@ end function
 
 sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as reningsobjekt,sO() as swerefobjekt)
 		
-	 'metoden skall lgga till anlggningar, s som tank, etc utefter om det finns fler n ett av varje av dessa, ifall av 0 r det inte mer n att de blir toma ytor.
+	 'Todo:metoden skall lgga till anlggningar, s som tank, etc utefter om det finns fler n ett av varje av dessa, ifall av 0 r det inte mer n att de blir toma ytor.
 	 dim x,enskilt,sweref,rening as integer
 	 ,antal as integer
 	 enskilt = ubound(eO)
