@@ -142,8 +142,7 @@ sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swer
 	'	 "Inventeringsinformation","Inventeringsinformation_Datum",: "datum(-MM-DD)",: "Utskick1_datum (sweref)" 
 	'	 "Inventeringsinformation","Inventeringsinformation_Status",: "Char(6)",: "Status (sweref)" 
 	'	 "Inventeringsinformation","Bedmning",: "Char(15)",: "rendenr (sweref)"': "Alla fastigheter som nmns p alla anlggningar som ligger huvudfastigheten (objektet)", 
- 
-		'har sweref
+    '     har sweref
 		if(swerefrInteToken(sO)) then
 			uObj(ittr).Inventering = "klart Vatten"
 		end if
@@ -159,11 +158,17 @@ sub UobjInitizializer()
 	'resolvedtodo: Med prefix Kommentar anläggning:Kommentar inventering:Kommentar rening:
 	'todo: Högst prio flagga röd, bkom, lila, ejvtn, grön,Annars mest info.
 	'todo: Bara extra inventerings (fler än 1 flagga) info spara koord, annars ignorera koord.
-	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fastighetsObjekt as alias,ignore as integer
+	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fAlias as alias,ignore as integer
 
-	fastighetsObjekt = G_socken & "fastighetsObjekt.reningsobjekt" inputString = fastighetsObjekt ignore = getFirstSplitByCom(inputString, RenObjIndex())
-	fastighetsObjekt = G_socken & "FastighetsObjekt.enskiltObjekt" inputString = fastighetsObjekt ignore = getFirstSplitByCom(inputString, EnObjIndex())
-	fastighetsObjekt = G_socken & "FastighetsObjekt.swerefobjekt" inputString = fastighetsObjekt ignore = getFirstSplitByCom(inputString, SweObjIndex())
+	fAlias = G_socken & "fastighetsObjekt.reningsobjekt" 
+	inputString = fAlias 
+	ignore = getFirstSplitByCom(inputString, RenObjIndex())
+	fAlias = G_socken & "FastighetsObjekt.enskiltObjekt" 
+	inputString = fAlias 
+	ignore = getFirstSplitByCom(inputString, EnObjIndex())
+	fAlias = G_socken & "FastighetsObjekt.swerefobjekt" 
+	inputString = fAlias 
+	ignore = getFirstSplitByCom(inputString, SweObjIndex())
 
 	call ReningSubsetByIndex(G_reningsobjekt,RenObjIndex,ren)
 	call EnskiltSubsetByIndex(G_enskiltobjekt,EnObjIndex,ensk)
