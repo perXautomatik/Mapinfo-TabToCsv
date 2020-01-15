@@ -160,6 +160,13 @@ sub UobjInitizializer()
 	'todo: Bara extra inventerings (fler än 1 flagga) info spara koord, annars ignorera koord.
 	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fAlias as alias,ignore as integer
 
+	'skapa muttationer organiserar om rrayna om s behvs
+	dim before as integer
+	before = ubound(ren) + ubound(ensk) + ubound(sweref)
+	if (ubound(ren) > 1 OR ubound(ensk) > 1 OR ubound(sweref) > 1) then
+		call skapaMutationer(ensk,ren,sweref,1) 
+	end if
+
 	fAlias = G_socken & "fastighetsObjekt.reningsobjekt" 
 	inputString = fAlias 
 	ignore = getFirstSplitByCom(inputString, RenObjIndex())
@@ -174,16 +181,9 @@ sub UobjInitizializer()
 	call EnskiltSubsetByIndex(G_enskiltobjekt,EnObjIndex,ensk)
 	call SwerefSubsetByIndex(G_swerefObjekt,SweObjIndex,sweref)
 
-	'skapa muttationer organiserar om arrayna om s behvs
-	dim before as integer
-	before = ubound(ren) + ubound(ensk) + ubound(sweref)
-	if (ubound(ren) > 1 OR ubound(ensk) > 1 OR ubound(sweref) > 1) then
-		call skapaMutationer(ensk,ren,sweref,1) 
-	end if
 	
-	if (before <> ubound(ren) + ubound(ensk) + ubound(sweref))
-		then print "WARNING before:" & before & " after_ " & ubound(ren) + ubound(ensk) + ubound(sweref)
-	end if
+	
+	if (before <> ubound(ren) + ubound(ensk) + ubound(sweref)) then print "WARNING before:" & before & " after_ " & ubound(ren) + ubound(ensk) + ubound(sweref) end if
 		
 	'utskriftskonstruktor frvntar sig att ingen av objekten har 0 som rowindex, alts, d blir det tomt.
 	if (ubound(ren) < 1 OR ubound(ensk) < 1 OR ubound(sweref) < 1) then
