@@ -24,9 +24,14 @@ Sub Main()
 	'Todo: add aditional failsafe to copy consgructors to make sure fastigheters Array is correct etc
 
 
-	G_debugg = true G_rebuild = false 
+	G_debugg = true G_rebuild = true
 	G_senastTid = 0 
 	G_socken = "" 
+	
+	if G_rebuild then
+		drop table sockentabell
+		select * from socknarOfiltrerade into sockentabell
+	End If
 	
 	fetch first from sockentabell DO Until EOT(sockentabell)
 		dim tableName,filePath,fastighetsObjektsTabell as string 
@@ -285,7 +290,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		fetch next from ValtRening
 	next
 
-exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj receated" print query print socken print error$() end program end sub
+exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj created" print query print nsocken print error$() end program end sub
 
 sub createRessultTableX(byval tablename as string, byval filePath as string)
 	'Todo: move into own MBX
@@ -699,7 +704,7 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 exit sub creationerror:
  'else if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			
  print "inga objekt p " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
-end sub
+
 
 function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 	dim storlek as integer

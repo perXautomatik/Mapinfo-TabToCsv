@@ -26,7 +26,7 @@ global
 G_workDir,G_socken,encodeError as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
 Sub Main()
-	G_debugg = true G_rebuild = false G_senastTid = 0 G_socken = "" 
+	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
 	encodeError = "Södra"
 
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
