@@ -41,22 +41,10 @@ end sub
 
 sub loadSocken()
 'Todo:rewrite so that progressbar can be visualized in this method, 'was thinking that maybe a case division, 'DOes case work with variables	it seems like it DOes in fact work ' but maybe not neccessary		
-	dim CurrentSocken,sTbl,tempstring as string
-	,iLoop,tempinterger as integer 
-
-	
-	if G_socken <> "" then
-		dim tableNames(1) as string
-		redim tablenames(4) 
-		print "change to " & G_socken
+	dim CurrentSocken as string
 		
-		CurrentSocken = G_socken & "Fastigheter" 
-		tablenames(1) = CurrentSocken 
-		tablenames(2) = "EnskiltIhopslagen"
-		tablenames(3) = "reningIhopslagen"  
-		tablenames(4) = "Fastigheter_sweref"
-		call tableOpener(tablenames)
-		G_starttime = timer() 
+	if G_socken <> "" then
+		print "change to " & G_socken dim tableNames(4) as string CurrentSocken = G_socken & "Fastigheter" tablenames(1) = CurrentSocken tablenames(2) = "EnskiltIhopslagen" tablenames(3) = "reningIhopslagen" tablenames(4) = "Fastigheter_sweref" call tableOpener(tablenames) G_starttime = timer() 
 		
 		Call TabToObjRening(CurrentSocken,G_ReningsObjekt) 'tempinterger = UBound(G_reningsObjekt()) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjRening") G_starttime = timer() 
 		Call TabToObjEnskilt(CurrentSocken,G_EnskiltObjekt) 'tempinterger = ubound(G_EnskiltObjekt) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjEnskilt") G_starttime = timer()
