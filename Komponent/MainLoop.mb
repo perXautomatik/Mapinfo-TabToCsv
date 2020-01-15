@@ -117,7 +117,7 @@ dim x,q as integer
 end function
 
 sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
-	
+	'todo: the text before fastighet is unessesary
 	if((ubound(rO.Anslutna_fastigheter())> 1)) then 'gemensam
 		uObj(ittr).Recipient =  "gem. " & 
 		iif(
