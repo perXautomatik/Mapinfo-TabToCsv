@@ -162,9 +162,9 @@ sub UobjInitizializer()
 
 	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fastighetsObjekt as alias,ignore as integer
 
-	fastighetsObjekt = G_socken & "fastighetsObjekt.reningsobjekt" inputString = fastighetsObjekt ignore = getMain(inputString, RenObjIndex())
-	fastighetsObjekt = G_socken & "FastighetsObjekt.enskiltObjekt" inputString = fastighetsObjekt ignore = getMain(inputString, EnObjIndex())
-	fastighetsObjekt = G_socken & "FastighetsObjekt.swerefobjekt" inputString = fastighetsObjekt ignore = getMain(inputString, SweObjIndex())
+	fastighetsObjekt = G_socken & "fastighetsObjekt.reningsobjekt" inputString = fastighetsObjekt ignore = getFirstSplitByCom(inputString, RenObjIndex())
+	fastighetsObjekt = G_socken & "FastighetsObjekt.enskiltObjekt" inputString = fastighetsObjekt ignore = getFirstSplitByCom(inputString, EnObjIndex())
+	fastighetsObjekt = G_socken & "FastighetsObjekt.swerefobjekt" inputString = fastighetsObjekt ignore = getFirstSplitByCom(inputString, SweObjIndex())
 
 	call ReningSubsetByIndex(G_reningsobjekt,RenObjIndex,ren)
 	call EnskiltSubsetByIndex(G_enskiltobjekt,EnObjIndex,ensk)
@@ -235,14 +235,14 @@ queryError:
 	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
 end sub
 
-function getMain(inputString as string, output() as string) as integer
+function getFirstSplitByCom(inputString as string, output() as string) as integer
 	dim ant as integer
 	ant = SplitStringAtCharacter(inputString, ",",output()) 
 	
 	if (ant = 1) then
-		getMain = val(output(1))
+		getFirstSplitByCom = val(output(1))
 	else
-		getMain = 0
+		getFirstSplitByCom = 0
 	end if
 
 end function
@@ -252,19 +252,12 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 	dim query,tempstring as string ,x,size as integer
 	
 	onError goto queryError 
-		query = "select " & getColumnsOfTable_asString("reningIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" 
-		run command query
+		query = "select " & getColumnsOfTable_asString("reningIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query
 	onError goto 0
 	
 	size = tableInfo(valtRening,tab_info_nrows) 
 
-	if size <> 0 then
-		fetch first from ValtRening 
-		print nSocken & " " & size & "reningsObjekt" 
-	else
-		print "noTrigger"
-		goto queryError 
-	end if
+	OnError goto queryError if size <> 0 then fetch first from ValtRening print nSocken & " " & size & "reningsObjekt" else print "noTrigger" goto queryError end if onError goto 0
 
 
 	for x=1 to size
@@ -287,15 +280,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		fetch next from ValtRening
 	next
 
-exit sub
-queryError:
-	print "[ERROR @ TabToObjRening] no reningobj receated"
-	print query
-	print socken
-	print error$()
-	end program
-
-end sub
+exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj receated" print query print socken print error$() end program end sub
 
 sub createRessultTableX(byval tablename as string, byval filePath as string)
 	
@@ -703,33 +688,23 @@ fasSelectError:
 End Sub
 
 sub OmObjektSkapaFastighet(FastighetsBetInput as string)
-		',swerefStart,ReningStart,EnskiltStart,objektCreationStart,swerefStop,ReningStop,EnskiltStop,objektCreationStop as float 
-	dim antalObjekt,before,after as integer,debugg as logical,fastighetsObjektsTabell as string,
-	EnskiltObjektfastighets() as EnskiltObjekt,reningsObjektfastighets() as reningsObjekt,swerefObjektfastighets() as swerefObjekt
+	dim antalObjekt,before,after as integer,debugg as logical,fastighetsObjektsTabell as string,EnskiltObjektfastighets() as EnskiltObjekt,reningsObjektfastighets() as reningsObjekt,swerefObjektfastighets() as swerefObjekt
 	debugg = false
 	antalObjekt = 0
 	
 	if(countShiftenGenUtvald(FastighetsBetInput) <> 0) then 
-		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,swerefObjektfastighets)
-		+ ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,reningsObjektfastighets) 
-		+ EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,EnskiltObjektfastighets)
-		
+		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,swerefObjektfastighets) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,reningsObjektfastighets) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,EnskiltObjektfastighets)
 		if(antalObjekt > 0 ) then 
 			fastighetsObjektsTabell = G_socken & "fastighetsObjekt" before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
 		
-			call FastighetsObjCreation(fastighetsObjektsTabell,
-			fastighetsBetInput,
-			reningsObjektfastighets,
-			swerefObjektfastighets,
-			EnskiltObjektfastighets)
+			call FastighetsObjCreation(fastighetsObjektsTabell, fastighetsBetInput, reningsObjektfastighets, swerefObjektfastighets, EnskiltObjektfastighets)
 			
 			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
 		else 
 			if(debugg) then	print ubound(G_swerefObjekt) & FastighetsBetInput & ubound(swerefObjektfastighets) print ubound(G_reningsObjekt) & FastighetsBetInput & ubound(reningsObjektfastighets) print ubound(G_EnskiltObjekt) & FastighetsBetInput & ubound(EnskiltObjektfastighets) end if
 		end if
 		
-	else
-		print "Objekt p fastighet("& FastighetsBetInput & ") = 0" 
+	else print "Objekt p fastighet("& FastighetsBetInput & ") = 0" 
 	end if
 	
 exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt p " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub

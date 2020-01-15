@@ -309,7 +309,7 @@ declare sub ReningSubsetByIndex(supersetTable() as reningsObjekt, indexArray() a
 declare sub EnskiltSubsetByIndex(supersetTable() as EnskiltObjekt,indexArray() as String,OutputTable() as EnskiltObjekt)
 declare sub SwerefSubsetByIndex(supersetTable() as swerefObjekt, indexArray() as string,OutputTable() as swerefObjekt)
 
-declare function getMain(inputString as string, output() as string) as integer
+declare function getFirstSplitByCom(inputString as string, output() as string) as integer
 
 declare sub utskrivningsobjektsKonstruktor(
 		sO() as swerefobjekt,
