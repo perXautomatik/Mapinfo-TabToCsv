@@ -53,15 +53,7 @@ sub loadSocken()
 	
 end sub
 
-function diarienummerForUtskriftsObjekt(
-		utskriftsObjekt() as utskriftsobjekt,
-		itterator as integer,
-		enskiltObjekt() as enskiltobjekt,
-		swerefObjekt() as swerefobjekt, 
-		objektid as integer
-		) as integer
-		dim rendennr(),tempDirty() as string
-		,x,returnInteger as integer
+function diarienummerForUtskriftsObjekt( utskriftsObjekt() as utskriftsobjekt, itterator as integer, enskiltObjekt() as enskiltobjekt, swerefObjekt() as swerefobjekt, objektid as integer ) as integer dim rendennr(),tempDirty() as string ,x,returnInteger as integer
 		
 	for x=1 to ubound(enskiltObjekt)
 		call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).Diarienummer)
@@ -236,6 +228,7 @@ queryError:
 end sub
 
 function getFirstSplitByCom(inputString as string, output() as string) as integer
+		
 	dim ant as integer
 	ant = SplitStringAtCharacter(inputString, ",",output()) 
 	
@@ -283,7 +276,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj receated" print query print socken print error$() end program end sub
 
 sub createRessultTableX(byval tablename as string, byval filePath as string)
-	
+	'Todo: move into own MBX
 	onError goto noTable close table tablename onError goto 0
 	
 	onError goto creationError
