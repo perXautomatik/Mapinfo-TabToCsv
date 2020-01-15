@@ -12,6 +12,11 @@ G_senastTid,G_anvndaReningar(),G_starttime as integer
 ,G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt
 
 Sub Main()
+	'Todo: Kom och till skall bli egna arcgis skikt med future synkning men hur får prata med oscar
+	'Todo: kordinatfliken behöver vara 2 tecken längre
+	'Todo: 900+ rows of badly formated fastighetsbeteckningar
+	'Todo: Anläggningsanteckningar syns inte när man har en sweref som sätter anteckningar, vi behöver slåihop dessa
+
 	G_debugg = true G_rebuild = false 
 	G_senastTid = 0 
 	G_socken = "" 
@@ -131,7 +136,6 @@ exit sub
 	noTable: resume next 
 end sub
 
-
 sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swerefobjekt)
 	'	 "Inventeringsinformation","Inventering",: "Char(12)",: "(om sweref) \"Klart Vatten"
 	'	 "Inventeringsinformation","Inventeringsinformation_Datum",: "datum(-MM-DD)",: "Utskick1_datum (sweref)" 
@@ -149,9 +153,11 @@ sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swer
 
 End Sub
 
-
 sub UobjInitizializer()
-
+	'Resolvedtodo: Om fler än en lägg anteckning som är relevant flagga på huvudsida Och irrelvant flagga som object anteckning,.
+	'resolvedtodo: Med prefix Kommentar anläggning:Kommentar inventering:Kommentar rening:
+	'todo: Högst prio flagga röd, bkom, lila, ejvtn, grön,Annars mest info.
+	'todo: Bara extra inventerings (fler än 1 flagga) info spara koord, annars ignorera koord.
 	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fastighetsObjekt as alias,ignore as integer
 
 	fastighetsObjekt = G_socken & "fastighetsObjekt.reningsobjekt" inputString = fastighetsObjekt ignore = getFirstSplitByCom(inputString, RenObjIndex())
@@ -195,7 +201,7 @@ exit sub
 end sub
 
 sub processor_3PrepMutate()
- 'initializing global vars senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program 'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet") '	debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim debugg as logical debugg = false if(debugg) then end program end if'reads selected row from sorteradFastighet 
+ 'initializing global vars senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program 'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet") '	G_debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim G_debugg as logical G_debugg = false if(G_debugg) then end program end if'reads selected row from sorteradFastighet 
 	dim fastighetJustNu as string
 	fastighetJustNu = SorteradFastighet.kir 
 	if fastighetJustNu <> "" then 
@@ -277,6 +283,8 @@ exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj receated" print
 
 sub createRessultTableX(byval tablename as string, byval filePath as string)
 	'Todo: move into own MBX
+	'Todo: should not hardType the fieldSpecifications, should be a global object some how
+	'for example a defenition class, where you call it's paramteres to get the defenition, 
 	onError goto noTable close table tablename onError goto 0
 	
 	onError goto creationError
@@ -343,14 +351,7 @@ sub createRessultTableX(byval tablename as string, byval filePath as string)
 			Create Map For tablename CoordSys Earth Projection 1, 104
 	onError goto 0
 	
-exit sub
-	creationError:
-	print "creationError" & error$()
-	end program
-	
-	noTable:
-	resume next 
-end sub
+exit sub creationError: print "creationError" & error$() end program noTable: resume next end sub
 
 sub getAnslutna(anslutan() as string)'hmtar ocks gemensamhetsanlggningar
 	dim P as integer
@@ -367,8 +368,7 @@ sub getAnslutna(anslutan() as string)'hmtar ocks gemensamhetsanlggningar
 			end if
 		next
 	else
-		tempString = valtRening.kommentarer 'kommentarfltet har identifieringen
-		'call gemAnslutna(tempstring,anslutan())
+		tempString = valtRening.kommentarer 'kommentarfltet har identifieringen 'call gemAnslutna(tempstring,anslutan())
 		call addStringToArrayAsifSet(anslutan(),"gem,gem")
 	end if
 
@@ -680,9 +680,13 @@ fasSelectError:
 	
 End Sub
 
+
 sub OmObjektSkapaFastighet(FastighetsBetInput as string)
-	dim antalObjekt,before,after as integer,debugg as logical,fastighetsObjektsTabell as string,EnskiltObjektfastighets() as EnskiltObjekt,reningsObjektfastighets() as reningsObjekt,swerefObjektfastighets() as swerefObjekt
-	debugg = false
+	dim antalObjekt,before,after as integer,fastighetsObjektsTabell as string,
+	EnskiltObjektfastighets() as EnskiltObjekt,
+	reningsObjektfastighets() as reningsObjekt,
+	swerefObjektfastighets() as swerefObjekt
+	
 	antalObjekt = 0
 	
 	if(countShiftenGenUtvald(FastighetsBetInput) <> 0) then 
@@ -694,16 +698,16 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 			
 			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
 		else 
-			if(debugg) then	print ubound(G_swerefObjekt) & FastighetsBetInput & ubound(swerefObjektfastighets) print ubound(G_reningsObjekt) & FastighetsBetInput & ubound(reningsObjektfastighets) print ubound(G_EnskiltObjekt) & FastighetsBetInput & ubound(EnskiltObjektfastighets) end if
+			if(G_debugg) then	print ubound(G_swerefObjekt) & FastighetsBetInput & ubound(swerefObjektfastighets) print ubound(G_reningsObjekt) & FastighetsBetInput & ubound(reningsObjektfastighets) print ubound(G_EnskiltObjekt) & FastighetsBetInput & ubound(EnskiltObjektfastighets) end if
 		end if
 		
 	else print "Objekt p fastighet("& FastighetsBetInput & ") = 0" 
 	end if
 	
-exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt p " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
+exit sub creationerror:
+ 'else if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			
+ print "inga objekt p " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
 end sub
-
-
 
 function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 	dim storlek as integer
