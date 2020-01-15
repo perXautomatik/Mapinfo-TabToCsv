@@ -19,7 +19,7 @@ declare sub do6_8_SlamDisp
 
 declare function CreateTable_reningIhopslagen as string
 declare function CreateTable_EnskiltIhopslagen as string
-declare sub IhopSlag(ByVal typ as string,ByVal typ2 as string, path as string)
+declare sub IhopSlag(ByVal typ as string,ByVal typ2 as string, BYVal path as string)
 declare sub prepSpatialy(byVal tableName as string)
 
 global 
@@ -27,7 +27,7 @@ G_workDir,G_socken,encodeError as string, G_rebuild,G_debugg as logical, G_anvnd
 
 Sub Main()
 	G_debugg = true G_rebuild = false G_senastTid = 0 G_socken = "" 
-	encodeError = "Sï¿½dra"
+	encodeError = "Södra"
 
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 
@@ -123,7 +123,6 @@ sub processor_1Pre
 		
 End Sub
 
-
 sub DO1_11_prepareSocken
 		'figure out what wee need to DO whit this function 'lets say we generate a necessary table for processor_2SockenRead 'sockenTabell mste skapas, men denna skall vara tom 'varfr behver sockenX, och 'varfr behver vi nns skapa socknarOfiltrerade? 'verkar som att processor_2SockenRead behver socknarOfiltrerade, 'dper om den sï¿½ att det frhoppningsvis inte sprider sig vidare ' ' '		select * from Sockentabell where col1 <> "" group by col1 order by col1 into socknarOfiltrerade '		redim tablenames(2) tablenames(1) = "EnskiltIhopslagen" tablenames(2) = "reningIhopslagen" call tableOpener(tablenames) ' tempstring = "socknarOfiltrerade"
 		dim tempstring,tablenames(3) as string	,tempAlias as alias
@@ -140,7 +139,6 @@ sub DO1_11_prepareSocken
 		tempstring = createTemporaryTableAnDOpen("""sockenTabell"" (sockenX Char(254))")
 end sub
 
-
 sub do6_8_SlamDisp 	
 		dim tableNames(1) as string redim tableNames(2) tableNames(1) = "Lokalt_omhndertagande_slam" tablenames(2) = "fastighet_yta" call tableOpener(tablenames)
 		
@@ -151,16 +149,14 @@ sub do6_8_SlamDisp
 		Commit table EnskiltIhopslagen
 end sub
 
-
-
 sub prepSpatialy(byVal tableName as string)
 
-		dim tempstring,tableName,tableNames(1) as string redim tableNames(2) tempstring = ApplicationDirectory$() & tableName & ".TAB"
+		dim tempstring,query,tableNames(2) as string tempstring = ApplicationDirectory$() & tableName & ".TAB"
 		if G_rebuild then
 			tablenames(2) = "fastighet_yta"
 			tablenames(1) = tableName & "NoIndex"		
 			
-			onError goto e414tableOpener call tableOpener(tablenames) onError goto 0	
+			call tableOpener(tablenames)
 			onError goto e418select select * from tablenames(1) into  TableName onError goto 0	
 			onError goto e424commit commit table TableName As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive onError goto 0					
 			onError goto e428close close table TableName	open table tempstring onError goto 0	
@@ -170,9 +166,11 @@ sub prepSpatialy(byVal tableName as string)
 			onError goto e450commit commit table TableName call tableCloser(tablenames()) onError goto 0	
 		end if
 		
-		insert into Pathtable (tablePath,TableName) values (Tempstring,  TableName)
-			
-exit sub e414tableOpener: print "preSpatialy e414tableOpener: "  & error$() e418select: print "preSpatialy e418select: "  & error$() e424commit: print "preSpatialy e424commit: "  & error$() e428close: print "preSpatialy e428close: "  & error$() e434Alter: print "preSpatialy e434Alter: "  & error$() e440Add: print "preSpatialy e440Add: "  & error$() e445Add: print "preSpatialy e445Add: "  & error$() e450commit: print "preSpatialy e450commit: "  & error$() end sub
+		onError goto e414tableInsert
+			query = "insert into Pathtable (tablePath,TableName) values (""" & Tempstring & """,""" & TableName & """)" 
+			run command query  
+		onError goto 0	
+exit sub e414tableInsert: print "preSpatialy e414tableInsert: "  & error$() print query e418select: print "preSpatialy e418select: "  & error$() e424commit: print "preSpatialy e424commit: "  & error$() e428close: print "preSpatialy e428close: "  & error$() e434Alter: print "preSpatialy e434Alter: "  & error$() e440Add: print "preSpatialy e440Add: "  & error$() e445Add: print "preSpatialy e445Add: "  & error$() e450commit: print "preSpatialy e450commit: "  & error$() end sub
 
 sub DO1_3_GenFasWithAdr
 
@@ -205,8 +203,7 @@ sub DO1_3_GenFasWithAdr
 		insert into Pathtable (tablePath,TableName) values (Tempstring, "fastighet_yta")
 end sub
 
-
-sub IhopSlag(ByVal typ as string,ByVal typ2 as string, path as string)
+sub IhopSlag(ByVal typ as string,ByVal typ2 as string,BYVAL path as string)
 		dim tablenames(3) as string
 
 		tablenames(1) = typ & "Mellersta"
@@ -217,13 +214,12 @@ sub IhopSlag(ByVal typ as string,ByVal typ2 as string, path as string)
 		call insertXintoYtableWhereXcolLessThaYcol(tablenames(1),typ2)
 		call insertXintoYtableWhereXcolLessThaYcol(tablenames(2),typ2)
 		call insertXintoYtableWhereXcolLessThaYcol(tablenames(3),typ2)
-		Commit table reningIhopslagen
+		Commit table typ2
 		
 		call UpdateIndex(typ2)'already commits
 		insert into Pathtable (tablePath,TableName) values (path, typ2)	
 		call tableCloserAndCommiter(tableNames)
 end sub
-
 
 sub DO1_9_egnEnskWSpatFas
 		call prepSpatialy("Enskilt_avlopp_"&encodeError)
@@ -254,5 +250,5 @@ sub DO1_5_reningIhopslagen
 end sub
 
 sub DO1_10_enskiltIhopslagen
-		call IhopSlag("Enskilt_","EnskiltIhopslagen", CreateTable_enskiltIhopslagen())
+		call IhopSlag("Enskilt_avlopp_","EnskiltIhopslagen", CreateTable_enskiltIhopslagen())
 end sub

@@ -36,11 +36,11 @@ end program
 		processor_3PrepMutate:	print "processor_3PrepMutateError"	print error$()	    end program
 		processor_4Mutate:	print "processor_4MutateError"	print error$()	    end program
 		saveSockenProgress: print "[ERROR_saveSockenProgressError] 0 objekts " & G_socken print error$()	    end program
-			genSortFa:	print "selectionError " & tempQuery	print error$()	end program
+		genSortFa:	print "selectionError " & tempQuery	print error$()	end program
 end sub
 
 sub loadSocken()
-'rewrite so that progressbar can be visualized in this method, 'was thinking that maybe a case division, 'DOes case work with variables	it seems like it DOes in fact work ' but maybe not neccessary		
+'Todo:rewrite so that progressbar can be visualized in this method, 'was thinking that maybe a case division, 'DOes case work with variables	it seems like it DOes in fact work ' but maybe not neccessary		
 	dim CurrentSocken,sTbl,tempstring as string
 	,iLoop,tempinterger as integer 
 
@@ -159,7 +159,7 @@ sub createFastighetsTable(byval tablename as string, byval filePath as string)
 	
 exit sub
 	creationError:
-	print "creationError" & error$()
+	print "createFastighetsTableError" & error$()
 	print query
 	end program
 	
