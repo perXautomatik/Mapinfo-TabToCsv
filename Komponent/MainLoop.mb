@@ -735,21 +735,7 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 exit sub creationerror: 'else 'if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			'print "inga objekt p " & FastighetsBetInput print "[ERROR @ OmObjektSkapaFastighet]" & error$() end program End sub
 end sub
 
-function DiarieUtanBokstver(ByVal diarienummer as string) as string
-	dim sPartsArray() As String
-	,tempInteger as integer
-		
-	tempInteger = SplitStringAtCharacter(diarienummer,"-",sPartsArray())
-	
-	if(tempInteger = 3) then
-		if (val(spartsArray(1)) = 0) then
-			DiarieUtanBokstver = val(sPartsArray(2) & sPartsArray(3))
-		end if
-	else
-		DiarieUtanBokstver = 0
-	end if
-	
-End Function
+
 
 function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 	dim storlek as integer
@@ -808,6 +794,22 @@ function InitializeSwerefObjekt(InitializeOrCopy as integer,swerefobjekt() as sw
 		InitializeSwerefObjekt = InitializeOrCopy
 	end if
 end function
+
+function DiarieUtanBokstver(ByVal diarienummer as string) as string
+	dim sPartsArray() As String
+	,tempInteger as integer
+		
+	tempInteger = SplitStringAtCharacter(diarienummer,"-",sPartsArray())
+	
+	if(tempInteger = 3) then
+		if (val(spartsArray(1)) = 0) then
+			DiarieUtanBokstver = val(sPartsArray(2) & sPartsArray(3))
+		end if
+	else
+		DiarieUtanBokstver = 0
+	end if
+	
+End Function
 
 function DiarieMixedToUnit(byVal text as string) as string
 	'skall bli, mhn-xxxx-xxxx
