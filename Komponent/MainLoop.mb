@@ -16,6 +16,13 @@ Sub Main()
 	'Todo: kordinatfliken behöver vara 2 tecken längre
 	'Todo: 900+ rows of badly formated fastighetsbeteckningar
 	'Todo: Anläggningsanteckningar syns inte när man har en sweref som sätter anteckningar, vi behöver slåihop dessa
+	'Todo: we need to remove anläggningar we already used, most likely best to do after the socken has bin recreated
+	'Todo: Gammelgarn trosings 2:1 status prioritet, typ grön > ejvtn
+	'Todo: genereraSQLVärdeArray är även denna farligt frånskilld, borde vara del av utskirvsobject objektet
+	'Todo: method that produces logg file, for each socken
+	'Todo: Mettoder som dumpar alla globala Arrays
+	'Todo: add aditional failsafe to copy consgructors to make sure fastigheters Array is correct etc
+
 
 	G_debugg = true G_rebuild = false 
 	G_senastTid = 0 
@@ -31,7 +38,7 @@ Sub Main()
         onError goto LoadSocken call loadSocken() onError goto 0
 		onError goto createFastighetsTable fastighetsObjektsTabell = G_socken & "fastighetsObjekt" 		filePath = ApplicationDirectory$() + fastighetsObjektsTabell & ".tab"  		call createFastighetsTable(fastighetsObjektsTabell,filePath) onError goto 0
 		onError goto processor_3PrepMutate G_ProgressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & G_ProgressRange & " items" Calling processor_3PrepMutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_3PrepMutate") end if onError goto 0	
-		onError goto processor_4Mutate  		tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 1 fetch first from fastighetsObjektsTabell 		ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling processor_4Mutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") end if onError goto 0 		
+		onError goto processor_4Mutate  tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 1 fetch first from fastighetsObjektsTabell 		ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling processor_4Mutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") end if onError goto 0 		
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 'Runns = Runns+1 if(runns = 2) then '	end program	
 	fetch next from sockentabell loop
 	
@@ -60,17 +67,11 @@ end sub
 
 function diarienummerForUtskriftsObjekt( utskriftsObjekt() as utskriftsobjekt, itterator as integer, enskiltObjekt() as enskiltobjekt, swerefObjekt() as swerefobjekt, objektid as integer ) as integer dim rendennr(),tempDirty() as string ,x,returnInteger as integer
 		
-	for x=1 to ubound(enskiltObjekt)
-		call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).Diarienummer)
-	next
+	for x=1 to ubound(enskiltObjekt) call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).Diarienummer) next
 	
-	for x=1 to ubound(swerefObjekt)
-		call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).rendenr) 
-	next	
+	for x=1 to ubound(swerefObjekt) call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).rendenr) next	
 		
-	for x=1 to ubound(tempDirty)
-		call addStringToArrayAsifSet(rendennr,DiarieMixedToUnit(tempDirty(x)))
-	next
+	for x=1 to ubound(tempDirty) call addStringToArrayAsifSet(rendennr,DiarieMixedToUnit(tempDirty(x))) next
 		
 	for x = 1 to ubound(rendennr)
 		if (rendennr(x) <> "MHN") then
@@ -406,21 +407,8 @@ Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outP
 		if x > ubound(inputEn) then
 			redim inputEn(x)
 		end if
-'		onError goto Xerror
-'		print "-----------------------------" & x
-'		
-'		print ubound(outPutEn)
-'		print ubound(inputEn)
-'		print ubound(outPutre) 
-'		print ubound(inputre)
-'		print ubound(outPutsw)
-'		print ubound(inputsw)
-'		print minimumDebt
-'		print x
-'		print "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"		
+'		onError goto Xerror '		print "-----------------------------" & x ' '		print ubound(outPutEn) '		print ubound(inputEn) '		print ubound(outPutre) '		print ubound(inputre) '		print ubound(outPutsw) '		print ubound(inputsw) '		print minimumDebt '		print x '		print "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz" '		onError goto 0
 			call enskiltCopyConstruktor(inputEn(x), outPutEn,x)
-		
-'		onError goto 0
 	next
 	
 	for x=minimumDebt to ubound(inputre)
@@ -679,7 +667,6 @@ fasSelectError:
 	print "FastighetsObjCreationSelectError" & error$()
 	
 End Sub
-
 
 sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 	dim antalObjekt,before,after as integer,fastighetsObjektsTabell as string,
