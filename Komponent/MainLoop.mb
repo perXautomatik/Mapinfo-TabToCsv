@@ -117,19 +117,9 @@ dim x,q as integer
 end function
 
 sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt,ittr as integer) 
-	'todo: the text before fastighet is unessesary
-	if((ubound(rO.Anslutna_fastigheter())> 1)) then 'gemensam
-		uObj(ittr).Recipient =  "gem. " & 
-		iif(
-		(uObj(ittr).Besksadress_Huvudfastighet 
-		<> ro.spatialFastighet)
-		,"p"
-		,"med")
-		& iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))
-	else
-		uObj(ittr).Recipient = iif(rO.spatialShift <> "",rO.spatialShift,eO.fastighet_rening)
-	end if
-	
+
+	uObj(ittr).Recipient = iif(rO.spatialshift <> "", rO.spatialshift, iif(rO.Fastighet_rening <> "",rO.Fastighet_rening,rO.rowIndex))
+
 end sub
 
 sub createFastighetsTable(byval tablename as string, byval filePath as string)
