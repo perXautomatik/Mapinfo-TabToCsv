@@ -1383,7 +1383,7 @@ dim query as string
 			OutputswerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
 			OutputswerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
 			OutputswerefObjekt(x).utfrddatum = Valtsweref.utfrddatum
-			OutputswerefObjekt(x).slamhmtning = searchReplace(Valtsweref.slamhmtning,"""","'")
+			'OutputswerefObjekt(x).slamhmtning = searchReplace(Valtsweref.slamhmtning,"""","'")
 			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
 			OutputswerefObjekt(x).kordinater = Valtsweref.koor
 			OutputswerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
