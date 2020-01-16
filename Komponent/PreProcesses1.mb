@@ -241,6 +241,7 @@ end sub
   
 sub DO1_8_prepareSweref
 		call prepSpatialy("Fastigheter_sweref")
+			call UpdateIndex("Fastigheter_sweref")
 end sub
 
 'sub DO1_1_genPathTab dim tempstring as string tempstring = "PathTABLE" if IsTableOpen(tempstring) then close table "pathTable" end if CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("") end sub
