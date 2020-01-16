@@ -211,9 +211,9 @@ sub IhopSlag(ByVal typ as string,ByVal typ2 as string,BYVAL path as string)
 		tablenames(3) = typ & ""&encodeError
 		call tableOpener(tablenames)	
 
-		call insertXintoYtableWhereXcolLessThaYcol(tablenames(1),typ2)
-		call insertXintoYtableWhereXcolLessThaYcol(tablenames(2),typ2)
-		call insertXintoYtableWhereXcolLessThaYcol(tablenames(3),typ2)
+		call insertCommonColumnsFromTableXintoY(tablenames(1),typ2)
+		call insertCommonColumnsFromTableXintoY(tablenames(2),typ2)
+		call insertCommonColumnsFromTableXintoY(tablenames(3),typ2)
 		Commit table typ2
 		
 		call UpdateIndex(typ2)'already commits

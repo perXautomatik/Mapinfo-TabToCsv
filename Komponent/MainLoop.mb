@@ -41,10 +41,15 @@ Sub Main()
 		" AND kir <> """" group by kir into SorteradFastighet" run command tempQuery onError goto 0
 		
         onError goto LoadSocken call loadSocken() onError goto 0
+		if G_debugg then print "LoadSocken" end if
 		onError goto createFastighetsTable fastighetsObjektsTabell = G_socken & "fastighetsObjekt" 		filePath = ApplicationDirectory$() + fastighetsObjektsTabell & ".tab"  		call createFastighetsTable(fastighetsObjektsTabell,filePath) onError goto 0
+		if G_debugg then print "createFastighetsTable" end if
 		onError goto processor_3PrepMutate G_ProgressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & G_ProgressRange & " items" Calling processor_3PrepMutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_3PrepMutate") end if onError goto 0	
+		if G_debugg then print "processor_3PrepMutate" end if
 		onError goto processor_4Mutate  tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 1 fetch first from fastighetsObjektsTabell 		ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling processor_4Mutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") end if onError goto 0 		
+		if G_debugg then print "processor_4Mutate" end if
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 'Runns = Runns+1 if(runns = 2) then '	end program	
+		if G_debugg then print "saveSockenProgress" end if
 	fetch next from sockentabell loop
 	
 end program
