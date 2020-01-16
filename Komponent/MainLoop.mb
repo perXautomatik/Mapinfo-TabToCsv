@@ -1369,20 +1369,24 @@ end function
 Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swerefObjekt)
 dim query as string
 ,x,size as integer	
+,Alias1,Alias2 as alias
 	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
 	
+Alias1 = "Valtsweref.Fastighet_tillstånd"
+Alias2 = "Valtsweref.utförddatum"
+
 	if size > 0 then fetch first from Valtsweref
 		print SockenFastigheter & " " & size & "Valtsweref"
 		for x=1 to size
 			Redim OutputswerefObjekt(x) 
 			OutputswerefObjekt(x).FASTIGHET = searchReplace(Valtsweref.FASTIGHET,"""","'")
-			OutputswerefObjekt(x).Fastighet_tillstnd = searchReplace(Valtsweref.Fastighet_tillstnd,"""","'")
+			OutputswerefObjekt(x).Fastighet_tillstnd = searchReplace(Alias1,"""","'")
 			if (Valtsweref.rendenr<>"MHN") then OutputswerefObjekt(x).rendenr = DiarieMixedToUnit(Valtsweref.rendenr) end if
 			OutputswerefObjekt(x).Beslut_datum = Valtsweref.Beslut_datum
 			OutputswerefObjekt(x).Status = searchReplace(Valtsweref.Status,"""","'")
 			OutputswerefObjekt(x).Utskick1_datum = Valtsweref.Utskick1_datum
 			OutputswerefObjekt(x).Anteckning = searchReplace(Valtsweref.Anteckning,"""","'")
-			OutputswerefObjekt(x).utfrddatum = Valtsweref.utfrddatum
+			OutputswerefObjekt(x).utfrddatum = Alias2
 			'OutputswerefObjekt(x).slamhmtning = searchReplace(Valtsweref.slamhmtning,"""","'")
 			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
 			OutputswerefObjekt(x).kordinater = Valtsweref.koor
