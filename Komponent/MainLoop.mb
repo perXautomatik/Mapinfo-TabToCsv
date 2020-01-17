@@ -180,15 +180,13 @@ sub UobjInitizializer()
 	'skapa muttationer organiserar om rrayna om s behvs
 	dim before as integer
 	
-	fAlias = G_socken & "fastighetsObjekt.reningsobjekt" 
-	inputString = fAlias 
+	fAlias = G_socken & "fastighetsObjekt.reningsobjekt" inputString = fAlias 
 	ignore = SplitStringAtCharacter(inputString,",", RenObjIndex())
-	fAlias = G_socken & "FastighetsObjekt.enskiltObjekt" 
-	inputString = fAlias 
+	fAlias = G_socken & "FastighetsObjekt.enskiltObjekt" inputString = fAlias 
 	ignore = SplitStringAtCharacter(inputString,",", EnObjIndex())
-	fAlias = G_socken & "FastighetsObjekt.swerefobjekt" 
-	inputString = fAlias 
+	fAlias = G_socken & "FastighetsObjekt.swerefobjekt" inputString = fAlias 
 	ignore = SplitStringAtCharacter(inputString,",", SweObjIndex())
+
 'getFirstSplitByCom
 
 	call ReningSubsetByIndex(G_reningsobjekt,RenObjIndex,ren)
