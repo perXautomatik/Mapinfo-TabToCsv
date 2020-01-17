@@ -31,7 +31,7 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-	G_husll = "hush�ll"
+G_husll = "hush�ll"
 	G_utfrd = "Utf�rd"
 	G_tillstnd = "tillst�nd"
 	G_rndenr = "�rendenr"
@@ -664,8 +664,8 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 	
 	if(countShiftenGenUtvald(FastighetsBetInput) <> 0) then 
 		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,swerefObjektfastighets) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,reningsObjektfastighets) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,EnskiltObjektfastighets)
+		fastighetsObjektsTabell = G_socken & "fastighetsObjekt" before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
 		if(antalObjekt > 0 ) then 
-			fastighetsObjektsTabell = G_socken & "fastighetsObjekt" before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
 		
 			call FastighetsObjCreation(fastighetsObjektsTabell, fastighetsBetInput, reningsObjektfastighets, swerefObjektfastighets, EnskiltObjektfastighets)
 			
@@ -675,8 +675,8 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 				print "antalObjekt > 0 @" &	FastighetsBetInput & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
 				G_TempRaknare = G_TempRaknare + 1
 				dim tempI as integer
-				tempi = G_TempRaknare / ubound(fastighetsObjektsTabell) 
-				print "FailRatio " & tempi & "% of " &  ubound(fastighetsObjektsTabell) 
+				tempi = G_TempRaknare / (1+before)
+				print "FailRatio " & tempi & "% of " & before
 				
 		  	end if
 		end if
