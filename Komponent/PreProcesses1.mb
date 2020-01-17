@@ -23,11 +23,16 @@ declare sub IhopSlag(ByVal typ as string,ByVal typ2 as string, BYVal path as str
 declare sub prepSpatialy(byVal tableName as string)
 
 global 
-G_workDir,G_socken,encodeError as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
+G_workDir,G_socken,G_Sdra,G_hush as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
 Sub Main()
 	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
-	encodeError = "S�dra"
+	G_Sdra = "S�dra"
+	G_hush = "hushåll"
+	G_tillstnd = "tillstånd"
+	G_utfrd = "Utförd"
+
+
 
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 
@@ -37,28 +42,14 @@ End program processor_1Pre: print "processor_1PreError" print error$()	    end p
 function CreateTable_reningIhopslagen as string
 	dim pathVar,temp as string temp= TempFileName$("") 
 	pathVar = left$(temp,len(temp)-4) & ".tab"
-	Create Table "reningIhopslagen" (
-		Fastighet_rening Char(50),
-		Antal_hushll_rening Char(17),
-		Reningstyp Char(15),
-		Storlek_m2 Float,
-		Beslut_datum Char(10),
-		Utfrd_datum Char(10),
-		Kommentarer Char(254),
-		Anslutna_fastigheter_1 Char(50),
-		Anslutna_fastigheter_2 Char(50),
-		Anslutna_fastigheter_3 Char(50),
-		Anslutna_fastigheter_4 Char(50),
-		Anslutna_fastigheter_5 Char(50),
-		Anslutna_fastigheter_6 Char(50),
-		Anslutna_fastigheter_7 Char(50),
-		Anslutna_fastigheter_8 Char(50),
-		Anslutna_fastigheter_9 Char(50),
-		Anslutna_fastigheter_10 Char(50),
-		SpatialFastighet Char(40),
-		SpatialShift Char(40)		
-	)
-	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+
+	run command 
+	"Create Table ""reningIhopslagen"" ( Fastighet_rening Char(50), Antal_" 
+	& G_hush 
+	& "_rening Char(17), Reningstyp Char(15), Storlek_m2 Float, Beslut_datum Char(10), " & 
+	G_utfrd & "_datum Char(10), Kommentarer Char(254), Anslutna_fastigheter_1 Char(50), Anslutna_fastigheter_2 Char(50), Anslutna_fastigheter_3 Char(50), Anslutna_fastigheter_4 Char(50), Anslutna_fastigheter_5 Char(50), Anslutna_fastigheter_6 Char(50), Anslutna_fastigheter_7 Char(50), Anslutna_fastigheter_8 Char(50), Anslutna_fastigheter_9 Char(50), Anslutna_fastigheter_10 Char(50), SpatialFastighet Char(40), SpatialShift Char(40) ) file """ 
+	& pathVar & """ TYPE NATIVE Charset ""WindowsLatin1"""
+
 	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
 	CreateTable_reningIhopslagen = pathVar
 end function
@@ -67,29 +58,15 @@ function CreateTable_EnskiltIhopslagen as string
 	dim pathVar as string
 	dim temp as string temp= TempFileName$("") 
 	pathVar = left$(temp,len(temp)-4) & ".tab"
-	Create Table "EnskiltIhopslagen" (
-	
-	Diarienummer Char(30),
-	Fastighet_tillstnd Char(50),
-	Typ_byggnad Char(15),
-	Antal_hushll_tillstnd Char(17),
-	Fastighet_rening Char(50),
-	Typ_Slamavskiljare Char(27),
-	Storlek_m3 Float,
-	Typ_rening Char(19),
-	Storlek_m2 Float,
-	Typ_sluten_tank Char(11),
-	Storlek__m3 Float,
-	Beslut_datum Date,
-	Utfrd_datum Date,
-	Avgift Char(10),
-	Tillstnd_giltigt_tom Date,
-	Anteckningar Char(254),
-	SpatialFastighet Char(40),
-	SpatialShift Char(40)
-		
-	)
-	file pathVar TYPE NATIVE Charset "WindowsLatin1"
+	run command 
+	" Create Table ""EnskiltIhopslagen"" ( Diarienummer Char(30), Fastighet_" &
+	 G_tillstnd &
+	  " Char(50), Typ_byggnad Char(15), Antal_" & G_hush & "_" &
+	   G_tillstnd &
+	    " Char(17), Fastighet_rening Char(50), Typ_Slamavskiljare Char(27), Storlek_m3 Float, Typ_rening Char(19), Storlek_m2 Float, Typ_sluten_tank Char(11), Storlek__m3 Float, Beslut_datum Date, " & 
+		G_utfrd & "_datum Date, Avgift Char(10), " & 
+		G_tillstnd & "_giltigt_tom Date, Anteckningar Char(254), SpatialFastighet Char(40), SpatialShift Char(40) ) file " & 
+		pathVar & " TYPE NATIVE Charset ""WindowsLatin1"""
 	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
 	CreateTable_EnskiltIhopslagen = pathVar
 end function
@@ -205,7 +182,7 @@ sub IhopSlag(ByVal typ as string,ByVal typ2 as string,BYVAL path as string)
 
 		tablenames(1) = typ & "Mellersta"
 		tablenames(2) = typ & "Norra"
-		tablenames(3) = typ & ""&encodeError
+		tablenames(3) = typ & ""&G_Sdra
 		call tableOpener(tablenames)	
 
 		call insertCommonColumnsFromTableXintoY(tablenames(1),typ2)
@@ -219,13 +196,13 @@ sub IhopSlag(ByVal typ as string,ByVal typ2 as string,BYVAL path as string)
 end sub
 
 sub DO1_9_egnEnskWSpatFas
-		call prepSpatialy("Enskilt_avlopp_"&encodeError)
+		call prepSpatialy("Enskilt_avlopp_"&G_Sdra)
 		call prepSpatialy("Enskilt_avlopp_Norra")
 		call prepSpatialy("Enskilt_avlopp_Mellersta")
 end sub
 
 sub DO1_4_prepRenSd
-		call prepSpatialy("Rening_"&encodeError)
+		call prepSpatialy("Rening_"&G_Sdra)
 end sub
 
 sub DO1_4_prepRenNor
