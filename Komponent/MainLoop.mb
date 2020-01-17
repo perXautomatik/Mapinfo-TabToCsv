@@ -673,12 +673,15 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
 		else 
 			if(G_debugg) then	
-				print "antalObjekt > 0 @" &	FastighetsBetInput & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
-				G_TempRaknare = G_TempRaknare + 1
-				dim tempI as integer
-				tempi = G_TempRaknare / (1+before)* 100
-				print "FailRatio " & tempi & "% of " & before
 				
+				dim tempI as integer
+				G_TempRaknare = G_TempRaknare + 1
+				tempi = G_TempRaknare / (G_TempRaknare+before)* 100
+				if(mod(G_TempRaknare,10) = 0 ) then
+					' & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
+					print "ant.Obj = 0 @" &	FastighetsBetInput
+					print "FailRatio " & tempi & "% of " & (G_TempRaknare+before)
+				end if
 		  	end if
 		end if
 		
