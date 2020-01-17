@@ -9,7 +9,7 @@ G_workDir,
  ,G_socken as string,
 G_rebuild,G_debugg as logical,
 G_ProgressRange,G_Progress,G_senastObjectID, 
-G_senastTid,G_anvndaReningar(),G_starttime as integer
+G_senastTid,G_anvndaReningar(),G_starttime,G_TempRaknare as integer
 
 ,G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt
 
@@ -29,8 +29,9 @@ Sub Main()
 	G_debugg = true G_rebuild = true
 	G_senastTid = 0 
 	G_socken = "" 
+	G_TempRaknare = 0
 	
-G_husll = "hush�ll"
+	G_husll = "hush�ll"
 	G_utfrd = "Utf�rd"
 	G_tillstnd = "tillst�nd"
 	G_rndenr = "�rendenr"
@@ -671,11 +672,13 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
 		else 
 			if(G_debugg) then	
-			print	FastighetsBetInput
-			print ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
-			print ubound(swerefObjektfastighets) & ubound(reningsObjektfastighets) & ubound(EnskiltObjektfastighets)
-			print "totFAO" & ubound(fastighetsObjektsTabell) 
-		  end if
+				print "antalObjekt > 0 @" &	FastighetsBetInput & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
+				G_TempRaknare = G_TempRaknare + 1
+				dim tempI as integer
+				tempi = G_TempRaknare / ubound(fastighetsObjektsTabell) 
+				print "FailRatio " & tempi & "% of " &  ubound(fastighetsObjektsTabell) 
+				
+		  	end if
 		end if
 		
 	else print "Objekt p fastighet("& FastighetsBetInput & ") = 0" 
