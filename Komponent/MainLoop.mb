@@ -30,7 +30,7 @@ Sub Main()
 	G_senastTid = 0 
 	G_socken = "" 
 	
-	G_husll = "hush�ll"
+G_husll = "hush�ll"
 	G_utfrd = "Utf�rd"
 	G_tillstnd = "tillst�nd"
 	G_rndenr = "�rendenr"
@@ -670,7 +670,12 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 			
 			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
 		else 
-			if(G_debugg) then	print ubound(G_swerefObjekt) & FastighetsBetInput & ubound(swerefObjektfastighets) print ubound(G_reningsObjekt) & FastighetsBetInput & ubound(reningsObjektfastighets) print ubound(G_EnskiltObjekt) & FastighetsBetInput & ubound(EnskiltObjektfastighets) end if
+			if(G_debugg) then	
+			print	FastighetsBetInput
+			print ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
+			print ubound(swerefObjektfastighets) & ubound(reningsObjektfastighets) & ubound(EnskiltObjektfastighets)
+			print "totFAO" & ubound(fastighetsObjektsTabell) 
+		  end if
 		end if
 		
 	else print "Objekt p fastighet("& FastighetsBetInput & ") = 0" 
