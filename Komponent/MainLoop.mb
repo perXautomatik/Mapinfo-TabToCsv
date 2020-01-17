@@ -4,7 +4,9 @@ include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib
 include "MainLoop.def"
 
 global 
-G_workDir,G_socken as string,
+G_workDir,
+	G_tillstnd,G_husll,G_utfrd,G_rndenr
+ ,G_socken as string,
 G_rebuild,G_debugg as logical,
 G_ProgressRange,G_Progress,G_senastObjectID, 
 G_senastTid,G_anvndaReningar(),G_starttime as integer
@@ -30,6 +32,8 @@ Sub Main()
 	
 	G_husll = "hushåll"
 	G_utfrd = "Utförd"
+	G_tillstnd = "tillstånd"
+	G_rndenr = "ärendenr"
 
 	if G_rebuild then
 		drop table sockentabell
@@ -264,44 +268,6 @@ function getFirstSplitByCom(inputString as string, output() as string) as intege
 	end if
 
 end function
-
-Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobjekt)
-	'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningslt'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningslt'assume this line removes double entries in 
-	dim query,tempstring as string ,x,size as integer
-	
-	onError goto queryError 
-		query = "select " & getColumnsOfTable_asString("reningIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query
-	onError goto 0
-	
-	size = tableInfo(valtRening,tab_info_nrows) 
-
-	OnError goto queryError if size <> 0 then fetch first from ValtRening print nSocken & " " & size & "reningsObjekt" else print "noTrigger" goto queryError end if onError goto 0
-	dim antalh,utfrdatum as alias
-		
-		antalh =	"valtRening.Antal_" & G_husll & "_rening"
-		utfrdatum = "valtRening." & G_utfrd & "_datum"
-
-	for x=1 to size
-		Redim OutputreningsObjekt(x)
-		OutputreningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
-		OutputreningsObjekt(x).spatialShift = valtRening.spatialShift
-		OutputreningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
-		OutputreningsObjekt(x).Antal_hushll_rening = iif(val(antalh & "") <> 0,val(antalh & ""),1)
-		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
-		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
-		OutputreningsObjekt(x).kordinater = valtRening.koor 
-		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
-		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
-		
-		tempstring = "" & mixedDateToUnion("" & valtRening.Beslut_datum) if tempstring <> "0" then OutputreningsObjekt(x).Beslut_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
-		tempstring = "" & mixedDateToUnion("" & utfrdatum) if tempstring <> "0" then OutputreningsObjekt(x).utfrd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
-		
-		call getAnslutna(OutputreningsObjekt(x).Anslutna_fastigheter)
-		
-		fetch next from ValtRening
-	next
-
-exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj created" print query print nsocken print error$() end program end sub
 
 sub createRessultTableX(byval tablename as string, byval filePath as string)
 	'Todo: move into own MBX
@@ -1372,15 +1338,55 @@ function swerefrInteToken(swerefTokenObjekt as swerefObjekt) as logical
 	swerefrInteToken = swerefTokenObjekt.rowindex <> 0
 end function
 
+
+Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobjekt)
+	'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningslt'resolved: no longer resoloves to zero always'seems like it always fails and send this date to the anteckningslt'assume this line removes double entries in 
+	dim query,tempstring as string ,x,size as integer
+	
+	onError goto queryError 
+		query = "select " & getColumnsOfTable_asString("reningIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query
+	onError goto 0
+	
+	size = tableInfo(valtRening,tab_info_nrows) 
+
+	OnError goto queryError if size <> 0 then fetch first from ValtRening print nSocken & " " & size & "reningsObjekt" else print "noTrigger" goto queryError end if onError goto 0
+	dim antalh,utfrdatum as alias
+		
+		antalh =	"valtRening.Antal_" & G_husll & "_rening"
+		utfrdatum = "valtRening." & G_utfrd & "_datum"
+
+	for x=1 to size
+		Redim OutputreningsObjekt(x)
+		OutputreningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
+		OutputreningsObjekt(x).spatialShift = valtRening.spatialShift
+		OutputreningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
+		OutputreningsObjekt(x).Antal_hushll_rening = iif(val(antalh & "") <> 0,val(antalh & ""),1)
+		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
+		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
+		OutputreningsObjekt(x).kordinater = valtRening.koor 
+		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
+		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
+		
+		tempstring = "" & mixedDateToUnion("" & valtRening.Beslut_datum) if tempstring <> "0" then OutputreningsObjekt(x).Beslut_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
+		tempstring = "" & mixedDateToUnion("" & utfrdatum) if tempstring <> "0" then OutputreningsObjekt(x).utfrd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
+		
+		call getAnslutna(OutputreningsObjekt(x).Anslutna_fastigheter)
+		
+		fetch next from ValtRening
+	next
+
+exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj created" print query print nsocken print error$() end program end sub
+
+
 Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swerefObjekt)
 dim query as string
 ,x,size as integer	
 ,Alias1,Alias2,Alias3 as alias
 	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
 	
-Alias1 = "Valtsweref.Fastighet_tillstånd"
-Alias2 = "Valtsweref.utförddatum"
-Alias3 = "Valtsweref.ärendenr"
+Alias1 = "Valtsweref.Fastighet_" & G_tillstnd
+Alias2 = "Valtsweref." & G_utfrd &"datum"
+Alias3 = "Valtsweref." & G_rndenr
 
 	if size > 0 then fetch first from Valtsweref
 		print SockenFastigheter & " " & size & "Valtsweref"
@@ -1414,15 +1420,16 @@ rowindexError:
 end sub
 
 Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as enskiltObjekt)
-	dim query,encode as string
+	dim query as string
 	,Alias1, Alias2, Alias3, Alias4 as alias
 	,x,size as integer	
 	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
-	encode = 	"tillstånd"
-	Alias1 =	"Valtenskilt.Fastighet_" & encode
-	Alias2 =	"Valtenskilt.Antal_hushll_" & encode
-	Alias3 =	"Valtenskilt.Utförd_datum"
-	Alias4 =	"Valtenskilt." & encode &"_giltigt_tom"
+
+
+	Alias1 =	"Valtenskilt.Fastighet_" & G_tillstnd
+	Alias2 =	"Valtenskilt.Antal_" & G_husll & "_" & G_tillstnd
+	Alias3 =	"Valtenskilt." & G_utfrd &"_datum"
+	Alias4 =	"Valtenskilt." & G_tillstnd &"_giltigt_tom"
 
 	fetch first from Valtenskilt
 	print SockenFastigheter & " " & size & "valtEnskilt"
