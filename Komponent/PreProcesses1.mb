@@ -23,14 +23,16 @@ declare sub IhopSlag(ByVal typ as string,ByVal typ2 as string, BYVal path as str
 declare sub prepSpatialy(byVal tableName as string)
 
 global 
-G_workDir,G_socken,G_Sdra,G_hush as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
+G_workDir,G_socken,
+G_Sdra,G_hush,G_utfrd,G_tillstnd 
+as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_Progress,G_senastObjectID, G_senastTid,G_starttime as integer
 
 Sub Main()
 	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
 	G_Sdra = "S�dra"
-	G_hush = "hushåll"
-	G_tillstnd = "tillstånd"
-	G_utfrd = "Utförd"
+	G_hush = "hush�ll"
+	G_tillstnd = "tillst�nd"
+	G_utfrd = "Utf�rd"
 
 
 
@@ -65,8 +67,8 @@ function CreateTable_EnskiltIhopslagen as string
 	   G_tillstnd &
 	    " Char(17), Fastighet_rening Char(50), Typ_Slamavskiljare Char(27), Storlek_m3 Float, Typ_rening Char(19), Storlek_m2 Float, Typ_sluten_tank Char(11), Storlek__m3 Float, Beslut_datum Date, " & 
 		G_utfrd & "_datum Date, Avgift Char(10), " & 
-		G_tillstnd & "_giltigt_tom Date, Anteckningar Char(254), SpatialFastighet Char(40), SpatialShift Char(40) ) file " & 
-		pathVar & " TYPE NATIVE Charset ""WindowsLatin1"""
+		G_tillstnd & "_giltigt_tom Date, Anteckningar Char(254), SpatialFastighet Char(40), SpatialShift Char(40) ) file """ & 
+		pathVar & """ TYPE NATIVE Charset ""WindowsLatin1"""
 	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
 	CreateTable_EnskiltIhopslagen = pathVar
 end function
