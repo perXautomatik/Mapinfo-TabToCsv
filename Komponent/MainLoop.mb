@@ -30,10 +30,10 @@ Sub Main()
 	G_senastTid = 0 
 	G_socken = "" 
 	
-	G_husll = "hushï¿½ll"
-	G_utfrd = "Utfï¿½rd"
-	G_tillstnd = "tillstï¿½nd"
-	G_rndenr = "ï¿½rendenr"
+	G_husll = "hushåll"
+	G_utfrd = "Utförd"
+	G_tillstnd = "tillstånd"
+	G_rndenr = "ärendenr"
 
 	if G_rebuild then
 		drop table sockentabell
@@ -601,11 +601,11 @@ sub utskrivningsobjektsKonstruktor(
 			
 End Sub
 
-sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt)
 
 	dim query,filePath,vrde() as string
 	
-	call FastighetsObjToInsertStringArray(vrde,inputx,ReningsObjekt(),SwerefObjekt(),EnskiltObjekt())
+	call FastighetsObjToInsertStringArray(vrde,inputx,G_ReningsObjekt(),G_SwerefObjekt(),G_EnskiltObjekt())
 		if(StringArrayAsString(vrde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
 			query = generateInsertStringWithArray(tableName, vrde)
 	
