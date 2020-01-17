@@ -632,7 +632,10 @@ function countShiftenGenUtvald(FastighetB as string) as integer
 	countShiftenGenUtvald = countRows(utvaldFastighet)
 end function
 
-sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
+
+sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string)
+',fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt
+',fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt
 		dim x,q,i as integer ,fastighetsObjekt as fastighetsObjekt
 '		,fastighetensReningsobjekt() as fastighetensReningsobjekt'		,fastighetensSwerefObjekt() as fastighetensSwerefObjekt'		,fastighetensEnskiltObjekt() as fastighetensEnskiltObjekt
 		

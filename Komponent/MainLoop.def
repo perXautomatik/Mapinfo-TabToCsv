@@ -266,7 +266,7 @@ declare function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,Fastighet
 declare function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
 
 declare sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
-declare sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
+declare sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string)
 declare sub FastighetsObjToInsertStringArray(output() as string, inputx as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
 
 
