@@ -27,7 +27,7 @@ G_workDir,G_socken,encodeError as string, G_rebuild,G_debugg as logical, G_anvnd
 
 Sub Main()
 	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
-	encodeError = "Södra"
+	encodeError = "Sï¿½dra"
 
 	onError goto processor_1Pre G_ProgressRange = 8 G_Progress = 0 G_starttime = timer() ProgressBar "processor_1Pre...." & G_ProgressRange & " items" Calling processor_1Pre Range G_ProgressRange onError goto 0
 
@@ -35,31 +35,28 @@ End program processor_1Pre: print "processor_1PreError" print error$()	    end p
 
  
 function CreateTable_reningIhopslagen as string
-	dim pathVar as string
-	dim temp as string temp= TempFileName$("") 
+	dim pathVar,temp as string temp= TempFileName$("") 
 	pathVar = left$(temp,len(temp)-4) & ".tab"
 	Create Table "reningIhopslagen" (
-	
-	Fastighet_rening Char(50),
-	Antal_hushll_rening Char(17),
-	Reningstyp Char(15),
-	Storlek_m2 Float,
-	Beslut_datum Char(10),
-	Utfrd_datum Char(10),
-	Kommentarer Char(254),
-	Anslutna_fastigheter_1 Char(50),
-	Anslutna_fastigheter_2 Char(50),
-	Anslutna_fastigheter_3 Char(50),
-	Anslutna_fastigheter_4 Char(50),
-	Anslutna_fastigheter_5 Char(50),
-	Anslutna_fastigheter_6 Char(50),
-	Anslutna_fastigheter_7 Char(50),
-	Anslutna_fastigheter_8 Char(50),
-	Anslutna_fastigheter_9 Char(50),
-	Anslutna_fastigheter_10 Char(50),
-	SpatialFastighet Char(40),
-	SpatialShift Char(40)
-		
+		Fastighet_rening Char(50),
+		Antal_hushll_rening Char(17),
+		Reningstyp Char(15),
+		Storlek_m2 Float,
+		Beslut_datum Char(10),
+		Utfrd_datum Char(10),
+		Kommentarer Char(254),
+		Anslutna_fastigheter_1 Char(50),
+		Anslutna_fastigheter_2 Char(50),
+		Anslutna_fastigheter_3 Char(50),
+		Anslutna_fastigheter_4 Char(50),
+		Anslutna_fastigheter_5 Char(50),
+		Anslutna_fastigheter_6 Char(50),
+		Anslutna_fastigheter_7 Char(50),
+		Anslutna_fastigheter_8 Char(50),
+		Anslutna_fastigheter_9 Char(50),
+		Anslutna_fastigheter_10 Char(50),
+		SpatialFastighet Char(40),
+		SpatialShift Char(40)		
 	)
 	file pathVar TYPE NATIVE Charset "WindowsLatin1"
 	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)

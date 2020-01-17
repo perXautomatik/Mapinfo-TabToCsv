@@ -274,9 +274,9 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 
 	OnError goto queryError if size <> 0 then fetch first from ValtRening print nSocken & " " & size & "reningsObjekt" else print "noTrigger" goto queryError end if onError goto 0
 	dim antalh as alias
-		antalh =	"valtRening.Antal_hushll_rening"
+		antalh =	"valtRening.Antal_hushåll_rening"
 
-
+print getColumnsOfTable_asString("valtRening")
 	for x=1 to size
 		Redim OutputreningsObjekt(x)
 		OutputreningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
