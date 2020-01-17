@@ -669,17 +669,15 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 		if(antalObjekt > 0 ) then 
 			fastighetsObjektsTabell = G_socken & "fastighetsObjekt" before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
 		
-			call FastighetsObjCreation(fastighetsObjektsTabell, fastighetsBetInput, reningsObjektfastighets, swerefObjektfastighets, EnskiltObjektfastighets)
+			call FastighetsObjCreation(fastighetsObjektsTabell, fastighetsBetInput)
 			
 			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
 		else 
 			if(G_debugg) then	
 			print	FastighetsBetInput
-
-			print ubound(G_swerefObjekt) & "g\o" & ubound(swerefObjektfastighets) 
-			print ubound(G_reningsObjekt) & "g\o" & ubound(reningsObjektfastighets) 
-			print ubound(G_EnskiltObjekt) & "g\o" & ubound(EnskiltObjektfastighets)
-			  end if
+			print ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
+			print "totFAO" & ubound(fastighetsObjektsTabell) 
+		  end if
 		end if
 		
 	else print "Objekt p fastighet("& FastighetsBetInput & ") = 0" 
