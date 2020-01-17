@@ -29,10 +29,10 @@ as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_P
 
 Sub Main()
 	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
-	G_Sdra = "Sï¿½dra"
-	G_hush = "hushï¿½ll"
-	G_tillstnd = "tillstï¿½nd"
-	G_utfrd = "Utfï¿½rd"
+	G_Sdra = "Södra"
+	G_hush = "hushåll"
+	G_tillstnd = "tillstånd"
+	G_utfrd = "Utförd"
 
 
 

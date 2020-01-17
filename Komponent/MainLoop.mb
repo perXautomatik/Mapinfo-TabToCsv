@@ -28,6 +28,9 @@ Sub Main()
 	G_senastTid = 0 
 	G_socken = "" 
 	
+	G_husll = "hushåll"
+	G_utfrd = "Utförd"
+
 	if G_rebuild then
 		drop table sockentabell
 		select * from socknarOfiltrerade into sockentabell
@@ -273,10 +276,11 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 	size = tableInfo(valtRening,tab_info_nrows) 
 
 	OnError goto queryError if size <> 0 then fetch first from ValtRening print nSocken & " " & size & "reningsObjekt" else print "noTrigger" goto queryError end if onError goto 0
-	dim antalh as alias
-		antalh =	"valtRening.Antal_hush�ll_rening"
+	dim antalh,utfrdatum as alias
+		
+		antalh =	"valtRening.Antal_" & G_husll & "_rening"
+		utfrdatum = "valtRening." & G_utfrd & "_datum"
 
-print getColumnsOfTable_asString("valtRening")
 	for x=1 to size
 		Redim OutputreningsObjekt(x)
 		OutputreningsObjekt(x).spatialFastighet = valtRening.spatialFastighet
@@ -290,7 +294,7 @@ print getColumnsOfTable_asString("valtRening")
 		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
 		
 		tempstring = "" & mixedDateToUnion("" & valtRening.Beslut_datum) if tempstring <> "0" then OutputreningsObjekt(x).Beslut_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
-		tempstring = "" & mixedDateToUnion("" & valtRening.Utfrd_datum) if tempstring <> "0" then OutputreningsObjekt(x).utfrd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
+		tempstring = "" & mixedDateToUnion("" & utfrdatum) if tempstring <> "0" then OutputreningsObjekt(x).utfrd_datum = tempstring else OutputreningsObjekt(x).Kommentarer = searchReplace(tempString & " " & OutputreningsObjekt(x).Kommentarer,"""","'") end if
 		
 		call getAnslutna(OutputreningsObjekt(x).Anslutna_fastigheter)
 		
