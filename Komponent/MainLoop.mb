@@ -676,7 +676,7 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 				print "antalObjekt > 0 @" &	FastighetsBetInput & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
 				G_TempRaknare = G_TempRaknare + 1
 				dim tempI as integer
-				tempi = G_TempRaknare / (1+before)
+				tempi = G_TempRaknare / (1+before)* 100
 				print "FailRatio " & tempi & "% of " & before
 				
 		  	end if
