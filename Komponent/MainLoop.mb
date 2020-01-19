@@ -5,8 +5,8 @@ include "MainLoop.def"
 
 global 
 G_workDir,
-	G_tillstnd,G_husll,G_utfrd,G_rndenr
- ,G_socken as string,
+G_tillstnd,G_husll,G_utfrd,G_rndenr
+,G_socken as string,
 G_rebuild,G_debugg as logical,
 G_ProgressRange,G_Progress,G_senastObjectID, 
 G_senastTid,G_anvndaReningar(),G_starttime,G_TempRaknare as integer
@@ -31,7 +31,7 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-G_husll = "hush�ll"
+	G_husll = "hush�ll"
 	G_utfrd = "Utf�rd"
 	G_tillstnd = "tillst�nd"
 	G_rndenr = "�rendenr"
@@ -62,12 +62,12 @@ G_husll = "hush�ll"
 	fetch next from sockentabell loop
 	
 end program
-		LoadSocken:	print "LoadSockenError"	print error$()	    end program
-		createFastighetsTable: print "processor_1PreError" print error$()	    end program
-		processor_3PrepMutate:	print "processor_3PrepMutateError"	print error$()	    end program
-		processor_4Mutate:	print "processor_4MutateError"	print error$()	    end program
-		saveSockenProgress: print "[ERROR_saveSockenProgressError] 0 objekts " & G_socken print error$()	    end program
-		genSortFa:	print "selectionError " & tempQuery	print error$()	end program
+	LoadSocken:	print "LoadSockenError"	print error$()	    end program
+	createFastighetsTable: print "processor_1PreError" print error$()	    end program
+	processor_3PrepMutate:	print "processor_3PrepMutateError"	print error$()	    end program
+	processor_4Mutate:	print "processor_4MutateError"	print error$()	    end program
+	saveSockenProgress: print "[ERROR_saveSockenProgressError] 0 objekts " & G_socken print error$()	    end program
+	genSortFa:	print "selectionError " & tempQuery	print error$()	end program
 end sub
 
 sub loadSocken()
@@ -162,13 +162,13 @@ sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swer
 	'	 "Inventeringsinformation","Inventeringsinformation_Status",: "Char(6)",: "Status (sweref)" 
 	'	 "Inventeringsinformation","Bedmning",: "Char(15)",: "rendenr (sweref)"': "Alla fastigheter som nmns p alla anlggningar som ligger huvudfastigheten (objektet)", 
     '     har sweref
-		if(swerefrInteToken(sO)) then
-			uObj(ittr).Inventering = "klart Vatten"
-		end if
-		
-		uObj(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
-		uObj(ittr).Inventeringsinformation_Status = sO.Status
-		uObj(ittr).Bedmning = sO.rendenr
+	if(swerefrInteToken(sO)) then
+		uObj(ittr).Inventering = "klart Vatten"
+	end if
+	
+	uObj(ittr).Inventeringsinformation_Datum = sO.Utskick1_datum
+	uObj(ittr).Inventeringsinformation_Status = sO.Status
+	uObj(ittr).Bedmning = sO.rendenr
 
 End Sub
 
@@ -177,6 +177,7 @@ sub UobjInitizializer()
 	'resolvedtodo: Med prefix Kommentar anläggning:Kommentar inventering:Kommentar rening:
 	'todo: Högst prio flagga röd, bkom, lila, ejvtn, grön,Annars mest info.
 	'todo: Bara extra inventerings (fler än 1 flagga) info spara koord, annars ignorera koord.
+	'todo: check that the ammount of utskrivningsobjekt is correct to intput.
 	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fAlias as alias,ignore as integer
 
 	'skapa muttationer organiserar om rrayna om s behvs
@@ -677,9 +678,9 @@ sub OmObjektSkapaFastighet(FastighetsBetInput as string)
 				dim tempI as integer
 				G_TempRaknare = G_TempRaknare + 1
 				tempi = G_TempRaknare / (G_TempRaknare+before)* 100
-				if(mod(G_TempRaknare,10) = 0 ) then
-					' & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
-					print "ant.Obj = 0 @" &	FastighetsBetInput
+				if( G_TempRaknare mod 10 = 0 ) then
+					
+					print "ant.Obj = 0 @" &	FastighetsBetInput ' & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
 					print "FailRatio " & tempi & "% of " & (G_TempRaknare+before)
 				end if
 		  	end if
