@@ -1,2 +1,14 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+[diff]
+    tool = beyondcompare4
+[difftool "beyondcompare4"]
+    cmd = "C:\Users\crbk01\Desktop\WhenOffline\BeondCompare4\BComp.exe" \"$LOCAL\" \"$REMOTE\"
+[merge]
+    tool = beyondcompare4
+[mergetool]
+    keepbackup = false
+[mergetool "beyondcompare4"]
+    cmd = "C:\Users\crbk01\Desktop\WhenOffline\BeondCompare4\BComp.exe" \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"
+    trustexitcode = true
