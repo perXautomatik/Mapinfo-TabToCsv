@@ -1171,6 +1171,8 @@ sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
 	
 	tableName = "SockenRessultat"
 	
+	
+
 	for x=1 to ubound(utskriftsObjekt)
 		call UtskriftsObjToInsertStringArray(vrde, utskriftsObjekt(x)) 'queryError on eather "0,0,0,0,F,0,0,0,0,0,0,0,0" "Insert Into ressultat () Values ()" 
 		if(StringArrayAsString(vrde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
@@ -1182,7 +1184,11 @@ sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
 		else goto queryError end if
 	next
 	
-	
+	IF G_debugg Then
+		select * from sockenRessultat group by Besksadress_Huvudfastighet into reference
+		print  "ressultTAbleSize: " & tableInfo(reference,tab_info_nrows)
+	end if
+
 	'call SaveAnvndaReningar
 			
 
