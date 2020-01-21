@@ -207,89 +207,88 @@ sub inventeringsinformation(uObj() as UtskriftsObjekt,ittr as integer,so as swer
 End Sub
 
 sub do4_UobjInitizializer()
-	'Resolvedtodo: Om fler än en lägg anteckning som är relevant flagga på huvudsida Och irrelvant flagga som object anteckning,.
-	'resolvedtodo: Med prefix Kommentar anläggning:Kommentar inventering:Kommentar rening:
-	'consumes global arrays 
-	'todo: Högst prio flagga röd, bkom, lila, ejvtn, grön,Annars mest info.
-	'todo: Bara extra inventerings (fler än 1 flagga) info spara koord, annars ignorera koord.
-	'todo: check that the ammount of utskrivningsobjekt is correct to intput.
-	dim ensk() as enskiltobjekt,ren() as reningsobjekt,sweref() as swerefobjekt,inputString,RenObjIndex(),EnObjIndex(),SweObjIndex() as string,fAlias as alias,ignore as integer
 
-	'skapa muttationer organiserar om rrayna om s behvs
-	dim before,max as integer
-	
-	fAlias = G_socken & "fastighetsObjekt.reningsobjekt" inputString = fAlias 
-	ignore = SplitStringAtCharacter(inputString,",", RenObjIndex())
-	max = ignore
-	fAlias = G_socken & "FastighetsObjekt.enskiltObjekt" inputString = fAlias 
-	ignore = SplitStringAtCharacter(inputString,",", EnObjIndex())
-	max = iif(max < ignore,ignore,max)
-	fAlias = G_socken & "FastighetsObjekt.swerefobjekt" inputString = fAlias 
-	ignore = SplitStringAtCharacter(inputString,",", SweObjIndex())
-	max = iif(max < ignore,ignore,max)
-	
-'getFirstSplitByCom
-
-	call ReningSubsetByIndex(G_reningsobjekt,RenObjIndex,ren)
-	call EnskiltSubsetByIndex(G_enskiltobjekt,EnObjIndex,ensk)
-	call SwerefSubsetByIndex(G_swerefObjekt,SweObjIndex,sweref)
-
-	before = ubound(ren) + ubound(ensk) + ubound(sweref)
-	if (ubound(ren) > 1 OR ubound(ensk) > 1 OR ubound(sweref) > 1) then
-		call skapaMutationer(ensk,ren,sweref,1) 
-	end if
-
-	if (before <> ubound(ren) + ubound(ensk) + ubound(sweref)) then print "WARNING before:" & before & " after_ " & ubound(ren) + ubound(ensk) + ubound(sweref) end if
-		
-	'utskriftskonstruktor frvntar sig att ingen av objekten har 0 som rowindex, alts, d blir det tomt.
-	if (ubound(ren) < 1 OR ubound(ensk) < 1 OR ubound(sweref) < 1) then
-		call initializer(ren,ensk,sweref)
-	end if
-	call utskrivningsobjektsKonstruktor(sweref,ren,ensk)
-		
 end sub
 
 sub processor_4Mutate()
+'utskriftskonstruktor frvntar sig att ingen av objekten har 0 som rowindex, alts, d blir det tomt.
+	'getFirstSplitByCom
+	'Resolvedtodo: Om fler än en lägg anteckning som är relevant flagga på huvudsida Och irrelvant flagga som object anteckning,.
+	'resolvedtodo: Med prefix Kommentar anläggning:Kommentar inventering:Kommentar rening:
+	'consumes global arrays 
+	'skapa muttationer organiserar om rrayna om s behvs
+	'todo: Högst prio flagga röd, bkom, lila, ejvtn, grön,Annars mest info.
+	'todo: Bara extra inventerings (fler än 1 flagga) info spara koord, annars ignorera koord.
+	'todo: check that the ammount of utskrivningsobjekt is correct to intput.
+	dim tempALias,columnTo as alias,
+	before,max,ignore as integer,
+	fasRen() as reningsobjekt,
+	split, renIndex(), enIndex(), sweIndex() as string,
+	fasSwe() as swerefobjekt,
+	fasEnsk() as enskiltobjekt
+	tempAlias = G_socken & "fastighetsObjekt"
+
 	onError goto do4_UobjInitizializer 
-		dim tempALias as alias 
-		tempAlias = G_socken & "fastighetsObjekt"
 		
-		call do4_UobjInitizializer()
+	columnTo = G_socken & "fastighetsObjekt.reningsobjekt" split = columnTo max = SplitStringAtCharacter(split,",", renIndex())
+	columnTo = G_socken & "FastighetsObjekt.enskiltObjekt" split = columnTo ignore = SplitStringAtCharacter(split,",", enIndex()) max = iif(max < ignore,ignore,max) 
+	columnTo = G_socken & "FastighetsObjekt.swerefobjekt" split = columnTo ignore = SplitStringAtCharacter(split,",", sweIndex()) max = iif(max < ignore,ignore,max)
 	
-		call increment(G_Progress,G_ProgressRange,G_starttime)	
-	fetch next from tempAlias	onError goto 0
-exit sub
-	do4_UobjInitizializer: note error$() end program
+	call ReningSubsetByIndex(G_reningsobjekt,renIndex,fasRen)
+	call EnskiltSubsetByIndex(G_enskiltobjekt,enIndex,fasEnsk)
+	call SwerefSubsetByIndex(G_swerefObjekt,sweIndex,fasSwe)
+
+	if G_debugg then before = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) end if
+	if (max > 1) then call skapaMutationer(fasEnsk,fasRen,fasSwe,1) end if
+	
+	if G_debugg then ignore = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) if (before <> ignore) then print "WARNING before:" & before & " after_ " & ignore end if end if
+		
+	if (ubound(fasRen) < 1 OR ubound(fasEnsk) < 1 OR ubound(fasSwe) < 1) then call initializer(fasRen,fasEnsk,fasSwe) end if
+	
+	call utskrivningsobjektsKonstruktor(fasSwe,fasRen,fasEnsk)
+		
+	call increment(G_Progress,G_ProgressRange,G_starttime) fetch next from tempAlias	onError goto 0
+
+exit sub do4_UobjInitizializer: note error$() end program
 end sub
 
 sub processor_3PrepMutate()
- 'initializing global vars senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program 'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet") '	G_debugg = (fastighetJustNu = "ALA OLLAJVS 1:17")'dim G_debugg as logical G_debugg = false if(G_debugg) then end program end if'reads selected row from sorteradFastighet 
-	dim fastighetJustNu as string
-	fastighetJustNu = SorteradFastighet.kir 
-	if fastighetJustNu <> "" then 
-		call do3_OmObjektSkapaFastighet(fastighetJustNu) 
-	else
-		print "noFastighet"
-	end if
+	'consumes global arrays
+	'		,fastighetensReningsobjekt() as fastighetensReningsobjekt'		,fastighetensSwerefObjekt() as fastighetensSwerefObjekt'		,fastighetensEnskiltObjekt() as fastighetensEnskiltObjekt
+ 'initializing global vars senasteFastighet = "" currentObjectid = 0 socken = "" runns = 0	x=1'	end program 'insert into Pathtable (tablePath,TableName) values (Tempstring, "SorteradFastighet") '	G_debugg = (fastighetsBetInput = "ALA OLLAJVS 1:17")'dim G_debugg as logical G_debugg = false if(G_debugg) then end program end if'reads selected row from sorteradFastighet 
+	dim fastighetensEnskiltObjekt() as EnskiltObjekt, fastighetsObjekt as fastighetsObjekt, x,q,i,antalObjekt,before,after as integer, fastighetensReningsobjekt() as reningsobjekt, fastighetensSwerefObjekt() as swerefObjekt, FastighetsBetInput,fastighetsObjektsTabell as string
+	
+	fastighetsBetInput = SorteradFastighet.kir fastighetsObjektsTabell = G_socken & "fastighetsObjekt"
+	
+	if (fastighetsBetInput <> "" AND (countShiftenGenUtvald(FastighetsBetInput) <> 0)) then 
+		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,fastighetensSwerefObjekt) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,fastighetensReningsobjekt) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,FastighetensEnskiltObjekt) before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
+		if(antalObjekt > 0 ) then 
+			fastighetsObjekt.kir = fastighetsBetInput	
+			onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & chr$(34) & fastighetsBetInput & chr$(34) & " into fas" onerror goto 0 fetch first from fas fastighetsObjekt.adress = fas.adress fastighetsObjekt.postnr = fas.postnr fastighetsObjekt.ort = fas.postort fastighetsObjekt.fastighet = fas.fastighet fastighetsObjekt.fnr = fas.fnr close table fas
+			
+			call do3_1_1_saveFastighetsObjektToTable(fastighetsObjektsTabell,fastighetsObjekt,fastighetensReningsobjekt(),fastighetensSwerefObjekt(),fastighetensEnskiltObjekt())
+
+			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
+		else if(G_debugg) then dim tempI as integer G_TempRaknare = G_TempRaknare + 1 tempi = G_TempRaknare / (G_TempRaknare+before)* 100 if( G_TempRaknare mod 10 = 0 ) then print "ant.Obj = 0 @" &	FastighetsBetInput print "FailRatio " & tempi & "% of " & (G_TempRaknare+before) end if end if end if
+		
+	else print "Objekt p fastighet("& FastighetsBetInput & ") = 0" print "noFastighet" end if
 	fetch Next from SorteradFastighet call increment(G_Progress,G_ProgressRange,G_starttime)
-end sub
+
+exit sub creationerror: Note "inga objekt p " & FastighetsBetInput print "[ERROR @ do3_OmObjektSkapaFastighet]" & error$() end program fasSelectError: print "FastighetsObjCreationSelectError" & error$() resume next	
+end sub 
+
 
 sub saveSockenProgress(socken as string)
 
-	dim query	,filePath,vrde(),tablename as string,x as integer
-	,tablenameA as alias
+	dim query	,filePath,vrde(),tablename as string,x as integer ,tablenameA as alias
 	
-	tableName = Socken & "ressultat" 
-	filePath = ApplicationDirectory$() + tableName & ".tab"
+	tableName = Socken & "ressultat" filePath = ApplicationDirectory$() + tableName & ".tab"
 
 	call createRessultTableX(tablename,filePath)
 
-	tableNameA = tableName
-	Insert Into tableNameA select * From SockenRessultat DropIndex Auto
+	tableNameA = tableName Insert Into tableNameA select * From SockenRessultat DropIndex Auto
 
-	commit table tableName
-	drop table SockenRessultat
-	methodEnd:
+	commit table tableName drop table SockenRessultat methodEnd:
 exit sub
 queryError:
 	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
@@ -647,65 +646,9 @@ function countShiftenGenUtvald(FastighetB as string) as integer
 	countShiftenGenUtvald = countRows(utvaldFastighet)
 end function
 
-sub do3_1_FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
-		dim x,q,i as integer ,fastighetsObjekt as fastighetsObjekt
-'		,fastighetensReningsobjekt() as fastighetensReningsobjekt'		,fastighetensSwerefObjekt() as fastighetensSwerefObjekt'		,fastighetensEnskiltObjekt() as fastighetensEnskiltObjekt
-		
-		fastighetsObjekt.kir = fastighetsBetInput	
-		onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & chr$(34) & fastighetsBetInput & chr$(34) & " into fas" onerror goto 0 fetch first from fas			
-		fastighetsObjekt.adress = fas.adress
-		fastighetsObjekt.postnr = fas.postnr 
-		fastighetsObjekt.ort = fas.postort 
-		fastighetsObjekt.fastighet = fas.fastighet 
-		fastighetsObjekt.fnr = fas.fnr 
-		close table fas
-		
-		call do3_1_1_saveFastighetsObjektToTable(tableName,fastighetsObjekt,fastighetensReningsobjekt(),fastighetensSwerefObjekt(),fastighetensEnskiltObjekt())
-exit sub
 
-fasSelectError:
-	print "FastighetsObjCreationSelectError" & error$()
-	
-End Sub
 
-sub do3_OmObjektSkapaFastighet(FastighetsBetInput as string)
-	'consumes global arrays
-	dim antalObjekt,before,after as integer,fastighetsObjektsTabell as string,
-	EnskiltObjektfastighets() as EnskiltObjekt,
-	reningsObjektfastighets() as reningsObjekt,
-	swerefObjektfastighets() as swerefObjekt
-	
-	antalObjekt = 0
-	
-	if(countShiftenGenUtvald(FastighetsBetInput) <> 0) then 
-		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,swerefObjektfastighets) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,reningsObjektfastighets) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,EnskiltObjektfastighets)
-		fastighetsObjektsTabell = G_socken & "fastighetsObjekt" before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
-		if(antalObjekt > 0 ) then 
-			
-			call do3_1_FastighetsObjCreation(fastighetsObjektsTabell, fastighetsBetInput, reningsObjektfastighets, swerefObjektfastighets, EnskiltObjektfastighets)
-			
-			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
-		else 
-			if(G_debugg) then	
-				
-				dim tempI as integer
-				G_TempRaknare = G_TempRaknare + 1
-				tempi = G_TempRaknare / (G_TempRaknare+before)* 100
-				if( G_TempRaknare mod 10 = 0 ) then
-					
-					print "ant.Obj = 0 @" &	FastighetsBetInput ' & " Gs| " & ubound(G_swerefObjekt) & "S | R" & ubound(G_reningsObjekt) & " | E" & ubound(G_EnskiltObjekt)
-					print "FailRatio " & tempi & "% of " & (G_TempRaknare+before)
-				end if
-		  	end if
-		end if
-		
-	else print "Objekt p fastighet("& FastighetsBetInput & ") = 0" 
-	end if
-	
-exit sub creationerror:
- 'else if ((ubound(fastighetsObjektTabell(after).swerefobjekt()) + ubound(fastighetsObjektTabell(after).Enskiltobjekt()) + ubound(fastighetsObjektTabell(after).reningsobjekt())) <> antalObjekt)  'then' & ubound(fastighetsObjektTabell(after).swerefobjekt()) & " " & ubound(fastighetsObjektTabell(after).Enskiltobjekt()) & " " & ubound(fastighetsObjektTabell(after).reningsobjekt()) & "<>" & antalObjekt' end if			
- print "inga objekt p " & FastighetsBetInput print "[ERROR @ do3_OmObjektSkapaFastighet]" & error$() end program
- End sub
+
 
 function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 	dim storlek as integer
