@@ -3,6 +3,8 @@ include "Menu.def"
 include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
 include "MainLoop.def"
 
+declare sub closeTablesByNameSubStr(byVal Substring as string)
+
 global 
 G_workDir,
 G_tillstnd,G_husll,G_utfrd,G_rndenr
@@ -31,7 +33,7 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-	G_husll = "hush�ll"
+G_husll = "hush�ll"
 	G_utfrd = "Utf�rd"
 	G_tillstnd = "tillst�nd"
 	G_rndenr = "�rendenr"
@@ -39,6 +41,7 @@ Sub Main()
 	if G_rebuild then
 		drop table sockentabell
 		select * from socknarOfiltrerade into sockentabell
+		call closeTablesByNameSubStr("ressultat")
 	End If
 	
 	fetch first from sockentabell DO Until EOT(sockentabell)
@@ -69,6 +72,28 @@ end program
 	saveSockenProgress: print "[ERROR_saveSockenProgressError] 0 objekts " & G_socken print error$()	    end program
 	genSortFa:	print "selectionError " & tempQuery	print error$()	end program
 end sub
+
+sub closeTablesByNameSubStr(byVal Substring as string)
+	dim openTables() as string, j as integer
+
+	Restart:
+	call getOpentables(openTables)
+	for j = 1 to ubound(openTables)
+	
+		if(InStr(1,substring,opentables(j)) <> 0) then
+			onError goto commitError
+				Commit Table tableNames(j)
+			onError goto 0
+			
+			OnError goto CloseError
+				close table opentables(j)
+			onError goto 0
+			goto Restart
+		end if
+
+	Next
+end sub
+
 
 sub loadSocken()
 'loads rening enskilt and sweref into the global arrays, for current socken
