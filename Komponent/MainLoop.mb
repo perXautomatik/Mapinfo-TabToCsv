@@ -646,9 +646,9 @@ sub do3_OmObjektSkapaFastighet(FastighetsBetInput as string)
 	
 	if(countShiftenGenUtvald(FastighetsBetInput) <> 0) then 
 		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,swerefObjektfastighets) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,reningsObjektfastighets) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,EnskiltObjektfastighets)
-		before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
+		fastighetsObjektsTabell = G_socken & "fastighetsObjekt" before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
 		if(antalObjekt > 0 ) then 
-			fastighetsObjektsTabell = G_socken & "fastighetsObjekt" 
+			
 			call do3_1_FastighetsObjCreation(fastighetsObjektsTabell, fastighetsBetInput, reningsObjektfastighets, swerefObjektfastighets, EnskiltObjektfastighets)
 			
 			after = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS) if (after = before) then goto creationError end if
