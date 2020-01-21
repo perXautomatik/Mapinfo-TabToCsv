@@ -265,12 +265,12 @@ declare function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,Fastigh
 declare function swerefSubsetByFasgtighet(inputTable() as swerefObjekt,FastighetsBetInput as String,OutputTable() as swerefObjekt) as integer
 declare function reningsSubsetByFasgtighet(inputTable() as ReningsObjekt,FastighetsBetInput as String,OutputTable() as ReningsObjekt) as integer
 
-declare sub saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
-declare sub FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
-declare sub FastighetsObjToInsertStringArray(output() as string, inputx as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+declare sub do3_1_1_saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+declare sub do3_1_FastighetsObjCreation(tableName as string,fastighetsBetInput as string,fastighetensReningsobjekt() as reningsobjekt,fastighetensSwerefObjekt() as swerefObjekt,fastighetensEnskiltObjekt() as enskiltObjekt)
+declare sub do3_1_1_1_FastighetsObjToInsertStringArray(output() as string, inputx as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
 
 
-Declare sub OmObjektSkapaFastighet(FastighetsBetInput as string)
+Declare sub do3_OmObjektSkapaFastighet(FastighetsBetInput as string)
 
 declare sub getAnslutna(anslutan() as string)
 declare function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
@@ -296,7 +296,7 @@ declare sub createFastighetsTable(byval tablename as string, byval filePath as s
 declare sub TabToObjEnskilt(byVal nSocken as string,output() as EnskiltObjekt)
 declare sub TabToObjRening(byVal nSocken as string,output() as ReningsObjekt)
 declare Sub TabToObSweref(byVal SockenFastigheter as string,output() as swerefObjekt)
-Declare sub UobjInitizializer()
+Declare sub do4_UobjInitizializer()
 
 declare sub skapaMutationer(en() as enskiltObjekt ,re() as reningsobjekt ,sw() as swerefobjekt,byVal minimumDebt as integer)
 Declare sub initializer(reningsTokenObjekt() as reningsobjekt,enskiltsTokenObjekt() as enskiltObjekt,swerefsTokenObjekt() as swerefobjekt)
