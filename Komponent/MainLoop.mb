@@ -42,6 +42,7 @@ G_husll = "hush�ll"
 		drop table sockentabell
 		select * from socknarOfiltrerade into sockentabell
 		call closeTablesByNameSubStr("ressultat")
+		call closeTablesByNameSubStr("fastighetsObjekt")
 	End If
 	
 	fetch first from sockentabell DO Until EOT(sockentabell)
@@ -75,14 +76,13 @@ end sub
 
 sub closeTablesByNameSubStr(byVal Substring as string)
 	dim openTables() as string, j as integer
-
+	
 	Restart:
 	call getOpentables(openTables)
 	for j = 1 to ubound(openTables)
-	
-		if(InStr(1,substring,opentables(j)) <> 0) then
+		if(InStr(1,opentables(j),substring) <> 0) then
 			onError goto commitError
-				Commit Table tableNames(j)
+				Commit Table openTables(j)
 			onError goto 0
 			
 			OnError goto CloseError
@@ -92,6 +92,14 @@ sub closeTablesByNameSubStr(byVal Substring as string)
 		end if
 
 	Next
+exit sub
+
+commitError: print "commit error " & error$()
+	resume restart
+
+CloseError:print "close error " & error$()
+	resume restart
+	
 end sub
 
 
@@ -244,10 +252,10 @@ end sub
 sub processor_4Mutate()
 	onError goto do4_UobjInitizializer 
 		dim tempALias as alias 
+		tempAlias = G_socken & "fastighetsObjekt"
 		
 		call do4_UobjInitizializer()
 	
-		tempAlias = G_socken & "fastighetsObjekt"
 		call increment(G_Progress,G_ProgressRange,G_starttime)	
 	fetch next from tempAlias	onError goto 0
 exit sub
