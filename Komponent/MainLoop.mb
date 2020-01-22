@@ -33,10 +33,10 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-	G_husll = "hushï¿½ll"
-	G_utfrd = "Utfï¿½rd"
-	G_tillstnd = "tillstï¿½nd"
-	G_rndenr = "ï¿½rendenr"
+	G_husll = "hushåll"
+	G_utfrd = "Utförd"
+	G_tillstnd = "tillstånd"
+	G_rndenr = "ärendenr"
 
 	if G_rebuild then
 		drop table sockentabell
@@ -44,10 +44,11 @@ Sub Main()
 		call closeTablesByNameSubStr("ressultat")
 		call closeTablesByNameSubStr("fastighetsObjekt")
 	End If
-	
-	fetch first from sockentabell DO Until EOT(sockentabell)
-		dim tableName,filePath,fastighetsObjektsTabell as string 
 
+	G_starttime = timer()
+	fetch first from sockentabell DO Until EOT(sockentabell)
+	
+		dim tableName,filePath,fastighetsObjektsTabell as string,tempInteger as integer
 		onError goto genSortFa G_socken = sockenTabell.sockenX call opensingletable("fastighet_yta") dim tempQuery as string
 		tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & G_socken & Chr$(34) &
 		" AND kir <> """" group by kir into SorteradFastighet" run command tempQuery onError goto 0
@@ -60,9 +61,10 @@ Sub Main()
 		onError goto processor_3PrepMutate G_ProgressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & G_ProgressRange & " items" Calling processor_3PrepMutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_3PrepMutate") end if onError goto 0	 if G_debugg then print "processor_3PrepMutate" end if
 
 		onError goto processor_4Mutate  tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 1 fetch first from fastighetsObjektsTabell 		ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling processor_4Mutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") end if onError goto 0 		 if G_debugg then print "processor_4Mutate" end if
-
+		
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 if G_debugg then print "saveSockenProgress" end if  'Runns = Runns+1 if(runns = 2) then '	end program	
-
+		tempInteger = timer()
+		call TimePresent(G_starttime,tempInteger,G_TempRaknare)
 	fetch next from sockentabell loop
 	
 end program
@@ -283,7 +285,7 @@ sub saveSockenProgress(socken as string)
 	call createRessultTableX(tablename,filePath)
 
 	tableNameA = tableName
-	
+	retry:
 	onError goto InsertError
 		query = "Insert Into " & tableNameA & " select * From SockenRessultat DropIndex Auto"
 		run command query
@@ -294,8 +296,8 @@ finally:
 	drop table SockenRessultat
 	 
 exit sub
-queryError:
-	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
+InsertError:
+	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume retry
 end sub
 
 function getFirstSplitByCom(inputString as string, output() as string) as integer
@@ -1004,34 +1006,43 @@ function enforceFormTa(byVal inputx as string,byVal col as string) as string
 'Todo: move to Common Methods
 	dim return as string
 	
-	do case ColumnInfo(sockenRessultat,col,COL_INFO_TYPE)
-		case 1 '"Char"
-			return = left$(inputx,ColumnInfo( sockenRessultat,col,COL_INFO_WIDTH))
-		case 5,38 '"Date"
-			return = "" & NumberToDate(val(DeformatNumber$(inputx)))
-		case 8 '"float"
-			return = "" & DeformatNumber$(inputx)		
-		case 3,4,39 '"integer"
-			return = "" & val(DeformatNumber$(inputx))
-		case 6 '"Logical"
-			do case inputx
-			case "1","0","F","T"
-				return = inputx
+	onError goto overflow
+		do case ColumnInfo(sockenRessultat,col,COL_INFO_TYPE)
+			case 1 '"Char"
+				return = left$(inputx,ColumnInfo( sockenRessultat,col,COL_INFO_WIDTH))
+			case 5,38 '"Date"
+				return = "" & NumberToDate(val(DeformatNumber$(inputx)))
+			case 8 '"float"
+				return = "" & DeformatNumber$(inputx)		
+			case 3,4,39 '"integer"
+				return = "" & val(DeformatNumber$(inputx))
+			case 6 '"Logical"
+				do case inputx
+				case "1","0","F","T"
+					return = inputx
+				case else
+					return = "" & val(inputx)	
+				end case
 			case else
-				return = "" & val(inputx)	
-			end case
-		case else
-			goto unrecognized		
-	End Case
+				goto unrecognized		
+		End Case
+	onError goto 0
+		
+	if( len(return) >= len(inputx)+2) then
+		print "Warning overflow, " & inputx & " <> " & return
+	end if
+		overflowError:
+		
+	enforceFormTa = return
 	
-		if( len(return) >= len(inputx)+2) then
-			print "Warning overflow, " & inputx & " <> " & return
-		end if
-			
-		enforceFormTa = return
+exit function
+	unrecognized: note "unrecognized format " & ColumnInfo( sockenRessultat,col,COL_INFO_TYPE) end program 
 	
-exit function unrecognized: print "unrecognized format " & ColumnInfo( sockenRessultat,col,COL_INFO_TYPE) end program 
-overflow: resume next 
+overflow:
+	print ColumnInfo(sockenRessultat,col,COL_INFO_TYPE) & "|" & inputx
+	print error$()
+	return = inputx
+	resume overflowError
 end function
 
 sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobjekt)
@@ -1153,8 +1164,6 @@ sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
 	
 	tableName = "SockenRessultat"
 	
-	
-
 	for x=1 to ubound(utskriftsObjekt)
 		call UtskriftsObjToInsertStringArray(vrde, utskriftsObjekt(x)) 'queryError on eather "0,0,0,0,F,0,0,0,0,0,0,0,0" "Insert Into ressultat () Values ()" 
 		if(StringArrayAsString(vrde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
@@ -1166,10 +1175,7 @@ sub saveUtskriftsProgress(utskriftsObjekt() as utskriftsObjekt)
 		else goto queryError end if
 	next
 	
-	IF G_debugg Then
-		select * from sockenRessultat group by Besksadress_Huvudfastighet into reference
-		print  "ressultTAbleSize: " & tableInfo(reference,tab_info_nrows)
-	end if
+	'IF G_debugg Then select * from sockenRessultat group by Besksadress_Huvudfastighet into reference print  "ressultTAbleSize: " & tableInfo(reference,tab_info_nrows) end if
 
 	'call SaveAnvndaReningar
 			
