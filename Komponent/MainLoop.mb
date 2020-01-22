@@ -33,7 +33,7 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-G_husll = "hush�ll"
+	G_husll = "hush�ll"
 	G_utfrd = "Utf�rd"
 	G_tillstnd = "tillst�nd"
 	G_rndenr = "�rendenr"
@@ -90,7 +90,6 @@ sub closeTablesByNameSubStr(byVal Substring as string)
 			onError goto 0
 			goto Restart
 		end if
-
 	Next
 exit sub
 
@@ -121,12 +120,9 @@ end sub
 function diarienummerForUtskriftsObjekt( utskriftsObjekt() as utskriftsobjekt, itterator as integer, enskiltObjekt() as enskiltobjekt, swerefObjekt() as swerefobjekt, objektid as integer ) as integer dim rendennr(),tempDirty() as string ,x,returnInteger as integer
 		
 	for x=1 to ubound(enskiltObjekt) call addStringToArrayAsifSet(tempDirty(),enskiltObjekt(x).Diarienummer) next
-	
 	for x=1 to ubound(swerefObjekt) call addStringToArrayAsifSet(tempDirty(),swerefObjekt(x).rendenr) next	
-		
 	for x=1 to ubound(tempDirty) call addStringToArrayAsifSet(rendennr,DiarieMixedToUnit(tempDirty(x))) next
-		
-	for x = 1 to ubound(rendennr)
+	for x=1 to ubound(rendennr)
 		if (rendennr(x) <> "MHN") then
 			itterator = itterator + 1
 			redim utskriftsobjekt(itterator)
@@ -286,9 +282,17 @@ sub saveSockenProgress(socken as string)
 
 	call createRessultTableX(tablename,filePath)
 
-	tableNameA = tableName Insert Into tableNameA select * From SockenRessultat DropIndex Auto
-
-	commit table tableName drop table SockenRessultat methodEnd:
+	tableNameA = tableName
+	
+	onError goto InsertError
+		query = "Insert Into " & tableNameA & " select * From SockenRessultat DropIndex Auto"
+		run command query
+	
+	commit table tableName 
+	onError goto 0
+finally:
+	drop table SockenRessultat
+	 
 exit sub
 queryError:
 	print "[saveSockenProgress_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
@@ -621,6 +625,7 @@ sub do3_1_1_saveFastighetsObjektToTable(tableName as string,inputX as fastighets
 	
 	call do3_1_1_1_FastighetsObjToInsertStringArray(vrde,inputx,ReningsObjekt(),SwerefObjekt(),EnskiltObjekt())
 		if(StringArrayAsString(vrde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
+			retry:
 			query = generateInsertStringWithArray(tableName, vrde)
 	
 			onerror goto queryError
@@ -634,7 +639,8 @@ sub do3_1_1_saveFastighetsObjektToTable(tableName as string,inputX as fastighets
 	methodEnd:
 exit sub
 queryError:
-	print "[saveFastighetsObjektToTable_error] queryError|" & query & "dropping table" print error$() drop table tableName resume methodEnd
+	print "[saveFastighetsObjektToTable_error] queryError|" & query
+	print error$() resume retry
 
 end sub
 
