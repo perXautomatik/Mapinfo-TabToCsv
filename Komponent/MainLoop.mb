@@ -5,6 +5,7 @@ include "MainLoop.def"
 
 declare sub closeTablesByNameSubStr(byVal Substring as string)
 
+Declare sub errorHandler (byVal methodname as string, byVal errorX as string)
 global 
 G_workDir,
 G_tillstnd,G_husll,G_utfrd,G_rndenr
@@ -1216,8 +1217,8 @@ function trovrdighetsIndexer(
 			
 			trovrdighetsIndex = 1/iif(distans<>0,distans,0.1)
 		else
-			print "errorX:" & enskiltAsString(enskiltObjekt)
-			print "errorY:" & SwerefAsString(swerefObjekt)
+			print "[error_trovrdighetsIndexer]sweref:" & swerefobjekt.rwoid & " | " & swerefobjekt.kordinater 
+			print "[error_trovrdighetsIndexer]enskilt:" & enskiltObjekt.rwoid & " | " & enskiltobjekt.kordinater
 		end if
 		
 		trovrdighetsindex = trovrdighetsindex 
@@ -1470,11 +1471,23 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 		fetch next from ValtEnskilt
 	next
 	'end program
-
+exit sub
 Xcentroid:
 					print Valtenskilt.rowindex & " + Xcentroid + Error"	print error$()	resume next
-
 end sub
+
+ 
+ sub errorHandler (byVal methodname as string, byVal errorX as string)
+ 
+ onError goto crashToDesktop
+	run command "insert into ErrorLog (col1,col2) value(" & methodname & "," & errorX & ")"
+	run cmmand commit table ErrorLog
+ onError goto 0
+ 
+ exit sub
+ crashToDesktop:
+ end sub
+ 
 
 function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
 		dim x,y,size as integer
