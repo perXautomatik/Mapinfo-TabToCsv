@@ -29,10 +29,10 @@ as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_P
 
 Sub Main()
 	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
-	G_Sdra = "Södra"
-	G_hush = "hushåll"
-	G_tillstnd = "tillstånd"
-	G_utfrd = "Utförd"
+	G_Sdra = "Sï¿½dra"
+	G_hush = "hushï¿½ll"
+	G_tillstnd = "tillstï¿½nd"
+	G_utfrd = "Utfï¿½rd"
 
 
 
@@ -137,15 +137,14 @@ sub prepSpatialy(byVal tableName as string)
 			onError goto e424commit commit table TableName As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive onError goto 0					
 			onError goto e428close close table TableName	open table tempstring onError goto 0	
 			onError goto e434Alter Alter Table TableName( add SpatialFastighet Char(40), SpatialShift Char(40)  ) onError goto 0	
+			
 			onError goto e440Add Add Column TableName (SpatialFastighet )From fastighet_yta Set To kir Where contains onError goto 0	
 			onError goto e445Add Add Column TableName (SpatialShift)From fastighet_yta Set To Fastighet Where contains onError goto 0	
+			
 			onError goto e450commit commit table TableName call tableCloser(tablenames()) onError goto 0	
 		end if
-		
-		onError goto e414tableInsert
-			query = "insert into Pathtable (tablePath,TableName) values (""" & Tempstring & """,""" & TableName & """)" 
-			run command query  
-		onError goto 0	
+		onError goto e414tableInsert query = "insert into Pathtable (tablePath,TableName) values (""" & Tempstring & """,""" & TableName & """)" run command query onError goto 0	
+
 exit sub e414tableInsert: print "preSpatialy e414tableInsert: "  & error$() print query e418select: print "preSpatialy e418select: "  & error$() e424commit: print "preSpatialy e424commit: "  & error$() e428close: print "preSpatialy e428close: "  & error$() e434Alter: print "preSpatialy e434Alter: "  & error$() e440Add: print "preSpatialy e440Add: "  & error$() e445Add: print "preSpatialy e445Add: "  & error$() e450commit: print "preSpatialy e450commit: "  & error$() end sub
 
 sub DO1_3_GenFasWithAdr
