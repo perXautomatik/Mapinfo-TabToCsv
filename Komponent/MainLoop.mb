@@ -33,10 +33,10 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-	G_husll = "hushï¿½ll"
-	G_utfrd = "Utfï¿½rd"
-	G_tillstnd = "tillstï¿½nd"
-	G_rndenr = "ï¿½rendenr"
+	G_husll = "hushåll"
+	G_utfrd = "Utförd"
+	G_tillstnd = "tillstånd"
+	G_rndenr = "ärendenr"
 
 	if G_rebuild then
 		drop table sockentabell
