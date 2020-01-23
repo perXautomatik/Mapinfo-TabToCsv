@@ -118,9 +118,13 @@ end sub
 sub do6_8_SlamDisp 	
 		dim tableNames(1) as string redim tableNames(2) tableNames(1) = "Lokalt_omhndertagande_slam" tablenames(2) = "fastighet_yta" call tableOpener(tablenames)
 		
-		Select fastighet_yta.KIR, Lokalt_omhndertagande_slam.Diarienr, Lokalt_omhndertagande_slam.Beslutsdatum from Lokalt_omhndertagande_slam, fastighet_yta where Lokalt_omhndertagande_slam.Obj Within fastighet_yta.Obj into slam
-		Alter Table "EnskiltIhopslagen" ( add SlamDispDat Date ) Commit table EnskiltIhopslagen
-		Add Column "EnskiltIhopslagen" (SlamDispDat )From Lokalt_omhndertagande_slam Set To Beslutsdatum Where COL17 = COL1 
+		Select fastighet_yta.KIR, Lokalt_omhndertagande_slam.Diarienr, 
+		Lokalt_omhndertagande_slam.Beslutsdatum 
+		from Lokalt_omhndertagande_slam, fastighet_yta where Lokalt_omhndertagande_slam.Obj Within fastighet_yta.Obj
+		into slam
+
+		Alter Table "EnskiltIhopslagen" (add SlamDispDat Date) Commit table EnskiltIhopslagen
+		Add Column "EnskiltIhopslagen" (SlamDispDat )From slam Set To Beslutsdatum Where COL17 = COL1 
 		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp @: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
 		Commit table EnskiltIhopslagen
 end sub
