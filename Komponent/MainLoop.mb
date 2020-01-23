@@ -1359,7 +1359,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		onError goto 0
 		
 		if false then
-			centroid:	print " + centroid + Error"	print error$()	
+			centroid:	print valtRening.rowindex & " + centroid + Error"	print error$()	
 		end if 
 	
 		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
@@ -1402,13 +1402,13 @@ Alias3 = "Valtsweref." & G_rndenr
 			'OutputswerefObjekt(x).slamhmtning = searchReplace(Valtsweref.slamhmtning,"""","'")
 			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
 			
-		onError goto centroid
-			OutputswerefObjekt(x).kordinater = CentroidX(Valtsweref.obj)  & "," & CentroidY(Valtsweref.obj)
-		onError goto 0
-		
-		if false then
-			centroid:	print " + centroid + Error"	print error$()	
-		end if 
+			onError goto centroid
+				OutputswerefObjekt(x).kordinater = CentroidX(Valtsweref.obj)  & "," & CentroidY(Valtsweref.obj)
+			onError goto 0
+			
+			if false then
+				centroid:	print Valtsweref.rowindex & " + centroid + Error"	print error$()	
+			end if 
 
 			OutputswerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
 		'	onError goto rowindexError
@@ -1430,7 +1430,7 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 	dim query as string
 	,Alias1, Alias2, Alias3, Alias4 as alias
 	,x,size as integer	
-	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir AND kir <> ""  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir AND kir <> ""  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
 
 
 	Alias1 =	"Valtenskilt.Fastighet_" & G_tillstnd
@@ -1459,7 +1459,15 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 			OutputEnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
 			OutputEnskiltObjekt(x).Tillstnd_giltigt_tom = Alias4
 			OutputEnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
-			OutputEnskiltObjekt(x).kordinater = Valtenskilt.koor
+
+			onError goto centroid
+				OutputEnskiltObjekt(x).kordinater = CentroidX(Valtenskilt.obj)  & "," & CentroidY(Valtenskilt.obj)
+			onError goto 0
+			
+			if false then
+				centroid:	print Valtenskilt.rowindex & " + centroid + Error"	print error$()	
+			end if 
+
 			OutputEnskiltObjekt(x).rowindex = Valtenskilt.rowindex
 			
 			'OutputEnskiltObjekt(x).slamDispDat = 
