@@ -1332,7 +1332,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 	dim query,tempstring as string ,x,size as integer
 	
 	onError goto queryError 
-		query = "select " & getColumnsOfTable_asString("reningIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query
+		query = "select " & getColumnsOfTable_asString("reningIhopslagen") &  " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query
 	onError goto 0
 	
 
@@ -1353,7 +1353,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		OutputreningsObjekt(x).Antal_hushll_rening = iif(val(antalh & "") <> 0,val(antalh & ""),1)
 		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
 		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
-		OutputreningsObjekt(x).kordinater = valtRening.koor 
+		OutputreningsObjekt(x).kordinater = CentroidX(valtRening.obj)  & "," & CentroidY(valtRening.obj)
 		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
 		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
 		
