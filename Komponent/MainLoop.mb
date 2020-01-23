@@ -888,7 +888,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				antal = antal + 1
 				redim anlObj(antal)
 				anlObj(antal).Kartpunkt = "Ansluten byggnad"
-				anlObj(antal).Anlggningskategori = x & " Slamavskiljare"
+				anlObj(antal).Anlggningskategori = " Slamavskiljare"
 				anlObj(antal).Anlggningstyp = eO(x).Typ_Slamavskiljare
 				anlObj(antal).besiktningdatum = eO(x).Utfrd_datum
 				anlObj(antal).beslutsdatum = eO(x).Beslut_datum
@@ -903,7 +903,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 			 		antal = antal + 1
 					redim anlObj(antal)
 					anlObj(antal).Kartpunkt = "Tank"
-					anlObj(antal).Anlggningskategori = x & " Tank"
+					anlObj(antal).Anlggningskategori = " Tank"
 					anlObj(antal).Anlggningstyp = eO(x).Typ_sluten_tank
 					anlObj(antal).besiktningdatum = eO(x).Utfrd_datum
 					anlObj(antal).beslutsdatum = eO(x).Beslut_datum
@@ -923,7 +923,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				antal = antal + 1
 				redim anlObj(antal)
 			 	anlObj(antal).Kartpunkt = "Efterfljande rening"
-				anlObj(antal).Anlggningskategori = x & " Efterfljande rening"		 
+				anlObj(antal).Anlggningskategori = " Efterfljande rening"		 
 	
 				anlObj(antal).Antal_hushll_rening = rO(x).Antal_hushll_rening
 				anlObj(antal).Anlggningstyp = rO(x).Reningstyp
