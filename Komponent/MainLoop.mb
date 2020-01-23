@@ -1332,7 +1332,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 	dim query,tempstring as string ,x,size as integer
 	
 	onError goto queryError 
-		query = "select " & getColumnsOfTable_asString("reningIhopslagen") &  " from reningIhopslagen," & nSocken & " where spatialFastighet = kir  group by rowindex into ValtRening NoSelect" run command query
+		query = "select " & getColumnsOfTable_asString("reningIhopslagen") &  " from reningIhopslagen," & nSocken & " where spatialFastighet = kir AND kir <> ""  group by rowindex into ValtRening NoSelect" run command query
 	onError goto 0
 	
 
@@ -1353,7 +1353,15 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		OutputreningsObjekt(x).Antal_hushll_rening = iif(val(antalh & "") <> 0,val(antalh & ""),1)
 		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
 		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
-		OutputreningsObjekt(x).kordinater = CentroidX(valtRening.obj)  & "," & CentroidY(valtRening.obj)
+		
+		onError goto centroid
+			OutputreningsObjekt(x).kordinater = CentroidX(valtRening.obj)  & "," & CentroidY(valtRening.obj)
+		onError goto 0
+		
+		if false then
+			centroid:	print " + centroid + Error"	print error$()	
+		end if 
+	
 		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
 		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
 		
@@ -1372,8 +1380,9 @@ Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swer
 dim query as string
 ,x,size as integer	
 ,Alias1,Alias2,Alias3 as alias
-	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir AND kir <> ""  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
 	
+
 Alias1 = "Valtsweref.Fastighet_" & G_tillstnd
 Alias2 = "Valtsweref." & G_utfrd &"datum"
 Alias3 = "Valtsweref." & G_rndenr
@@ -1392,7 +1401,15 @@ Alias3 = "Valtsweref." & G_rndenr
 			OutputswerefObjekt(x).utfrddatum = Alias2
 			'OutputswerefObjekt(x).slamhmtning = searchReplace(Valtsweref.slamhmtning,"""","'")
 			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
-			OutputswerefObjekt(x).kordinater = Valtsweref.koor
+			
+		onError goto centroid
+			OutputswerefObjekt(x).kordinater = CentroidX(Valtsweref.obj)  & "," & CentroidY(Valtsweref.obj)
+		onError goto 0
+		
+		if false then
+			centroid:	print " + centroid + Error"	print error$()	
+		end if 
+
 			OutputswerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
 		'	onError goto rowindexError
 		'	print  Valtsweref.rowindex
@@ -1413,7 +1430,7 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 	dim query as string
 	,Alias1, Alias2, Alias3, Alias4 as alias
 	,x,size as integer	
-	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & ",CentroidX(obj)  & "","" & CentroidY(obj) ""koor""" & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir AND kir <> ""  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
 
 
 	Alias1 =	"Valtenskilt.Fastighet_" & G_tillstnd
