@@ -33,10 +33,10 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-	G_husll = "hushåll"
-	G_utfrd = "Utförd"
-	G_tillstnd = "tillstånd"
-	G_rndenr = "ärendenr"
+	G_husll = "hushï¿½ll"
+	G_utfrd = "Utfï¿½rd"
+	G_tillstnd = "tillstï¿½nd"
+	G_rndenr = "ï¿½rendenr"
 
 	if G_rebuild then
 		drop table sockentabell
@@ -68,12 +68,12 @@ Sub Main()
 	fetch next from sockentabell loop
 	
 end program
-	LoadSocken:	print "LoadSockenError"	print error$()	    end program
-	createFastighetsTable: print "processor_1PreError" print error$()	    end program
-	processor_3PrepMutate:	print "processor_3PrepMutateError"	print error$()	    end program
-	processor_4Mutate:	print "processor_4MutateError"	print error$()	    end program
-	saveSockenProgress: print "[ERROR_saveSockenProgressError] 0 objekts " & G_socken print error$()	    end program
-	genSortFa:	print "selectionError " & tempQuery	print error$()	end program
+	LoadSocken:	note "LoadSockenError"	print error$()	    end program
+	createFastighetsTable: note "processor_1PreError" print error$()	    end program
+	processor_3PrepMutate:	note "processor_3PrepMutateError"	print error$()	    end program
+	processor_4Mutate:	note "processor_4MutateError"	print error$()	    end program
+	saveSockenProgress: note "[ERROR_saveSockenProgressError] 0 objekts " & G_socken print error$()	    end program
+	genSortFa:	note "selectionError " & tempQuery	print error$()	end program
 end sub
 
 sub closeTablesByNameSubStr(byVal Substring as string)
@@ -108,15 +108,17 @@ sub loadSocken()
 'loads rening enskilt and sweref into the global arrays, for current socken
 	'Todo:rewrite so that progressbar can be visualized in this method, 'was thinking that maybe a case division, 'DOes case work with variables	it seems like it DOes in fact work ' but maybe not neccessary		
 	dim CurrentSocken as string
-		
-	if G_socken <> "" then
-		print "change to " & G_socken dim tableNames(4) as string CurrentSocken = G_socken & "Fastigheter" tablenames(1) = CurrentSocken tablenames(2) = "EnskiltIhopslagen" tablenames(3) = "reningIhopslagen" tablenames(4) = "Fastigheter_sweref" call tableOpener(tablenames) G_starttime = timer() 
-		
-		Call TabToObjRening(CurrentSocken,G_ReningsObjekt) 'tempinterger = UBound(G_reningsObjekt()) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjRening") G_starttime = timer() 
-		Call TabToObjEnskilt(CurrentSocken,G_EnskiltObjekt) 'tempinterger = ubound(G_EnskiltObjekt) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjEnskilt") G_starttime = timer()
-		Call TabToObSweref(CurrentSocken,G_SwerefObjekt) 'tempinterger = ubound(G_swerefObjekt) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObSweref")
-	end if
-	
+	onError goto LoadSocken 	
+		if G_socken <> "" then
+			print "change to " & G_socken dim tableNames(4) as string CurrentSocken = G_socken & "Fastigheter" tablenames(1) = CurrentSocken tablenames(2) = "EnskiltIhopslagen" tablenames(3) = "reningIhopslagen" tablenames(4) = "Fastigheter_sweref" call tableOpener(tablenames) G_starttime = timer() 
+			
+			Call TabToObjRening(CurrentSocken,G_ReningsObjekt) 'tempinterger = UBound(G_reningsObjekt()) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjRening") G_starttime = timer() 
+			Call TabToObjEnskilt(CurrentSocken,G_EnskiltObjekt) 'tempinterger = ubound(G_EnskiltObjekt) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObjEnskilt") G_starttime = timer()
+			Call TabToObSweref(CurrentSocken,G_SwerefObjekt) 'tempinterger = ubound(G_swerefObjekt) call SilenttidsSummering(tempinterger,tempinterger,G_starttime,"TabToObSweref")
+		end if
+
+exit sub
+	LoadSocken:	print "LoadSockenError"	print error$()	    end program	
 end sub
 
 function diarienummerForUtskriftsObjekt( utskriftsObjekt() as utskriftsobjekt, itterator as integer, enskiltObjekt() as enskiltobjekt, swerefObjekt() as swerefobjekt, objektid as integer ) as integer dim rendennr(),tempDirty() as string ,x,returnInteger as integer
