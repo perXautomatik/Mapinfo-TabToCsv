@@ -129,6 +129,28 @@ sub do6_8_SlamDisp
 		Commit table EnskiltIhopslagen
 end sub
 
+Declare sub guessSpatial(tableName)  
+ 
+sub guessSpatial(ByVal tableName as string)  
+
+	'the table inserted is any of the table types
+	'they all have in common that spatial fastighet is ""
+	'they all have in common that obj is null	
+	'they never come mixed, so a case could be used
+	
+	'should update as many as possible rows 
+	onError goto ErrGuessSpatial
+
+
+
+	onError goto 0
+	
+exit sub
+	ErrGuessSpatial: print " [ERROR] guessSpatial(tableName)  " & error$() resume next
+ end sub
+ 
+ 
+
 sub prepSpatialy(byVal tableName as string)
 
 		dim tempstring,query,tableNames(2) as string tempstring = ApplicationDirectory$() & tableName & ".TAB"
@@ -154,20 +176,23 @@ sub prepSpatialy(byVal tableName as string)
 			
 			onError goto e450commit commit table TableName call tableCloser(tablenames()) onError goto 0	
 		end if
+
+		select kir from tableName into failureSpatial
+
+		if tableInfo(failureSpatial,tab_info_nrows) <> 0 then
+			call guessSpatial(tableName)
+		end if
+
 		onError goto e414tableInsert query = "insert into Pathtable (tablePath,TableName) values (""" & Tempstring & """,""" & TableName & """)" run command query onError goto 0	
 
 exit sub 
-	e445Add:
-		print " + preSpatialy e445Add + Error"	print error$()
-		rollback tableName
-	resume e440Add
+	e445Add: print " + preSpatialy e445Add + Error"	print error$() rollback tableName resume e440Add
 
 	e414tableInsert:	print " + preSpatialy e414tableInsert + Error"	print error$()	end program
 	e424commit:	print " + preSpatialy e418select + Error"	print error$()	resume e418select
 	e428close:	print " + preSpatialy e428close + Error"	print error$()	resume 0
 	e434Alter:	print " + preSpatialy e434Alter + Error" & error$()	resume e445Add
-	
-	
+
 	e450commit:	print " + preSpatialy e450commit + Error"	print error$()	end program
  end sub
 

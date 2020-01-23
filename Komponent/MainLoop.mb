@@ -33,7 +33,7 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-	G_husll = "hush�ll"
+G_husll = "hush�ll"
 	G_utfrd = "Utf�rd"
 	G_tillstnd = "tillst�nd"
 	G_rndenr = "�rendenr"
@@ -50,8 +50,8 @@ Sub Main()
 	
 		dim tableName,filePath,fastighetsObjektsTabell as string,tempInteger as integer
 		onError goto genSortFa G_socken = sockenTabell.sockenX call opensingletable("fastighet_yta") dim tempQuery as string
-		tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & G_socken & Chr$(34) &
-		" AND kir <> """" group by kir into SorteradFastighet" run command tempQuery onError goto 0
+		tempQuery = "Select * from fastighet_yta where left$(KIR,InStr(1,KIR,"" "",)-1) = " & Chr$(34) & G_socken & Chr$(34) & " and kir <> " & Chr$(34)  & Chr$(34) & " group by kir into SorteradFastighet" run command tempQuery onError goto 0
+		
 		
         onError goto LoadSocken call loadSocken() onError goto 0 if G_debugg then print "LoadSocken" end if
 
@@ -181,7 +181,7 @@ sub createFastighetsTable(byval tablename as string, byval filePath as string)
 	
 	onError goto creationError
 		dim query as string
-		query = "Create Table " & tableName & " (adress	Char(253),postnr	Char(253),ort Char(253),fastighet	Char(34),fnr integer,HuvudSweref integer,HuvudRening integer,HuvudEnskilt integer,swerefobjekt	Char(253),reningsobjekt	Char(253),enskiltObjekt	Char(253)) file "& chr$(34) & filePath & chr$(34)
+		query = "Create Table " & tableName & " (adress	Char(253),postnr	Char(253),ort Char(253),fastighet	Char(34),fnr integer,HuvudSweref integer,HuvudRening integer,HuvudEnskilt integer,swerefobjekt	Char(253),reningsobjekt	Char(253),enskiltObjekt	Char(253)) file "& Chr$(34) & filePath & Chr$(34)
 		run command query 
 		Create Map For tablename CoordSys Earth Projection 1, 104
 	onError goto 0
@@ -265,7 +265,7 @@ sub processor_3PrepMutate()
 		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,fastighetensSwerefObjekt) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,fastighetensReningsobjekt) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,FastighetensEnskiltObjekt) before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
 		if(antalObjekt > 0 ) then 
 			fastighetsObjekt.kir = fastighetsBetInput	
-			onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & chr$(34) & fastighetsBetInput & chr$(34) & " into fas" onerror goto 0 fetch first from fas fastighetsObjekt.adress = fas.adress fastighetsObjekt.postnr = fas.postnr fastighetsObjekt.ort = fas.postort fastighetsObjekt.fastighet = fas.fastighet fastighetsObjekt.fnr = fas.fnr close table fas
+			onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & Chr$(34) & fastighetsBetInput & Chr$(34) & " into fas" onerror goto 0 fetch first from fas fastighetsObjekt.adress = fas.adress fastighetsObjekt.postnr = fas.postnr fastighetsObjekt.ort = fas.postort fastighetsObjekt.fastighet = fas.fastighet fastighetsObjekt.fnr = fas.fnr close table fas
 			
 			call do3_1_1_saveFastighetsObjektToTable(fastighetsObjektsTabell,fastighetsObjekt,fastighetensReningsobjekt(),fastighetensSwerefObjekt(),fastighetensEnskiltObjekt())
 
@@ -1332,7 +1332,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 	dim query,tempstring as string ,x,size as integer
 	
 	onError goto queryError 
-		query = "select " & getColumnsOfTable_asString("reningIhopslagen") &  " from reningIhopslagen," & nSocken & " where spatialFastighet = kir AND kir <> ""  group by rowindex into ValtRening NoSelect" run command query
+		query = "select " & getColumnsOfTable_asString("reningIhopslagen") &  " from reningIhopslagen," & nSocken & " where spatialFastighet = kir and kir <> " & Chr$(34)  & Chr$(34) & "  group by rowindex into ValtRening NoSelect" run command query
 	onError goto 0
 	
 
@@ -1354,13 +1354,10 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
 		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
 		
-		onError goto centroid
+		onError goto Xcentroid
 			OutputreningsObjekt(x).kordinater = CentroidX(valtRening.obj)  & "," & CentroidY(valtRening.obj)
 		onError goto 0
 		
-		if false then
-			centroid:	print valtRening.rowindex & " + centroid + Error"	print error$()	
-		end if 
 	
 		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
 		OutputreningsObjekt(x).rowIndex = valtRening.rowIndex
@@ -1374,13 +1371,16 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 	next
 
 exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj created" print query print nsocken note error$() end program
+
+Xcentroid:
+				print valtRening.rowindex & " + Xcentroid + Error"	print error$()	resume next
 end sub
 
 Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swerefObjekt)
 dim query as string
 ,x,size as integer	
 ,Alias1,Alias2,Alias3 as alias
-	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir AND kir <> ""  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
+	query = "select " & getColumnsOfTable_asString("Fastigheter_sweref") & " from  Fastigheter_sweref," & SockenFastigheter & " where spatialFastighet = kir and kir <> " & Chr$(34)  & Chr$(34) & "  group by rowindex into Valtsweref NoSelect" run command query size = tableInfo(Valtsweref,tab_info_nrows)
 	
 
 Alias1 = "Valtsweref.Fastighet_" & G_tillstnd
@@ -1402,13 +1402,10 @@ Alias3 = "Valtsweref." & G_rndenr
 			'OutputswerefObjekt(x).slamhmtning = searchReplace(Valtsweref.slamhmtning,"""","'")
 			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
 			
-			onError goto centroid
+			onError goto Xcentroid
 				OutputswerefObjekt(x).kordinater = CentroidX(Valtsweref.obj)  & "," & CentroidY(Valtsweref.obj)
 			onError goto 0
 			
-			if false then
-				centroid:	print Valtsweref.rowindex & " + centroid + Error"	print error$()	
-			end if 
 
 			OutputswerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
 		'	onError goto rowindexError
@@ -1424,13 +1421,15 @@ rowindexError:
 	print "TabToObSweref|" & error$()
 	end program
 	
+Xcentroid:
+					print Valtsweref.rowindex & " + Xcentroid + Error"	print error$()	resume next
 end sub
 
 Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as enskiltObjekt)
 	dim query as string
 	,Alias1, Alias2, Alias3, Alias4 as alias
 	,x,size as integer	
-	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir AND kir <> ""  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
+	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir AND kir <> " & Chr$(34)  & Chr$(34) & "  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
 
 
 	Alias1 =	"Valtenskilt.Fastighet_" & G_tillstnd
@@ -1460,13 +1459,10 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 			OutputEnskiltObjekt(x).Tillstnd_giltigt_tom = Alias4
 			OutputEnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
 
-			onError goto centroid
+			onError goto Xcentroid
 				OutputEnskiltObjekt(x).kordinater = CentroidX(Valtenskilt.obj)  & "," & CentroidY(Valtenskilt.obj)
 			onError goto 0
 			
-			if false then
-				centroid:	print Valtenskilt.rowindex & " + centroid + Error"	print error$()	
-			end if 
 
 			OutputEnskiltObjekt(x).rowindex = Valtenskilt.rowindex
 			
@@ -1474,6 +1470,10 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 		fetch next from ValtEnskilt
 	next
 	'end program
+
+Xcentroid:
+					print Valtenskilt.rowindex & " + Xcentroid + Error"	print error$()	resume next
+
 end sub
 
 function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
