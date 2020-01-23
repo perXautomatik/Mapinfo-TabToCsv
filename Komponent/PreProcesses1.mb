@@ -149,7 +149,16 @@ sub prepSpatialy(byVal tableName as string)
 		end if
 		onError goto e414tableInsert query = "insert into Pathtable (tablePath,TableName) values (""" & Tempstring & """,""" & TableName & """)" run command query onError goto 0	
 
-exit sub e414tableInsert: print "preSpatialy e414tableInsert: "  & error$() print query e418select: print "preSpatialy e418select: "  & error$() e424commit: print "preSpatialy e424commit: "  & error$() e428close: print "preSpatialy e428close: "  & error$() e434Alter: print "preSpatialy e434Alter: "  & error$() e440Add: print "preSpatialy e440Add: "  & error$() e445Add: print "preSpatialy e445Add: "  & error$() e450commit: print "preSpatialy e450commit: "  & error$() end sub
+exit sub 
+	 preSpatialy e414tableInsert:	note " + preSpatialy e414tableInsert + Error"	print error$()	end program
+	 preSpatialy e418select:	note " + preSpatialy e418select + Error"	print error$()	end program
+	 preSpatialy e424commit:	note " + preSpatialy e424commit + Error"	print error$()	end program
+	 preSpatialy e428close:	note " + preSpatialy e428close + Error"	print error$()	end program
+	 preSpatialy e434Alter:	note " + preSpatialy e434Alter + Error"	print error$()	end program
+	 preSpatialy e440Add:	note " + preSpatialy e440Add + Error"	print error$()	end program
+	 preSpatialy e445Add:	note " + preSpatialy e445Add + Error"	print error$()	end program
+	 preSpatialy e450commit:	note " + preSpatialy e450commit + Error"	print error$()	end program
+ end sub
 
 sub DO1_3_GenFasWithAdr
 
