@@ -885,8 +885,8 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				antal = antal + 1
 				redim anlObj(antal)
 				anlObj(antal).Kartpunkt = "Ansluten byggnad"
-				anlObj(antal).Anlggningskategori = " Slamavskiljare"
-				anlObj(antal).Anlggningstyp = eO(x).Typ_Slamavskiljare
+				anlObj(antal).Anlggningskategori = "Slamavskiljare"
+				anlObj(antal).Anlggningstyp =iif(len(eO(x).Typ_Slamavskiljare) > 15,"Ss " & right$(eO(x).Typ_Slamavskiljare,len(eO(x).Typ_Slamavskiljare)-15),eO(x).Typ_Slamavskiljare ) 
 				anlObj(antal).besiktningdatum = eO(x).Utfrd_datum
 				anlObj(antal).beslutsdatum = eO(x).Beslut_datum
 				anlObj(antal).Kommentarer = textAppend(eO(x).Anteckningar,"rening p:", eO(x).fastighet_rening)
@@ -900,7 +900,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 			 		antal = antal + 1
 					redim anlObj(antal)
 					anlObj(antal).Kartpunkt = "Tank"
-					anlObj(antal).Anlggningskategori = " Tank"
+					anlObj(antal).Anlggningskategori = "Tank"
 					anlObj(antal).Anlggningstyp = eO(x).Typ_sluten_tank
 					anlObj(antal).besiktningdatum = eO(x).Utfrd_datum
 					anlObj(antal).beslutsdatum = eO(x).Beslut_datum
@@ -920,7 +920,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				antal = antal + 1
 				redim anlObj(antal)
 			 	anlObj(antal).Kartpunkt = "Efterfljande rening"
-				anlObj(antal).Anlggningskategori = " Efterfljande rening"		 
+				anlObj(antal).Anlggningskategori = "Efterfljande rening"		 
 	
 				anlObj(antal).Antal_hushll_rening = rO(x).Antal_hushll_rening
 				anlObj(antal).Anlggningstyp = rO(x).Reningstyp
@@ -941,7 +941,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				antal = antal + 1
 				redim anlObj(antal)
 				anlObj(antal).Kartpunkt = "Extra inventeringsinformation"
-				anlObj(antal).Anlggningskategori = x & " Extra inventeringsinformation"
+				anlObj(antal).Anlggningskategori = "Extra inventeringsinformation"
 				anlObj(antal).Utskick1_datum  = sO(x).Utskick1_datum
 				anlObj(antal).Status = sO(x).Status
 				anlObj(antal).rendenr = sO(x).rendenr
