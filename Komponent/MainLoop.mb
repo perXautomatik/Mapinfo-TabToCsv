@@ -889,12 +889,13 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				anlObj(antal).Anlggningstyp =iif(len(eO(x).Typ_Slamavskiljare) > 15,"Ss " & right$(eO(x).Typ_Slamavskiljare,len(eO(x).Typ_Slamavskiljare)-15),eO(x).Typ_Slamavskiljare ) 
 				anlObj(antal).besiktningdatum = eO(x).Utfrd_datum
 				anlObj(antal).beslutsdatum = eO(x).Beslut_datum
-				anlObj(antal).Kommentarer = textAppend(eO(x).Anteckningar,"rening p:", eO(x).fastighet_rening)
+				anlObj(antal).Kommentarer = textAppend(eO(x).Anteckningar,"[ren @:", eO(x).fastighet_rening)
 				anlObj(antal).Volym_m3 = eO(x).Storlek_m3
 				anlObj(antal).Koordinater = eO(x).kordinater
 				anlObj(antal).radnummer = eO(x).rowindex
 				anlObj(antal).rendenr =  DiarieUtanBokstver(DiarieMixedToUnit(eO(x).Diarienummer))
 				anlObj(antal).Typ_byggnad = eO(x).Typ_byggnad
+				anlObj(antal).AnlfrEfterR_Anlggningstyp = eO(x).slamDispDat
 
 				if((eO(x).Typ_sluten_tank <> "0" and eO(x).Typ_sluten_tank <> "" and eO(x).Typ_sluten_tank <> "-")) then
 			 		antal = antal + 1
@@ -1463,7 +1464,8 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 			OutputEnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
 			OutputEnskiltObjekt(x).Tillstnd_giltigt_tom = Alias4
 			OutputEnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
-
+			OutputEnskiltObjekt(x).slamDispDat = Valtenskilt.slamDispDat
+			
 			onError goto Xcentroid
 				OutputEnskiltObjekt(x).kordinater = CentroidX(Valtenskilt.obj)  & "," & CentroidY(Valtenskilt.obj)
 			onError goto 0
@@ -1471,7 +1473,6 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 
 			OutputEnskiltObjekt(x).rowindex = Valtenskilt.rowindex
 			
-			'OutputEnskiltObjekt(x).slamDispDat = 
 		fetch next from ValtEnskilt
 	next
 	'end program
@@ -1594,6 +1595,7 @@ sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObj
 	outputXTable(outPutItterator).Anteckningar = 		inputX.Anteckningar
 	outputXTable(outPutItterator).kordinater = 			inputX.kordinater
 	outputXTable(outPutItterator).rowindex = 			inputX.rowindex
+	outputXTable(outPutItterator).slamDispDat = 			inputX.slamDispDat
 End Sub
 
 sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
@@ -1782,7 +1784,7 @@ function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
 	tempstring = enskiltObjekt.Diarienummer
 	& "," & enskiltObjekt.Fastighet_tillstnd 
 	& "," & enskiltObjekt.Typ_byggnad 
-	& "," & (enskiltObjekt.Antal_hushll_tillstnd )
+	& "," & enskiltObjekt.Antal_hushll_tillstnd
 	& "," & enskiltObjekt.Fastighet_rening 
 	& "," & enskiltObjekt.Typ_Slamavskiljare 
 	& "," & enskiltObjekt.Storlek_m3
@@ -1795,6 +1797,7 @@ function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
 	& "," & enskiltObjekt.Avgift
 	& "," & enskiltObjekt.Tillstnd_giltigt_tom 
 	& "," & enskiltObjekt.Anteckningar 
+	& "," & enskiltObjekt.slamDispDat
 	& "," & enskiltObjekt.spatialFastighet 
 	& "," & enskiltObjekt.spatialShift 
 	& "," & enskiltObjekt.kordinater
