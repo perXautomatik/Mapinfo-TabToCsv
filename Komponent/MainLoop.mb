@@ -598,14 +598,11 @@ sub utskrivningsobjektsKonstruktor(
 		eOx() as enskiltobjekt
 	)
 	
-		dim ittr, objektid as integer	,reningsTokenObjekt() as reningsObjekt	,enskiltTokenObjekt() as enskiltobjekt	,swerefTokenObjekt() as swerefobjekt	,tableName as string	
-		,sO(1) as swerefobjekt,	rO(1) as reningsObjekt,	eO(1) as enskiltobjekt
-		,uObj() as utskriftsObjekt
+		dim ittr, objektid as integer	,reningsTokenObjekt() as reningsObjekt	,enskiltTokenObjekt() as enskiltobjekt	,swerefTokenObjekt() as swerefobjekt	,tableName as string ,sO(1) as swerefobjekt,	rO(1) as reningsObjekt,	eO(1) as enskiltobjekt ,uObj() as utskriftsObjekt
 
 		ittr = expandutskriftsobjekt(uObj) tableName = "LatestObjectID"	if IsTableOpen(tableName) then select col1 from LatestObjectID	fetch first from latestObjectID 
-		G_senastObjectID = iif(G_senastObjectID < latestObjectID.col1,latestObjectID.col1,G_senastObjectID) end if objektid = iif(G_senastObjectID <> 0,G_senastObjectID + 1,1)
-
-		G_senastObjectID = objektid
+		G_senastObjectID = iif(G_senastObjectID < latestObjectID.col1,latestObjectID.col1,G_senastObjectID) end if objektid = iif(G_senastObjectID <> 0,G_senastObjectID + 1,1) G_senastObjectID = objektid
+		
 		uObj(ittr).Objektid = objektid '"Huvud","ObjektID",: "integer",: "ObjektItterator" 
 
 		call huvuDObjekt(uObj(),ittr)
@@ -1060,6 +1057,7 @@ sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobje
 	uObj(ittr).flik_Avloppsanlggn_Byggnadsr = eO.Tillstnd_giltigt_tom
 	uObj(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utfrd_datum
 	uObj(ittr).flik_Avloppsanlg_Beslutsdatum = eO.Beslut_datum
+	uObj(ittr).flik_Avloppsnlaggni_Boendetyp = eO.Typ_byggnad
 	uObj(ittr).Vatten = eO.Antal_hushll_tillstnd
 	
 end sub

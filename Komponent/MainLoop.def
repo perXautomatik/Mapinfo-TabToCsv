@@ -174,31 +174,31 @@ End Type
 
 Type AnlggningsObjekt
 
-		Anlggningskategori as string '",: "Char(29)",: "Efterfljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
-		Kartpunkt as string '",: "Char(20)",:PunkttypER "Efterfljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"
+		Anlggningskategori as string 		 			'",: "Char(29)",: "Efterfljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"						
+		Kartpunkt as string 		 					'",: "Char(20)",:PunkttypER "Efterfljande rening\"/\"Slamavskiljare\"/\"Tank\"/\"Extra inventeringsinformation"				
 		
-		besiktningdatum as date ',: "datum?-MM-DD)",: "utfrandedatum  (rening/beslut/tank)"
-		beslutsdatum as date '",: "datum?-MM-DD)",: "beslutsdatum (rening/beslut/tank)"
+		besiktningdatum as date 						',: "datum?-MM-DD)",: "utfrandedatum  (rening/beslut/tank)"			
+		beslutsdatum as date 		 					'",: "datum?-MM-DD)",: "beslutsdatum (rening/beslut/tank)"				
 		
-		Anlggningstyp as string '",: "Char(15)",: "Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) \"Klart Vatten"
+		Anlggningstyp as string 		 				'",: "Char(15)",: "Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) \"Klart Vatten"					
 		
-		Volym_m3 as float '",: "float",: "Storlek_m2 (rening)/Storlek_m3  (Beslut)"
+		Volym_m3 as float 		 						'",: "float",: "Storlek_m2 (rening)/Storlek_m3  (Beslut)"			
 		
-		Antal_hushll_rening as integer '",: "integer",: "Anl_fr_EftR_TInterv_mn (rening)"
+		Antal_hushll_rening as integer 		 			'",: "integer",: "Anl_fr_EftR_TInterv_mn (rening)"						
 		
-		Koordinater as string '",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (r infiltration/markdd r begen)/(r ansluten)/(r EXTRA inventeringsinformation r begen)"
+		Koordinater as string 		 					'",: "Char(19)",: " AnlF_efR_Koordinater_X_o_Y (r infiltration/markdd r begen)/(r ansluten)/(r EXTRA inventeringsinformation r begen)"				
 				
-		Kommentarer as string '",: "Char(253)(ltmaxngd)",: "Anlggning_fr_EfterfljRText (rening/sweref/beslut)"
+		Kommentarer as string 		 					'",: "Char(253)(ltmaxngd)",: "Anlggning_fr_EfterfljRText (rening/sweref/beslut)"				
 		
-		rendenr as string '",: "integer",: " Externt Tjnsteid (beslut/tank/sweref)"
+		rendenr as string 		 						'",: "integer",: " Externt Tjnsteid (beslut/tank/sweref)"			
 		
-		Typ_byggnad as string '",: "Char(15)",: "Anlggning_fr_S_Anlggningstyp (beslut)"
+		Typ_byggnad as string 		 					'",: "Char(15)",: "Anlggning_fr_S_Anlggningstyp (beslut)"				
 		
-		Status as string '",: "Char(6)",: " text (sweref)"
+		Status as string 		 						'",: "Char(6)",: " text (sweref)"			
 		
-		Slamdispense as date '",: "datum?-MM-DD)",:AnlfrEfterR_Anlggningstyp ""
+		Slamdispense as date 		 					'",: "datum?-MM-DD)",:AnlfrEfterR_Anlggningstyp ""				
 		
-		Utskick1_datum as date '",: "datum?-MM-DD)",: "Anlggning_fr_Slamav_Volym_m3  (sweref)"
+		Utskick1_datum as date 		 					'",: "datum?-MM-DD)",: "Anlggning_fr_Slamav_Volym_m3  (sweref)"				
 		
 		radNummer as integer
 
