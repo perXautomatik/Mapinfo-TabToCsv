@@ -29,10 +29,10 @@ as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_P
 
 Sub Main()
 	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
-	G_Sdra = "Södra"
-	G_hush = "hushåll"
-	G_tillstnd = "tillstånd"
-	G_utfrd = "Utförd"
+	G_Sdra = "Sï¿½dra"
+	G_hush = "hushï¿½ll"
+	G_tillstnd = "tillstï¿½nd"
+	G_utfrd = "Utfï¿½rd"
 
 
 
@@ -161,17 +161,18 @@ sub prepSpatialy(byVal tableName as string)
 			call tableOpener(tablenames)
 
 			e418select: 'if it fails again, the program halts
-			select * from tablenames(1) into  TableName
+			select * from        tablenames(1) into  TableName
 			onError goto e424commit commit table TableName As tempstring TYPE NATIVE Charset "WinDOwsLatin1" Interactive onError goto 0					
 			
 			onError goto e428close close table TableName	open table tempstring onError goto 0	
 			
 			e440Add:
 			onError goto e445Add 
-				onError goto e434Alter Alter Table TableName( add SpatialFastighet Char(40), SpatialShift Char(40)  ) onError goto 0	
+				onError goto e434Alter Alter Table TableName( add SpatialFastighet Char(40), SpatialShift Char(40), koor Char(19)  ) onError goto 0	
 				
 				Add Column TableName (SpatialFastighet )From fastighet_yta Set To kir Where contains
-				Add Column TableName (SpatialShift)From fastighet_yta Set To Fastighet Where contains 
+				Add Column TableName (SpatialShift)From fastighet_yta Set To Fastighet Where contains
+				Add Column TableName (koor)From TableName Set To CentroidX(obj)  & "," & CentroidY(obj)
 			onError goto 0	
 			
 			onError goto e450commit commit table TableName call tableCloser(tablenames()) onError goto 0	

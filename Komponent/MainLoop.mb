@@ -1362,8 +1362,8 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
 		OutputreningsObjekt(x).Storlek_m2 = searchReplace(valtRening.Storlek_m2,".",",")
 		
-		onError goto Xcentroid
-			OutputreningsObjekt(x).kordinater = CentroidX(valtRening.obj)  & "," & CentroidY(valtRening.obj)
+		
+			
 		onError goto 0
 		
 	
@@ -1380,8 +1380,8 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 
 exit sub queryError: Note "[ERROR @ TabToObjRening] no reningobj created" print query print nsocken note error$() end program
 
-Xcentroid:
-				print valtRening.rowindex & " + Xcentroid + Error"	print error$()	resume next
+
+				
 end sub
 
 Sub TabToObSweref(byVal SockenFastigheter as string,OutputswerefObjekt() as swerefObjekt)
@@ -1410,8 +1410,8 @@ Alias3 = "Valtsweref." & G_rndenr
 			'OutputswerefObjekt(x).slamhmtning = searchReplace(Valtsweref.slamhmtning,"""","'")
 			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
 			
-			onError goto Xcentroid
-				OutputswerefObjekt(x).kordinater = CentroidX(Valtsweref.obj)  & "," & CentroidY(Valtsweref.obj)
+			
+				
 			onError goto 0
 			
 
@@ -1429,8 +1429,8 @@ rowindexError:
 	print "TabToObSweref|" & error$()
 	end program
 	
-Xcentroid:
-					print Valtsweref.rowindex & " + Xcentroid + Error"	print error$()	resume next
+
+					
 end sub
 
 Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as enskiltObjekt)
@@ -1468,8 +1468,8 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 			OutputEnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
 			OutputEnskiltObjekt(x).slamDispDate = Valtenskilt.slamDispDate
 			
-			onError goto Xcentroid
-				OutputEnskiltObjekt(x).kordinater = CentroidX(Valtenskilt.obj)  & "," & CentroidY(Valtenskilt.obj)
+			
+				
 			onError goto 0
 			
 
@@ -1479,8 +1479,8 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 	next
 	'end program
 exit sub
-Xcentroid:
-					print Valtenskilt.rowindex & " + Xcentroid + Error"	print error$()	resume next
+
+					
 end sub
 
  
