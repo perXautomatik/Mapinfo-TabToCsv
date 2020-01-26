@@ -66,6 +66,7 @@ G_husll = "hush�ll"
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 if G_debugg then print "saveSockenProgress" end if  'Runns = Runns+1 if(runns = 2) then '	end program	
 		tempInteger = timer()
 		call TimePresent(starttime,tempInteger,G_TempRaknare)
+		end program
 	fetch next from sockentabell loop
 	
 end program
@@ -177,7 +178,9 @@ sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt
 		 rO.spatialshift,
 		  iif(eO.Fastighet_rening <> ""
 		  ,eO.Fastighet_rening,
-		  rO.rowIndex))
+		  "okänd" 'rO.rowIndex
+		  )
+		  )
 
 end sub
 
@@ -884,7 +887,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 		 		'anlObj(antal).Objektnamn = iif(sO.fastighet_tillstnd <> "",sO.fastighet_tillstnd,fastighetsObjekt.fastighet) & " " & sO.Status
 				antal = antal + 1
 				redim anlObj(antal)
-				anlObj(antal).Kartpunkt = "Ansluten byggnad"
+				anlObj(antal).Kartpunkt = "Slamavskiljare"
 				anlObj(antal).Anlggningskategori = "Slamavskiljare"
 				anlObj(antal).Anlggningstyp =iif(len(eO(x).Typ_Slamavskiljare) > 15,"Ss " & right$(eO(x).Typ_Slamavskiljare,len(eO(x).Typ_Slamavskiljare)-15),eO(x).Typ_Slamavskiljare ) 
 				anlObj(antal).besiktningdatum = eO(x).Utfrd_datum
@@ -895,7 +898,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				anlObj(antal).radnummer = eO(x).rowindex
 				anlObj(antal).rendenr =  DiarieUtanBokstver(DiarieMixedToUnit(eO(x).Diarienummer))
 				anlObj(antal).Typ_byggnad = eO(x).Typ_byggnad
-				anlObj(antal).Slamdispense = eO(x).slamDispDat
+				anlObj(antal).Slamdispense = eO(x).slamDispDate
 
 				if((eO(x).Typ_sluten_tank <> "0" and eO(x).Typ_sluten_tank <> "" and eO(x).Typ_sluten_tank <> "-")) then
 			 		antal = antal + 1
@@ -1357,7 +1360,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		OutputreningsObjekt(x).Fastighet_rening = searchReplace(valtRening.Fastighet_rening,"""","'")	
 		OutputreningsObjekt(x).Antal_hushll_rening = iif(val(tempstring & "") <> 0,val(tempstring & ""),1)
 		OutputreningsObjekt(x).Reningstyp = searchReplace(valtRening.Reningstyp,"""","'")
-		OutputreningsObjekt(x).Storlek_m2 = valtRening.Storlek_m2
+		OutputreningsObjekt(x).Storlek_m2 = searchReplace(valtRening.Storlek_m2,".",",")
 		
 		onError goto Xcentroid
 			OutputreningsObjekt(x).kordinater = CentroidX(valtRening.obj)  & "," & CentroidY(valtRening.obj)
@@ -1453,17 +1456,17 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 			OutputEnskiltObjekt(x).Antal_hushll_tillstnd = searchReplace(Alias2,"""","'")
 			OutputEnskiltObjekt(x).Fastighet_rening = searchReplace(Valtenskilt.Fastighet_rening,"""","'")
 			OutputEnskiltObjekt(x).Typ_Slamavskiljare = searchReplace(Valtenskilt.Typ_Slamavskiljare,"""","'")
-			OutputEnskiltObjekt(x).Storlek_m3 = Valtenskilt.Storlek_m3
+			OutputEnskiltObjekt(x).Storlek_m3 = searchReplace(Valtenskilt.Storlek_m3,".",",")
 			OutputEnskiltObjekt(x).Typ_rening = searchReplace(Valtenskilt.Typ_rening,"""","'")
-			OutputEnskiltObjekt(x).Storlek_m2 = Valtenskilt.Storlek_m2
+			OutputEnskiltObjekt(x).Storlek_m2 = searchReplace(Valtenskilt.Storlek_m2,".",",")
 			OutputEnskiltObjekt(x).Typ_sluten_tank = searchReplace(Valtenskilt.Typ_sluten_tank,"""","'")
-			OutputEnskiltObjekt(x).Storlek__m3 = Valtenskilt.Storlek__m3
+			OutputEnskiltObjekt(x).Storlek__m3 = searchReplace(Valtenskilt.Storlek__m3,".",",")
 			OutputEnskiltObjekt(x).Beslut_datum = Valtenskilt.Beslut_datum
 			OutputEnskiltObjekt(x).Utfrd_datum = Alias3
 			OutputEnskiltObjekt(x).Avgift = val("" & Valtenskilt.Avgift)
 			OutputEnskiltObjekt(x).Tillstnd_giltigt_tom = Alias4
 			OutputEnskiltObjekt(x).Anteckningar = searchReplace(Valtenskilt.Anteckningar,"""","'")
-			OutputEnskiltObjekt(x).slamDispDat = Valtenskilt.slamDispDat
+			OutputEnskiltObjekt(x).slamDispDate = Valtenskilt.slamDispDate
 			
 			onError goto Xcentroid
 				OutputEnskiltObjekt(x).kordinater = CentroidX(Valtenskilt.obj)  & "," & CentroidY(Valtenskilt.obj)
@@ -1594,7 +1597,7 @@ sub enskiltCopyConstruktor(inputX as enskiltObjekt, outputXTable() as enskiltObj
 	outputXTable(outPutItterator).Anteckningar = 		inputX.Anteckningar
 	outputXTable(outPutItterator).kordinater = 			inputX.kordinater
 	outputXTable(outPutItterator).rowindex = 			inputX.rowindex
-	outputXTable(outPutItterator).slamDispDat = 			inputX.slamDispDat
+	outputXTable(outPutItterator).slamDispDate = 			inputX.slamDispDate
 End Sub
 
 sub swerefObjektCopyConstr(inputX as swerefObjekt, outputTable() as swerefObjekt,byVal outPutItterator as integer)
@@ -1796,7 +1799,7 @@ function enskiltAsString(enskiltObjekt as EnskiltObjekt) as string
 	& "," & enskiltObjekt.Avgift
 	& "," & enskiltObjekt.Tillstnd_giltigt_tom 
 	& "," & enskiltObjekt.Anteckningar 
-	& "," & enskiltObjekt.slamDispDat
+	& "," & enskiltObjekt.slamDispDate
 	& "," & enskiltObjekt.spatialFastighet 
 	& "," & enskiltObjekt.spatialShift 
 	& "," & enskiltObjekt.kordinater
