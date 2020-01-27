@@ -34,10 +34,10 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-G_husll = "hushåll"
-	G_utfrd = "Utförd"
-	G_tillstnd = "tillstånd"
-	G_rndenr = "ärendenr"
+G_husll = "hushï¿½ll"
+	G_utfrd = "Utfï¿½rd"
+	G_tillstnd = "tillstï¿½nd"
+	G_rndenr = "ï¿½rendenr"
 
 	if G_rebuild then
 		drop table sockentabell
@@ -1364,7 +1364,7 @@ Sub TabToObjRening(byVal nSocken as string, OutputreningsObjekt() as reningsobje
 		
 		
 			
-		onError goto 0
+		OutputreningsObjekt(x).Koordinater = valtRening.koor
 		
 	
 		OutputreningsObjekt(x).Kommentarer = searchReplace(valtRening.Kommentarer & " " & OutputreningsObjekt(x).Kommentarer,"""","'")
@@ -1411,8 +1411,7 @@ Alias3 = "Valtsweref." & G_rndenr
 			OutputswerefObjekt(x).Antal_byggnader = Valtsweref.Antal_byggnader
 			
 			
-				
-			onError goto 0
+			OutputswerefObjekt(x).Koordinater = Valtsweref.koor
 			
 
 			OutputswerefObjekt(x).SpatialFastighet = Valtsweref.SpatialFastighet
@@ -1470,8 +1469,8 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 			
 			
 				
-			onError goto 0
-			
+			OutputEnskiltObjekt(x).Koordinater = Valtenskilt.koor
+						
 
 			OutputEnskiltObjekt(x).rowindex = Valtenskilt.rowindex
 			
