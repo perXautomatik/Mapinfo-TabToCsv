@@ -172,10 +172,12 @@ sub prepSpatialy(byVal tableName as string)
 				
 				Add Column TableName (SpatialFastighet )From fastighet_yta Set To kir Where contains
 				Add Column TableName (SpatialShift)From fastighet_yta Set To Fastighet Where contains
-				query = "Add Column" &  TableName &"(koor)From " & TableName & " Set To CentroidX(obj)  & """,""" & CentroidY(obj)"
-				run command query
+				
 			onError goto 0	
 
+				select * from tableName where SpatialFastighet <> "" into Tempc
+				query = "Add Column Tempc(koor) From Tempc Set To CentroidX(obj)  & """,""" & CentroidY(obj)"
+				run command query
 			
 			onError goto e450commit commit table TableName call tableCloser(tablenames()) onError goto 0	
 		end if
