@@ -49,7 +49,7 @@ function CreateTable_reningIhopslagen as string
 	"Create Table ""reningIhopslagen"" ( Fastighet_rening Char(50), Antal_" 
 	& G_hush 
 	& "_rening Char(17), Reningstyp Char(15), Storlek_m2 Float, Beslut_datum Char(10), " & 
-	G_utfrd & "_datum Char(10), Kommentarer Char(254), Anslutna_fastigheter_1 Char(50), Anslutna_fastigheter_2 Char(50), Anslutna_fastigheter_3 Char(50), Anslutna_fastigheter_4 Char(50), Anslutna_fastigheter_5 Char(50), Anslutna_fastigheter_6 Char(50), Anslutna_fastigheter_7 Char(50), Anslutna_fastigheter_8 Char(50), Anslutna_fastigheter_9 Char(50), Anslutna_fastigheter_10 Char(50), SpatialFastighet Char(40), SpatialShift Char(40) ) file """ 
+	G_utfrd & "_datum Char(10), Kommentarer Char(254), Anslutna_fastigheter_1 Char(50), Anslutna_fastigheter_2 Char(50), Anslutna_fastigheter_3 Char(50), Anslutna_fastigheter_4 Char(50), Anslutna_fastigheter_5 Char(50), Anslutna_fastigheter_6 Char(50), Anslutna_fastigheter_7 Char(50), Anslutna_fastigheter_8 Char(50), Anslutna_fastigheter_9 Char(50), Anslutna_fastigheter_10 Char(50), SpatialFastighet Char(40), SpatialShift Char(40), koor char(17) ) file """ 
 	& pathVar & """ TYPE NATIVE Charset ""WindowsLatin1"""
 
 	Create Map For reningIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
@@ -67,7 +67,7 @@ function CreateTable_EnskiltIhopslagen as string
 	   G_tillstnd &
 	    " Char(17), Fastighet_rening Char(50), Typ_Slamavskiljare Char(27), Storlek_m3 Float, Typ_rening Char(19), Storlek_m2 Float, Typ_sluten_tank Char(11), Storlek__m3 Float, Beslut_datum Date, " & 
 		G_utfrd & "_datum Date, Avgift Char(10), " & 
-		G_tillstnd & "_giltigt_tom Date, Anteckningar Char(254), SlamDispDate Date, SpatialFastighet Char(40), SpatialShift Char(40) ) file """ & 
+		G_tillstnd & "_giltigt_tom Date, Anteckningar Char(254), SlamDispDate Date, SpatialFastighet Char(40), SpatialShift Char(40), koor char(17)  ) file """ & 
 		pathVar & """ TYPE NATIVE Charset ""WindowsLatin1"""
 	Create Map For EnskiltIhopslagen CoordSys Earth Projection 8, 33, "m", 18.75, 0, 1, 150000, 0 Bounds (0, 0) (1100000, 7800000)
 	CreateTable_EnskiltIhopslagen = pathVar
@@ -176,8 +176,8 @@ sub prepSpatialy(byVal tableName as string)
 			onError goto 0	
 
 				select * from tableName where SpatialFastighet <> "" into Tempc
-				query = "Add Column Tempc(koor) From Tempc Set To CentroidX(obj)  & """,""" & CentroidY(obj)"
-				run command query
+				Add Column Tempc(koor) From Tempc Set To CentroidX(obj) & "," & CentroidY(obj)
+
 			
 			onError goto e450commit commit table TableName call tableCloser(tablenames()) onError goto 0	
 		end if
