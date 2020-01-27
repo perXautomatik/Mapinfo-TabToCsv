@@ -371,7 +371,7 @@ sub createRessultTableX(byval tablename as string, byval filePath as string)
 				beslutsdatum Date,											'beslutsdatum (rening/beslut/tank)	->	beslutsdatum	datum-MM-DD)	beslutsdatum
 				Anlggningstyp	Char(15),									'Typ_rening (rening)/Typ_Slamavskiljare (beslut)/Typ_av_tank (Beslut)/(om sweref) "Klart Vatten"	->	Anlggningstyp	Char(15)	Anlggningstyp
 				Volym_m3 float,												'Storlek_m2 (rening)/Storlek_m3  (Beslut)	->	Volym m3	float	Volym m3
-				Anl_fr_EftR_TInterv_mn integer,							'Antal_hushll_rening (rening)	->	mningssintervall	integer	Anl_fr_EftR_TInterv_mn
+				Anl_fr_EftR_TInterv_mn Char(15),							'Antal_hushll_rening (rening)	->	mningssintervall	integer	Anl_fr_EftR_TInterv_mn
 				AnlF_efR_Koordinater_X_o_Y	Char(19),						'Koordinater  (r infiltration/markdd r begen)/(r ansluten)/(r EXTRA inventeringsinformation r begen)	->	Koordinater X och Y	Char(19)	AnlF_efR_Koordinater_X_o_Y
 				PunkttypER	Char(20),										'"Efterfljande rening"/"Slamavskiljare"/"Tank"/"Extra inventeringsinformation"	->	Punkttyp Koordinater	Char(20)	PunkttypER
 				Anlggning_fr_EfterfljRText Char(253),					'Kommentarer (rening/sweref/beslut)	->	Text	Char(253)(ltmaxngd)	Anlggning_fr_EfterfljRText
@@ -1437,7 +1437,6 @@ Sub TabToObjEnskilt(byVal SockenFastigheter as string,OutputEnskiltObjekt() as e
 	,Alias1, Alias2, Alias3, Alias4 as alias
 	,x,size as integer	
 	query = 	"select " & getColumnsOfTable_asString("enskiltIhopslagen") & " from enskiltIhopslagen," & SockenFastigheter & " where spatialFastighet = kir AND kir <> " & Chr$(34)  & Chr$(34) & "  group by rowindex into Valtenskilt NoSelect" run command query size = tableInfo(valtenskilt,tab_info_nrows)
-
 
 	Alias1 =	"Valtenskilt.Fastighet_" & G_tillstnd
 	Alias2 =	"Valtenskilt.Antal_" & G_husll & "_" & G_tillstnd
