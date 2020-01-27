@@ -29,10 +29,10 @@ as string, G_rebuild,G_debugg as logical, G_anvndaReningar(),G_ProgressRange,G_P
 
 Sub Main()
 	G_debugg = true G_rebuild = true G_senastTid = 0 G_socken = "" 
-G_Sdra = "Södra"
-	G_hush = "hushåll"
-	G_tillstnd = "tillstånd"
-	G_utfrd = "Utförd"
+G_Sdra = "Sï¿½dra"
+	G_hush = "hushï¿½ll"
+	G_tillstnd = "tillstï¿½nd"
+	G_utfrd = "Utfï¿½rd"
 
 
 
@@ -123,9 +123,8 @@ sub do6_8_SlamDisp
 		from Lokalt_omhndertagande_slam, fastighet_yta where Lokalt_omhndertagande_slam.Obj Within fastighet_yta.Obj
 		into slam
 
-		Alter Table "EnskiltIhopslagen" (add SlamDispDat Date) Commit table EnskiltIhopslagen
-		Add Column "EnskiltIhopslagen" (SlamDispDat )From slam Set To Beslutsdatum Where COL17 = COL1 
-		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp @: " & DiarieNr & "] " & Anteckningar Where COL17 = COL1 
+		Add Column "EnskiltIhopslagen" (SlamDispDate )From slam Set To Beslutsdatum Where SpatialFastighet = COL1 
+		Add Column "EnskiltIhopslagen" (Anteckningar )From slam Set To "[SlamDisp @: " & DiarieNr & "] " & Anteckningar Where SpatialFastighet = COL1 
 		Commit table EnskiltIhopslagen
 end sub
 
