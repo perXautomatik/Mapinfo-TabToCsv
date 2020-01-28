@@ -34,10 +34,10 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-G_husll = "hushåll"
-	G_utfrd = "Utförd"
-	G_tillstnd = "tillstånd"
-	G_rndenr = "ärendenr"
+G_husll = "hushï¿½ll"
+	G_utfrd = "Utfï¿½rd"
+	G_tillstnd = "tillstï¿½nd"
+	G_rndenr = "ï¿½rendenr"
 
 	if G_rebuild then
 		drop table sockentabell
@@ -631,6 +631,45 @@ sub utskrivningsobjektsKonstruktor(
 			
 End Sub
 
+
+Declare function getHuvudSweref(swerefobj() as SwerefObjekt) as integer
+ 
+ function getHuvudSweref(swerefobj() as SwerefObjekt) as integer
+ 
+ onError goto Err getHuvudSweref
+ 
+ onError goto 0
+ 
+ exit function
+ Err getHuvudSweref: print " [ERROR] getHuvudSweref " & error$() resume next
+ end function
+ 
+Declare function getHuvudRening(rObj() as ReningsObjekt,ByVal fastighetsBetInput as string) as integer
+ 
+ function getHuvudRening(rObj() as ReningsObjekt,ByVal fastighetsBetInput as string) as integer
+ 
+ onError goto Err getHuvudRening
+ 
+ onError goto 0
+ 
+ exit function
+ Err getHuvudRening: print " [ERROR] getHuvudRening " & error$() resume next
+ end function
+ 
+Declare function getHuvudHuvudEnskilt(enObj() as EnskiltObjekt) as integer
+ 
+ function getHuvudHuvudEnskilt(enObj() as EnskiltObjekt) as integer
+ 
+ onError goto Err getHuvudHuvudEnskilt
+ 
+ onError goto 0
+ 
+ exit function
+ Err getHuvudHuvudEnskilt: print " [ERROR] getHuvudHuvudEnskilt " & error$() resume next
+ end function
+ 
+
+
 sub do3_1_1_saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,rObj() as ReningsObjekt,swerefobj() as SwerefObjekt,enObj() as EnskiltObjekt)
 
 	dim query,filePath,vrde() as string
@@ -658,22 +697,18 @@ sub do3_1_1_saveFastighetsObjektToTable(tableName as string,inputX as fastighets
 			call addIntToArrayAsifSet(dedupedsweref, swerefobj(x).rowindex)
 		end if	
 	next
-		
-	rening = intArrayAsPrintString(dedupedrening)
-	sweref = intArrayAsPrintString(dedupedsweref)
-	enskilt = intArrayAsPrintString(dedupedenskilt)
-	
+			
 	vrde(1) =inputx.adress & " "
 	vrde(2) =inputx.postnr & " "
 	vrde(3) =inputx.ort & " "
 	vrde(4) =inputx.fastighet & " "
 	vrde(5) ="" & val("" & inputx.fnr )
-	vrde(6) ="" & val("" & inputx.HuvudSweref )
-	vrde(7) ="" & val("" & inputx.HuvudRening )
-	vrde(8) ="" & val("" & inputx.HuvudEnskilt )
-	vrde(9) = sweref & " "
-	vrde(10) = rening & " "
-	vrde(11) = enskilt & " "
+	vrde(6) = getHuvudSweref(swerefobj)
+	vrde(7) = getHuvudRening(rObj,inputx.fastighet)
+	vrde(8) = getHuvudHuvudEnskilt(enObj)
+	vrde(9) = intArrayAsPrintString(dedupedsweref) & " "
+	vrde(10) = intArrayAsPrintString(dedupedrening) & " "
+	vrde(11) = intArrayAsPrintString(dedupedenskilt) & " "
 
 	
 	
