@@ -315,22 +315,27 @@ sub processor_4Mutate()
 			found2:
 			found3:
 			dim endX as integer
-			,tempR(1) as reningsobjekt,
-			TempS(1) as swerefobjekt,
-			tempE(1) as enskiltobjekt
-						
+			,tempR(2) as reningsobjekt,
+			TempS(2) as swerefobjekt,
+			tempE(2) as enskiltobjekt
+
+		if ubound(fasEnsk) > 1 then
 			call enskiltCopyConstruktor(fasEnsk(1), tempE,1) 
-			call reningObjCopyConstr(FasRen(1), tempR,1)
-			call swerefObjektCopyConstr(fasSwe(1), TempS,1)
-			
 			call enskiltCopyConstruktor(fasEnsk(x), fasEnsk(),1) 
-			call reningObjCopyConstr(FasRen(x), FasRen(),1)
-			call swerefObjektCopyConstr(fasSwe(x), fasSwe(),1)
-			
 			call enskiltCopyConstruktor(tempE(1), fasEnsk(),x) 
+		end if
+		
+		if	ubound(fasRen) > 1 then
+			call reningObjCopyConstr(FasRen(1), tempR,1)						
+			call reningObjCopyConstr(FasRen(x), FasRen(),1)						
 			call reningObjCopyConstr(tempR(1), FasRen(),x)
+		end if
+
+		if ubound(fasSwe) > 1 then
 			call swerefObjektCopyConstr(TempS(1), fasSwe(),x)
-			
+			call swerefObjektCopyConstr(fasSwe(x), fasSwe(),1)
+			call swerefObjektCopyConstr(fasSwe(1), TempS,1)
+		end if
 			
 		end if
 	
