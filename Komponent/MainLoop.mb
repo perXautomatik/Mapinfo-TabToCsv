@@ -636,36 +636,89 @@ Declare function getHuvudSweref(swerefobj() as SwerefObjekt) as integer
  
  function getHuvudSweref(swerefobj() as SwerefObjekt) as integer
  
- onError goto Err getHuvudSweref
- 
- onError goto 0
- 
- exit function
- Err getHuvudSweref: print " [ERROR] getHuvudSweref " & error$() resume next
+	onError goto ErrgetHuvudSweref
+	
+	dim x,returnInt,currentLongest,flagg  as integer
+		returnInt = 0
+		currentLongest = 0
+		flagg = 0
+		
+		for x=1 to ubound(swerefobj)		
+			do case swerefobj(x).status
+				case "röd"  
+					flagg = 1 
+				case "grön","Ej vat","Egenko","ejvtn","lila","gul","ej vt","rölil","grrön","gön","rgrön"
+					flagg = 2
+				case "kom","TILL","Tillsy","Förbud","komm","BKommu" 
+					flagg = 3
+				else case 
+					flagg = 1
+			end case
+				if(currentLongest < flagg) then
+					currentLongest = flagg
+					returnInt = fastighetsBetInput,swerefobj(x).rowindex
+				else			
+			next
+		end if
+
+	onError goto 0
+	
+	getHuvudSweref = returnInt
+	exit function
+ ErrgetHuvudSweref: print " [ERROR] getHuvudSweref " & error$() resume next
  end function
  
 Declare function getHuvudRening(rObj() as ReningsObjekt,ByVal fastighetsBetInput as string) as integer
  
  function getHuvudRening(rObj() as ReningsObjekt,ByVal fastighetsBetInput as string) as integer
  
- onError goto Err getHuvudRening
+	onError goto ErrgetHuvudRening
+	dim x,returnInt,currentLongest  as integer
+		returnInt = 0
+		currentLongest = 0
+
+		for x=1 to ubound(rObj)
+			returnInt = iif(returnInt <> 0, returnInt, iif(robj(x).spatialFastighet = fastighetsBetInput,robj(x).rowindex,0))
+		next
+
+		if(returnInt = 0) then
+			for x=1 to ubound(rObj)
+				if(currentLongest < len(reningAsString(rObj(x))) then
+					currentLongest = len(reningAsString(rObj(x))
+					returnInt = fastighetsBetInput,rObj(x).rowindex
+				else			
+			next
+		end if
+
+	onError goto 0
  
- onError goto 0
- 
+ getHuvudRening = returnInt
  exit function
- Err getHuvudRening: print " [ERROR] getHuvudRening " & error$() resume next
+ ErrgetHuvudRening: print " [ERROR] getHuvudRening " & error$() resume next
  end function
  
 Declare function getHuvudHuvudEnskilt(enObj() as EnskiltObjekt) as integer
  
  function getHuvudHuvudEnskilt(enObj() as EnskiltObjekt) as integer
- 
- onError goto Err getHuvudHuvudEnskilt
- 
- onError goto 0
- 
+	
+	onError goto ErrgetHuvudHuvudEnskilt
+	
+	dim x,returnInt,currentLongest as integer
+		returnInt = 0
+		currentLongest = 0
+		
+		for x=1 to ubound(enObj)
+			if(currentLongest < len(enskiltAsString(enObj(x))) then
+				currentLongest = len(enskiltAsString(enObj(x))
+				returnInt = fastighetsBetInput,enObj(x).rowindex
+			else			
+		next
+
+	onError goto 0
+  
+ getHuvudHuvudEnskilt = returnInt
  exit function
- Err getHuvudHuvudEnskilt: print " [ERROR] getHuvudHuvudEnskilt " & error$() resume next
+ ErrgetHuvudHuvudEnskilt: print " [ERROR] getHuvudHuvudEnskilt " & error$() resume next
  end function
  
 
