@@ -9,11 +9,9 @@ declare sub do6_1_assosieraFnr
 declare sub do6_2_MHK
 declare sub do6_3_Anteckningar
 declare sub do6_4_MultiplaFastigheter
-declare sub do6_5_M�nsBilder
 declare sub do6_6_Gem
 declare sub do6_7_CorW3Fas
 
-declare sub do6_9_byggnads�rTillFyraTecken
 
 
 global G_socken as string,G_debugg as logical,G_ProgressRange,G_Progress,G_senastObjectID, G_starttime as integer
@@ -23,6 +21,7 @@ Sub Main()
 	G_debugg = true
 	G_ProgressRange = 7
 	'Alter Table "HelaSolen" ( rename Besksadress_Adress Bes�ksadress_Adress, Besksadress_Postnr Bes�ksadress_Postnr, Besksadress_Ort Bes�ksadress_Ort, Besksadress_Huvudfastighet Bes�ksadress_Huvudfastighet, FNR FNR, ignore Verksamhetsut�vare_Namn, ignore_2 Verksamhetsut�v_Person_orgnr, ignore_3 Fakturamottagare_NAMN, ignore_4 Fakturamottagare_Faktura_ADRESS, ignore_5 Fakturamottagare_Faktura_POSTNR, ignore_6 Fakturamottagare_Faktura_POSTOR, Enhet Enhet, Anteckning Anteckning, Aktuell_timavgift Aktuell_timavgift, Timdebitering Timdebitering, Objektnamn Objektnamn, flik_Avloppsnlaggni_Boendetyp flik_Avlopps�nlaggni_Boendetyp, flik_Avloppsanlggn_Byggnadsr flik_Avloppsanl�ggn_Byggnads�r, flik_Avloppsa_Besiktningsdatum flik_Avloppsa_Besiktningsdatum, flik_Avloppsanlg_Beslutsdatum flik_Avloppsanl�g_Beslutsdatum, Vatten Vatten, Recipient Recipient, Inventering Inventering, Inventeringsinformation_Datum Inventeringsinformation_Datum, Inventeringsinformation_Status Inventeringsinformation_Status, Bedmning Bed�mning, fliken_Fastigheter fliken_Fastigheter, fliken_FastigheterFNR fliken_FastigheterFNR, PunkttypAB PunkttypAB, Fliken_Koordinater Fliken_Koordinater, fliken_renden fliken_�renden, Anlggningskategori Anl�ggningskategori, besiktningdatum besiktningdatum, beslutsdatum beslutsdatum, Anlggningstyp Anl�ggningstyp, Volym_m3 Volym_m3, Anl_fr_EftR_TInterv_mn Anl_f�r_EftR_T�Interv_m�n, AnlF_efR_Koordinater_X_o_Y AnlF_efR_Koordinater_X_o_Y, PunkttypER PunkttypER, Anlggning_fr_EfterfljRText Anl�ggning_f�r_Efterf�ljRText, ignore_7 Anl�ggningskategori_2, Anlggning_fr_S_Anlggningstyp Anl�ggning_f�r_S_Anl�ggningstyp, Externt_Tjnsteid Externt_Tj�nsteid, text text, Anlggning_fr_Slamav_Volym_m3 Anl�ggning_f�r_Slamav_Volym_m3, ignore_8 Anl�ggningskategori_3, AnlfrEfterR_Anlggningstyp Anlf�rEfterR_Anl�ggningstyp, ignore_9 besiktningdatum_2, ignore_10 beslutsdatum_2, ignorex Externt_Tj�nsteid2, ignore_11 Volym_m32, ObjektID ObjektID, Path Path, Diarienummer Diarienummer, Lpnummer L�pnummer ) Interactive
+	
 	
 	
 	OnError goto postProcess  G_Progress = 0 G_starttime = timer() ProgressBar "processor_6Post...." & G_ProgressRange & " items"	Calling processor_6Post	Range G_ProgressRange onError goto 0
@@ -51,8 +50,6 @@ Sub processor_6Post()
 		call DO6_4_MultiplaFastigheter
 		if G_debugg then print "DO6_4_MultiplaFastigheterOK: " & G_Progress end if
 	case 5
-		call DO6_5_M�nsBilder
-		if G_debugg then print "DO6_5_M�nsBilderOK: " & G_Progress end if
 	case 6
 		call DO6_7_CorW3Fas
 		if G_debugg then print "DO6_7_CorW3FasOK: " & G_Progress end if
@@ -64,8 +61,6 @@ Sub processor_6Post()
 			'run application applicationdirectory$() & "korrigeringAvFelaktigaFastigheter.MBX"
 		onError goto 0
 		if G_debugg then print "#korrigeringAvFelaktigaFastigheterOK: " & G_Progress end if
-		'call DO6_9_byggnads�rTillFyraTecken case 9 if G_debugg then print "#DO6_9_byggnads�rTillFyraTeckenOK: " & G_Progress end if
-		'call DO6_6_Gem case 8 '   gerdins anl�ggningar �r inte f�rdiga, not added in endressult ! if G_debugg then print "#DO6_6_GemOK: " & G_Progress end if
 		case else
 	end case
 	
@@ -112,30 +107,22 @@ exit sub error1: print "[Error do6_2_MHK] " & error$() print query
 end sub
 
 sub do6_3_Anteckningar
-	onError goto error1 call openSingleTable("anteckningar") dim query as string query = "insert into HelaSolen (diarienummer,l�pnummer,path) select diarienummer,l�pnummer,path from anteckningar" run command query onError goto 0
 exit sub error1: print "[Error do6_3_Anteckningar] " & error$() print query
 end sub
 
 sub do6_4_MultiplaFastigheter
-	onError goto error1 call openSingleTable("Mer_�n_en_fastighet") dim query as string query = "Insert Into HelaSolen Select * From Mer_�n_en_fastighet" run command query onError goto 0
 exit sub error1: print "[Error do6_4_MultiplaFastigheter] " & error$() print query
 end sub
 	
-sub do6_5_M�nsBilder
 
 	dim query as string
 	call openSingleTable("bilder")
 	call openSingleTable("anteckningar")
-	onError goto error1 query = "select fastighet,path from bilder where fastighet <> ""bl�tt jan2018"" into utanJan" run command query query = "insert into HelaSolen (fliken_fastigheter,path) select * from utanJan" run command query onError goto 0
 
-	onError goto error2 query = "select path from bilder where fastighet = ""bl�tt jan2018"" into Jan" run command query query = "insert into HelaSolen (path) select * from Jan" run command query onError goto 0
 exit sub
-	error1: print "[Error do6_5_M�nsBilder1] " & error$() print query
-	error2: print "[Error do6_5_M�nsBilder2] " & error$() print query
 end sub
 	 
 sub do6_6_Gem
-		'injesera gemensamhetsanl�ggningar
 		call openSingleTable("reningIhopslagen")
 		'call PrepareGemensamma()
 		'call injectGemensamma()
@@ -146,15 +133,11 @@ end sub
 
 sub do6_7_CorW3Fas()
 	
-	call openSingleTable("�rendenMedIngenEllerFelFastighet2")
 	
-	onError goto error1 dim query as string query = "Select Diarienummer, Fnr from �rendenMedIngenEllerFelFastighet2 where Fnr <> 0 into f�2" run command query query = "insert into HelaSolen (diarienummer,fliken_fastigheterFnr) select diarienummer,fnr from f�2" run command query onError goto 0
 
 exit sub error1: print "[Error do6_3_Anteckningar] " & error$() print query
 	
 end sub
 
-sub do6_9_byggnads�rTillFyraTecken
 	commit table helaSolen
-	'Alter Table "HelaSolen" ( modify flik_Avloppsanl�ggn_Byggnads�r Char(4) ) Interactive
 End Sub
