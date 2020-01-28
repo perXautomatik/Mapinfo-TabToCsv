@@ -29,7 +29,7 @@ Sub Main()
 	'Todo: add aditional failsafe to copy consgructors to make sure fastigheters Array is correct etc
 
 
-	G_debugg = true G_rebuild = true
+	G_debugg = true G_rebuild = false
 	G_senastTid = 0 
 	G_socken = "" 
 	G_TempRaknare = 0
@@ -66,7 +66,7 @@ G_husll = "hushåll"
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 if G_debugg then print "saveSockenProgress" end if  'Runns = Runns+1 if(runns = 2) then '	end program	
 		tempInteger = timer()
 		call TimePresent(starttime,tempInteger,G_TempRaknare)
-		end program
+
 	fetch next from sockentabell loop
 	
 end program
@@ -275,7 +275,8 @@ sub processor_3PrepMutate()
 		antalObjekt = SwerefSubsetByFasgtighet(G_swerefObjekt,FastighetsBetInput,fastighetensSwerefObjekt) + ReningsSubsetByFasgtighet(G_reningsObjekt,FastighetsBetInput,fastighetensReningsobjekt) + EnskiltSubsetByFasgtighet(G_EnskiltObjekt,FastighetsBetInput,FastighetensEnskiltObjekt) before = tableInfo("" & fastighetsObjektsTabell,TAB_INFO_NROWS)
 		if(antalObjekt > 0 ) then 
 			fastighetsObjekt.kir = fastighetsBetInput	
-			onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & Chr$(34) & fastighetsBetInput & Chr$(34) & " into fas" onerror goto 0 fetch first from fas fastighetsObjekt.adress = fas.adress fastighetsObjekt.postnr = fas.postnr fastighetsObjekt.ort = fas.postort fastighetsObjekt.fastighet = fas.fastighet fastighetsObjekt.fnr = fas.fnr close table fas
+			onError goto fasSelectError run command "select adress,postnr,postort,fnr,fastighet from sorteradFastighet where kir = " & Chr$(34) & fastighetsBetInput & Chr$(34) & " into fas" onerror goto 0 fetch first from fas 
+			fastighetsObjekt.adress = fas.adress fastighetsObjekt.postnr = fas.postnr fastighetsObjekt.ort = fas.postort fastighetsObjekt.fastighet = fas.fastighet fastighetsObjekt.fnr = fas.fnr close table fas
 			
 			call do3_1_1_saveFastighetsObjektToTable(fastighetsObjektsTabell,fastighetsObjekt,fastighetensReningsobjekt(),fastighetensSwerefObjekt(),fastighetensEnskiltObjekt())
 
@@ -287,7 +288,6 @@ sub processor_3PrepMutate()
 
 exit sub creationerror: Note "inga objekt p " & FastighetsBetInput print "[ERROR @ do3_OmObjektSkapaFastighet]" & error$() end program fasSelectError: print "FastighetsObjCreationSelectError" & error$() resume next	
 end sub 
-
 
 sub saveSockenProgress(socken as string)
 
@@ -631,11 +631,55 @@ sub utskrivningsobjektsKonstruktor(
 			
 End Sub
 
-sub do3_1_1_saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,ReningsObjekt() as ReningsObjekt,SwerefObjekt() as SwerefObjekt,EnskiltObjekt() as EnskiltObjekt)
+sub do3_1_1_saveFastighetsObjektToTable(tableName as string,inputX as fastighetsObjekt,rObj() as ReningsObjekt,swerefobj() as SwerefObjekt,enObj() as EnskiltObjekt)
 
 	dim query,filePath,vrde() as string
 	
-	call do3_1_1_1_FastighetsObjToInsertStringArray(vrde,inputx,ReningsObjekt(),SwerefObjekt(),EnskiltObjekt())
+ 	dim x as integer
+	,rening, sweref,enskilt as string
+	,dedupedrening(),dedupedenskilt(),dedupedsweref() as integer
+
+	redim vrde(11)
+
+	for x=1 to ubound(rObj)
+		if rObj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedrening, rObj(x).rowindex)
+		end if
+	next
+	
+	for x=1 to ubound(enObj)
+		if enObj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedenskilt, enObj(x).rowindex)
+		end if	
+	next
+	
+	for x=1 to ubound(swerefobj)
+		if swerefobj(x).rowindex <> 0 then
+			call addIntToArrayAsifSet(dedupedsweref, swerefobj(x).rowindex)
+		end if	
+	next
+		
+	rening = intArrayAsPrintString(dedupedrening)
+	sweref = intArrayAsPrintString(dedupedsweref)
+	enskilt = intArrayAsPrintString(dedupedenskilt)
+	
+	vrde(1) =inputx.adress & " "
+	vrde(2) =inputx.postnr & " "
+	vrde(3) =inputx.ort & " "
+	vrde(4) =inputx.fastighet & " "
+	vrde(5) ="" & val("" & inputx.fnr )
+	vrde(6) ="" & val("" & inputx.HuvudSweref )
+	vrde(7) ="" & val("" & inputx.HuvudRening )
+	vrde(8) ="" & val("" & inputx.HuvudEnskilt )
+	vrde(9) = sweref & " "
+	vrde(10) = rening & " "
+	vrde(11) = enskilt & " "
+
+	
+	
+	
+	
+	
 		if(StringArrayAsString(vrde) <> "0,0,0,0,F,0,0,0,0,0,0,0,0" ) then 
 			retry:
 			query = generateInsertStringWithArray(tableName, vrde)
@@ -663,10 +707,6 @@ function countShiftenGenUtvald(FastighetB as string) as integer
 	
 	countShiftenGenUtvald = countRows(utvaldFastighet)
 end function
-
-
-
-
 
 function InitializeEnskiltObjekt(intx as integer,enskiltobjekt() as enskiltobjekt,enskiltTokenObjekt() as enskiltobjekt) as integer
 	dim storlek as integer
@@ -1128,9 +1168,9 @@ sub do3_1_1_1_FastighetsObjToInsertStringArray(
 									rObj() as ReningsObjekt,
 									swerefobj() as SwerefObjekt,
 									enObj() as EnskiltObjekt)
- 	dim x as integer
-	,rening, sweref,enskilt as string
-	,dedupedrening(),dedupedenskilt(),dedupedsweref() as integer
+								 	dim x as integer
+									,rening, sweref,enskilt as string
+									,dedupedrening(),dedupedenskilt(),dedupedsweref() as integer
 
 	redim output(11)
 
@@ -1479,7 +1519,6 @@ exit sub
 					
 end sub
 
- 
  sub errorHandler (byVal methodname as string, byVal errorX as string)
  
  onError goto crashToDesktop
@@ -1491,7 +1530,6 @@ end sub
  crashToDesktop:
  end sub
  
-
 function EnskiltSubsetByFasgtighet(inputTable() as EnskiltObjekt,FastighetsBetInput as String,OutputTable() as EnskiltObjekt) as integer
 		dim x,y,size as integer
 		size = ubound(inputTable)
