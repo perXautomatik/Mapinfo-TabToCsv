@@ -35,18 +35,18 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-	G_husll = "hushåll"
-	G_utfrd = "Utförd"
-	G_tillstnd = "tillstånd"
-	G_rndenr = "ärendenr"
+	G_husll = "hushï¿½ll"
+	G_utfrd = "Utfï¿½rd"
+	G_tillstnd = "tillstï¿½nd"
+	G_rndenr = "ï¿½rendenr"
 	
-	G_frbud = "förbud"
-	G_rd =  "röd"  
-	G_grn = "grön"
-	G_rlil = "rölil"
-	G_rrn = "grrön"
-	G_gn = "gön"
-	G_rgr = "rgrön"
+	G_frbud = "fï¿½rbud"
+	G_rd =  "rï¿½d"  
+	G_grn = "grï¿½n"
+	G_rlil = "rï¿½lil"
+	G_rrn = "grrï¿½n"
+	G_gn = "gï¿½n"
+	G_rgr = "rgrï¿½n"
 	
 	
 	
@@ -73,7 +73,17 @@ Sub Main()
 		G_TempRaknare = 0 ' how many fastigheter has no anlÃ¤ggning
 		onError goto processor_3PrepMutate G_ProgressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & G_ProgressRange & " items" Calling processor_3PrepMutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_3PrepMutate") end if onError goto 0	 if G_debugg then print "processor_3PrepMutate" end if
 
-		onError goto processor_4Mutate  tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 1 fetch first from fastighetsObjektsTabell 		ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling processor_4Mutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") end if onError goto 0 		 if G_debugg then print "processor_4Mutate" end if
+		onError goto processor_4Mutate  tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		
+		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) 
+		if G_ProgressRange <> 0 then	
+		G_starttime = timer() 
+		G_Progress = 1 
+		fetch first from fastighetsObjektsTabell 		
+		'ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling 
+		call processor_4Mutate 
+		'Range G_ProgressRange
+		call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") 
+		end if onError goto 0 		 if G_debugg then print "processor_4Mutate" end if
 		
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 if G_debugg then print "saveSockenProgress" end if  'Runns = Runns+1 if(runns = 2) then '	end program	
 		tempInteger = timer()
@@ -247,108 +257,152 @@ sub processor_4Mutate()
 	'todo: HÃ¶gst prio flagga rÃ¶d, bkom, lila, ejvtn, grÃ¶n,Annars mest info.
 	'todo: Bara extra inventerings (fler Ã¤n 1 flagga) info spara koord, annars ignorera koord.
 	'todo: check that the ammount of utskrivningsobjekt is correct to intput.
+	
 	dim tempALias,columnTo as alias,
 	before,max,ignore as integer,
-	
-	split, renIndex(), enIndex(), sweIndex() as string,
-	fasRen() as reningsobjekt,
-	fasSwe() as swerefobjekt,
-	fasEnsk() as enskiltobjekt
-	tempAlias = G_socken & "fastighetsObjekt"
+		tempAlias = G_socken & "fastighetsObjekt"
+		,uObj() as utskriftsObjekt
+	do Until eot(tempALias)
 
-	onError goto do4_UobjInitizializer 
-		
-	columnTo = G_socken & "fastighetsObjekt.reningsobjekt" split = columnTo max = SplitStringAtCharacter(split,",", renIndex())
-	columnTo = G_socken & "FastighetsObjekt.enskiltObjekt" split = columnTo ignore = SplitStringAtCharacter(split,",", enIndex()) max = iif(max < ignore,ignore,max) 
-	columnTo = G_socken & "FastighetsObjekt.swerefobjekt" split = columnTo ignore = SplitStringAtCharacter(split,",", sweIndex()) max = iif(max < ignore,ignore,max)
-	
-	call ReningSubsetByIndex(G_reningsobjekt,renIndex,fasRen)
-	call EnskiltSubsetByIndex(G_enskiltobjekt,enIndex,fasEnsk)
-	call SwerefSubsetByIndex(G_swerefObjekt,sweIndex,fasSwe)
 
-	if G_debugg then before = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) end if
-	if (max > 1) then call skapaMutationer(fasEnsk,fasRen,fasSwe,1) end if
-		
-	'putHuvudFirst
-		dim x as integer
-		dim sw as logical,
-		swAl,
-		renAl,
-		enAl as alias
-		
-		swAl = tempAlias & ".HuvudSweref"
-		renAl = tempAlias & ".HuvudRening"
-		enAl = tempAlias & ".HuvudEnskilt"
-		
-		sw = false
-		
-		for x=1 to ubound(fasSwe)
-			if (fasSwe(x).rowindex = swAl) then
-				sw = true
-				goto found
-			End If
-		Next
-		
-		
-		if sw = false then
-			for x=1 to ubound(fasRen)
-				if (fasRen(x).rowindex = renAl) then
-					sw = true
-					goto found2
-				End If
-			Next
-			
-		end if
-		
-		if sw = false then
-			for x=1 to ubound(fasRen)
-				if (fasEnsk(x).rowindex = enAl ) then
-					sw = true
-					goto found3
-				End If
-			Next
-		
-		end if
-		
-		if sw = true AND x <> 1 then
-			found:	
-			found2:
-			found3:
-			dim endX as integer
-			,tempR(2) as reningsobjekt,
-			TempS(2) as swerefobjekt,
-			tempE(2) as enskiltobjekt
+						dim	split, renIndex(), enIndex(), sweIndex() as string,
+						fasRen() as reningsobjekt,
+						fasSwe() as swerefobjekt,
+						fasEnsk() as enskiltobjekt
 
-		if ubound(fasEnsk) > 1 then
-			call enskiltCopyConstruktor(fasEnsk(1), tempE,1) 
-			call enskiltCopyConstruktor(fasEnsk(x), fasEnsk(),1) 
-			call enskiltCopyConstruktor(tempE(1), fasEnsk(),x) 
-		end if
-		
-		if	ubound(fasRen) > 1 then
-			call reningObjCopyConstr(FasRen(1), tempR,1)						
-			call reningObjCopyConstr(FasRen(x), FasRen(),1)						
-			call reningObjCopyConstr(tempR(1), FasRen(),x)
-		end if
 
-		if ubound(fasSwe) > 1 then
-			call swerefObjektCopyConstr(TempS(1), fasSwe(),x)
-			call swerefObjektCopyConstr(fasSwe(x), fasSwe(),1)
-			call swerefObjektCopyConstr(fasSwe(1), TempS,1)
-		end if
-			
-		end if
-	
-	
-	if G_debugg then ignore = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) if (before <> ignore) then print "WARNING before:" & before & " after_ " & ignore end if end if
-		
-	if (ubound(fasRen) < 1 OR ubound(fasEnsk) < 1 OR ubound(fasSwe) < 1) then call initializer(fasRen,fasEnsk,fasSwe) end if
-	
-		
-	
-	call utskrivningsobjektsKonstruktor(fasSwe,fasRen,fasEnsk)
-		
-	call increment(G_Progress,G_ProgressRange,G_starttime) fetch next from tempAlias	onError goto 0
+						onError goto do4_UobjInitizializer 
+							
+						columnTo = G_socken & "fastighetsObjekt.reningsobjekt" split = columnTo max = SplitStringAtCharacter(split,",", renIndex())
+						columnTo = G_socken & "FastighetsObjekt.enskiltObjekt" split = columnTo ignore = SplitStringAtCharacter(split,",", enIndex()) max = iif(max < ignore,ignore,max) 
+						columnTo = G_socken & "FastighetsObjekt.swerefobjekt" split = columnTo ignore = SplitStringAtCharacter(split,",", sweIndex()) max = iif(max < ignore,ignore,max)
+						
+						call ReningSubsetByIndex(G_reningsobjekt,renIndex,fasRen)
+						call EnskiltSubsetByIndex(G_enskiltobjekt,enIndex,fasEnsk)
+						call SwerefSubsetByIndex(G_swerefObjekt,sweIndex,fasSwe)
+
+						if G_debugg then before = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) end if
+						if (max > 1) then call skapaMutationer(fasEnsk,fasRen,fasSwe,1) end if
+							
+						'putHuvudFirst
+							dim x as integer
+							dim sw as logical,
+							swAl,
+							renAl,
+							enAl as alias
+							
+							swAl = tempAlias & ".HuvudSweref"
+							renAl = tempAlias & ".HuvudRening"
+							enAl = tempAlias & ".HuvudEnskilt"
+							
+							sw = false
+							
+							for x=1 to ubound(fasSwe)
+								if (fasSwe(x).rowindex = swAl) then
+									sw = true
+									goto found
+								End If
+							Next
+							
+							
+							if sw = false then
+								for x=1 to ubound(fasRen)
+									if (fasRen(x).rowindex = renAl) then
+										sw = true
+										goto found2
+									End If
+								Next
+								
+							end if
+							
+							if sw = false then
+								for x=1 to ubound(fasRen)
+									if (fasEnsk(x).rowindex = enAl ) then
+										sw = true
+										goto found3
+									End If
+								Next
+							
+							end if
+							
+							if sw = true AND x <> 1 then
+								found:	
+								found2:
+								found3:
+								dim endX as integer
+								,tempR(2) as reningsobjekt,
+								TempS(2) as swerefobjekt,
+								tempE(2) as enskiltobjekt
+
+							if ubound(fasEnsk) > 1 then
+								call enskiltCopyConstruktor(fasEnsk(1), tempE,1) 
+								call enskiltCopyConstruktor(fasEnsk(x), fasEnsk(),1) 
+								call enskiltCopyConstruktor(tempE(1), fasEnsk(),x) 
+							end if
+							
+							if	ubound(fasRen) > 1 then
+								call reningObjCopyConstr(FasRen(1), tempR,1)						
+								call reningObjCopyConstr(FasRen(x), FasRen(),1)						
+								call reningObjCopyConstr(tempR(1), FasRen(),x)
+							end if
+
+							if ubound(fasSwe) > 1 then
+								call swerefObjektCopyConstr(TempS(1), fasSwe(),x)
+								call swerefObjektCopyConstr(fasSwe(x), fasSwe(),1)
+								call swerefObjektCopyConstr(fasSwe(1), TempS,1)
+							end if
+								
+							end if
+						
+						
+						if G_debugg then ignore = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) if (before <> ignore) then print "WARNING before:" & before & " after_ " & ignore end if end if
+							
+						if (ubound(fasRen) < 1 OR ubound(fasEnsk) < 1 OR ubound(fasSwe) < 1) then call initializer(fasRen,fasEnsk,fasSwe) end if
+						
+							
+						
+						' call utskrivningsobjektsKonstruktor(fasSwe,fasRen,fasEnsk) sub utskrivningsobjektsKonstruktor(
+						' 	fasSwe() as swerefobjekt,
+						' 	fasRen() as reningsObjekt,
+						' 	fasEnsk() as enskiltobjekt
+						' )
+						
+							dim ittr, objektid as integer	,reningsTokenObjekt() as reningsObjekt	,enskiltTokenObjekt() as enskiltobjekt	,swerefTokenObjekt() as swerefobjekt	,tableName as string ,sO(1) as swerefobjekt,	rO(1) as reningsObjekt,	eO(1) as enskiltobjekt 
+
+							ittr = expandutskriftsobjekt(uObj) tableName = "LatestObjectID"	if IsTableOpen(tableName) then select col1 from LatestObjectID	fetch first from latestObjectID 
+							G_senastObjectID = iif(G_senastObjectID < latestObjectID.col1,latestObjectID.col1,G_senastObjectID) end if objektid = iif(G_senastObjectID <> 0,G_senastObjectID + 1,1) G_senastObjectID = objektid
+							
+							uObj(ittr).Objektid = objektid '"Huvud","ObjektID",: "integer",: "ObjektItterator" 
+
+							call huvuDObjekt(uObj(),ittr)
+							call anteckningKordinat(fasSwe(1),fasEnsk(1),fasRen(1),uObj(),ittr)					
+							call inventeringsinformation(uObj,ittr,fasSwe(1))
+							call Recipient(uObj,fasEnsk(1),fasRen(1),ittr)
+							call Avloppsanlggning(uObj(),ittr,fasEnsk(1))				
+								
+							call subTablesafter(eO,fasEnsk,rO,fasRen,sO,fasSwe,2)
+							
+							'print ubound(eO) + ubound(rO) + ubound(sO) 
+							
+							
+							if ubound(eO) + ubound(fasRen) + ubound(sO) > 0 then
+								dim anl() as anlggningsobjekt
+								call Anlggning(anl,fasEnsk,fasRen,sO)
+								'dessa skapar nya rader, men ndrar inte objektId
+								ittr = ittr + anlggningsobjektToUtskifts(anl,uObj,ittr)
+							end if
+							
+							ittr = ittr + diarienummerForutskriftsobjekt(uObj,ittr,fasEnsk,fasSwe,objektid)
+							call fastighetForUtskriftsobjekt(uObj,ittr,fasSwe,fasRen,fasEnsk,objektid)
+						
+						'call increment(G_Progress,G_ProgressRange,G_starttime)
+						
+						fetch next from tempAlias	
+	 
+	 onError goto 0
+	loop
+
+	call saveUtskriftsProgress(uObj)
 
 exit sub do4_UobjInitizializer: note error$() end program
 end sub
@@ -685,42 +739,6 @@ function expandUtskriftsobjekt(utskriftsObjekt() as utskriftsobjekt) as integer
 
 end function
 
-sub utskrivningsobjektsKonstruktor(
-		sOx() as swerefobjekt,
-		rOx() as reningsObjekt,
-		eOx() as enskiltobjekt
-	)
-	
-		dim ittr, objektid as integer	,reningsTokenObjekt() as reningsObjekt	,enskiltTokenObjekt() as enskiltobjekt	,swerefTokenObjekt() as swerefobjekt	,tableName as string ,sO(1) as swerefobjekt,	rO(1) as reningsObjekt,	eO(1) as enskiltobjekt ,uObj() as utskriftsObjekt
-
-		ittr = expandutskriftsobjekt(uObj) tableName = "LatestObjectID"	if IsTableOpen(tableName) then select col1 from LatestObjectID	fetch first from latestObjectID 
-		G_senastObjectID = iif(G_senastObjectID < latestObjectID.col1,latestObjectID.col1,G_senastObjectID) end if objektid = iif(G_senastObjectID <> 0,G_senastObjectID + 1,1) G_senastObjectID = objektid
-		
-		uObj(ittr).Objektid = objektid '"Huvud","ObjektID",: "integer",: "ObjektItterator" 
-
-		call huvuDObjekt(uObj(),ittr)
-		call anteckningKordinat(sOx(1),eOx(1),rOx(1),uObj(),ittr)					
-		call inventeringsinformation(uObj,ittr,sOx(1))
-		call Recipient(uObj,eOx(1),rOx(1),ittr)
-		call Avloppsanlggning(uObj(),ittr,eOx(1))				
-			
-		call subTablesafter(eO,eOx,rO,rOx,sO,sOx,2)
-		
-		'print ubound(eO) + ubound(rO) + ubound(sO) 
-		
-		
-		if ubound(eO) + ubound(rOx) + ubound(sO) > 0 then
-			dim anl() as anlggningsobjekt
-			call Anlggning(anl,eOx,rOx,sO)
-			'dessa skapar nya rader, men ndrar inte objektId
-			ittr = ittr + anlggningsobjektToUtskifts(anl,uObj,ittr)
-		end if
-		
-		ittr = ittr + diarienummerForutskriftsobjekt(uObj,ittr,eOx,sOx,objektid)
-		call fastighetForUtskriftsobjekt(uObj,ittr,sOx,rOx,eOx,objektid)
-		call saveUtskriftsProgress(uObj)	
-			
-End Sub
 
 
 Declare function getHuvudSweref(swerefobj() as SwerefObjekt) as integer
