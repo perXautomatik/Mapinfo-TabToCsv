@@ -535,9 +535,9 @@ Sub subTablesafter( outPutEn() as enskiltObjekt,inputEn() as enskiltObjekt, outP
 '		onError goto Xerror '		print "-----------------------------" & x ' '		print ubound(outPutEn) '		print ubound(inputEn) '		print ubound(outPutre) '		print ubound(inputre) '		print ubound(outPutsw) '		print ubound(inputsw) '		print minimumDebt '		print x '		print "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz" '		onError goto 0
 	for x=minimumDebt to ubound(inputEn) if x > ubound(inputEn) then redim inputEn(x) end if call enskiltCopyConstruktor(inputEn(x), outPutEn,x) next
 	
-	for x=minimumDebt to ubound(inputre) if x > ubound(inputre) then redim inputre(x) end if call reningObjCopyConstr(inputre(x),outPutre,x) next
+	for x=1 to ubound(inputre) if x > ubound(inputre) then redim inputre(x) end if call reningObjCopyConstr(inputre(x),outPutre,x) next
 	
-	for x=minimumDebt to ubound(inputsw) if x > ubound(inputsw) then redim inputsw(x) end if call swerefObjektCopyConstr(inputsw(x), outPutsw,x) next
+	for x=1 to ubound(inputsw) if x > ubound(inputsw) then redim inputsw(x) end if call swerefObjektCopyConstr(inputsw(x), outPutsw,x) next
 exit sub
 	'Xerror: print "subTablesafter|" &  error$() end program 
 end sub
@@ -1152,7 +1152,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				anlObj(antal).Anlggningstyp = rO(x).Reningstyp
 				anlObj(antal).besiktningdatum = rO(x).Utfrd_datum
 				anlObj(antal).beslutsdatum = rO(x).Beslut_datum
-				anlObj(antal).Kommentarer = textAppend(rO(x).Kommentarer,"[ansl|",reningsfastigheterAsString(rO(x)))
+				anlObj(antal).Kommentarer = textAppend(reningsfastigheterAsString(rO(x))," [antek|",rO(x).Kommentarer)
 				anlObj(antal).Volym_m3 = rO(x).Storlek_m2
 				anlObj(antal).Koordinater = rO(x).kordinater
 				anlObj(antal).radnummer = rO(x).rowindex
@@ -1173,6 +1173,7 @@ sub Anlggning(anlObj() as anlggningsobjekt,eO() as enskiltobjekt,rO() as renings
 				anlObj(antal).rendenr = sO(x).rendenr
 				anlObj(antal).Koordinater = sO(x).kordinater
 				anlObj(antal).radnummer = sO(x).rowindex
+				anlObj(antal).Kommentarer = sO(x).Anteckning
 				anlObj(antal).rendenr =  DiarieUtanBokstver(DiarieMixedToUnit(sO(x).rendenr))
 			end if
 		next
@@ -1283,7 +1284,6 @@ sub Avloppsanlggning(uObj() as UtskriftsObjekt,ittr as integer,eO as enskiltobje
 	uObj(ittr).flik_Avloppsanlggn_Byggnadsr = eO.Tillstnd_giltigt_tom
 	uObj(ittr).flik_Avloppsa_Besiktningsdatum = eO.Utfrd_datum
 	uObj(ittr).flik_Avloppsanlg_Beslutsdatum = eO.Beslut_datum
-	uObj(ittr).flik_Avloppsnlaggni_Boendetyp = eO.Typ_byggnad
 	uObj(ittr).Vatten = eO.Antal_hushll_tillstnd
 	
 end sub
