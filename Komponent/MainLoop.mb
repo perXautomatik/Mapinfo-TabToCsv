@@ -233,8 +233,9 @@ sub processor_4Mutate()
 	'todo: check that the ammount of utskrivningsobjekt is correct to intput.
 	dim tempALias,columnTo as alias,
 	before,max,ignore as integer,
-	fasRen() as reningsobjekt,
+	
 	split, renIndex(), enIndex(), sweIndex() as string,
+	fasRen() as reningsobjekt,
 	fasSwe() as swerefobjekt,
 	fasEnsk() as enskiltobjekt
 	tempAlias = G_socken & "fastighetsObjekt"
@@ -251,10 +252,70 @@ sub processor_4Mutate()
 
 	if G_debugg then before = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) end if
 	if (max > 1) then call skapaMutationer(fasEnsk,fasRen,fasSwe,1) end if
+		
+	'putHuvudFirst
+		dim x as integer
+		dim sw as logical
+		sw = false
+		
+		for x=1 to ubound(fasSwe)
+			if (fasSwe(x).rowindex = fastighetsObjekt.HuvudSweref) then
+				sw = true
+				goto found
+			End If
+		Next
+		
+		
+		if sw = false then
+			for x=1 to ubound(fasRen)
+				if (fasRen(x).rowindex = fastighetsObjekt.HuvudRening) then
+					sw = true
+					goto found2
+				End If
+			Next
+			
+		end if
+		
+		if sw = false then
+			for x=1 to ubound(fasRen)
+				if (fasEnsk(x).rowindex = fastighetsObjekt.HuvudEnskilt ) then
+					sw = true
+					goto found3
+				End If
+			Next
+		
+		end if
+		
+		if sw = true AND x <> 1 then
+			found:	
+			found2:
+			found3:
+			dim endX as integer
+			,tempR(1) as reningsobjekt,
+			TempS(1) as swerefobjekt,
+			tempE(1) as enskiltobjekt
+						
+			call enskiltCopyConstruktor(fasEnsk(1), tempE,1) 
+			call reningObjCopyConstr(FasRen(1), tempR,1)
+			call swerefObjektCopyConstr(fasSwe(1), TempS,1)
+			
+			call enskiltCopyConstruktor(fasEnsk(x), fasEnsk(),1) 
+			call reningObjCopyConstr(FasRen(x), FasRen(),1)
+			call swerefObjektCopyConstr(fasSwe(x), fasSwe(),1)
+			
+			call enskiltCopyConstruktor(tempE(1), fasEnsk(),x) 
+			call reningObjCopyConstr(tempR(1), FasRen(),x)
+			call swerefObjektCopyConstr(TempS(1), fasSwe(),x)
+			
+			
+		end if
+	
 	
 	if G_debugg then ignore = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) if (before <> ignore) then print "WARNING before:" & before & " after_ " & ignore end if end if
 		
 	if (ubound(fasRen) < 1 OR ubound(fasEnsk) < 1 OR ubound(fasSwe) < 1) then call initializer(fasRen,fasEnsk,fasSwe) end if
+	
+		
 	
 	call utskrivningsobjektsKonstruktor(fasSwe,fasRen,fasEnsk)
 		
@@ -645,21 +706,23 @@ Declare function getHuvudSweref(swerefobj() as SwerefObjekt) as integer
 		
 		for x=1 to ubound(swerefobj)		
 			do case swerefobj(x).status
-				case "rÃ¶d"  
+				case "röd"  
 					flagg = 1 
-				case "grÃ¶n","Ej vat","Egenko","ejvtn","lila","gul","ej vt","rÃ¶lil","grrÃ¶n","gÃ¶n","rgrÃ¶n"
+				case "grön","Ej vat","Egenko","ejvtn","lila","gul","ej vt","rölil","grrön","gön","rgrön"
 					flagg = 2
-				case "kom","TILL","Tillsy","FÃ¶rbud","komm","BKommu" 
+				case "kom","TILL","Tillsy","Förbud","komm","BKommu" 
 					flagg = 3
-				else case 
+				case else
 					flagg = 1
 			end case
+			
 				if(currentLongest < flagg) then
 					currentLongest = flagg
-					returnInt = fastighetsBetInput,swerefobj(x).rowindex
-				else			
+					returnInt = swerefobj(x).rowindex
+				end if
+				
 			next
-		end if
+		
 
 	onError goto 0
 	
@@ -683,10 +746,10 @@ Declare function getHuvudRening(rObj() as ReningsObjekt,ByVal fastighetsBetInput
 
 		if(returnInt = 0) then
 			for x=1 to ubound(rObj)
-				if(currentLongest < len(reningAsString(rObj(x))) then
-					currentLongest = len(reningAsString(rObj(x))
-					returnInt = fastighetsBetInput,rObj(x).rowindex
-				else			
+				if(currentLongest < len(reningAsString(rObj(x)))) then
+					currentLongest = len(reningAsString(rObj(x)))
+					returnInt = rObj(x).rowindex
+				end if		
 			next
 		end if
 
@@ -708,10 +771,10 @@ Declare function getHuvudHuvudEnskilt(enObj() as EnskiltObjekt) as integer
 		currentLongest = 0
 		
 		for x=1 to ubound(enObj)
-			if(currentLongest < len(enskiltAsString(enObj(x))) then
-				currentLongest = len(enskiltAsString(enObj(x))
-				returnInt = fastighetsBetInput,enObj(x).rowindex
-			else			
+			if(currentLongest < len(enskiltAsString(enObj(x)))) then
+				currentLongest = len(enskiltAsString(enObj(x)))
+				returnInt = enObj(x).rowindex
+			end if			
 		next
 
 	onError goto 0
