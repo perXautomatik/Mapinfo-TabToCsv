@@ -9,7 +9,7 @@ Declare sub errorHandler (byVal methodname as string, byVal errorX as string)
 global 
 G_workDir,
 G_tillstnd,G_husll,G_utfrd,G_rndenr
-,G_socken as string,
+,G_socken,G_frbud,G_rd,G_grn,G_rlil,G_rrn,G_gn,G_rgr as string,
 G_rebuild,G_debugg as logical,
 G_ProgressRange,G_Progress,G_senastObjectID, 
 G_senastTid,G_anvndaReningar(),G_starttime,G_TempRaknare as integer
@@ -35,10 +35,21 @@ Sub Main()
 	G_socken = "" 
 	G_TempRaknare = 0
 	
-G_husll = "hushï¿½ll"
-	G_utfrd = "Utfï¿½rd"
-	G_tillstnd = "tillstï¿½nd"
-	G_rndenr = "ï¿½rendenr"
+	G_husll = "hushåll"
+	G_utfrd = "Utförd"
+	G_tillstnd = "tillstånd"
+	G_rndenr = "ärendenr"
+	
+	G_frbud = "förbud"
+	G_rd =  "röd"  
+	G_grn = "grön"
+	G_rlil = "rölil"
+	G_rrn = "grrön"
+	G_gn = "gön"
+	G_rgr = "rgrön"
+	
+	
+	
 
 	if G_rebuild then
 		drop table sockentabell
@@ -260,11 +271,19 @@ sub processor_4Mutate()
 		
 	'putHuvudFirst
 		dim x as integer
-		dim sw as logical
+		dim sw as logical,
+		swAl,
+		renAl,
+		enAl as alias
+		
+		swAl = tempAlias & ".HuvudSweref"
+		renAl = tempAlias & ".HuvudRening"
+		enAl = tempAlias & ".HuvudEnskilt"
+		
 		sw = false
 		
 		for x=1 to ubound(fasSwe)
-			if (fasSwe(x).rowindex = fastighetsObjekt.HuvudSweref) then
+			if (fasSwe(x).rowindex = swAl) then
 				sw = true
 				goto found
 			End If
@@ -273,7 +292,7 @@ sub processor_4Mutate()
 		
 		if sw = false then
 			for x=1 to ubound(fasRen)
-				if (fasRen(x).rowindex = fastighetsObjekt.HuvudRening) then
+				if (fasRen(x).rowindex = renAl) then
 					sw = true
 					goto found2
 				End If
@@ -283,7 +302,7 @@ sub processor_4Mutate()
 		
 		if sw = false then
 			for x=1 to ubound(fasRen)
-				if (fasEnsk(x).rowindex = fastighetsObjekt.HuvudEnskilt ) then
+				if (fasEnsk(x).rowindex = enAl ) then
 					sw = true
 					goto found3
 				End If
@@ -710,13 +729,14 @@ Declare function getHuvudSweref(swerefobj() as SwerefObjekt) as integer
 		currentLongest = 0
 		flagg = 0
 		
+		
 		for x=1 to ubound(swerefobj)		
 			do case swerefobj(x).status
-				case "rï¿½d"  
+				case G_rd  
 					flagg = 1 
-				case "grï¿½n","Ej vat","Egenko","ejvtn","lila","gul","ej vt","rï¿½lil","grrï¿½n","gï¿½n","rgrï¿½n"
+				case G_grn,"Ej vat","Egenko","ejvtn","lila","gul","ej vt",G_rlil,G_rrn,G_gn,G_rgr
 					flagg = 2
-				case "kom","TILL","Tillsy","Fï¿½rbud","komm","BKommu" 
+				case "kom","TILL","Tillsy",G_frbud,"komm","BKommu" 
 					flagg = 3
 				case else
 					flagg = 1
