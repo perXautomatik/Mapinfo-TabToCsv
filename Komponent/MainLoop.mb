@@ -17,13 +17,13 @@ G_senastTid,G_anvndaReningar(),G_starttime,G_TempRaknare as integer
 ,G_reningsObjekt() as reningsObjekt , G_swerefObjekt() as swerefObjekt, G_EnskiltObjekt() as EnskiltObjekt
 
 Sub Main()
-	'Todo: Kom och till skall bli egna arcgis skikt med future synkning men hur fÃ¥r prata med oscar
-	'Todo: kordinatfliken behÃ¶ver vara 2 tecken lÃ¤ngre
+	'Todo: Kom och till skall bli egna arcgis skikt med future synkning men hur får prata med oscar
+	'Todo: kordinatfliken behöver vara 2 tecken längre
 	'Todo: 900+ rows of badly formated fastighetsbeteckningar
-	'Todo: AnlÃ¤ggningsanteckningar syns inte nÃ¤r man har en sweref som sÃ¤tter anteckningar, vi behÃ¶ver slÃ¥ihop dessa
-	'Todo: we need to remove anlÃ¤ggningar we already used, most likely best to do after the socken has bin recreated
-	'Todo: Gammelgarn trosings 2:1 status prioritet, typ grÃ¶n > ejvtn
-	'Todo: genereraSQLVÃ¤rdeArray Ã¤r Ã¤ven denna farligt frÃ¥nskilld, borde vara del av utskirvsobject objektet
+	'Todo: Anläggningsanteckningar syns inte när man har en sweref som sätter anteckningar, vi behöver slåihop dessa
+	'Todo: we need to remove anläggningar we already used, most likely best to do after the socken has bin recreated
+	'Todo: Gammelgarn trosings 2:1 status prioritet, typ grön > ejvtn
+	'Todo: genereraSQLVärdeArray är även denna farligt frånskilld, borde vara del av utskirvsobject objektet
 	'Todo: method that produces logg file, for each socken
 	'Todo: Mettoder som dumpar alla globala Arrays
 	'Todo: add aditional failsafe to copy consgructors to make sure fastigheters Array is correct etc
@@ -69,10 +69,20 @@ Sub Main()
 
 		onError goto createFastighetsTable fastighetsObjektsTabell = G_socken & "fastighetsObjekt" 		filePath = ApplicationDirectory$() + fastighetsObjektsTabell & ".tab"  		call createFastighetsTable(fastighetsObjektsTabell,filePath) onError goto 0 if G_debugg then print "createFastighetsTable" end if
 
-		G_TempRaknare = 0 ' how many fastigheter has no anlÃ¤ggning
+		G_TempRaknare = 0 ' how many fastigheter has no anläggning
 		onError goto processor_3PrepMutate G_ProgressRange = tableInfo(SorteradFastighet,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 0 fetch first from SorteradFastighet ProgressBar "processor_3PrepMutate...." & G_ProgressRange & " items" Calling processor_3PrepMutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_3PrepMutate") end if onError goto 0	 if G_debugg then print "processor_3PrepMutate" end if
 
-		onError goto processor_4Mutate  tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) if G_ProgressRange <> 0 then	G_starttime = timer() G_Progress = 1 fetch first from fastighetsObjektsTabell 		ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling processor_4Mutate Range G_ProgressRange	call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") end if onError goto 0 		 if G_debugg then print "processor_4Mutate" end if
+		onError goto processor_4Mutate  tableName = "sockenRessultat" filePath = ApplicationDirectory$() + tableName & ".tab" call createRessultTableX(tablename,filePath)	 		
+		G_ProgressRange = tableInfo(fastighetsObjektsTabell,TAB_INFO_NROWS) 
+		if G_ProgressRange <> 0 then	
+		G_starttime = timer() 
+		G_Progress = 1 
+		fetch first from fastighetsObjektsTabell 		
+		'ProgressBar "processor_4Mutate...." & G_ProgressRange & " items" Calling 
+		call processor_4Mutate 
+		'Range G_ProgressRange
+		call SilenttidsSummering(G_Progress,G_ProgressRange,G_starttime,"processor_4Mutate") 
+		end if onError goto 0 		 if G_debugg then print "processor_4Mutate" end if
 		
 		onError goto saveSockenProgress	if tableInfo("sockenRessultat",TAB_INFO_NROWS) <> 0 then	call saveSockenProgress(G_socken) else	goto saveSockenProgress	end if	onError goto 0 if G_debugg then print "saveSockenProgress" end if  'Runns = Runns+1 if(runns = 2) then '	end program	
 		tempInteger = timer()
@@ -194,7 +204,7 @@ sub Recipient(uObj() as UtskriftsObjekt,eO as enskiltobjekt, rO as reningsobjekt
 		 rO.spatialshift,
 		  iif(eO.Fastighet_rening <> ""
 		  ,eO.Fastighet_rening,
-		  "okÃ¤nd" 'rO.rowIndex
+		  "okänd" 'rO.rowIndex
 		  )
 		  )
 
@@ -240,15 +250,18 @@ end sub
 sub processor_4Mutate()
 'utskriftskonstruktor frvntar sig att ingen av objekten har 0 som rowindex, alts, d blir det tomt.
 	'getFirstSplitByCom
-	'Resolvedtodo: Om fler Ã¤n en lÃ¤gg anteckning som Ã¤r relevant flagga pÃ¥ huvudsida Och irrelvant flagga som object anteckning,.
-	'resolvedtodo: Med prefix Kommentar anlÃ¤ggning:Kommentar inventering:Kommentar rening:
+	'Resolvedtodo: Om fler än en lägg anteckning som är relevant flagga på huvudsida Och irrelvant flagga som object anteckning,.
+	'resolvedtodo: Med prefix Kommentar anläggning:Kommentar inventering:Kommentar rening:
 	'consumes global arrays 
 	'skapa muttationer organiserar om rrayna om s behvs
-	'todo: HÃ¶gst prio flagga rÃ¶d, bkom, lila, ejvtn, grÃ¶n,Annars mest info.
-	'todo: Bara extra inventerings (fler Ã¤n 1 flagga) info spara koord, annars ignorera koord.
+	'todo: Högst prio flagga röd, bkom, lila, ejvtn, grön,Annars mest info.
+	'todo: Bara extra inventerings (fler än 1 flagga) info spara koord, annars ignorera koord.
 	'todo: check that the ammount of utskrivningsobjekt is correct to intput.
 	dim tempALias,columnTo as alias,
 	before,max,ignore as integer,
+		tempAlias = G_socken & "fastighetsObjekt"
+		,uObj() as utskriftsObjekt
+	do Until eot(tempALias)
 	
 	split, renIndex(), enIndex(), sweIndex() as string,
 	fasRen() as reningsobjekt,
@@ -266,6 +279,128 @@ sub processor_4Mutate()
 	call EnskiltSubsetByIndex(G_enskiltobjekt,enIndex,fasEnsk)
 	call SwerefSubsetByIndex(G_swerefObjekt,sweIndex,fasSwe)
 
+						if G_debugg then before = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) end if
+						if (max > 1) then call skapaMutationer(fasEnsk,fasRen,fasSwe,1) end if
+							
+						'putHuvudFirst
+							dim x as integer
+							dim sw as logical,
+							swAl,
+							renAl,
+							enAl as alias
+							
+							swAl = tempAlias & ".HuvudSweref"
+							renAl = tempAlias & ".HuvudRening"
+							enAl = tempAlias & ".HuvudEnskilt"
+							
+							sw = false
+							
+							for x=1 to ubound(fasSwe)
+								if (fasSwe(x).rowindex = swAl) then
+									sw = true
+									goto found
+								End If
+							Next
+							
+							
+							if sw = false then
+								for x=1 to ubound(fasRen)
+									if (fasRen(x).rowindex = renAl) then
+										sw = true
+										goto found2
+									End If
+								Next
+								
+							end if
+							
+							if sw = false then
+								for x=1 to ubound(fasRen)
+									if (fasEnsk(x).rowindex = enAl ) then
+										sw = true
+										goto found3
+									End If
+								Next
+							
+							end if
+							
+							if sw = true AND x <> 1 then
+								found:	
+								found2:
+								found3:
+								dim endX as integer
+								,tempR(2) as reningsobjekt,
+								TempS(2) as swerefobjekt,
+								tempE(2) as enskiltobjekt
+
+							if ubound(fasEnsk) > 1 then
+								call enskiltCopyConstruktor(fasEnsk(1), tempE,1) 
+								call enskiltCopyConstruktor(fasEnsk(x), fasEnsk(),1) 
+								call enskiltCopyConstruktor(tempE(1), fasEnsk(),x) 
+							end if
+							
+							if	ubound(fasRen) > 1 then
+								call reningObjCopyConstr(FasRen(1), tempR,1)						
+								call reningObjCopyConstr(FasRen(x), FasRen(),1)						
+								call reningObjCopyConstr(tempR(1), FasRen(),x)
+							end if
+
+							if ubound(fasSwe) > 1 then
+								call swerefObjektCopyConstr(TempS(1), fasSwe(),x)
+								call swerefObjektCopyConstr(fasSwe(x), fasSwe(),1)
+								call swerefObjektCopyConstr(fasSwe(1), TempS,1)
+							end if
+								
+							end if
+						
+						
+						if G_debugg then ignore = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) if (before <> ignore) then print "WARNING before:" & before & " after_ " & ignore end if end if
+							
+						if (ubound(fasRen) < 1 OR ubound(fasEnsk) < 1 OR ubound(fasSwe) < 1) then call initializer(fasRen,fasEnsk,fasSwe) end if
+						
+							
+						
+						' call utskrivningsobjektsKonstruktor(fasSwe,fasRen,fasEnsk) sub utskrivningsobjektsKonstruktor(
+						' 	fasSwe() as swerefobjekt,
+						' 	fasRen() as reningsObjekt,
+						' 	fasEnsk() as enskiltobjekt
+						' )
+						
+							dim ittr, objektid as integer	,reningsTokenObjekt() as reningsObjekt	,enskiltTokenObjekt() as enskiltobjekt	,swerefTokenObjekt() as swerefobjekt	,tableName as string ,sO(1) as swerefobjekt,	rO(1) as reningsObjekt,	eO(1) as enskiltobjekt 
+
+							ittr = expandutskriftsobjekt(uObj) tableName = "LatestObjectID"	if IsTableOpen(tableName) then select col1 from LatestObjectID	fetch first from latestObjectID 
+							G_senastObjectID = iif(G_senastObjectID < latestObjectID.col1,latestObjectID.col1,G_senastObjectID) end if objektid = iif(G_senastObjectID <> 0,G_senastObjectID + 1,1) G_senastObjectID = objektid
+							
+							uObj(ittr).Objektid = objektid '"Huvud","ObjektID",: "integer",: "ObjektItterator" 
+
+							call huvuDObjekt(uObj(),ittr)
+							call anteckningKordinat(fasSwe(1),fasEnsk(1),fasRen(1),uObj(),ittr)					
+							call inventeringsinformation(uObj,ittr,fasSwe(1))
+							call Recipient(uObj,fasEnsk(1),fasRen(1),ittr)
+							call Avloppsanlggning(uObj(),ittr,fasEnsk(1))				
+								
+							call subTablesafter(eO,fasEnsk,rO,fasRen,sO,fasSwe,2)
+							
+							'print ubound(eO) + ubound(rO) + ubound(sO) 
+							
+							
+							if ubound(eO) + ubound(fasRen) + ubound(sO) > 0 then
+								dim anl() as anlggningsobjekt
+								call Anlggning(anl,fasEnsk,fasRen,sO)
+								'dessa skapar nya rader, men ndrar inte objektId
+								ittr = ittr + anlggningsobjektToUtskifts(anl,uObj,ittr)
+							end if
+							
+							ittr = ittr + diarienummerForutskriftsobjekt(uObj,ittr,fasEnsk,fasSwe,objektid)
+							call fastighetForUtskriftsobjekt(uObj,ittr,fasSwe,fasRen,fasEnsk,objektid)
+						
+						'call increment(G_Progress,G_ProgressRange,G_starttime)
+						
+						fetch next from tempAlias	
+	 
+	 onError goto 0
+	loop
+
+	call saveUtskriftsProgress(uObj)
 	if G_debugg then before = ubound(fasRen) + ubound(fasEnsk) + ubound(fasSwe) end if
 	if (max > 1) then call skapaMutationer(fasEnsk,fasRen,fasSwe,1) end if
 		
