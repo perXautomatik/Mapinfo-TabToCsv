@@ -202,6 +202,7 @@ Type AnlggningsObjekt
 		Utskick1_datum as date 		 					'",: "datum?-MM-DD)",: "Anlggning_fr_Slamav_Volym_m3  (sweref)"				
 		
 		radNummer as integer
+		placering as string
 
 end type
 
