@@ -1,0 +1,44 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"*.DAT": true,
+			"*.ID": true,
+			"*.IND": true,
+			"*.lnk": true,
+			"*.MAP": true,
+			"*.MBO": true,
+			"*.MBX": true,
+			"*.TAB": true,
+			"*.TDA": true,
+			"*.TIN": true,
+			"*.TMA": true,
+			"**/.classpath": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/.factorypath": true,
+			"LICENSE": true,
+			".gitignore": true,
+			"**/*.ERR": true,
+			".gitattributes": true,
+			"**/.gitattributes": true,
+			"**/*.DAT": true,
+			"**/*.TAB": true,
+			"**/*.ID": true,
+			"**/*.IND": true,
+			"**/*.MAP": true,
+			"**/*.MBX": true,
+			"**/*.MBO": true
+		},
+		"explorerExclude.backup": null
+	}
+}
