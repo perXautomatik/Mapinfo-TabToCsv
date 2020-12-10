@@ -1,6 +1,6 @@
 Include "MapBasic.def"
 include "Menu.def"
-include "C:\Users\crbk01\Desktop\WhenOffline\MapInfoTabToCsv\CommonLib\commonLib1.def"
+include "H:\mina grejer\Project Shelf\att göra\Solen till vision\MapInfoTabToCsv\CommonLib\commonLib1.def"
 
 Declare Sub Main
 Declare sub processor_1Pre
@@ -75,7 +75,9 @@ end function
 
 sub processor_1Pre
 		
-	'grundtabeller 'Fastighetskikt med adress ''egna reningstabeller med spatial fastighet 'egna EnskiltTabeller med spatial fastighet 'egen swereftabell med spatial fastighet och index 'call DO1_1_genPathTab 'call insertInitialTables()
+	'grundtabeller 'Fastighetskikt med adress ''egna reningstabeller med spatial fastighet 'egna EnskiltTabeller med spatial fastighet 'egen swereftabell med spatial fastighet och index '
+	call DO1_1_genPathTab 
+	call insertInitialTables()
 	DO case G_Progress
 		case 1 
 			call DO1_3_GenFasWithAdr call DO1_4_prepRenSd if G_debugg then print "DO1_4_prepRenSd: " & G_Progress end if if G_rebuild then print G_Progress end if
@@ -274,7 +276,7 @@ sub DO1_8_prepareSweref
 			call UpdateIndex("Fastigheter_sweref")
 end sub
 
-'sub DO1_1_genPathTab dim tempstring as string tempstring = "PathTABLE" if IsTableOpen(tempstring) then close table "pathTable" end if CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("") end sub
+sub DO1_1_genPathTab dim tempstring as string tempstring = "PathTABLE" if IsTableOpen(tempstring) then close table "pathTable" end if CREATE TABLE PathTABLE (tableName Char(40),tablePath Char(256),alternative Char(40)) File TempFileName$("") end sub
  
 sub DO1_5_reningIhopslagen	
 		call IhopSlag("Rening_","reningIhopslagen", CreateTable_reningIhopslagen())

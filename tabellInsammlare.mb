@@ -1046,7 +1046,7 @@ End Sub
 sub PrepareGemensamma()
 	
 	select * from reningIhopslagen where rowid=1 into gemensamma
-	call gï¿½rTillBastabell("gemensamma")
+	call görTillBastabell("gemensamma")
 	delete from gemensamma
 		
 	Insert Into reningIhopslagen (kommentarer,fastighet_rening,Col17,reningstyp,antal_hushll_rening,storlek_m2) values ("508885","Ardre Alsarve 3:1","gem,gem","Reningsverk","36 pe",80)
