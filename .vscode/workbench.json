@@ -1,0 +1,138 @@
+{
+	"currentWorkbench": {
+		"files": [
+			{
+				"path": "Komponent/MainLoop.mb",
+				"alias": " 1 Komponent/MainLoop.mb"
+			},
+			{
+				"path": "Komponent/MetodTest.mb",
+				"alias": " 2 Komponent/MetodTest.mb"
+			},
+			{
+				"path": "CommonLib/commonLib1.mb",
+				"alias": " 3 CommonLib/commonLib1.mb"
+			},
+			{
+				"path": "CommonLib/commonLib1.MB",
+				"alias": " 4 CommonLib/commonLib1.MB"
+			},
+			{
+				"path": "Komponent/korrigeringAvFelaktigaFastigheter.mb",
+				"alias": " 5 Komponent/korrigeringAvFelaktigaFastigheter.mb"
+			},
+			{
+				"path": "Komponent/korrigeringAvFelaktigaFastigheter.MB",
+				"alias": " 6 Komponent/korrigeringAvFelaktigaFastigheter.MB"
+			},
+			{
+				"path": "Komponent/LoadTableData.mb",
+				"alias": " 7 Komponent/LoadTableData.mb"
+			},
+			{
+				"path": "Komponent/main.MB",
+				"alias": " 8 Komponent/main.MB"
+			},
+			{
+				"path": "Komponent/MainLoop.mb",
+				"alias": " 9 Komponent/MainLoop.mb"
+			},
+			{
+				"path": "Komponent/MainLoop.MB",
+				"alias": " 10 Komponent/MainLoop.MB"
+			},
+			{
+				"path": "Komponent/MetodTest.mb",
+				"alias": " 11 Komponent/MetodTest.mb"
+			},
+			{
+				"path": "Komponent/PostProcesses.mb",
+				"alias": " 12 Komponent/PostProcesses.mb"
+			},
+			{
+				"path": "Komponent/PostProcesses.MB",
+				"alias": " 13 Komponent/PostProcesses.MB"
+			},
+			{
+				"path": "Komponent/PreProcesses1.mb",
+				"alias": " 14 Komponent/PreProcesses1.mb"
+			},
+			{
+				"path": "Komponent/PreProcesses1.MB",
+				"alias": " 15 Komponent/PreProcesses1.MB"
+			},
+			{
+				"path": "Komponent/tabellInsammlare.MB",
+				"alias": " 16 Komponent/tabellInsammlare.MB"
+			},
+			{
+				"path": "korrigeringAvFelaktigaFastigheter.MB",
+				"alias": " 17 korrigeringAvFelaktigaFastigheter.MB"
+			},
+			{
+				"path": "link.mb",
+				"alias": " 18 link.mb"
+			},
+			{
+				"path": "link2.mb",
+				"alias": " 19 link2.mb"
+			},
+			{
+				"path": "link3.mb",
+				"alias": " 101 link3.mb"
+			},
+			{
+				"path": "LoadTableData.mb",
+				"alias": " 106 LoadTableData.mb"
+			},
+			{
+				"path": "LoadTableData.MB",
+				"alias": " 111 LoadTableData.MB"
+			},
+			{
+				"path": "main.mb",
+				"alias": " 116 main.mb"
+			},
+			{
+				"path": "main.MB",
+				"alias": " 121 main.MB"
+			},
+			{
+				"path": "MainLoop.MB",
+				"alias": " 126 MainLoop.MB"
+			},
+			{
+				"path": "MetodTestx.mb",
+				"alias": " 131 MetodTestx.mb"
+			},
+			{
+				"path": "PostProcesses.MB",
+				"alias": " 136 PostProcesses.MB"
+			},
+			{
+				"path": "PreProcesses.MB",
+				"alias": " 141 PreProcesses.MB"
+			},
+			{
+				"path": "SarSwartlinger.mb",
+				"alias": " 146 SarSwartlinger.mb"
+			},
+			{
+				"path": "SolenVision.MB",
+				"alias": " 151 SolenVision.MB"
+			},
+			{
+				"path": "tabellInsammlare.mb",
+				"alias": " 156 tabellInsammlare.mb"
+			},
+			{
+				"path": "tabellInsammlare.MB",
+				"alias": " 161 tabellInsammlare.MB"
+			},
+			{
+				"path": "TableValidator.MB",
+				"alias": " 166 TableValidator.MB"
+			}
+		]
+	}
+}

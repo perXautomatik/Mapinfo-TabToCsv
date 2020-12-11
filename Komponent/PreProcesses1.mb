@@ -77,7 +77,7 @@ sub processor_1Pre
 		
 	'grundtabeller 'Fastighetskikt med adress ''egna reningstabeller med spatial fastighet 'egna EnskiltTabeller med spatial fastighet 'egen swereftabell med spatial fastighet och index '
 	call DO1_1_genPathTab 
-	'call insertInitialTables()
+	'call insertInitfialTables()
 	DO case G_Progress
 		case 1 
 			call DO1_3_GenFasWithAdr call DO1_4_prepRenSd if G_debugg then print "DO1_4_prepRenSd: " & G_Progress end if if G_rebuild then print G_Progress end if

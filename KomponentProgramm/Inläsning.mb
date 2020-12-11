@@ -1,0 +1,24 @@
+Include "MapBasic.def"
+
+Declare Sub Main
+
+Sub Main()
+
+Create Table "inlästa" (Ärende Char(12),Ärenden_m__Fastighet Char(20),_ Char(2),Ärenden_m__Fastighet_2 Char(31),__2 Char(2),_COL6 Integer,_COL7 Char(1)) file "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\mer än en fastighet\inlästa.TAB" TYPE NATIVE Charset "WindowsLatin1"
+open table "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\mer än en fastighet\inlästa.TAB" as inlästa
+dim x as integer
+,temp,tempstring as string
+
+for x=1 to 53
+	if x <> 17 then
+		temp = tempFileName$("")
+		tempstring = "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\mer än en fastighet\" & x & ".csv"
+		Register Table tempstring  TYPE ASCII Delimiter 34 Titles Charset "WindowsLatin1" Into temp
+		open table temp as tableTemp
+		insert into inlästa select * from tableTemp 	
+		print x
+		close table tabletemp
+	end if
+next
+
+End Sub

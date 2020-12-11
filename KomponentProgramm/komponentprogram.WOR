@@ -1,0 +1,347 @@
+!Workspace
+!Version  600
+!Charset WindowsLatin1
+Open Table "third" As third Interactive
+Open Table "Tillsynsobjekt" As Tillsynsobjekt Interactive
+Open Table "Untitled spreadsheet - Förtydligat exempel" As Untitled_spreadsheet___Förtydl Interactive
+Open Table "utan fastighetsbeteckningxlsx" As utan_fastighetsbeteckningxlsx Interactive
+Open Table "utan fastighetsbeteckningxlsx2" As utan_fastighetsbeteckningxlsx2 Interactive
+Open Table "Ärenden med mer än 1 fastighet" As Ärenden_med_mer_än_1_fastighet Interactive
+Open Table "ÄrendenMedIngenEllerFelFastighet2" As ÄrendenMedIngenEllerFelFastigh Interactive
+Open Table "ÄrendenMedIngenEllerFelFastighet3" As ÄrendenMedIngenEllerFelFa_2 Interactive
+Open Table "0Objekt" As _0Objekt Interactive
+Open Table "adresser" As adresser Interactive
+Open Table "ALVAressultat" As ALVAressultat Interactive
+Open Table "Anteckningar - ToExport" As Anteckningar___ToExport Interactive
+Open Table "dubbla sweref, varför" As dubbla_sweref__varför Interactive
+Open Table "Export_Output" As Export_Output Interactive
+Open Table "FastighetsAdresser" As FastighetsAdresser Interactive
+Open Table "fifth" As fifth Interactive
+Open Table "FilerAttFlytta" As FilerAttFlytta Interactive
+Open Table "FlikenFaWithA" As FlikenFaWithA Interactive
+Open Table "fourth" As fourth Interactive
+Open Table "Förtydligat exempel" As Förtydligat_exempel Interactive
+Open Table "Grundstruktur" As Grundstruktur Interactive
+Open Table "inlästa" As inlästa Interactive
+Open Table "inlästa2" As inlästa2 Interactive
+Open Table "KorrektStruktur" As KorrektStruktur Interactive
+Open Table "korrigerade Fastigheter" As korrigerade_Fastigheter Interactive
+Open Table "medFastighetsNycklar" As medFastighetsNycklar Interactive
+Open Table "Merged" As Merged Interactive
+Open Table "måns provgropsregister" As måns_provgropsregister Interactive
+Open Table "måns provgropsregister2" As måns_provgropsregister2 Interactive
+Open Table "Namnlös" As Namnlös Interactive
+Open Table "Powershell Tree _f - provgropsbilder - Sheet1" As Powershell_Tree__f___provgrops Interactive
+Open Table "påkoplade" As påkoplade Interactive
+Open Table "ReningIhopslagenBaraDatum" As ReningIhopslagenBaraDatum Interactive
+Open Table "ReningIhopslagenMedFnr" As ReningIhopslagenMedFnr Interactive
+Open Table "ReningOchAvloppFnr" As ReningOchAvloppFnr Interactive
+Open Table "ressultat" As ressultat Interactive
+Open Table "sammanfogade avlopp" As sammanfogade_avlopp Interactive
+Open Table "SammanfogadeAvlopp med fnr" As SammanfogadeAvlopp_med_fnr Interactive
+Open Table "Sixth" As Sixth Interactive
+Open Table "SkuggaMedFnr" As SkuggaMedFnr Interactive
+Open Table "SkuggregistretsFelaktigaFastigheter" As SkuggregistretsFelaktigaFastig Interactive
+Open Table "swerefAvloppRening" As swerefAvloppRening Interactive
+Open Table "SwerefMedFnr" As SwerefMedFnr Interactive
+Browse * From third
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Tillsynsobjekt
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Untitled_spreadsheet___Förtydl
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From utan_fastighetsbeteckningxlsx
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From utan_fastighetsbeteckningxlsx2
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Ärenden_med_mer_än_1_fastighet
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From ÄrendenMedIngenEllerFelFastigh
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From ÄrendenMedIngenEllerFelFa_2
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From _0Objekt
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From adresser
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From ALVAressultat
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Anteckningar___ToExport
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From dubbla_sweref__varför
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Export_Output
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From FastighetsAdresser
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From fifth
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From FilerAttFlytta
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From FlikenFaWithA
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From fourth
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Förtydligat_exempel
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Grundstruktur
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From inlästa
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From inlästa2
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From KorrektStruktur
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From korrigerade_Fastigheter
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From medFastighetsNycklar
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Merged
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From måns_provgropsregister
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From måns_provgropsregister2
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Namnlös
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Powershell_Tree__f___provgrops
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From påkoplade
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From ReningIhopslagenBaraDatum
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From ReningIhopslagenMedFnr
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From ReningOchAvloppFnr
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From ressultat
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From sammanfogade_avlopp
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From SammanfogadeAvlopp_med_fnr
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From Sixth
+  Position (0.270833,3.83333) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From SkuggaMedFnr
+  Position (0.489583,4.11458) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From SkuggregistretsFelaktigaFastig
+  Position (-0.385417,2.98958) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From swerefAvloppRening
+  Position (-0.166667,3.27083) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9
+Browse * From SwerefMedFnr
+  Position (0.0520833,3.55208) Units "in"
+  Width 5.55208 Units "in" Height 3.08333 Units "in" 
+set window FrontWindow() Font ("Segoe UI",0,9,0)
+Set Window FrontWindow() Printer
+ Name "MapInfo PDF Printer Version 17.0 x64" Orientation Portrait Copies 1
+ Papersize 9

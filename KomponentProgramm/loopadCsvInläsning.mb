@@ -1,0 +1,19 @@
+Include "MapBasic.def"
+
+Declare Sub Main
+
+Sub Main()
+	Create Table "EnTabellAttSlukaDeAlla" (Diarieår char(256),Diarielöpnummer char(256),Fastighet Char(256),Sökbegrepp Char(256),Rubrik Char(256),Händelse Char(256),Löpnummer Smallint) file "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\skuggregister2\EnTabellAttSlukaDeAlla.TAB" TYPE NATIVE Charset "WindowsLatin1"
+	
+	dim temp as string
+	,x as integer
+	
+	for x=1989 to 2013
+		temp = TempFileName$("")
+		Register Table "C:\Users\crbk01\Desktop\Solen till vision\skuggregistret\skuggregister2\"& x &"(1).csv" TYPE ASCII Delimiter 59 Titles Charset "WindowsLatin1"	Into temp
+		open table temp as tabellen
+		Insert Into EnTabellAttSlukaDeAlla Select * From tabellen DropIndex Auto
+		close table tabellen
+	next
+
+End Sub

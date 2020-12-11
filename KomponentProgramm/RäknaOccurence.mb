@@ -1,0 +1,94 @@
+Include "MapBasic.def"
+Declare Sub Main
+declare Sub Mainx()
+declare sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
+
+dim iProgress,iProgressRange,starttime as integer
+
+sub main()
+	
+	startTime = timer()
+
+	iprogress = 0	
+	
+	select * from SkuggMedHendelser where __3 = "" group by H‰ndelse into dennaRads NoSelect
+	iprogressRange = tableInfo(dennaRads,TAB_INFO_NROWS)
+	
+	Fetch First From dennaRads
+	ProgressBar "Processing...." & iProgressRange & " items"
+		     Calling Mainx
+	Range iProgressRange
+	
+	
+end sub
+
+Sub Mainx()
+	
+	dim nummer as integer
+	,h‰Namn as string
+	
+	h‰Namn = dennaRads.h‰ndelse
+	select count(*) from SkuggMedHendelser where h‰ndelse = h‰Namn into antal NoSelect
+		fetch first from antal
+		nummer = antal.Col1
+	
+	select * from SkuggMedHendelser where h‰ndelse = h‰Namn into tempTable NoSelect
+	
+	Update tempTable Set __3 = nummer
+
+   	Fetch Next From dennaRads
+
+	call increment(iProgress,iProgressRange,starttime)
+
+End Sub
+
+
+sub increment(iProgress as integer,iProgressRange as integer,starttime as integer)
+
+	iProgress = iProgress + 1 
+	If iProgress <= iProgressRange Then
+		if iProgress mod 100 = 0 then 'at each hundred incrementetations, short time summery is printed
+			dim	totaltidH,totaltidM,totaltids,upskattad,upskattadH,upskattadM,upskattads as integer
+			,tidperEnhet,totaltid as float
+			
+			totaltid = timer() - starttime	
+			tidperEnhet = totaltid/iprogress		
+			
+			if(totaltid > 3600) then
+				totaltidH = totaltid/3600
+				totaltidM = (totaltid mod 3600) / 60
+				totaltids = (totaltid mod 3600) mod 60
+			else
+				totaltidH = 0
+				if(totaltid > 60) then
+					totaltidM = totaltid / 60
+					totaltids = totaltid mod 60
+				else
+					totaltidM = 0
+					totaltids = totaltid
+				end if
+			end if
+			
+			
+			OnError goto OverflowError
+				upskattad = iProgressRange * tidPerEnhet
+			onError goto 0
+			if false then 
+				overflowError:
+				upskattad = iProgressRange
+			End If
+			
+			upskattadH = upskattad/3600
+			upskattadM = (upskattad mod 3600) / 60
+			upskattads = (upskattad mod 3600) mod 60
+			
+			
+			print iProgress & "upskattat: " & upskattadH & "h" & upskattadM & "m" & upskattads & "s totalt:" & totaltidH & "h" & totaltidM & "m" & totaltids & "s passerade"
+		End If
+		
+		ProgressBar = iProgress
+	Else
+		ProgressBar = -1
+	End If
+
+end sub

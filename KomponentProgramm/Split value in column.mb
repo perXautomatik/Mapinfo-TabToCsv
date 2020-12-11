@@ -1,0 +1,164 @@
+Include "MapBasic.def"
+
+Declare Sub Main
+Declare Sub Diarie
+declare Sub RevereFastighet
+declare sub ReplaceCharWithChar
+
+
+
+Declare Function SplitStringAtCharacter
+(ByVal sInput As String 'String to be split into substrings
+, ByVal sSplitChar As String 'Character used as delimiter (e.g. ",", ";")
+, sPartsArray() As String 'String array to be populated with the substrings
+) As Integer 'Number of substrings found in sInput
+
+'*********************************************************************************************
+Function SplitStringAtCharacter(ByVal sInput As String, ByVal sSplitChar As String, sPartsArray() As String) As Integer
+
+OnError Goto HandleError
+
+Dim iPos, iEnd, iCount As Integer
+
+If Len(sInput) = 0 Then
+SplitStringAtCharacter = 0
+Exit Function
+End If
+    
+Do While iEnd <= Len(sInput)
+iPos = iEnd + 1
+iEnd = InStr(iPos, sInput, sSplitChar)
+If iEnd = 0 Then
+iEnd = Len(sInput) + 1
+End If
+
+iCount = iCount + 1
+ReDim sPartsArray(iCount)
+sPartsArray(iCount) = Mid$(sInput, iPos, iEnd - iPos)
+Loop
+
+SplitStringAtCharacter = UBound(sPartsArray)
+
+Exit Function
+'---------------------------
+HandleError:
+Note Error$()
+
+End Function
+'*********************************************************************************************
+
+
+sub Diarie
+	
+	Dim sTab,columnx, oFeaturex,array() As String,
+       nRowID As Integer,
+       aRowID, aObj As Alias
+
+	sTab = "merged"
+
+	aRowID = sTab + ".ROWID"
+	aObj = sTab + ".Diarienummer"
+	
+	Fetch First From sTab
+	Do UNtil EOT(sTab)
+		
+
+		
+		columnx = aObj
+		nRowId = splitStringAtCharacter(columnx,"-",array) 
+		
+		if(nRowid = 3) then
+			oFeaturex = "MHN " & array(2) & "/" & array(3)
+		else
+			oFeaturex = ""
+		end if
+	   
+	   nRowID = aRowID
+
+	if(oFeaturex <> "") then
+	   Update sTab
+	      Set w3Ärendnr = oFeaturex
+	      Where ROWID = nRowID
+	end if
+	
+	   Fetch Next From sTab
+	Loop
+	
+	Commit Table sTab
+	
+End Sub
+sub RevereFastighet
+	Dim sTab,columnx, oFeaturex,array() As String,
+       nRowID As Integer,
+       aRowID, aObj As Alias
+
+	sTab = "utan_fastighetsbeteckningxlsx2"
+
+	aRowID = sTab + ".ROWID"
+	aObj = sTab + ".sökbegrepp"
+	
+	Fetch First From sTab
+	Do UNtil EOT(sTab)
+		
+		columnx = aObj
+		nRowId = splitStringAtCharacter(columnx," ",array) 
+		
+		if(nRowid = 3) then
+			oFeaturex = array(3) & " " & array(1) & " " & array(2)
+		else
+			oFeaturex = ""
+		end if
+	   
+	   nRowID = aRowID
+
+	if(oFeaturex <> "") then
+	   Update sTab
+	      Set korrigeradFastighet = oFeaturex
+	      Where ROWID = nRowID
+	end if
+	
+	   Fetch Next From sTab
+	Loop
+	
+	Commit Table sTab
+	
+End Sub
+
+sub ReplaceCharWithChar
+	Dim sTab,columnx, oFeaturex,array() As String,
+       nRowID As Integer,
+       aRowID, aObj As Alias
+
+	sTab = "måns_provgropsregister2"
+
+	aRowID = sTab + ".ROWID"
+	aObj = sTab + ".filnamn"
+	
+	Fetch First From sTab
+	Do UNtil EOT(sTab)
+		
+		columnx = aObj
+		nRowId = splitStringAtCharacter(columnx," ",array) 
+		
+		if(nRowid = 2) then
+			oFeaturex = array(1) & ":" & array(2)
+		else
+			oFeaturex = ""
+		end if
+	   
+	   nRowID = aRowID
+
+	if(oFeaturex <> "") then
+	   Update sTab
+	      Set filnamn = oFeaturex
+	      Where ROWID = nRowID
+	end if
+	
+	   Fetch Next From sTab
+	Loop
+	
+	Commit Table sTab
+End Sub
+sub main
+	
+End Sub

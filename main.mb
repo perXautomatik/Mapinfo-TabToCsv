@@ -76,7 +76,7 @@ sub Do2_LoadLatestObjId()
 		if openTableAndConfirm(tempstring) then onError goto exitProg 
 			query = "select max(objektid) " & " from " & tempstring & " " & " into LatestObjectX" run command query fetch first from LatestObjectX	onError goto 0
 			if LatestObjectX.col1 > ifOpenFetchFirstCol11Asinteger("LatestObjectID") then	
-				call closeSingleTable("LatestObjectID") select * from LatestObjectX into LatestObjectID	call gï¿½rTillBastabell("LatestObjectID")	else call closeSingleTable("LatestObjectX") end if onError goto 0
+				call closeSingleTable("LatestObjectID") select * from LatestObjectX into LatestObjectID	call görTillBastabell("LatestObjectID")	else call closeSingleTable("LatestObjectX") end if onError goto 0
 		else
 			tempstring = socknarOfiltrerade.SockenX if tempstring <> "" then Insert Into sockenTabell (COL1) values (tempstring) end if
 		end if
@@ -85,7 +85,7 @@ sub Do2_LoadLatestObjId()
 
 	if	debugg then print "---------------------------sockenTabell.col1-----" & sockenTabell.SockenX end if exit sub exitProg:	print query & "||" & error$()	end program
 
-	call gï¿½rTillBasTabell("sockenTabell")
+	call görTillBasTabell("sockenTabell")
 end sub
 
 sub SaveAnvndaReningar

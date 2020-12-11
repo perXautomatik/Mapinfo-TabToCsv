@@ -1,0 +1,3443 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfMapInfoDockingParams xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <MapInfoDockingParams Title="third Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>42</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName1</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>42</IndexInDockMode>
+      <IndexInFloatMode>42</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>42</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Tillsynsobjekt Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>41</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName2</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>41</IndexInDockMode>
+      <IndexInFloatMode>41</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>41</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Untitled_spreadsheet___Förtydl Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>40</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName3</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>40</IndexInDockMode>
+      <IndexInFloatMode>40</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>40</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="utan_fastighetsbeteckningxlsx Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>39</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName4</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>39</IndexInDockMode>
+      <IndexInFloatMode>39</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>39</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="utan_fastighetsbeteckningxlsx2 Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>38</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName5</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>38</IndexInDockMode>
+      <IndexInFloatMode>38</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>38</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Ärenden_med_mer_än_1_fastighet Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>37</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName6</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>37</IndexInDockMode>
+      <IndexInFloatMode>37</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>37</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="ÄrendenMedIngenEllerFelFastigh Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>36</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName7</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>36</IndexInDockMode>
+      <IndexInFloatMode>36</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>36</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="ÄrendenMedIngenEllerFelFa_2 Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>35</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName8</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>35</IndexInDockMode>
+      <IndexInFloatMode>35</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>35</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="_0Objekt Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>34</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName9</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>34</IndexInDockMode>
+      <IndexInFloatMode>34</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>34</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="adresser Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>33</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName10</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>33</IndexInDockMode>
+      <IndexInFloatMode>33</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>33</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="ALVAressultat Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>32</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName11</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>32</IndexInDockMode>
+      <IndexInFloatMode>32</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>32</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Anteckningar___ToExport Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>31</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName12</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>31</IndexInDockMode>
+      <IndexInFloatMode>31</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>31</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="dubbla_sweref__varför Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>30</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName13</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>30</IndexInDockMode>
+      <IndexInFloatMode>30</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>30</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Export_Output Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>29</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName14</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>29</IndexInDockMode>
+      <IndexInFloatMode>29</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>29</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="FastighetsAdresser Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>28</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName15</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>28</IndexInDockMode>
+      <IndexInFloatMode>28</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>28</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="fifth Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>27</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName16</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>27</IndexInDockMode>
+      <IndexInFloatMode>27</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>27</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="FilerAttFlytta Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>26</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName17</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>26</IndexInDockMode>
+      <IndexInFloatMode>26</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>26</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="FlikenFaWithA Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>25</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName18</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>25</IndexInDockMode>
+      <IndexInFloatMode>25</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>25</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="fourth Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>24</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName19</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>24</IndexInDockMode>
+      <IndexInFloatMode>24</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>24</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Förtydligat_exempel Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>23</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName20</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>23</IndexInDockMode>
+      <IndexInFloatMode>23</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>23</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Grundstruktur Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>22</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName21</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>22</IndexInDockMode>
+      <IndexInFloatMode>22</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>22</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="inlästa Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>21</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName22</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>21</IndexInDockMode>
+      <IndexInFloatMode>21</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>21</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="inlästa2 Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>20</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName23</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>20</IndexInDockMode>
+      <IndexInFloatMode>20</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>20</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="KorrektStruktur Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>19</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName24</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>19</IndexInDockMode>
+      <IndexInFloatMode>19</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>19</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="korrigerade_Fastigheter Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>18</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName25</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>18</IndexInDockMode>
+      <IndexInFloatMode>18</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>18</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="medFastighetsNycklar Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>17</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName26</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>17</IndexInDockMode>
+      <IndexInFloatMode>17</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>17</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Merged Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>16</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName27</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>16</IndexInDockMode>
+      <IndexInFloatMode>16</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>16</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="måns_provgropsregister Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>15</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName28</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>15</IndexInDockMode>
+      <IndexInFloatMode>15</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>15</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="måns_provgropsregister2 Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>14</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName29</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>14</IndexInDockMode>
+      <IndexInFloatMode>14</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>14</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Namnlös Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>13</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName30</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>13</IndexInDockMode>
+      <IndexInFloatMode>13</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>13</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Powershell_Tree__f___provgrops Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>12</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName31</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>12</IndexInDockMode>
+      <IndexInFloatMode>12</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>12</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="påkoplade Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>11</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName32</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>11</IndexInDockMode>
+      <IndexInFloatMode>11</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>11</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="ReningIhopslagenBaraDatum Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>10</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName33</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>10</IndexInDockMode>
+      <IndexInFloatMode>10</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>10</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="ReningIhopslagenMedFnr Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>9</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName34</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>9</IndexInDockMode>
+      <IndexInFloatMode>9</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>9</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="ReningOchAvloppFnr Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>8</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName35</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>8</IndexInDockMode>
+      <IndexInFloatMode>8</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>8</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="ressultat Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>7</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName36</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>7</IndexInDockMode>
+      <IndexInFloatMode>7</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>7</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="sammanfogade_avlopp Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>6</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName37</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>6</IndexInDockMode>
+      <IndexInFloatMode>6</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>6</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="SammanfogadeAvlopp_med_fnr Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>5</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName38</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>5</IndexInDockMode>
+      <IndexInFloatMode>5</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>5</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="Sixth Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>4</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName39</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>26,368,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>4</IndexInDockMode>
+      <IndexInFloatMode>4</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>4</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="SkuggaMedFnr Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>3</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName40</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>47,395,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>3</IndexInDockMode>
+      <IndexInFloatMode>3</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>3</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="SkuggregistretsFelaktigaFastig Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>2</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName41</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-37,287,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>2</IndexInDockMode>
+      <IndexInFloatMode>2</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>2</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="swerefAvloppRening Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>1</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName42</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>false</IsActiveWindow>
+      <WindowRect>-16,314,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>1</IndexInDockMode>
+      <IndexInFloatMode>1</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>1</TDIIndex>
+      <IsSelected>false</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+  <MapInfoDockingParams Title="SwerefMedFnr Tabell" WindowType="DatagridWindow">
+    <DockingParams>
+      <PreviousFloatingWindowRect />
+      <FloatWindowState>Normal</FloatWindowState>
+      <ZorderInFloatMode>0</ZorderInFloatMode>
+      <TabOrderIndex>0</TabOrderIndex>
+      <PreviousContainerDesiredSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </PreviousContainerDesiredSize>
+      <PreviousDesiredWidthInDockedMode>0</PreviousDesiredWidthInDockedMode>
+      <PreviousDesiredHeightInDockedMode>0</PreviousDesiredHeightInDockedMode>
+      <Name>AddedName43</Name>
+      <ShowTopmostMenuItem>true</ShowTopmostMenuItem>
+      <TopMost>false</TopMost>
+      <State>Document</State>
+      <NoHeader>false</NoHeader>
+      <SideDocked>Left</SideDocked>
+      <SideFloating>Left</SideFloating>
+      <TargetDocked />
+      <TargetFloating />
+      <DesiredWidthInDockedMode>300</DesiredWidthInDockedMode>
+      <DesiredHeightInDockedMode>200</DesiredHeightInDockedMode>
+      <DesiredWidthInFloatingMode>400</DesiredWidthInFloatingMode>
+      <DesiredHeightInFloatingMode>400</DesiredHeightInFloatingMode>
+      <NoDock>false</NoDock>
+      <CanDock>true</CanDock>
+      <CanClose>true</CanClose>
+      <IsSelectedTab>false</IsSelectedTab>
+      <IsActiveWindow>true</IsActiveWindow>
+      <WindowRect>5,341,545,329</WindowRect>
+      <TabGroupName />
+      <IsTabGroupOwner>false</IsTabGroupOwner>
+      <SideTabOrder>0</SideTabOrder>
+      <IndexInDockMode>0</IndexInDockMode>
+      <IndexInFloatMode>0</IndexInFloatMode>
+      <TabOrderInDockMode>0</TabOrderInDockMode>
+      <TabOrderInFloatMode>0</TabOrderInFloatMode>
+      <MDIBounds>0,0,100,50</MDIBounds>
+      <TDIIndex>0</TDIIndex>
+      <IsSelected>true</IsSelected>
+      <MDIMinimizedBounds>0,0,124,24</MDIMinimizedBounds>
+      <MDIWindowState>Normal</MDIWindowState>
+      <AllowMDIResize>true</AllowMDIResize>
+      <TDIGroupOrientation>Horizontal</TDIGroupOrientation>
+      <WayOfTDIGroup />
+      <DockForSide>Left</DockForSide>
+      <PreviousIndexInDockMode>0</PreviousIndexInDockMode>
+      <PreviousSideInDockMode>Left</PreviousSideInDockMode>
+      <DoShift>false</DoShift>
+      <SideRelativetoContainer>Left</SideRelativetoContainer>
+      <TabParent />
+      <DockWindowState>Normal</DockWindowState>
+      <CanMaximize>true</CanMaximize>
+      <CanMinimize>true</CanMinimize>
+      <CanResizeInDockedState>true</CanResizeInDockedState>
+      <CanResizeHeightInDockedState>true</CanResizeHeightInDockedState>
+      <CanResizeWidthInDockedState>true</CanResizeWidthInDockedState>
+      <CanResizeInFloatState>true</CanResizeInFloatState>
+      <CanResizeHeightInFloatState>true</CanResizeHeightInFloatState>
+      <CanResizeWidthInFloatState>true</CanResizeWidthInFloatState>
+      <CanFloatMaximize>true</CanFloatMaximize>
+      <IsFixedSize>false</IsFixedSize>
+      <IsFixedHeight>false</IsFixedHeight>
+      <IsFixedWidth>false</IsFixedWidth>
+      <FixedHeight>0</FixedHeight>
+      <FixedWidth>0</FixedWidth>
+      <ContainerSize>
+        <Width>0</Width>
+        <Height>0</Height>
+      </ContainerSize>
+      <PreviousHostWidth>90</PreviousHostWidth>
+      <PreviousHostHeight>90</PreviousHostHeight>
+      <PreviousContainerHeight>90</PreviousContainerHeight>
+      <PreviousContainerWidth>90</PreviousContainerWidth>
+      <TargetAutoHide />
+      <SplitPanelOffset>0</SplitPanelOffset>
+      <IsSwapped>false</IsSwapped>
+    </DockingParams>
+  </MapInfoDockingParams>
+</ArrayOfMapInfoDockingParams>
