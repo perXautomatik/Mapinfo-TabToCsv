@@ -1,6 +1,0 @@
-[Link]
-Application = PreProcesses.mbx
-
-Module = Komponent\PreProcesses1
-Module = CommonLib\commonLib1
-Module = tabellInsammlare

@@ -1,5 +1,0 @@
-[Link]
-Application = MainLoop.mbx
-
-Module = Komponent\MainLoop
-Module = CommonLib\commonLib1

@@ -1,5 +1,0 @@
-[Link]
-Application = PostProcesses.mbx
-
-Module = Komponent\PostProcesses
-Module = CommonLib\commonLib1
